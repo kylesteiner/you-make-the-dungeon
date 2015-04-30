@@ -1,12 +1,15 @@
 package {
-	import org.flixel.*;
-
-	[SWF(width="370", height="280", backgroundColor="#ffffff")]
+	import flash.display.Sprite;
+	import starling.core.Starling;
 	
-	public class Main extends FlxGame {
+	[SWF(width="370", height="280", backgroundColor="#ffffff")]
+	public class Main extends Sprite {
+		private var _starling:Starling;
 		
 		public function Main() {
-			super(370, 280, MenuState);
-		}	
+			_starling = new Starling(Game, stage);
+			_starling.start();
+		}
 	}
+
 }
