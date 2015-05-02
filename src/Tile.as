@@ -8,11 +8,6 @@ package {
 	import Util;
 	
 	public class Tile extends Sprite {
-		public static final NORTH_INDEX = 0;
-		public static final SOUTH_INDEX = 1;
-		public static final EAST_INDEX = 2;
-		public static final WEST_INDEX = 3;
-	
 		public var grid_x:int;
 		public var grid_y:int;
 		public var north:Boolean;
@@ -34,13 +29,14 @@ package {
 			super();
 			grid_x = g_x;
 			grid_y = g_y;
-			north = edges[NORTH_INDEX];
-			south = edges[SOUTH_INDEX];
-			east = edges[EAST_INDEX];
-			west = edges[WEST_INDEX];
+			north = edges[Util.NORTH];
+			south = edges[Util.SOUTH];
+			east = edges[Util.EAST];
+			west = edges[Util.WEST];
 		}
 		
 		//Process the character moving through this tile.
+		//
 		//Requires that c is not null
 		public function on_entry(c:Character):void {
 			assert(c != null);

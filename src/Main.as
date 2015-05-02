@@ -1,7 +1,7 @@
 package {
 	import flash.display.Sprite;
 	import starling.core.Starling;
-	import Tile;
+	import Level;
 	
 	[SWF(width="370", height="280", backgroundColor="#ffffff")]
 	public class Main extends Sprite {
