@@ -30,6 +30,7 @@ package {
 			attack = level;
 			max_hp = calc_max_hp();
 			current_hp = max_hp;
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
 		//Move the character from one tile to the next.
@@ -39,9 +40,24 @@ package {
 		//Requires that the callback is non-null and that
 		//the direction exists among the accepted directions.
 		public function move(direction:int, callback:Function):void {
-			//assert(callback != null);
-			//assert(Util.DIRECTIONS.indexOf(direction) != -1);
-			return;
+			assert(callback != null);
+			assert(Util.DIRECTIONS.indexOf(direction) != -1);
+			
+			if (direction == Util.NORTH && y + Util.PIXELS_PER_TILE < stage.stageHeight) {
+				this.dest_x = x
+				this.dest_y += Util.PIXELS_PER_TILE
+			} else if (direction == Util.EAST && x + Util.PIXELS_PER_TILE < stage.stageWidth) {
+				this.dest_x += Util.PIXELS_PER_TILE
+				this.dest_y = y
+			} else if (direction == Util.SOUTH && y - Util.PIXELS_PER_TILE < 0) {
+				this.dest_x = x
+				this.dest_y -= Util.PIXELS_PER_TILE
+			} else if (x - Util.PIXELS_PER_TILE < 0) { // West
+				this.dest_x -= Util.PIXELS_PER_TILE
+				this.dest_y = y
+			}
+			
+			this.callback = callback
 		}
 
 		//Determine the character's max hp
