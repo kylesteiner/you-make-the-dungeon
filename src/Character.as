@@ -7,7 +7,7 @@ package {
 	import Util;
 
 	public class Character extends Sprite {
-		public static final BASE_HP:int = 5;
+		public static const BASE_HP:int = 5;
 
 		public var level:int;
 		public var xp:int;
@@ -21,7 +21,7 @@ package {
 		//
 		//Requires experience is >= 0
 		public function Character(g_x:int, g_y:int, experience:int) {
-			assert(experience >= 0);
+			//assert(experience >= 0);
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
@@ -38,9 +38,9 @@ package {
 		//
 		//Requires that the callback is non-null and that
 		//the direction exists among the accepted directions.
-		public function move(direction:int, callback:Function) {
-			assert(callback != null);
-			assert(Util.DIRECTIONS.indexOf(direction) != -1);
+		public function move(direction:int, callback:Function):void {
+			//assert(callback != null);
+			//assert(Util.DIRECTIONS.indexOf(direction) != -1);
 			return;
 		}
 
@@ -49,7 +49,7 @@ package {
 		//
 		//Requires that the level is > 0
 		private function calc_max_hp():int {
-			assert(level > 0);
+			//assert(level > 0);
 			return ((level * (level + 1)) / 2) + BASE_HP - 1;
 		}
 
@@ -58,7 +58,7 @@ package {
 		//
 		//Requires that the current xp is >= 0
 		private function xp_to_level():int {
-			assert(xp >= 0);
+			//assert(xp >= 0);
 			var t_level:int = 1;
 			var t_xp:int = xp;
 			while(t_xp >= t_level) {
