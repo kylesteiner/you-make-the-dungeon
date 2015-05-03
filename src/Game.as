@@ -5,8 +5,8 @@ package {
 	import starling.events.*;
 
 	import Character;
-	//import Floor;
-	import Tile;
+	import tiles.*;
+	import tiles.empty.*;
 	import Util;
 
 	public class Game extends Sprite {
@@ -19,8 +19,7 @@ package {
 			textField.y = 200;
 			addChild(textField);
 
-			t = new Tile(3, 3, new Array(false, false, false, true));
-			t.addChild(t.image);
+			t = new EmptyTileNSEW(3, 3);
 			addChild(t);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -38,7 +37,5 @@ package {
 			t.addChild(t.image);
 			//}
 		}
-
-
 	}
 }
