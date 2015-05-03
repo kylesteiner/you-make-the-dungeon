@@ -1,11 +1,10 @@
 // Tile.as
-// Superclass for all tiles within the game.
-// Should never be instantiated.
-
+// Base class for empty tiles. Special tiles will extend this class.
 package tiles {
 	import starling.core.Starling;
 	import starling.display.*;
 	import starling.textures.*;
+
 	import Util;
 
 	public class Tile extends Sprite {
@@ -19,16 +18,32 @@ package tiles {
 		public var image:Image;
 
 		// Create a new Tile object at position (g_x,g_y) of the grid.
-		public function Tile(g_x:int, g_y:int) {
+		// If n, s, e, or w is true, that edge of the tile will be passable.
+		// texture will be the image used for this tile.
+		public function Tile(g_x:int,
+							 g_y:int,
+							 n:Boolean,
+							 s:Boolean,
+							 e:Boolean,
+							 w:Boolean,
+							 texture:Texture) {
 			super();
 			grid_x = g_x;
 			grid_y = g_y;
+			north = n;
+			south = s;
+			east = e;
+			west = w;
+
+			image = new Image(texture);
+			addChild(image);
+
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
 		}
 
 		// Called when the player moves into this tile.
-		public function on_entry(c:Character):void {
+		public function onEntry(c:Character):void {
 			return;
 		}
 	}
