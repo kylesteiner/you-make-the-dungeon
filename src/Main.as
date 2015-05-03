@@ -3,7 +3,7 @@ package {
 	import starling.core.Starling;
 	import Level;
 
-	[SWF(width="640", height="480", backgroundColor="#000000")]
+	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
 	public class Main extends Sprite {
 		private var _starling:Starling;

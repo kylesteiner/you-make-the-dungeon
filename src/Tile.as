@@ -3,8 +3,10 @@
 //Should never be instantiated.
 
 package {
-	import flash.display.Sprite;
+	//import flash.display.*;
 	import starling.core.Starling;
+	import starling.display.*;
+	import starling.textures.*;
 	import Util;
 
 	public class Tile extends Sprite {
@@ -15,7 +17,11 @@ package {
 		public var east:Boolean;
 		public var west:Boolean;
 
+		public var image:Image;
+
 		private var _starling:Starling;
+
+		[Embed(source='/assets/tiles/small/fourway.png')] public var testTile:Class;
 
 		//Create a new Tile object with grid x/y positions, and openings
 		//edges should be an array of 4 Booleans representing
@@ -29,10 +35,18 @@ package {
 			super();
 			grid_x = g_x;
 			grid_y = g_y;
+			x = Util.grid_to_real(g_x);
+			y = Util.grid_to_real(g_y);
 			north = edges[Util.NORTH];
 			south = edges[Util.SOUTH];
 			east = edges[Util.EAST];
 			west = edges[Util.WEST];
+
+			//var bitmap:Bitmap = new testTile();
+			var texture:Texture = Texture.fromBitmap(new testTile());
+			//var image:Image = new Image(texture);
+			image = new Image(texture);
+			//addChild(image);
 		}
 
 		//Process the character moving through this tile.
