@@ -57,7 +57,7 @@ package {
 		//xp and level accordingly.
 		//
 		//Requires that the current xp is >= 0
-		private function xp_to_level():int {
+		private function xp_to_level():void {
 			//assert(xp >= 0);
 			var t_level:int = 1;
 			var t_xp:int = xp;

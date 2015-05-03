@@ -18,7 +18,7 @@ package {
 			textField.y = 200;
 			addChild(textField);
 
-			//var t:Tile = new Tile(3, 3, new Array(false, false, false, true));
+			var t:Tile = new Tile(3, 3, new Array(false, false, false, true));
 			//addChild(t);
 		}
 
