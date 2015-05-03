@@ -5,19 +5,17 @@ package {
 	import flash.display.Sprite;
 	import starling.core.Starling;
 	import Util;
-	
+
 	public class Character extends Sprite {
 		public static final BASE_HP:int = 5;
-	
-		public var real_x:int;
-		public var real_y:int;
+
 		public var level:int;
 		public var xp:int;
 		public var max_hp:int;
 		public var current_hp:int;
 		public var attack:int;
 		//No item functionality built in yet
-		
+
 		//Constructs the character at the provided
 		//grid position and with the correct stats
 		//
@@ -25,15 +23,15 @@ package {
 		public function Character(g_x:int, g_y:int, experience:int) {
 			assert(experience >= 0);
 			super();
-			real_x = Util.grid_to_real(g_x);
-			real_y = Util.grid_to_real(g_y);
+			x = Util.grid_to_real(g_x);
+			y = Util.grid_to_real(g_y);
 			xp = experience;
 			xp_to_level();
 			attack = level;
 			max_hp = calc_max_hp();
 			current_hp = max_hp;
 		}
-		
+
 		//Move the character from one tile to the next.
 		//Executes the relevant on_entry function when
 		//the movement is completed.
@@ -45,7 +43,7 @@ package {
 			assert(Util.DIRECTIONS.indexOf(direction) != -1);
 			return;
 		}
-		
+
 		//Determine the character's max hp
 		//from their level
 		//
@@ -54,7 +52,7 @@ package {
 			assert(level > 0);
 			return ((level * (level + 1)) / 2) + BASE_HP - 1;
 		}
-	
+
 		//Checks current exp and sets the characters
 		//xp and level accordingly.
 		//
@@ -70,6 +68,6 @@ package {
 			level = t_level;
 			xp = t_xp;
 		}
-		
+
 	}
 }
