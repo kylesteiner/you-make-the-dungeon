@@ -6,7 +6,7 @@ package tiles.empty {
     import tiles.*;
 
     public class EmptyTileNSEW extends Tile {
-        [Embed(source='/assets/tiles/small/fourway.png')] public var tileImg:Class;
+        [Embed(source='/assets/tiles/small/tile_nsew.png')] public var tileImg:Class;
 
         public function EmptyTileNSEW(x:int, y:int) {
             super(x, y);
