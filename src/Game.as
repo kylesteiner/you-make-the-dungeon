@@ -7,6 +7,7 @@ package {
 	import starling.text.TextField;
 
 	import Character;
+	import Level;
 	import tiles.*;
 	import Util;
 
@@ -45,39 +46,9 @@ package {
 
 			tileTextures = setupTextures();
 
-			textField = new TextField(100, 100, "Welcome to Starling!");
-			textField.x = 0;
-			textField.y = 200;
-			addChild(textField);
-
-			t = new Tile(3, 3, true, true, true, true, tileTextures[Util.TILE_NSEW]);
-			addChild(t);
-
-			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			addEventListener(TouchEvent.TOUCH, onMouseDown);
-		}
-
-		public function onEnterFrame(event:EnterFrameEvent):void {
-			return;
-		}
-
-		public function onKeyDown(event:KeyboardEvent):void {
-			//var touch:Touch = event.getTouch(stage);
-
-			//if(touch && touch.phase == TouchPhase.BEGAN) {
-			textField.text = "hi";
-			//}
-		}
-
-		public function onMouseDown(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(stage);
-			textField.text = "bye";
-			if (touch && touch.phase == TouchPhase.BEGAN) {
-				textField.x = touch.globalX;
-				textField.y = touch.globalY;
-			}
-
+			// Load an empty level for now.
+			var level:Level = new Level(new Array(), 0);
+			addChild(level);
 		}
 
 		private function setupTextures():Dictionary {
