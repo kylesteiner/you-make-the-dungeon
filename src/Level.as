@@ -23,6 +23,7 @@ package {
 			initialGrid = grid;
 			initialXp = xp;
 			grid = new Array(grid.length);
+			char = new Character(0, 0, initialXp);
 			resetLevel();
 		}
 
@@ -46,7 +47,9 @@ package {
 			}
 
 			// TODO: figure out character's starting position.
+			char.removeFromParent(true);
 			char = new Character(0, 0, initialXp);
+			addChild(char);
 		}
 	}
 }
