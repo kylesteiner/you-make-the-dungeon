@@ -5,15 +5,13 @@ package {
 	import starling.core.Starling;
 	import starling.display.*;
 	import starling.events.*;
-	import starling.textures.*; // TODO: Remove
+	import starling.textures.Texture;
 	import flash.ui.Keyboard;
 
 	import tiles.*;
 	import Util;
 
 	public class Character extends Sprite {
-		[Embed(source='/assets/entities/hero.png')] private static const hero:Class; // TODO: Remove
-
 		public static const BASE_HP:int = 5;
 
 		// Character attributes
@@ -30,7 +28,7 @@ package {
 
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, experience:int/*, texture:Texture*/) {
+		public function Character(g_x:int, g_y:int, experience:int, texture:Texture) {
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
@@ -40,7 +38,6 @@ package {
 			maxHp = getMaxHp();
 			currentHp = maxHp;
 
-			var texture:Texture = Texture.fromBitmap(new hero()); // TODO: Remove
 			var image:Image = new Image(texture);
 			addChild(image);
 

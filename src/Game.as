@@ -13,13 +13,9 @@ package {
 	import Util;
 
 	public class Game extends Sprite {
-		[Embed(source='assets/bgm/ludum32.mp3')] public var bgm:Class;
-		public var mixer:Mixer;
-
-		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
-		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
-
-		// Tile textures
+		[Embed(source='assets/backgrounds/background.png')] private var bg:Class;
+		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
+		[Embed(source='assets/entities/hero.png')] private static const hero:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -36,11 +32,10 @@ package {
 		[Embed(source='assets/tiles/tile_sew.png')] private static const tile_sew:Class;
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
+		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
 
-		// Map String -> Texture
-		// See Util.as for keys to this dictionary.
-		private var tileTextures:Dictionary;
-
+		private var textures:Dictionary;  // Map String -> Texture. See util.as.
+		private var mixer:Mixer;
 		private var world:Sprite;
 
 		public function Game() {
@@ -51,9 +46,9 @@ package {
 			var image:Image = new Image(texture);
 			world.addChild(image);
 
-			tileTextures = setupTextures();
+			textures = setupTextures();
 
-			var f:Floor = new Floor(new floor0(), tileTextures, 0);
+			var f:Floor = new Floor(new floor0(), textures, 0);
 			world.addChild(f);
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -88,6 +83,7 @@ package {
 
 		private function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
+			textures[Util.HERO] = Texture.fromEmbeddedAsset(hero);
 			textures[Util.TILE_E] = Texture.fromEmbeddedAsset(tile_e);
 			textures[Util.TILE_EW] = Texture.fromEmbeddedAsset(tile_ew);
 			textures[Util.TILE_N] = Texture.fromEmbeddedAsset(tile_n);
