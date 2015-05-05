@@ -13,10 +13,10 @@ w/a/s/d - move camera
 
 Floor data text files are tab-delineated, with the following structure:
 ```
-floorname
-floorXDimension floorYDimension
-characterXStart characterYStart
-TileType1   x   y   nOpen?  sOpen?  eOpen?  wOpen?  additionalParams...
+FloorName
+FloorXDimension	FloorYDimension
+CharInitialX	CharInitialY
+TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
 ...
 ...
 
@@ -24,6 +24,7 @@ The valid tile types are:
 *entry
 *exit
 *empty
+*health (additional parameters: amount of health)
 *none
 
 ```

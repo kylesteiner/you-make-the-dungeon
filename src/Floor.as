@@ -167,6 +167,9 @@ package {
 					tileData.push(new EntryTile(tX, tY, tN, tS, tE, tW, tTexture));
 				} else if (tType == "exit") {
 					tileData.push(new ExitTile(tX, tY, tN, tS, tE, tW, tTexture));
+				} else if (tType == "health") {
+					var tHealth:int = Number(lineData[7]);
+					tileData.push(new HealingTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.ICON_HEALTH], tHealth));
 				}
 			}
 

@@ -1,9 +1,10 @@
 floor0
 5	5
 1	1
-entry	1	1	0	1	1	1
+entry	1	1	0	1	0	1
 empty	1	2	1	0	1	0
-empty	2	2	1	1	1	1
 empty	2	1	0	1	0	1
-empty	3	0	1	0	1	0
+empty	2	2	1	1	1	1
+health	2	3	1	0	1	0
+empty	3	2	0	1	0	1
 exit	3	3	1	1	1	1
