@@ -15,25 +15,25 @@ package {
 		public var t:Tile;
 		public var textField:TextField;
 
-		[Embed(source='/assets/backgrounds/background.png')] public var bg:Class;
+		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
 
 		// Tile textures
-		[Embed(source='/assets/tiles/tile_e.png')] private static const tile_e:Class;
-		[Embed(source='/assets/tiles/tile_ew.png')] private static const tile_ew:Class;
-		[Embed(source='/assets/tiles/tile_n.png')] private static const tile_n:Class;
-		[Embed(source='/assets/tiles/tile_ne.png')] private static const tile_ne:Class;
-		[Embed(source='/assets/tiles/tile_new.png')] private static const tile_new:Class;
-		[Embed(source='/assets/tiles/tile_none.png')] private static const tile_none:Class;
-		[Embed(source='/assets/tiles/tile_ns.png')] private static const tile_ns:Class;
-		[Embed(source='/assets/tiles/tile_nse.png')] private static const tile_nse:Class;
-		[Embed(source='/assets/tiles/tile_nsew.png')] private static const tile_nsew:Class;
-		[Embed(source='/assets/tiles/tile_nsw.png')] private static const tile_nsw:Class;
-		[Embed(source='/assets/tiles/tile_nw.png')] private static const tile_nw:Class;
-		[Embed(source='/assets/tiles/tile_s.png')] private static const tile_s:Class;
-		[Embed(source='/assets/tiles/tile_se.png')] private static const tile_se:Class;
-		[Embed(source='/assets/tiles/tile_sew.png')] private static const tile_sew:Class;
-		[Embed(source='/assets/tiles/tile_sw.png')] private static const tile_sw:Class;
-		[Embed(source='/assets/tiles/tile_w.png')] private static const tile_w:Class;
+		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
+		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
+		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
+		[Embed(source='assets/tiles/tile_ne.png')] private static const tile_ne:Class;
+		[Embed(source='assets/tiles/tile_new.png')] private static const tile_new:Class;
+		[Embed(source='assets/tiles/tile_none.png')] private static const tile_none:Class;
+		[Embed(source='assets/tiles/tile_ns.png')] private static const tile_ns:Class;
+		[Embed(source='assets/tiles/tile_nse.png')] private static const tile_nse:Class;
+		[Embed(source='assets/tiles/tile_nsew.png')] private static const tile_nsew:Class;
+		[Embed(source='assets/tiles/tile_nsw.png')] private static const tile_nsw:Class;
+		[Embed(source='assets/tiles/tile_nw.png')] private static const tile_nw:Class;
+		[Embed(source='assets/tiles/tile_s.png')] private static const tile_s:Class;
+		[Embed(source='assets/tiles/tile_se.png')] private static const tile_se:Class;
+		[Embed(source='assets/tiles/tile_sew.png')] private static const tile_sew:Class;
+		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
+		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 
 		// Map String -> Texture
 		// See Util.as for keys to this dictionary.
