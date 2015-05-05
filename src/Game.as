@@ -41,12 +41,20 @@ package {
 		// See Util.as for keys to this dictionary.
 		private var tileTextures:Dictionary;
 
+		private var world:Sprite;
+
 		public function Game() {
+			world = new Sprite();
+			addChild(world);
+
 			var texture:Texture = Texture.fromBitmap(new bg());
 			var image:Image = new Image(texture);
-			addChild(image);
+			world.addChild(image);
 
 			tileTextures = setupTextures();
+
+			var t:Tile = new Tile(1, 1, true, true, true, true, tileTextures[Util.TILE_NSEW]);
+			world.addChild(t);
 
 			mixer = new Mixer(new Array(new bgm()));
 
@@ -59,8 +67,25 @@ package {
 
 		private function onKeyDown(event:KeyboardEvent):void {
 			// TODO: set up dictionary of charCode -> callback?
-			if(String.fromCharCode(event.charCode) == Util.MUTE_KEY) {
+			var input:String = String.fromCharCode(event.charCode);
+			if(input == Util.MUTE_KEY) {
 				mixer.togglePlay();
+			}
+
+			if(input == Util.UP_KEY) {
+				world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
+			}
+
+			if(input == Util.DOWN_KEY) {
+				world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
+			}
+
+			if(input == Util.LEFT_KEY) {
+				world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
+			}
+
+			if(input == Util.RIGHT_KEY) {
+				world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
 			}
 		}
 

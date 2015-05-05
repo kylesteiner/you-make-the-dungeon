@@ -4,6 +4,9 @@
 package {
 	public class Util {
 		public static const PIXELS_PER_TILE:int = 32;
+		public static const CAMERA_SHIFT:int = 1; // in grid spaces
+		// can update to pixels once tile movement is tied down
+
 		public static const NORTH:int = 0;
 		public static const SOUTH:int = 1;
 		public static const EAST:int = 2;
@@ -29,6 +32,14 @@ package {
 		public static const TILE_W:String = "tile_w";
 
 		public static const MUTE_KEY:String = "m";
+		public static const UP_KEY:String = "w";
+		public static const LEFT_KEY:String = "a";
+		public static const RIGHT_KEY:String = "d";
+		public static const DOWN_KEY:String = "s";
+
+		// if we want to use arrow keys, here are the relevant char codes:
+		// up: 38		left: 37
+		// down: 40		right: 39
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
