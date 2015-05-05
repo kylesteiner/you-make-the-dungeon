@@ -7,6 +7,7 @@ package {
 	import starling.text.TextField;
 
 	import flash.media.*;
+	import flash.ui.Mouse;
 
 	import Character;
 	import tiles.*;
@@ -44,17 +45,21 @@ package {
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
 
+		// Icons
+		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
 
 		// Map String -> Texture
 		// See Util.as for keys to this dictionary.
 		private var tileTextures:Dictionary;
 
-		// TODO: add a cursor image
+		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 
 		private var world:Sprite;
 
 		public function Game() {
+			Mouse.hide();
+
 			world = new Sprite();
 			addChild(world);
 
@@ -63,6 +68,9 @@ package {
 			world.addChild(image);
 
 			tileTextures = setupTextures();
+
+			cursorImage = new Image(tileTextures[Util.ICON_CURSOR]);
+			addChild(cursorImage);
 
 			cursorHighlight = new Image(tileTextures[Util.TILE_HL_B]);
 			world.addChild(cursorHighlight);
@@ -80,6 +88,10 @@ package {
 			var touch:Touch = event.getTouch(stage);
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x));
 			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y));
+
+			// TODO: make it so cursorImage can move outside of the world
+			cursorImage.x = touch.globalX;
+			cursorImage.y = touch.globalY;
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -133,6 +145,8 @@ package {
 			textures[Util.TILE_HL_R] = Texture.fromEmbeddedAsset(hl_red);
 			textures[Util.TILE_HL_G] = Texture.fromEmbeddedAsset(hl_green);
 			textures[Util.TILE_HL_B] = Texture.fromEmbeddedAsset(hl_blue);
+
+			textures[Util.ICON_CURSOR] = Texture.fromEmbeddedAsset(icon_cursor);
 			return textures;
 		}
 

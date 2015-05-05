@@ -32,10 +32,12 @@ package {
 		public static const TILE_W:String = "tile_w";
 
 		public static const TILE_FOG:String = "fog";
-		public static const TILE_HL_Y:String = "hl_y"
-		public static const TILE_HL_B:String = "hl_b"
-		public static const TILE_HL_G:String = "hl_g"
-		public static const TILE_HL_R:String = "hl_r"
+		public static const TILE_HL_Y:String = "hl_y";
+		public static const TILE_HL_B:String = "hl_b";
+		public static const TILE_HL_G:String = "hl_g";
+		public static const TILE_HL_R:String = "hl_r";
+
+		public static const ICON_CURSOR:String = "icon_cursor";
 
 		public static const MUTE_KEY:String = "m";
 		public static const UP_KEY:String = "w";
