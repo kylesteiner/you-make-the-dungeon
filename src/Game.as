@@ -37,9 +37,20 @@ package {
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 
+		// Tile visual effects
+		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
+		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
+		[Embed(source='assets/effects/hl_red.png')] private static const hl_red:Class;
+		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
+		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
+
+
 		// Map String -> Texture
 		// See Util.as for keys to this dictionary.
 		private var tileTextures:Dictionary;
+
+		// TODO: add a cursor image
+		private var cursorHighlight:Image;
 
 		private var world:Sprite;
 
@@ -56,6 +67,9 @@ package {
 			var t:Tile = new Tile(1, 1, true, true, true, true, tileTextures[Util.TILE_NSEW]);
 			world.addChild(t);
 
+			cursorHighlight = new Image(tileTextures[Util.TILE_HL_B]);
+			world.addChild(cursorHighlight);
+
 			mixer = new Mixer(new Array(new bgm()));
 
 			// Load an empty level for now.
@@ -63,6 +77,13 @@ package {
 			addChild(level);
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			addEventListener(TouchEvent.TOUCH, onMouseEvent);
+		}
+
+		private function onMouseEvent(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(stage);
+			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x));
+			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y));
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -110,6 +131,12 @@ package {
 			textures[Util.TILE_SEW] = Texture.fromEmbeddedAsset(tile_sew);
 			textures[Util.TILE_SW] = Texture.fromEmbeddedAsset(tile_sw);
 			textures[Util.TILE_W] = Texture.fromEmbeddedAsset(tile_w);
+
+			textures[Util.TILE_FOG] = Texture.fromEmbeddedAsset(fog);
+			textures[Util.TILE_HL_Y] = Texture.fromEmbeddedAsset(hl_yellow);
+			textures[Util.TILE_HL_R] = Texture.fromEmbeddedAsset(hl_red);
+			textures[Util.TILE_HL_G] = Texture.fromEmbeddedAsset(hl_green);
+			textures[Util.TILE_HL_B] = Texture.fromEmbeddedAsset(hl_blue);
 			return textures;
 		}
 
