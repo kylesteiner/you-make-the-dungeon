@@ -14,6 +14,10 @@ package {
 	import Character;
 
 	public class Floor extends Sprite {
+		// Number of lines at the beginning of floordata files
+		// that are dedicated to non-tile objects at the start
+		public static const NON_TILE_LINES:int = 3;
+
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
 		public var char:Character;
@@ -31,30 +35,32 @@ package {
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
-		public function Floor(floorData:String, textureDict:Dictionary, xp:int) {
+		public function Floor(floorData:ByteArray, textureDict:Dictionary, xp:int) {
 			super();
 
 			initialXp = xp;
 			tileTextures = textureDict;
 
-			var readFrom:URLRequest = new URLRequest(floorData);
-			var floorLoader:URLLoader = new URLLoader();
-			//floorLoader.load(readFrom);
-			//floorLoader.addEventListener(Event.COMPLETE, constructFloor);
+			constructFloor(floorData);
 
-			//grid = new Array(initialGrid.length);
+			grid = new Array(initialGrid.length);
+			//constructInitialGrid();
+			resetFloor();
 			//resetFloor();
 		}
 
 		// Resets the character and grid state to their initial values.
 		private function resetFloor():void {
 			var i:int; var j:int;
+
 			// Remove all tiles from the display tree.
 			for (i = 0; i < grid.length; i++) {
 				for (j = 0; j < grid[i].length; j++) {
 					// TODO: figure out it it is necessary to dispose of the
 					// tile here.
-					grid[i][j].removeFromParent();
+					if(grid[i][j]) {
+						grid[i][j].removeFromParent();
+					}
 				}
 			}
 
@@ -62,7 +68,9 @@ package {
 			for (i = 0; i < initialGrid.length; i++) {
 				for (j = 0; j < initialGrid[i].length; j++) {
 					grid[i][j] = initialGrid[i][j];
-					addChild(grid[i][j]);
+					if(grid[i][j]) {
+						addChild(grid[i][j]);
+					}
 				}
 			}
 
@@ -71,14 +79,28 @@ package {
 			char = new Character(initialX, initialY, initialXp);
 		}
 
-		private function constructFloor(loadEvent:Event):void {
+		private function constructInitialGrid():void {
+			grid = new Array();
+			var i:int; var j:int;
+			for(i = 0; i < initialGrid.length; i++) {
+				grid.push(new Array());
+				for(j = 0; j < initialGrid[i]; j++) {
+					grid[i].push(null);
+				}
+			}
+		}
+
+		//private function constructFloor(loadEvent:Event):void {
+		private function constructFloor(floorDataBytes:ByteArray):void {
 			// TODO: ensure loaded file always has correct number of lines
 			//		 as well as all necessary data (char, entry, exit).
 			// TODO: ensure that each line in loaded file has correct number
 			//		 of arguments.
 			var i:int; var j:int;
 
-			var floorData:Array = loadEvent.data.split("\n");
+			//var floorData:Array = loadEvent.data.split("\n");
+			var floorDataString:String = floorDataBytes.readUTFBytes(floorDataBytes.length);
+			var floorData:Array = floorDataString.split("\n");
 			floorName = floorData[0];
 
 			var innerArray:Array;
@@ -87,7 +109,7 @@ package {
 			for (i = 0; i < Number(floorSize[1]); i++) {
 				innerArray = new Array();
 				for (j = 0; j < Number(floorSize[0]); j++) {
-					innerArray.append(null);
+					innerArray.push(null);
 				}
 				newGrid.push(innerArray);
 			}
@@ -105,7 +127,7 @@ package {
 			var tTexture:Texture;
 			var tileData:Array = new Array();
 
-			for (i = 2; i < floorData.length; i++) {
+			for (i = NON_TILE_LINES; i < floorData.length; i++) {
 				lineData = floorData[i].split("\t");
 
 				tX = Number(lineData[1]);
@@ -114,8 +136,8 @@ package {
 				tS = (lineData[4] == "1") ? true : false;
 				tE = (lineData[5] == "1") ? true : false;
 				tW = (lineData[6] == "1") ? true : false;
-				textureString = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") +
-				 				(tE ? "e" : "") + (tW ? "w" : "");
+				textureString = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
+				textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
 				tTexture = tileTextures[textureString];
 
 				// TODO: determine type of Tile to instantiate here

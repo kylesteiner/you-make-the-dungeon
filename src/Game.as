@@ -7,7 +7,6 @@ package {
 	import starling.text.TextField;
 
 	import Character;
-	import Level;
 	import tiles.*;
 	import Util;
 
@@ -16,6 +15,7 @@ package {
 		public var textField:TextField;
 
 		[Embed(source='/assets/backgrounds/background.png')] public var bg:Class;
+		[Embed(source='/floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
 
 		// Tile textures
 		[Embed(source='/assets/tiles/tile_e.png')] private static const tile_e:Class;
@@ -45,7 +45,7 @@ package {
 			addChild(image);
 
 			tileTextures = setupTextures();
-			
+
 			textField = new TextField(100, 100, "Welcome to Starling!");
 			textField.x = 0;
 			textField.y = 200;
@@ -54,7 +54,7 @@ package {
 			t = new Tile(3, 3, true, true, true, true, tileTextures[Util.TILE_NSEW]);
 			addChild(t);
 
-			var f:Floor = new Floor("/src/floordata/floor0.txt", tileTextures, 0);
+			var f:Floor = new Floor(new floor0(), tileTextures, 0);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
