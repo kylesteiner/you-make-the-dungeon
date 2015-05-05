@@ -6,16 +6,19 @@ package {
 	import starling.textures.*;
 	import starling.text.TextField;
 
+	import flash.media.*;
+
 	import Character;
 	import Level;
 	import tiles.*;
 	import Util;
 
 	public class Game extends Sprite {
-		public var t:Tile;
-		public var textField:TextField;
+		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
 
-		[Embed(source='/assets/backgrounds/background.png')] public var bg:Class;
+		[Embed(source='assets/bgm/ludum32.mp3')] public var bgm:Class;
+
+		public var mixer:Mixer;
 
 		// Tile textures
 		[Embed(source='/assets/tiles/tile_e.png')] private static const tile_e:Class;
@@ -46,9 +49,20 @@ package {
 
 			tileTextures = setupTextures();
 
+			mixer = new Mixer(new Array(new bgm()));
+
 			// Load an empty level for now.
 			var level:Level = new Level(new Array(), 0);
 			addChild(level);
+
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		}
+
+		private function onKeyDown(event:KeyboardEvent):void {
+			// TODO: set up dictionary of charCode -> callback?
+			if(String.fromCharCode(event.charCode) == Util.MUTE_KEY) {
+				mixer.togglePlay();
+			}
 		}
 
 		private function setupTextures():Dictionary {
@@ -70,6 +84,10 @@ package {
 			textures[Util.TILE_SW] = Texture.fromEmbeddedAsset(tile_sw);
 			textures[Util.TILE_W] = Texture.fromEmbeddedAsset(tile_w);
 			return textures;
+		}
+
+		private function setupSFX():Dictionary {
+			// TODO: make an sfx dictionary
 		}
 	}
 }
