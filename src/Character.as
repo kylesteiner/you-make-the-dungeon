@@ -2,8 +2,9 @@
 //In-game representation of the character.
 
 package {
-	import flash.display.Sprite;
 	import starling.core.Starling;
+	import starling.display.Sprite;
+
 	import Util;
 
 	public class Character extends Sprite {
