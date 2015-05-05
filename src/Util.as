@@ -28,6 +28,8 @@ package {
 		public static const TILE_SW:String = "tile_sw";
 		public static const TILE_W:String = "tile_w";
 
+		public static const MUTE_KEY:String = "m";
+
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
 		}
