@@ -9,15 +9,15 @@ package {
 	import flash.media.*;
 
 	import Character;
-	import Level;
 	import tiles.*;
 	import Util;
 
 	public class Game extends Sprite {
-		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
-
 		[Embed(source='assets/bgm/ludum32.mp3')] public var bgm:Class;
 		public var mixer:Mixer;
+
+		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
+		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
 
 		// Tile textures
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
@@ -53,14 +53,8 @@ package {
 
 			tileTextures = setupTextures();
 
-			var t:Tile = new Tile(1, 1, true, true, true, true, tileTextures[Util.TILE_NSEW]);
-			world.addChild(t);
-
-			mixer = new Mixer(new Array(new bgm()));
-
-			// Load an empty level for now.
-			var level:Level = new Level(new Array(), 0);
-			addChild(level);
+			var f:Floor = new Floor(new floor0(), tileTextures, 0);
+			world.addChild(f);
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
