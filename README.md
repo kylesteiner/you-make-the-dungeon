@@ -19,4 +19,11 @@ characterXStart characterYStart
 TileType1   x   y   nOpen?  sOpen?  eOpen?  wOpen?  additionalParams...
 ...
 ...
+
+The valid tile types are:
+*entry
+*exit
+*empty
+*none
+
 ```
