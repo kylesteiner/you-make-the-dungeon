@@ -22,7 +22,7 @@ package {
 		public function Level(grid:Array, xp:int) {
 			initialGrid = grid;
 			initialXp = xp;
-			grid = new Array(grid.length);
+			this.grid = new Array(grid.length);
 			resetLevel();
 		}
 
