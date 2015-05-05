@@ -1,10 +1,11 @@
-// Level.as
+// Floor.as
 // Stores the state of a single floor.
 
 package {
 	import flash.display.Sprite;
 	import starling.core.Starling;
 	import flash.net.*;
+	import flash.utils.*;
 	import starling.events.*;
 	import starling.textures.*;
 
@@ -26,20 +27,23 @@ package {
 		private var initialX:int;
 		private var initialY:int;
 
+		private var tileTextures:Dictionary;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
-		public function Floor(floorData:String, xp:int) {
+		public function Floor(floorData:String, textureDict:Dictionary, xp:int) {
 			super();
 
 			initialXp = xp;
+			tileTextures = textureDict;
 
 			var readFrom:URLRequest = new URLRequest(floorData);
 			var floorLoader:URLLoader = new URLLoader();
-			floorLoader.load(readFrom);
-			floorLoader.addEventListener(Event.COMPLETE, constructFloor);
+			//floorLoader.load(readFrom);
+			//floorLoader.addEventListener(Event.COMPLETE, constructFloor);
 
-			grid = new Array(initialGrid.length);
-			resetFloor();
+			//grid = new Array(initialGrid.length);
+			//resetFloor();
 		}
 
 		// Resets the character and grid state to their initial values.
@@ -97,6 +101,7 @@ package {
 			var initTile:Tile;
 			var tX:int; var tY:int;
 			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
+			var textureString:String;
 			var tTexture:Texture;
 			var tileData:Array = new Array();
 
@@ -109,11 +114,14 @@ package {
 				tS = (lineData[4] == "1") ? true : false;
 				tE = (lineData[5] == "1") ? true : false;
 				tW = (lineData[6] == "1") ? true : false;
-				//tTexture = ?
+				textureString = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") +
+				 				(tE ? "e" : "") + (tW ? "w" : "");
+				tTexture = tileTextures[textureString];
 
 				// TODO: determine type of Tile to instantiate here
 				// 		 and add it to tileData
-				//initTile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
+				initTile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
+				tileData.push(initTile);
 			}
 
 			// put tileData's tiles into a grid
