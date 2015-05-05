@@ -11,6 +11,7 @@ package {
 
 	import Character;
 	import tiles.*;
+	import TileHud;
 	import Util;
 
 	public class Game extends Sprite {
@@ -40,7 +41,9 @@ package {
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
+		[Embed(source='floortiles/floor0.txt', mimeType="application/octet-stream")] public var tiles0:Class;
 
+		
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var mixer:Mixer;
@@ -65,7 +68,10 @@ package {
 			world.addChild(cursorHighlight);
 
 			mixer = new Mixer(new Array(new bgm()));
-
+			
+			var ts:TileHud = new TileHud(new tiles0(), textures);
+			addChild(ts);
+			
 			var f:Floor = new Floor(new floor0(), textures, 0);
 			world.addChild(f);
 

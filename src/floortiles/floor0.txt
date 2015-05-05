@@ -1,0 +1,3 @@
+health	0
+blank	100
+monster	0

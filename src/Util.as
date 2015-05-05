@@ -3,6 +3,7 @@
 
 package {
 	public class Util {
+		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const PIXELS_PER_TILE:int = 32;
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
@@ -56,6 +57,11 @@ package {
 
 		public static function real_to_grid(coordinate:int):int {
 			return coordinate / PIXELS_PER_TILE;
+		}
+		
+		// Returns a random int between the min and max.
+		public static function randomRange(min:int, max:int):int {
+			return min + (max - min) * Math.random();
 		}
 	}
 }
