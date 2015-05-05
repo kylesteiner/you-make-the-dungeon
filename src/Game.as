@@ -15,6 +15,7 @@ package {
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var bg:Class;
+		[Embed(source='assets/backgrounds/static_bg.png')] private var static_bg:Class; //Credit to STU_WilliamHewitt for placeholder
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
@@ -50,6 +51,10 @@ package {
 		public function Game() {
 			Mouse.hide();
 
+			var staticBg:Texture = Texture.fromBitmap(new static_bg());
+			var staticImage:Image =new Image(staticBg);
+			addChild(staticImage);
+
 			world = new Sprite();
 			addChild(world);
 
@@ -75,8 +80,10 @@ package {
 
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(stage);
-			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x));
-			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y));
+			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
+			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
+			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
+			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
 
 			// TODO: make it so cursorImage can move outside of the world
 			cursorImage.x = touch.globalX;
