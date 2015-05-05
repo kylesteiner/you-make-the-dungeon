@@ -9,15 +9,15 @@ package {
 	import flash.media.*;
 
 	import Character;
-	import Level;
 	import tiles.*;
 	import Util;
 
 	public class Game extends Sprite {
-		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
-
 		[Embed(source='assets/bgm/ludum32.mp3')] public var bgm:Class;
 		public var mixer:Mixer;
+
+		[Embed(source='assets/backgrounds/background.png')] public var bg:Class;
+		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
 
 		// Tile textures
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
@@ -41,26 +41,48 @@ package {
 		// See Util.as for keys to this dictionary.
 		private var tileTextures:Dictionary;
 
+		private var world:Sprite;
+
 		public function Game() {
+			world = new Sprite();
+			addChild(world);
+
 			var texture:Texture = Texture.fromBitmap(new bg());
 			var image:Image = new Image(texture);
-			addChild(image);
+			world.addChild(image);
 
 			tileTextures = setupTextures();
 
-			mixer = new Mixer(new Array(new bgm()));
-
-			// Load an empty level for now.
-			var level:Level = new Level(new Array(), 0);
-			addChild(level);
+			var f:Floor = new Floor(new floor0(), tileTextures, 0);
+			world.addChild(f);
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
 			// TODO: set up dictionary of charCode -> callback?
-			if(String.fromCharCode(event.charCode) == Util.MUTE_KEY) {
+			var input:String = String.fromCharCode(event.charCode);
+			if(input == Util.MUTE_KEY) {
 				mixer.togglePlay();
+			}
+
+			// TODO: add bounds that the camera cannot go beyond,
+			//		 and limit what contexts the camera movement
+			//		 can be used in.
+			if(input == Util.UP_KEY) {
+				world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
+			}
+
+			if(input == Util.DOWN_KEY) {
+				world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
+			}
+
+			if(input == Util.LEFT_KEY) {
+				world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
+			}
+
+			if(input == Util.RIGHT_KEY) {
+				world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
 			}
 		}
 

@@ -2,19 +2,18 @@
 // In-game representation of the character.
 
 package {
-
 	import starling.core.Starling;
 	import starling.display.*;
 	import starling.events.*;
 	import starling.textures.*; // TODO: Remove
 	import flash.ui.Keyboard;
-	
+
 	import tiles.*;
 	import Util;
 
 	public class Character extends Sprite {
 		[Embed(source='/assets/entities/hero.png')] private static const hero:Class; // TODO: Remove
-		
+
 		public static const BASE_HP:int = 5;
 
 		// Character attributes
@@ -40,7 +39,7 @@ package {
 			attack = level;
 			maxHp = getMaxHp();
 			currentHp = maxHp;
-			
+
 			var texture:Texture = Texture.fromBitmap(new hero()); // TODO: Remove
 			var image:Image = new Image(texture);
 			addChild(image);
@@ -86,7 +85,7 @@ package {
 				move(Util.EAST)
 			}
 		}
-		
+
 		private function onEnterFrame(e:Event):void {
 			if (moving) {
 				if (x > destX) {

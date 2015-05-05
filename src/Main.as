@@ -1,7 +1,6 @@
 package {
 	import flash.display.Sprite;
 	import starling.core.Starling;
-	import Level;
 
 	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
@@ -13,5 +12,4 @@ package {
 			_starling.start();
 		}
 	}
-
 }
