@@ -85,8 +85,8 @@ package {
 			return textures;
 		}
 
-		private function setupSFX():Dictionary {
+		//private function setupSFX():Dictionary {
 			// TODO: make an sfx dictionary
-		}
+		//}
 	}
 }
