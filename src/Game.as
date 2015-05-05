@@ -7,6 +7,7 @@ package {
 	import starling.text.TextField;
 
 	import Character;
+	import Level;
 	import tiles.*;
 	import Util;
 
@@ -17,22 +18,22 @@ package {
 		[Embed(source='/assets/backgrounds/background.png')] public var bg:Class;
 
 		// Tile textures
-		[Embed(source='/assets/tiles/small/tile_e.png')] private static const tile_e:Class;
-		[Embed(source='/assets/tiles/small/tile_ew.png')] private static const tile_ew:Class;
-		[Embed(source='/assets/tiles/small/tile_n.png')] private static const tile_n:Class;
-		[Embed(source='/assets/tiles/small/tile_ne.png')] private static const tile_ne:Class;
-		[Embed(source='/assets/tiles/small/tile_new.png')] private static const tile_new:Class;
-		[Embed(source='/assets/tiles/small/tile_none.png')] private static const tile_none:Class;
-		[Embed(source='/assets/tiles/small/tile_ns.png')] private static const tile_ns:Class;
-		[Embed(source='/assets/tiles/small/tile_nse.png')] private static const tile_nse:Class;
-		[Embed(source='/assets/tiles/small/tile_nsew.png')] private static const tile_nsew:Class;
-		[Embed(source='/assets/tiles/small/tile_nsw.png')] private static const tile_nsw:Class;
-		[Embed(source='/assets/tiles/small/tile_nw.png')] private static const tile_nw:Class;
-		[Embed(source='/assets/tiles/small/tile_s.png')] private static const tile_s:Class;
-		[Embed(source='/assets/tiles/small/tile_se.png')] private static const tile_se:Class;
-		[Embed(source='/assets/tiles/small/tile_sew.png')] private static const tile_sew:Class;
-		[Embed(source='/assets/tiles/small/tile_sw.png')] private static const tile_sw:Class;
-		[Embed(source='/assets/tiles/small/tile_w.png')] private static const tile_w:Class;
+		[Embed(source='/assets/tiles/tile_e.png')] private static const tile_e:Class;
+		[Embed(source='/assets/tiles/tile_ew.png')] private static const tile_ew:Class;
+		[Embed(source='/assets/tiles/tile_n.png')] private static const tile_n:Class;
+		[Embed(source='/assets/tiles/tile_ne.png')] private static const tile_ne:Class;
+		[Embed(source='/assets/tiles/tile_new.png')] private static const tile_new:Class;
+		[Embed(source='/assets/tiles/tile_none.png')] private static const tile_none:Class;
+		[Embed(source='/assets/tiles/tile_ns.png')] private static const tile_ns:Class;
+		[Embed(source='/assets/tiles/tile_nse.png')] private static const tile_nse:Class;
+		[Embed(source='/assets/tiles/tile_nsew.png')] private static const tile_nsew:Class;
+		[Embed(source='/assets/tiles/tile_nsw.png')] private static const tile_nsw:Class;
+		[Embed(source='/assets/tiles/tile_nw.png')] private static const tile_nw:Class;
+		[Embed(source='/assets/tiles/tile_s.png')] private static const tile_s:Class;
+		[Embed(source='/assets/tiles/tile_se.png')] private static const tile_se:Class;
+		[Embed(source='/assets/tiles/tile_sew.png')] private static const tile_sew:Class;
+		[Embed(source='/assets/tiles/tile_sw.png')] private static const tile_sw:Class;
+		[Embed(source='/assets/tiles/tile_w.png')] private static const tile_w:Class;
 
 		// Map String -> Texture
 		// See Util.as for keys to this dictionary.
@@ -45,39 +46,9 @@ package {
 
 			tileTextures = setupTextures();
 
-			textField = new TextField(100, 100, "Welcome to Starling!");
-			textField.x = 0;
-			textField.y = 200;
-			addChild(textField);
-
-			t = new Tile(3, 3, true, true, true, true, tileTextures[Util.TILE_NSEW]);
-			addChild(t);
-
-			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			addEventListener(TouchEvent.TOUCH, onMouseDown);
-		}
-
-		public function onEnterFrame(event:EnterFrameEvent):void {
-			return;
-		}
-
-		public function onKeyDown(event:KeyboardEvent):void {
-			//var touch:Touch = event.getTouch(stage);
-
-			//if(touch && touch.phase == TouchPhase.BEGAN) {
-			textField.text = "hi";
-			//}
-		}
-
-		public function onMouseDown(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(stage);
-			textField.text = "bye";
-			if (touch && touch.phase == TouchPhase.BEGAN) {
-				textField.x = touch.globalX;
-				textField.y = touch.globalY;
-			}
-
+			// Load an empty level for now.
+			var level:Level = new Level(new Array(), 0);
+			addChild(level);
 		}
 
 		private function setupTextures():Dictionary {
