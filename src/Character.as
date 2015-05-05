@@ -4,13 +4,17 @@
 package {
 
 	import starling.core.Starling;
-	import starling.display.Sprite;
+	import starling.display.*;
 	import starling.events.*;
-
+	import starling.textures.*; // TODO: Remove
+	import flash.ui.Keyboard;
+	
 	import tiles.*;
 	import Util;
 
 	public class Character extends Sprite {
+		[Embed(source='/assets/entities/hero.png')] private static const hero:Class; // TODO: Remove
+		
 		public static const BASE_HP:int = 5;
 
 		// Character attributes
@@ -27,7 +31,7 @@ package {
 
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, experience:int) {
+		public function Character(g_x:int, g_y:int, experience:int/*, texture:Texture*/) {
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
@@ -36,8 +40,13 @@ package {
 			attack = level;
 			maxHp = getMaxHp();
 			currentHp = maxHp;
+			
+			var texture:Texture = Texture.fromBitmap(new hero()); // TODO: Remove
+			var image:Image = new Image(texture);
+			addChild(image);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		// Begins moving the Character from one tile to the next.
@@ -51,21 +60,33 @@ package {
 
 			moving = true;
 
-			if (direction == Util.NORTH && y + Util.PIXELS_PER_TILE < stage.stageHeight) {
+			if (direction == Util.NORTH && y - Util.PIXELS_PER_TILE > 0) {
 				destX = x;
-				destY += Util.PIXELS_PER_TILE;
+				destY -= Util.PIXELS_PER_TILE;
 			} else if (direction == Util.EAST && x + Util.PIXELS_PER_TILE < stage.stageWidth) {
 				destX += Util.PIXELS_PER_TILE;
 				destY = y;
-			} else if (direction == Util.SOUTH && y - Util.PIXELS_PER_TILE > 0) {
+			} else if (direction == Util.SOUTH && y + Util.PIXELS_PER_TILE < stage.stageHeight) {
 				destX = x;
-				destY -= Util.PIXELS_PER_TILE;
+				destY += Util.PIXELS_PER_TILE;
 			} else if (direction == Util.WEST && x - Util.PIXELS_PER_TILE > 0) {
 				destX -= Util.PIXELS_PER_TILE;
 				destY = y;
 			}
 		}
 
+		private function onKeyDown(e:KeyboardEvent):void {
+			if (e.keyCode == Keyboard.UP) {
+				move(Util.NORTH)
+			} else if (e.keyCode == Keyboard.DOWN) {
+				move(Util.SOUTH)
+			} else if (e.keyCode == Keyboard.LEFT) {
+				move(Util.WEST)
+			} else if (e.keyCode == Keyboard.RIGHT) {
+				move(Util.EAST)
+			}
+		}
+		
 		private function onEnterFrame(e:Event):void {
 			if (moving) {
 				if (x > destX) {
