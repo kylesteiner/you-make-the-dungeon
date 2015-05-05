@@ -13,7 +13,8 @@ package {
 		public static const WEST:int = 3;
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
-		// Keys to the dictionary of tile textures.
+		// Keys to the dictionary of  textures.
+		public static const HERO:String = "hero";
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
 		public static const TILE_N:String = "tile_n";

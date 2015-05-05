@@ -33,7 +33,7 @@ package {
 		private var initialX:int;
 		private var initialY:int;
 
-		private var tileTextures:Dictionary;
+		private var textures:Dictionary;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -42,7 +42,7 @@ package {
 							  xp:int) {
 			super();
 			initialXp = xp;
-			tileTextures = textureDict;
+			textures = textureDict;
 			parseFloorData(floorData);
 			resetFloor();
 		}
@@ -82,7 +82,9 @@ package {
 			if (char) {
 				char.removeFromParent();
 			}
-			char = new Character(initialX, initialY, initialXp);
+			char = new Character(
+					initialX, initialY, initialXp, textures[Util.HERO]);
+			addChild(char);
 		}
 
 		// Returns a 2D array with the given dimensions.
@@ -118,7 +120,8 @@ package {
 			var characterData:Array = floorData[2].split("\t");
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
-			char = new Character(initialX, initialY, initialXp);
+			char = new Character(
+					initialX, initialY, initialXp, textures[Util.HERO]);
 
 			// Parse all of the tiles.
 			var lineData:Array;
@@ -146,7 +149,7 @@ package {
 				tW = (lineData[6] == "1") ? true : false;
 				textureString = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
 				textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
-				tTexture = tileTextures[textureString];
+				tTexture = textures[textureString];
 				trace("Building tile with string " + textureString);
 
 				// TODO: determine type of Tile to instantiate here
