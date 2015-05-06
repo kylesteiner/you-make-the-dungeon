@@ -1,10 +1,11 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
-	import starling.core.Starling;
-	import starling.display.*;
-	import starling.textures.*;
+	import starling.display.Image;
+	import starling.display.Sprite;
+	import starling.textures.Texture;
 
+	import Character;
 	import Util;
 
 	public class Tile extends Sprite {

@@ -34,4 +34,5 @@ TileType	percentChance
 * empty
 * health - health restored (int)
 * enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
+* objective - name (string), names of prerequsite objectives... (strings)
 * none

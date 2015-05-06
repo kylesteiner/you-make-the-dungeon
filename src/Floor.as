@@ -25,6 +25,11 @@ package {
 		public var char:Character;
 		public var floorName:String;
 
+		// Stores the state of objective tiles. If the tile has been visited, the value is
+		// true, otherwise it is false.
+		// Map string (objective key) -> boolean (state)
+		public var objectiveState:Dictionary;
+
 		private var initialGrid:Array;
 		private var initialXp:int;
 
@@ -45,6 +50,8 @@ package {
 			super();
 			initialXp = xp;
 			textures = textureDict;
+			objectiveState = new Dictionary();
+
 			parseFloorData(floorData);
 
 			resetFloor();
@@ -53,6 +60,7 @@ package {
 			// don't have to register an event listener on every child class.
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
 			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
+			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
 
 		// Resets the character and grid state to their initial values.
@@ -86,13 +94,20 @@ package {
 				}
 			}
 
-			// Remove the character from the display tree.
+			// Remove the character from the display tree and create a new one to reset
+			// its state.
 			if (char) {
 				char.removeFromParent();
 			}
 			char = new Character(
 					initialX, initialY, initialXp, textures[Util.HERO]);
 			addChild(char);
+
+			// Reset the objective state.
+			for (var k:Object in objectiveState) {
+				var key:String = String(k);
+				objectiveState[key] = false;
+			}
 		}
 
 		// Returns a 2D array with the given dimensions.
@@ -168,13 +183,21 @@ package {
 				} else if (tType == "health") {
 					var tHealth:int = Number(lineData[7]);
 					tileData.push(new HealingTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.HEALING], tHealth));
-				} else if (tType =="enemy") {
+				} else if (tType == "enemy") {
 					var eName:String = lineData[7];
 					var eLvl:int = Number(lineData[8]);
 					var eHp:int = Number(lineData[9]);
 					var eAtk:int = Number(lineData[10]);
 					var eReward:int = Number(lineData[11]);
 					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.MONSTER_1], eName, eLvl, eHp, eAtk, eReward));
+				} else if (tType == "objective") {
+					var oName:String = lineData[7];
+					var prereqs:Array = new Array();
+					for (j = 8; j < lineData.length; j++) {
+						prereqs.push(lineData[j]);
+					}
+					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.KEY], oName, prereqs));
+					objectiveState[oName] = false;
 				}
 			}
 
@@ -201,6 +224,14 @@ package {
 			t.x = 100
 			t.y = 200;
 			addChild(t);
+		}
+
+		// Called when the character moves into an objective tile. Updates objectiveState
+		// to mark the tile as visited.
+		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
+		private function onObjCompleted(e:TileEvent):void {
+			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
+			objectiveState[t.objKey] = true;
 		}
 	}
 }
