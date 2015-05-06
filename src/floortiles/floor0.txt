@@ -1,3 +1,3 @@
-health	0
 blank	100
-monster	0
+enemy	0
+health	0

@@ -157,9 +157,7 @@ package {
 				tS = (lineData[4] == "1") ? true : false;
 				tE = (lineData[5] == "1") ? true : false;
 				tW = (lineData[6] == "1") ? true : false;
-				textureString = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
-				textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
-				tTexture = textures[textureString];
+				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
 				if (tType == "empty") {
 					tileData.push(new Tile(tX, tY, tN, tS, tE, tW, tTexture));

@@ -2,9 +2,13 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
+	import flash.display3D.textures.Texture;
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
+		
+		public static const HUD_PAD_TOP:int = 4;
+		public static const HUD_PAD_LEFT:int = 8;
 		
 		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const PIXELS_PER_TILE:int = 32;
@@ -72,6 +76,13 @@ package {
 		// Returns a random int between the min and max.
 		public static function randomRange(min:int, max:int):int {
 			return min + (max - min) * Math.random();
+		}
+		
+		//
+		public static function getTextureString(tN:Boolean, tS:Boolean, tE:Boolean, tW:Boolean):String {
+			var textureString:String = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
+			textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
+			return textureString;
 		}
 	}
 }
