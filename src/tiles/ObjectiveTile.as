@@ -34,5 +34,9 @@ package tiles {
             removeChild(objImage, true);
             dispatchEvent(new TileEvent(TileEvent.OBJ_COMPLETED, grid_x, grid_y, c));
         }
+
+        override public function reset():void {
+            addChild(objImage);
+        }
     }
 }

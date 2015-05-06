@@ -89,6 +89,7 @@ package {
 					grid[i][j] = initialGrid[i][j];
 					if(grid[i][j]) {
 						var t:Tile = grid[i][j];
+						t.reset();
 						addChild(t);
 					}
 				}

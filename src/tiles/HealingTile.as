@@ -30,10 +30,16 @@ package tiles {
 				return;
 			}
 			used = true;
+			removeChild(healthImage);
 			c.currentHp += health;
 			if (c.currentHp > c.maxHp) {
 				c.currentHp = c.maxHp;
 			}
+		}
+
+		override public function reset():void {
+			addChild(healthImage);
+			used = false;
 		}
 	}
 }
