@@ -6,6 +6,7 @@ package {
 	import starling.textures.*;
 	import starling.text.TextField;
 
+	import flash.utils.ByteArray;
 	import flash.media.*;
 	import flash.ui.Mouse;
 
@@ -13,12 +14,14 @@ package {
 	import tiles.*;
 	import TileHud;
 	import Util;
+	import Menu;
 
 	public class Game extends Sprite {
-		[Embed(source='assets/backgrounds/background.png')] private var bg:Class;
-		[Embed(source='assets/backgrounds/static_bg.png')] private var static_bg:Class; //Credit to STU_WilliamHewitt for placeholder
+		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
+		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
+		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
+		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
-		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
@@ -27,6 +30,8 @@ package {
 		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
 		[Embed(source='assets/entities/hero.png')] private static const entity_hero:Class;
 		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
+		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
+		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
 		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
 		[Embed(source='assets/icons/reset.png')] private static const icon_reset:Class;
@@ -52,53 +57,121 @@ package {
 		
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
+		private var muteButton:Clickable;
+		private var resetButton:Clickable;
+		private var runButton:Clickable;
+		private var tileHud:TileHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
+		private var staticBackgroundImage:Image;
 		private var world:Sprite;
+		private var menuWorld:Sprite;
 		private var currentFloor:Floor;
+		private var currentMenu:Menu;
+		private var isMenu:Boolean;
 
 		public function Game() {
 			Mouse.hide();
 
 			textures = setupTextures();
-			mixer = new Mixer(new Array(new bgm()));
+			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
 
-			var staticBg:Texture = Texture.fromBitmap(new static_bg());
-			var staticImage:Image =new Image(staticBg);
-			addChild(staticImage);
-
-			world = new Sprite();
-			addChild(world);
-
-			var texture:Texture = Texture.fromBitmap(new bg());
-			var image:Image = new Image(texture);
-			world.addChild(image);
-
-			currentFloor = new Floor(new floor0(), textures, 0);
-			world.addChild(currentFloor);
-
-			var muteButton:Clickable = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
-			addChild(muteButton);
-
-			var resetButton:Clickable = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
-			addChild(resetButton);
-
-			var runButton:Clickable = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
-			addChild(runButton);
-
-			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
-			cursorHighlight.touchable = false;
-			world.addChild(cursorHighlight);
-
-			var ts:TileHud = new TileHud(new tiles0(), textures);
-			addChild(ts);
+			var staticBg:Texture = Texture.fromBitmap(new static_background());
+			staticBackgroundImage = new Image(staticBg);
+			addChild(staticBackgroundImage);
 			
+			initializeFloorWorld();
+			initializeMenuWorld();
+
 			cursorImage = new Image(textures[Util.ICON_CURSOR]);
 			cursorImage.touchable = false;
 			addChild(cursorImage);
 
+			isMenu = false;
+			createMainMenu();
+
+			// Make sure the cursor stays on the top level of the drawtree.
+			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
+
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
+		}
+
+		private function initializeFloorWorld():void {
+			world = new Sprite();
+			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
+			muteButton = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
+			resetButton = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
+			runButton = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+			
+			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
+			cursorHighlight.touchable = false;
+			world.addChild(cursorHighlight);
+		}
+
+		private function initializeMenuWorld():void {
+			menuWorld = new Sprite();
+			menuWorld.addChild(new Image(Texture.fromBitmap(new grid_background())));
+		}
+
+		private function prepareSwap():void {
+			if(isMenu) {
+				removeChild(menuWorld);
+				removeChild(currentMenu);
+			} else {
+				world.removeChild(currentFloor);
+				removeChild(world);
+				// mute button should always be present
+				// removeChild(muteButton);
+				removeChild(resetButton);
+				removeChild(runButton);
+				removeChild(tileHud);
+			}
+		}
+
+		public function switchToMenu(newMenu:Menu):void {
+			prepareSwap();
+
+			isMenu = true;
+			currentMenu = newMenu;
+			addChild(currentMenu);
+			addChild(muteButton);
+		}
+
+		public function switchToFloor(newFloor:ByteArray):void {
+			prepareSwap();
+
+			isMenu = false;
+
+			// TODO: find out how to pass in xp
+			currentFloor = new Floor(newFloor, textures, 0);
+			world.addChild(currentFloor);
+			world.addChild(cursorHighlight);
+			addChild(world);
+			// mute button should always be on top
+			addChild(muteButton);
+			addChild(resetButton);
+			addChild(runButton);
+			tileHud = new TileHud(new tiles0(), textures); // TODO: Allow multiple levels
+			addChild(tileHud);
+		}
+
+		public function createMainMenu():void {
+			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", "Bebas", Util.MEDIUM_FONT_SIZE));
+			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", "Bebas", Util.MEDIUM_FONT_SIZE));
+			switchToMenu(new Menu(new Array(startButton, creditsButton)));
+		}
+
+		public function createFloorSelect():void {
+			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 0", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor0Button.addParameter(new floor0());
+			switchToMenu(new Menu(new Array(floor0Button)));
+		}
+
+		public function createCredits():void {
+			var startButton:Clickable = new Clickable(256, 192, createMainMenu, new TextField(128, 40, "BACK", "Bebas", Util.MEDIUM_FONT_SIZE));
+			var creditsLine:TextField = new TextField(256, 256, "THANKS", "Bebas", Util.LARGE_FONT_SIZE);
+			switchToMenu(new Menu(new Array(startButton)));
 		}
 
 		public function toggleMute():void {
@@ -111,6 +184,11 @@ package {
 
 		public function runFloor():void {
 			// TODO: complete this function
+		}
+
+		private function onFrameBegin(event:EnterFrameEvent):void {
+			removeChild(cursorImage);
+			addChild(cursorImage);
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
@@ -154,6 +232,9 @@ package {
 
 		private function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
+			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
+			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
+
 			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
 			textures[Util.MONSTER_1] = Texture.fromEmbeddedAsset(entity_mon1);

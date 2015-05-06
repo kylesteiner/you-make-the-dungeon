@@ -15,6 +15,10 @@ package {
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
 
+		public static const LARGE_FONT_SIZE:int = 48;
+		public static const MEDIUM_FONT_SIZE:int = 32;
+		public static const SMALL_FONT_SIZE:int = 24;
+
 		public static const NORTH:int = 0;
 		public static const SOUTH:int = 1;
 		public static const EAST:int = 2;
@@ -25,6 +29,9 @@ package {
 		public static const HERO:String = "hero";
 		public static const HEALING:String = "icon_health";
 		public static const MONSTER_1:String = "monster_1";
+
+		public static const GRID_BACKGROUND:String = "grid_background";
+		public static const STATIC_BACKGROUND:String = "static_background";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";

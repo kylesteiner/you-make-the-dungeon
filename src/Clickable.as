@@ -9,11 +9,15 @@ package {
         public var textureImage:Image;
         public var baseImage:DisplayObject;
         public var callback:Function;
+        public var parameter:Object;
 
         public function Clickable(xPos:int, yPos:int, action:Function, baseDisplay:DisplayObject = null, baseTexture:Texture = null) {
                 super();
                 x = xPos;
                 y = yPos;
+                height = 480;
+                width = 640;
+                parameter = null;
 
                 if(baseDisplay) {
                     baseImage = baseDisplay;
@@ -35,9 +39,17 @@ package {
 			var touch:Touch = event.getTouch(stage);
 
             if(touch.phase == TouchPhase.BEGAN) {
-                callback();
+                if(parameter) {
+                    callback(parameter);
+                } else {
+                    callback();
+                }
             }
 		}
+
+        public function addParameter(param:Object):void {
+            parameter = param;
+        }
 
     }
 }
