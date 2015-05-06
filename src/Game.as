@@ -15,6 +15,8 @@ package {
 	import TileHud;
 	import Util;
 	import Menu;
+	//import cgs.logger.Logger;
+	import Logger;
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
@@ -76,7 +78,7 @@ package {
 		public function Game() {
 			Mouse.hide();
 			
-			var gid:unit = 115;
+			var gid:uint = 115;
 			var gname:String = "cgs_gc_YouMakeTheDungeon";
 			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
 			
@@ -158,7 +160,9 @@ package {
 			isMenu = false;
 
 			// TODO: find out how to pass in xp
-			currentFloor = new Floor(newFloor, textures, 0);
+			currentFloor = new Floor(newFloor, textures, 0, logger);
+			// the logger doesn't like 0 based indexing.
+			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } ); 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -167,7 +171,6 @@ package {
 			addChild(resetButton);
 			addChild(runButton);
 			tileHud = new TileHud(new tiles0(), textures); // TODO: Allow multiple levels
-			logger.logLevelStart(0, { "characterLevel":1 } ); // TODO: figure out how to get charater level 
 			addChild(tileHud);
 		}
 
@@ -201,6 +204,7 @@ package {
 
 		public function runFloor():void {
 			// TODO: complete this function
+			// TODO: logger.logAction(3, null);
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {

@@ -14,6 +14,7 @@ package {
 	import Character;
 	import tiles.*;
 	import Util;
+	import Logger;
 
 	public class Floor extends Sprite {
 		// Number of lines at the beginning of floordata files that are
@@ -41,13 +42,18 @@ package {
 		private var initialY:int;
 
 		private var textures:Dictionary;
+		
+		// logger
+		private var logger:Logger;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
 							  textureDict:Dictionary,
-							  xp:int) {
+							  xp:int,
+							  loggerRef:Logger = null) {
 			super();
+			logger = loggerRef;
 			initialXp = xp;
 			textures = textureDict;
 			objectiveState = new Dictionary();
