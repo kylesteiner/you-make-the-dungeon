@@ -15,15 +15,21 @@ package {
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var bg:Class;
+
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
+
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
 		[Embed(source='assets/effects/hl_red.png')] private static const hl_red:Class;
 		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
+
 		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
 		[Embed(source='assets/entities/hero.png')] private static const entity_hero:Class;
+		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
+
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
+
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -115,7 +121,8 @@ package {
 			var textures:Dictionary = new Dictionary();
 			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
-			
+			textures[Util.MONSTER_1] = Texture.fromEmbeddedAsset(entity_mon1);
+
 			textures[Util.TILE_E] = Texture.fromEmbeddedAsset(tile_e);
 			textures[Util.TILE_EW] = Texture.fromEmbeddedAsset(tile_ew);
 			textures[Util.TILE_N] = Texture.fromEmbeddedAsset(tile_n);

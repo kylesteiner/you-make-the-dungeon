@@ -170,6 +170,13 @@ package {
 				} else if (tType == "health") {
 					var tHealth:int = Number(lineData[7]);
 					tileData.push(new HealingTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.HEALING], tHealth));
+				} else if (tType =="enemy") {
+					var eName:String = lineData[7];
+					var eLvl:int = Number(lineData[8]);
+					var eHp:int = Number(lineData[9]);
+					var eAtk:int = Number(lineData[10]);
+					var eReward:int = Number(lineData[11]);
+					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.MONSTER_1], eName, eLvl, eHp, eAtk, eReward));
 				}
 			}
 

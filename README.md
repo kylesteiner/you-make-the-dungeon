@@ -20,11 +20,12 @@ TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
 ...
 ...
 
-The valid tile types are:
+### Tile Types and Additional Parameters
 *entry
 *exit
 *empty
-*health (additional parameters: amount of health)
+*health - health restored (int)
+*enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
 *none
 
 ```
