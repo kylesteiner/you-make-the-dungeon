@@ -27,6 +27,8 @@ package {
 		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
 		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
+		[Embed(source='assets/icons/reset.png')] private static const icon_reset:Class;
+		[Embed(source='assets/icons/run.png')] private static const icon_run:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -50,6 +52,7 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var world:Sprite;
+		private var currentFloor:Floor;
 
 		public function Game() {
 			Mouse.hide();
@@ -68,11 +71,17 @@ package {
 			var image:Image = new Image(texture);
 			world.addChild(image);
 
-			var f:Floor = new Floor(new floor0(), textures, 0);
-			world.addChild(f);
+			currentFloor = new Floor(new floor0(), textures, 0);
+			world.addChild(currentFloor);
 
-			var c:Clickable = new Clickable(0, 480-32, playSound, null, textures[Util.ICON_MUTE]);
-			addChild(c);
+			var muteButton:Clickable = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
+			addChild(muteButton);
+
+			var resetButton:Clickable = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
+			addChild(resetButton);
+
+			var runButton:Clickable = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+			addChild(runButton);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -86,8 +95,16 @@ package {
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
-		public function playSound():void {
+		public function toggleMute():void {
 			mixer.togglePlay();
+		}
+
+		public function resetFloor():void {
+			currentFloor.resetFloor();
+		}
+
+		public function runFloor():void {
+			// TODO: complete this function
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
@@ -160,6 +177,8 @@ package {
 
 			textures[Util.ICON_CURSOR] = Texture.fromEmbeddedAsset(icon_cursor);
 			textures[Util.ICON_MUTE] = Texture.fromEmbeddedAsset(icon_mute);
+			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
+			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			return textures;
 		}
 

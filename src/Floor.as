@@ -56,7 +56,7 @@ package {
 		}
 
 		// Resets the character and grid state to their initial values.
-		private function resetFloor():void {
+		public function resetFloor():void {
 			var i:int; var j:int;
 
 			if (grid) {

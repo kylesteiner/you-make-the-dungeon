@@ -43,6 +43,8 @@ package {
 
 		public static const ICON_CURSOR:String = "icon_cursor";
 		public static const ICON_MUTE:String = "icon_mute";
+		public static const ICON_RESET:String = "icon_reset";
+		public static const ICON_RUN:String = "icon_run";
 
 		public static const MUTE_KEY:String = "m";
 		public static const UP_KEY:String = "w";
