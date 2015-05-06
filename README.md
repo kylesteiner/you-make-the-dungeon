@@ -21,6 +21,13 @@ TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
 ...
 ```
 
+Percent chance of drawing each tile (per floor) is tab-delineated, with the following structure:
+```
+TileType	percentChance
+...
+...
+```
+
 ### Tile Types and Additional Parameters
 * entry
 * exit
