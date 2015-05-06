@@ -6,10 +6,10 @@ package {
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
-		
+
 		public static const HUD_PAD_TOP:int = 4;
 		public static const HUD_PAD_LEFT:int = 8;
-		
+
 		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const PIXELS_PER_TILE:int = 32;
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
@@ -25,9 +25,10 @@ package {
 		public static const WEST:int = 3;
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
-		// Keys to the dictionary of  textures.
+		// Keys to the dictionary of textures.
 		public static const HERO:String = "hero";
-		public static const HEALING:String = "icon_health";
+		public static const HEALING:String = "health";
+		public static const KEY:String = "key";
 		public static const MONSTER_1:String = "monster_1";
 
 		public static const GRID_BACKGROUND:String = "grid_background";
@@ -79,12 +80,12 @@ package {
 		public static function real_to_grid(coordinate:int):int {
 			return coordinate / PIXELS_PER_TILE;
 		}
-		
+
 		// Returns a random int between the min and max.
 		public static function randomRange(min:int, max:int):int {
 			return min + (max - min) * Math.random();
 		}
-		
+
 		//
 		public static function getTextureString(tN:Boolean, tS:Boolean, tE:Boolean, tW:Boolean):String {
 			var textureString:String = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");

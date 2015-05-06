@@ -29,6 +29,7 @@ package {
 		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
 		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
 		[Embed(source='assets/entities/hero.png')] private static const entity_hero:Class;
+		[Embed(source='assets/entities/key.png')] private static const entity_key:Class;
 		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
@@ -54,7 +55,7 @@ package {
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
 		[Embed(source='floortiles/floor0.txt', mimeType = "application/octet-stream")] public var tiles0:Class;
-		
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var muteButton:Clickable;
@@ -79,7 +80,7 @@ package {
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(staticBg);
 			addChild(staticBackgroundImage);
-			
+
 			initializeFloorWorld();
 			initializeMenuWorld();
 
@@ -103,7 +104,7 @@ package {
 			muteButton = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
 			resetButton = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
 			runButton = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
-			
+
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
 			world.addChild(cursorHighlight);
@@ -237,6 +238,7 @@ package {
 
 			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
+			textures[Util.KEY] = Texture.fromEmbeddedAsset(entity_key);
 			textures[Util.MONSTER_1] = Texture.fromEmbeddedAsset(entity_mon1);
 
 			textures[Util.TILE_E] = Texture.fromEmbeddedAsset(tile_e);
