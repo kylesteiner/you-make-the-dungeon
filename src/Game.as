@@ -18,7 +18,8 @@ package {
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
-		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
+		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
+		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
@@ -69,7 +70,7 @@ package {
 			Mouse.hide();
 
 			textures = setupTextures();
-			mixer = new Mixer(new Array(new bgm()));
+			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
 
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(staticBg);
