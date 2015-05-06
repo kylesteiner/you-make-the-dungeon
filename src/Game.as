@@ -24,6 +24,7 @@ package {
 		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
 		[Embed(source='assets/entities/hero.png')] private static const hero:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
+		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -51,6 +52,9 @@ package {
 		public function Game() {
 			Mouse.hide();
 
+			textures = setupTextures();
+			mixer = new Mixer(new Array(new bgm()));
+
 			var staticBg:Texture = Texture.fromBitmap(new static_bg());
 			var staticImage:Image =new Image(staticBg);
 			addChild(staticImage);
@@ -62,20 +66,26 @@ package {
 			var image:Image = new Image(texture);
 			world.addChild(image);
 
-			textures = setupTextures();
-
-			cursorImage = new Image(textures[Util.ICON_CURSOR]);
-			addChild(cursorImage);
-			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
-			world.addChild(cursorHighlight);
-
-			mixer = new Mixer(new Array(new bgm()));
-
 			var f:Floor = new Floor(new floor0(), textures, 0);
 			world.addChild(f);
 
+			var c:Clickable = new Clickable(0, 480-32, playSound, null, textures[Util.ICON_MUTE]);
+			addChild(c);
+
+			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
+			cursorHighlight.touchable = false;
+			world.addChild(cursorHighlight);
+
+			cursorImage = new Image(textures[Util.ICON_CURSOR]);
+			cursorImage.touchable = false;
+			addChild(cursorImage);
+
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
+		}
+
+		public function playSound():void {
+			mixer.togglePlay();
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
@@ -144,6 +154,7 @@ package {
 			textures[Util.TILE_HL_B] = Texture.fromEmbeddedAsset(hl_blue);
 
 			textures[Util.ICON_CURSOR] = Texture.fromEmbeddedAsset(icon_cursor);
+			textures[Util.ICON_MUTE] = Texture.fromEmbeddedAsset(icon_mute);
 			return textures;
 		}
 

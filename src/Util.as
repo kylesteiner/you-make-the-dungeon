@@ -39,6 +39,7 @@ package {
 		public static const TILE_HL_R:String = "hl_r";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
+		public static const ICON_MUTE:String = "icon_mute";
 
 		public static const MUTE_KEY:String = "m";
 		public static const UP_KEY:String = "w";
