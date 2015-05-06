@@ -54,7 +54,8 @@ package {
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
-		[Embed(source='floortiles/floor0.txt', mimeType = "application/octet-stream")] public var tiles0:Class;
+		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public var tiles0:Class;
+		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public var tiles1:Class;
 
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
