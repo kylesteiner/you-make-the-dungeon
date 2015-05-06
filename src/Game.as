@@ -75,31 +75,6 @@ package {
 			staticBackgroundImage = new Image(staticBg);
 			addChild(staticBackgroundImage);
 
-			// is this needed?
-
-			/*world = new Sprite();
-			addChild(world);
-
-			var texture:Texture = Texture.fromBitmap(new grid_background());
-			var image:Image = new Image(texture);
-			world.addChild(image);
-
-			currentFloor = new Floor(new floor0(), textures, 0);
-			world.addChild(currentFloor);*/
-
-			//muteButton = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
-			//addChild(muteButton);
-
-			//resetButton = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
-			//addChild(resetButton);
-
-			//runButton = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
-			//addChild(runButton);
-
-			/*cursorHighlight = new Image(textures[Util.TILE_HL_B]);
-			cursorHighlight.touchable = false;
-			world.addChild(cursorHighlight);*/
-
 			initializeFloorWorld();
 			initializeMenuWorld();
 
