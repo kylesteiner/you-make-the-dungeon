@@ -69,10 +69,22 @@ package {
 		private var currentFloor:Floor;
 		private var currentMenu:Menu;
 		private var isMenu:Boolean;
+		private var logger:Logger;
 
 		public function Game() {
 			Mouse.hide();
-
+			
+			var gid:unit = 115;
+			var gname:String = "cgs_gc_YouMakeTheDungeon";
+			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
+			
+			// this is the current version, we'll treat 0 as the debugging 
+			// version, and change this for each iteration on, back to 0
+			// for our own testing.
+			var cid:int = 0;
+			
+			logger = Logger.initialize(gid, gname, skey, cid, null);
+			
 			textures = setupTextures();
 			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
 
@@ -153,6 +165,7 @@ package {
 			addChild(resetButton);
 			addChild(runButton);
 			tileHud = new TileHud(new tiles0(), textures); // TODO: Allow multiple levels
+			logger.logLevelStart(0, { "characterLevel":1 } ); // TODO: figure out how to get charater level 
 			addChild(tileHud);
 		}
 
@@ -179,6 +192,8 @@ package {
 		}
 
 		public function resetFloor():void {
+			// TODO: keep track of tiles placed to put as value here
+			logger.logAction(8, {"numberOfTiles":0} );
 			currentFloor.resetFloor();
 		}
 
