@@ -15,6 +15,9 @@ package {
 
 		// Keys to the dictionary of  textures.
 		public static const HERO:String = "hero";
+		public static const HEALING:String = "icon_health";
+		public static const MONSTER_1:String = "monster_1";
+
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
 		public static const TILE_N:String = "tile_n";

@@ -2,11 +2,13 @@
 // Stores the state of a single floor.
 
 package {
-	import starling.core.Starling;
-	import starling.display.Sprite;
 	import flash.net.*;
 	import flash.utils.*;
+
+	import starling.core.Starling;
+	import starling.display.Sprite;
 	import starling.events.*;
+	import starling.text.TextField;
 	import starling.textures.*;
 
 	import Character;
@@ -44,7 +46,13 @@ package {
 			initialXp = xp;
 			textures = textureDict;
 			parseFloorData(floorData);
+
 			resetFloor();
+
+			// CHAR_EXITED events bubble up from Tile and Character, so we
+			// don't have to register an event listener on every child class.
+			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
+			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
 		}
 
 		// Resets the character and grid state to their initial values.
@@ -126,6 +134,7 @@ package {
 			// Parse all of the tiles.
 			var lineData:Array;
 			var initTile:Tile;
+			var tType:String;
 			var tX:int; var tY:int;
 			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
 			var textureString:String;
@@ -139,6 +148,7 @@ package {
 
 				lineData = floorData[i].split("\t");
 
+				tType = lineData[0];
 				tX = Number(lineData[1]);
 				tY = Number(lineData[2]);
 
@@ -150,18 +160,49 @@ package {
 				textureString = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
 				textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
 				tTexture = textures[textureString];
-				trace("Building tile with string " + textureString);
 
-				// TODO: determine type of Tile to instantiate here
-				// 		 and add it to tileData
-				initTile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
-				tileData.push(initTile);
+				if (tType == "empty") {
+					tileData.push(new Tile(tX, tY, tN, tS, tE, tW, tTexture));
+				} else if (tType == "entry") {
+					tileData.push(new EntryTile(tX, tY, tN, tS, tE, tW, tTexture));
+				} else if (tType == "exit") {
+					tileData.push(new ExitTile(tX, tY, tN, tS, tE, tW, tTexture));
+				} else if (tType == "health") {
+					var tHealth:int = Number(lineData[7]);
+					tileData.push(new HealingTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.HEALING], tHealth));
+				} else if (tType =="enemy") {
+					var eName:String = lineData[7];
+					var eLvl:int = Number(lineData[8]);
+					var eHp:int = Number(lineData[9]);
+					var eAtk:int = Number(lineData[10]);
+					var eReward:int = Number(lineData[11]);
+					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.MONSTER_1], eName, eLvl, eHp, eAtk, eReward));
+				}
 			}
 
 			// put tileData's tiles into a grid
 			for each (var tile:Tile in tileData) {
 				initialGrid[tile.grid_x][tile.grid_y] = tile;
 			}
+		}
+
+		// When a character arrives at a tile, it fires an event up to Floor.
+		// Find the tile it arrived at and call its handleChar() function.
+		private function onCharArrived(e:TileEvent):void {
+			var t:Tile = grid[e.grid_x][e.grid_y];
+			if (t) {
+				t.handleChar(e.char);
+			}
+		}
+
+		// Event handler for when a character arrives at an exit tile.
+		// The event chain goes: character -> floor -> tile -> floor.
+		private function onCharExited(e:TileEvent):void {
+			// TODO: Do actual win condition handling.
+			var t:TextField = new TextField(256, 32, "You won!", "Verdana", 20);
+			t.x = 100
+			t.y = 200;
+			addChild(t);
 		}
 	}
 }

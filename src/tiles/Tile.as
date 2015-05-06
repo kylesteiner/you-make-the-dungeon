@@ -40,22 +40,12 @@ package tiles {
 
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-
-			addEventListener(TileEvent.CHAR_ENTRY, onCharEnteredEvent);
 		}
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
 		public function handleChar(c:Character):void {
 			return;
-		}
-
-		// Helper for capturing character entry events. Only calls handleChar
-		// if this is the right tile.
-		private function onCharEnteredEvent(e:TileEvent):void {
-			if (e.grid_x == grid_x && e.grid_y == grid_y) {
-				handleChar(e.char);
-			}
 		}
 	}
 }
