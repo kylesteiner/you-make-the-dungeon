@@ -59,10 +59,10 @@ package {
 			if (direction == Util.NORTH && y - Util.PIXELS_PER_TILE > 0) {
 				destX = x;
 				destY -= Util.PIXELS_PER_TILE;
-			} else if (direction == Util.EAST && x + Util.PIXELS_PER_TILE < stage.stageWidth) {
+			} else if (direction == Util.EAST && x + Util.PIXELS_PER_TILE < Util.STAGE_WIDTH) {
 				destX += Util.PIXELS_PER_TILE;
 				destY = y;
-			} else if (direction == Util.SOUTH && y + Util.PIXELS_PER_TILE < stage.stageHeight) {
+			} else if (direction == Util.SOUTH && y + Util.PIXELS_PER_TILE < Util.STAGE_HEIGHT) {
 				destX = x;
 				destY += Util.PIXELS_PER_TILE;
 			} else if (direction == Util.WEST && x - Util.PIXELS_PER_TILE > 0) {

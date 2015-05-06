@@ -3,6 +3,9 @@
 
 package {
 	public class Util {
+		public static const STAGE_WIDTH:int = 640;
+		public static const STAGE_HEIGHT:int = 480;
+		
 		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const PIXELS_PER_TILE:int = 32;
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
@@ -46,6 +49,7 @@ package {
 		public static const ICON_MUTE:String = "icon_mute";
 		public static const ICON_RESET:String = "icon_reset";
 		public static const ICON_RUN:String = "icon_run";
+		public static const TILE_HUD:String = "tile_hud";
 
 		public static const MUTE_KEY:String = "m";
 		public static const UP_KEY:String = "w";

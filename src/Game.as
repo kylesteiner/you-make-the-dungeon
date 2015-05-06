@@ -17,6 +17,7 @@ package {
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var bg:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_bg:Class; //Credit to STU_WilliamHewitt for placeholder
+		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
@@ -47,8 +48,7 @@ package {
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
-		[Embed(source='floortiles/floor0.txt', mimeType="application/octet-stream")] public var tiles0:Class;
-
+		[Embed(source='floortiles/floor0.txt', mimeType = "application/octet-stream")] public var tiles0:Class;
 		
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
@@ -185,6 +185,7 @@ package {
 			textures[Util.ICON_MUTE] = Texture.fromEmbeddedAsset(icon_mute);
 			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
 			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
+			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			return textures;
 		}
 

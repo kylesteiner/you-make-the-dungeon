@@ -1,6 +1,6 @@
 package {
 	import starling.core.Starling;
-	import starling.display.Sprite;
+	import starling.display.*;
 	import flash.net.*;
 	import flash.utils.*;
 	import starling.events.*;
@@ -20,11 +20,16 @@ package {
 		
 		// TODO: Comment
 		public function TileHud(floorTiles:ByteArray,
-								   textureDict:Dictionary) {
+								textureDict:Dictionary) {
 			super();
 			textures = textureDict;
 			tileRates = new Array(100);
 			availableTiles = new Array(Util.NUM_AVAILABLE_TILES);
+			
+			var image:Image = new Image(textures[Util.TILE_HUD]);
+			x = (Util.STAGE_WIDTH - image.width) / 2;
+			y = 0;
+			addChild(image);
 			
 			parseFloorTiles(floorTiles);
 			for (var i:int = 0; i < Util.NUM_AVAILABLE_TILES; i++) {
