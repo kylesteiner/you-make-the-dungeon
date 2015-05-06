@@ -22,9 +22,9 @@ TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
 ```
 
 ### Tile Types and Additional Parameters
-*entry
-*exit
-*empty
-*health - health restored (int)
-*enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
-*none
+* entry
+* exit
+* empty
+* health - health restored (int)
+* enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
+* none
