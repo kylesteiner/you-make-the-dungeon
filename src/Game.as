@@ -51,6 +51,8 @@ package {
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
+		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public var floor1:Class;
+		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public var floor2:Class;
 
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
@@ -158,13 +160,19 @@ package {
 		public function createFloorSelect():void {
 			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 0", "Bebas", Util.MEDIUM_FONT_SIZE));
 			floor0Button.addParameter(new floor0());
-			switchToMenu(new Menu(new Array(floor0Button)));
+			var floor1Button:Clickable = new Clickable(256, 256, switchToFloor, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor1Button.addParameter(new floor1());
+			var floor2Button:Clickable = new Clickable(256, 320, switchToFloor, new TextField(128, 40, "Floor 2", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor2Button.addParameter(new floor2());
+			switchToMenu(new Menu(new Array(floor0Button, floor1Button, floor2Button)));
 		}
 
 		public function createCredits():void {
 			var startButton:Clickable = new Clickable(256, 192, createMainMenu, new TextField(128, 40, "BACK", "Bebas", Util.MEDIUM_FONT_SIZE));
-			var creditsLine:TextField = new TextField(256, 256, "THANKS", "Bebas", Util.LARGE_FONT_SIZE);
-			switchToMenu(new Menu(new Array(startButton)));
+			var creditsLine:TextField = new TextField(128, 64, "THANKS", "Bebas", Util.LARGE_FONT_SIZE);
+			creditsLine.x = 256;
+			creditsLine.y = 256;
+			switchToMenu(new Menu(new Array(startButton, creditsLine)));
 		}
 
 		public function toggleMute():void {
