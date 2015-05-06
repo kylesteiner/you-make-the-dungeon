@@ -13,10 +13,19 @@ w/a/s/d - move camera
 
 Floor data text files are tab-delineated, with the following structure:
 ```
-floorname
-floorXDimension floorYDimension
-characterXStart characterYStart
-TileType1   x   y   nOpen?  sOpen?  eOpen?  wOpen?  additionalParams...
+FloorName
+FloorXDimension	FloorYDimension
+CharInitialX	CharInitialY
+TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
 ...
 ...
+
+### Tile Types and Additional Parameters
+*entry
+*exit
+*empty
+*health - health restored (int)
+*enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
+*none
+
 ```
