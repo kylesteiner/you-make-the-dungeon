@@ -54,7 +54,7 @@ package {
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
 		[Embed(source='floortiles/floor0.txt', mimeType = "application/octet-stream")] public var tiles0:Class;
-		
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var muteButton:Clickable;
@@ -79,7 +79,7 @@ package {
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(staticBg);
 			addChild(staticBackgroundImage);
-			
+
 			initializeFloorWorld();
 			initializeMenuWorld();
 
@@ -103,7 +103,7 @@ package {
 			muteButton = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
 			resetButton = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
 			runButton = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
-			
+
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
 			world.addChild(cursorHighlight);
@@ -192,7 +192,12 @@ package {
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(stage);
+			var touch:Touch = event.getTouch(this);
+
+			if(!touch) {
+				return;
+			}
+
 			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
