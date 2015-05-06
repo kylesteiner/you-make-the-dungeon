@@ -45,8 +45,10 @@ package tiles {
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
-		public function handleChar(c:Character):void {
-			return;
-		}
+		public function handleChar(c:Character):void {}
+
+		// When the floor is reset, this function will be called on every tile.
+		// Override this function if the tile's state changes during gameplay.
+		public function reset():void {}
 	}
 }
