@@ -1,10 +1,11 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
-	import starling.core.Starling;
-	import starling.display.*;
-	import starling.textures.*;
+	import starling.display.Image;
+	import starling.display.Sprite;
+	import starling.textures.Texture;
 
+	import Character;
 	import Util;
 
 	public class Tile extends Sprite {
@@ -44,8 +45,10 @@ package tiles {
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
-		public function handleChar(c:Character):void {
-			return;
-		}
+		public function handleChar(c:Character):void {}
+
+		// When the floor is reset, this function will be called on every tile.
+		// Override this function if the tile's state changes during gameplay.
+		public function reset():void {}
 	}
 }

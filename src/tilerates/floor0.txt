@@ -1,0 +1,3 @@
+empty	40
+enemy	30
+healing	30

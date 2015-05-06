@@ -36,14 +36,16 @@ package {
         }
 
         private function onMouseEvent(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(stage);
+            var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
 
-            if(touch.phase == TouchPhase.BEGAN) {
-                if(parameter) {
-                    callback(parameter);
-                } else {
-                    callback();
-                }
+            if(!touch) {
+                return;
+            }
+
+            if(parameter) {
+                callback(parameter);
+            } else {
+                callback();
             }
 		}
 

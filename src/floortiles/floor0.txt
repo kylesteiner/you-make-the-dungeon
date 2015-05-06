@@ -1,3 +1,0 @@
-blank	100
-enemy	0
-health	0

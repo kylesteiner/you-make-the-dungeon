@@ -21,9 +21,9 @@ TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
 ...
 ```
 
-Percent chance of drawing each tile (per floor) is tab-delineated, with the following structure:
+Rate of drawing each tile (per floor) is tab-delineated, with the following structure:
 ```
-TileType	percentChance
+TileType	Rate
 ...
 ...
 ```
@@ -34,4 +34,5 @@ TileType	percentChance
 * empty
 * health - health restored (int)
 * enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
+* objective - name (string), names of prerequsite objectives... (strings)
 * none

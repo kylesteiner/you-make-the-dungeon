@@ -19,7 +19,7 @@ package {
 		private var availableTiles:Array;
 		
 		// TODO: Comment
-		public function TileHud(floorTiles:ByteArray,
+		public function TileHud(tileRatesBytes:ByteArray,
 								textureDict:Dictionary) {
 			super();
 			textures = textureDict;
@@ -31,7 +31,7 @@ package {
 			y = 0;
 			addChild(image);
 			
-			parseFloorTiles(floorTiles);
+			parseTileRates(tileRatesBytes);
 			for (var i:int = 0; i < Util.NUM_AVAILABLE_TILES; i++) {
 				availableTiles[i] = getNextTile(i);
 			}
@@ -45,39 +45,74 @@ package {
 		
 		// TODO: Comment
 		public function getNextTile(index:int):Tile {
-			var tile:Tile;
-			var tN:Boolean = (Util.randomRange(0, 2) == 0) ? false : true;
-			var tS:Boolean = (Util.randomRange(0, 2) == 0) ? false : true;
-			var tE:Boolean = (Util.randomRange(0, 2) == 0) ? false : true;
-			var tW:Boolean = (Util.randomRange(0, 2) == 0) ? false : true;
+			var tile:Tile; var tN:Boolean; var tS:Boolean; var tE:Boolean;
+			var tW:Boolean; var dir:int; var tTexture:Texture; var tType:String;
+			var t2Texture:Texture; var name:String; var level:int; var hp:int;
+			var attack:int; var xpReward:int;
+			
+			// 66% chance of having each direction open
+			tN = (Util.randomRange(0, 2) == 0) ? false : true;
+			tS = (Util.randomRange(0, 2) == 0) ? false : true;
+			tE = (Util.randomRange(0, 2) == 0) ? false : true;
+			tW = (Util.randomRange(0, 2) == 0) ? false : true;
 			if (!tN && !tS && !tE && !tW) {
-				var dir:int = Util.randomRange(0, 3)
+				dir = Util.randomRange(0, 3)
 				tN = (dir == Util.NORTH) ? true : false;
 				tS = (dir == Util.SOUTH) ? true : false;
 				tE = (dir == Util.EAST) ? true : false;
 				tW = (dir == Util.WEST) ? true : false;
 			}
-			var tTexture:Texture = textures[Util.getTextureString(tN, tS, tE, tW)];
-
-			// TODO: Enemy / Healing tiles
-			var tType:String = tileRates[Util.randomRange(0, 100)];
+			
+			// Create tile randomly influenced by tile rates for floor
+			tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
+			tType = tileRates[Util.randomRange(0, 100)];
 			if (tType == "enemy") {
-				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);//tile = new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture);
+				t2Texture = textures[Util.MONSTER_1];
+				name = "";
+				level = 1;
+				hp = 1;
+				attack = 1;
+				xpReward = 1;
+				tile = new EnemyTile(0, 0, tN, tS, tE, tW, tTexture,
+					t2Texture, name, level, hp, attack, xpReward);
 			} else if (tType == "healing") {
-				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);//tile = new HealingTile(tX, tY, tN, tS, tE, tW, tTexture);
+				t2Texture = textures[Util.HEALING],
+				hp = 1
+				tile = new HealingTile(0, 0, tN, tS, tE, tW, tTexture,
+					t2Texture, hp);
 			} else { // empty
 				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
 			}
-			tile.x = Util.HUD_PAD_LEFT + (Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
+			tile.x = Util.HUD_PAD_LEFT +
+				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
 			tile.y = Util.HUD_PAD_TOP;
 			addChild(tile);
 			return tile;
 		}
 		
 		// TODO: Comment
-		private function parseFloorTiles(floorTiles:ByteArray):void {
-			for (var i:int = 0; i < 100; i++) {
-				tileRates[i] = "blank"; // TODO: ACTUALLY PARSE FILE
+		private function parseTileRates(tileRatesBytes:ByteArray):void {
+			var i:int; var j:int; var end:int; var pos:int;
+			var lineData:Array; var tType:String; var tPercent:int;
+			
+			var tileRatesString:String =
+				tileRatesBytes.readUTFBytes(tileRatesBytes.length);
+
+			// Fill the tile rates array usng the given tile type and draw rate
+			var tileRatesArray:Array = tileRatesString.split("\n");
+			pos = 0;
+			for (i = 0; i < tileRatesArray.length; i++) {
+				if (tileRatesArray[i].length == 0) {
+					continue;
+				}
+				lineData = tileRatesArray[i].split("\t");
+				tType = lineData[0];
+				tPercent = lineData[1];
+				end = Math.min(pos + tPercent, tileRates.length)
+				for (j = pos; j < end; j++) {
+					tileRates[j] = tType
+					pos++;
+				}
 			}
 		}
 	}
