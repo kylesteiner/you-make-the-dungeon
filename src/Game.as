@@ -16,14 +16,20 @@ package {
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var bg:Class;
+		[Embed(source='assets/backgrounds/static_bg.png')] private var static_bg:Class; //Credit to STU_WilliamHewitt for placeholder
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
 		[Embed(source='assets/effects/hl_red.png')] private static const hl_red:Class;
 		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
-		[Embed(source='assets/entities/hero.png')] private static const hero:Class;
+		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
+		[Embed(source='assets/entities/hero.png')] private static const entity_hero:Class;
+		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
+		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
+		[Embed(source='assets/icons/reset.png')] private static const icon_reset:Class;
+		[Embed(source='assets/icons/run.png')] private static const icon_run:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -49,9 +55,17 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var world:Sprite;
+		private var currentFloor:Floor;
 
 		public function Game() {
 			Mouse.hide();
+
+			textures = setupTextures();
+			mixer = new Mixer(new Array(new bgm()));
+
+			var staticBg:Texture = Texture.fromBitmap(new static_bg());
+			var staticImage:Image =new Image(staticBg);
+			addChild(staticImage);
 
 			world = new Sprite();
 			addChild(world);
@@ -60,29 +74,51 @@ package {
 			var image:Image = new Image(texture);
 			world.addChild(image);
 
-			textures = setupTextures();
+			currentFloor = new Floor(new floor0(), textures, 0);
+			world.addChild(currentFloor);
 
-			cursorImage = new Image(textures[Util.ICON_CURSOR]);
-			addChild(cursorImage);
+			var muteButton:Clickable = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
+			addChild(muteButton);
+
+			var resetButton:Clickable = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
+			addChild(resetButton);
+
+			var runButton:Clickable = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+			addChild(runButton);
+
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
+			cursorHighlight.touchable = false;
 			world.addChild(cursorHighlight);
 
-			mixer = new Mixer(new Array(new bgm()));
-			
 			var ts:TileHud = new TileHud(new tiles0(), textures);
 			addChild(ts);
 			
-			var f:Floor = new Floor(new floor0(), textures, 0);
-			world.addChild(f);
+			cursorImage = new Image(textures[Util.ICON_CURSOR]);
+			cursorImage.touchable = false;
+			addChild(cursorImage);
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
+		public function toggleMute():void {
+			mixer.togglePlay();
+		}
+
+		public function resetFloor():void {
+			currentFloor.resetFloor();
+		}
+
+		public function runFloor():void {
+			// TODO: complete this function
+		}
+
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(stage);
-			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x));
-			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y));
+			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
+			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
+			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
+			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
 
 			// TODO: make it so cursorImage can move outside of the world
 			cursorImage.x = touch.globalX;
@@ -118,7 +154,10 @@ package {
 
 		private function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
-			textures[Util.HERO] = Texture.fromEmbeddedAsset(hero);
+			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
+			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
+			textures[Util.MONSTER_1] = Texture.fromEmbeddedAsset(entity_mon1);
+
 			textures[Util.TILE_E] = Texture.fromEmbeddedAsset(tile_e);
 			textures[Util.TILE_EW] = Texture.fromEmbeddedAsset(tile_ew);
 			textures[Util.TILE_N] = Texture.fromEmbeddedAsset(tile_n);
@@ -143,6 +182,9 @@ package {
 			textures[Util.TILE_HL_B] = Texture.fromEmbeddedAsset(hl_blue);
 
 			textures[Util.ICON_CURSOR] = Texture.fromEmbeddedAsset(icon_cursor);
+			textures[Util.ICON_MUTE] = Texture.fromEmbeddedAsset(icon_mute);
+			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
+			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			return textures;
 		}
 

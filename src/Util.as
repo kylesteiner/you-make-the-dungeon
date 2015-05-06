@@ -16,6 +16,9 @@ package {
 
 		// Keys to the dictionary of  textures.
 		public static const HERO:String = "hero";
+		public static const HEALING:String = "icon_health";
+		public static const MONSTER_1:String = "monster_1";
+
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
 		public static const TILE_N:String = "tile_n";
@@ -40,6 +43,9 @@ package {
 		public static const TILE_HL_R:String = "hl_r";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
+		public static const ICON_MUTE:String = "icon_mute";
+		public static const ICON_RESET:String = "icon_reset";
+		public static const ICON_RUN:String = "icon_run";
 
 		public static const MUTE_KEY:String = "m";
 		public static const UP_KEY:String = "w";
