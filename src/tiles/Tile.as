@@ -1,6 +1,7 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
+	import flash.text.TextFormat;
 	import starling.text.TextField;
 	import starling.utils.Color
 	import starling.display.Image;
@@ -66,12 +67,13 @@ package tiles {
 		
 		// when the user hovers over a tile, a small box will appear with the
 		// information for that tile.
-		private function displayInformation():void {
-				text = new TextField(50, 50, "TEST TEST", "Bebas", 12, Color.BLACK);
-				text.border = true;
-				text.x = text.x + image.width;
-				addChild(text);
-				text.visible = false;
+		public function displayInformation():void {
+			text = new TextField(100, 100, "Emtpy Tile\nNothing Dangerous Here", "Bebas", 12, Color.BLACK);
+			text.border = true;
+			text.x = 0;
+			text.y = 150;
+			addChild(text);
+			text.visible = false;
 		}
 		
 		// Realigns the selected tile from the tile HUD on the Floor.
@@ -93,6 +95,10 @@ package tiles {
 				return;
 			} 
 			
+			if (!held) {
+				text.visible = false;
+			}
+			
 			if (touch.phase == TouchPhase.HOVER) {
 				// display text here;
 				text.visible = true;
@@ -100,12 +106,6 @@ package tiles {
 					return;
 				}
 			}
-			
-			//text.text = "LOOK AT ME";
-			//text.border = true;
-			//text.x = x;
-			//text.y = y;
-			//addChild(text);
 			
 			if (!locked && held) {
 				x += touch.globalX - touch.previousGlobalX;

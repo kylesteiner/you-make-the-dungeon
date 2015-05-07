@@ -1,6 +1,9 @@
 package tiles {
     import starling.textures.Texture;
     import starling.text.TextField;
+	import starling.utils.Color;
+	import starling.text.TextField;
+
 
     public class ExitTile extends Tile {
         public var label:TextField;
@@ -24,5 +27,14 @@ package tiles {
                                         c,
                                         true));
         }
+		
+		override public function displayInformation():void {
+				text = new TextField(100, 100, "Exit Tile \n get here to complete level", "Bebas", 12, Color.BLACK);
+				text.border = true;
+				text.x = 0;
+				text.y = 150;
+				addChild(text);
+				text.visible = false;
+		}
     }
 }

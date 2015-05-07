@@ -2,6 +2,8 @@ package tiles {
     import starling.display.Image;
     import starling.events.*;
     import starling.textures.Texture;
+	import starling.text.TextField;
+	import starling.utils.Color;
 
     public class EnemyTile extends Tile {
         public var enemyName:String;    // Name is already in use by a superclass
@@ -54,5 +56,15 @@ package tiles {
             addChild(enemy);
             hp = initialHp;
         }
+		
+		override public function displayInformation():void {
+				var info:String = "Enemy Tile\nLevel: " + level + "\nHP: " + hp + "\nAttack: " + attack + "\nxp: " + xpReward;
+				text = new TextField(100, 100, info, "Bebas", 12, Color.BLACK);
+				text.border = true;
+				text.x = 0;
+				text.y = 150;
+				addChild(text);
+				text.visible = false;
+		}
     }
 }

@@ -1,6 +1,9 @@
 package tiles {
     import starling.display.Image;
     import starling.textures.Texture;
+	import starling.utils.Color;
+	import starling.text.TextField;
+
 
     public class ObjectiveTile extends Tile {
         public var objImage:Image;
@@ -38,5 +41,14 @@ package tiles {
         override public function reset():void {
             addChild(objImage);
         }
+		
+		override public function displayInformation():void {
+				text = new TextField(100, 100, "Objective Tile\n doesn't exist", "Bebas", 12, Color.BLACK);
+				text.border = true;
+				text.x = 0;
+				text.y = 150;
+				addChild(text);
+				text.visible = false;
+		}
     }
 }
