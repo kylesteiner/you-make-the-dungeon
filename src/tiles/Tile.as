@@ -1,6 +1,8 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
+	import starling.text.TextField;
+	import starling.utils.Color
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.Texture;
@@ -20,6 +22,7 @@ package tiles {
 		public var image:Image;
 		public var locked:Boolean;
 		public var held:Boolean;
+		public var text:TextField;
 
 		// Create a new Tile object at position (g_x,g_y) of the grid.
 		// If n, s, e, or w is true, that edge of the tile will be passable.
@@ -48,6 +51,8 @@ package tiles {
 			locked = true;
 			held = false;
 			
+			displayInformation();
+			
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
@@ -58,6 +63,16 @@ package tiles {
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
 		public function reset():void { }
+		
+		// when the user hovers over a tile, a small box will appear with the
+		// information for that tile.
+		private function displayInformation():void {
+				text = new TextField(50, 50, "TEST TEST", "Bebas", 12, Color.BLACK);
+				text.border = true;
+				text.x = text.x + image.width;
+				addChild(text);
+				text.visible = false;
+		}
 		
 		// Realigns the selected tile from the tile HUD on the Floor.
 		public function positionTileOnGrid():void {
@@ -73,12 +88,26 @@ package tiles {
 		
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
-			
-			if (!touch || locked) {
+			if (!touch) {
+				text.visible = false;
 				return;
+			} 
+			
+			if (touch.phase == TouchPhase.HOVER) {
+				// display text here;
+				text.visible = true;
+				if (locked) {
+					return;
+				}
 			}
 			
-			if (held) {
+			//text.text = "LOOK AT ME";
+			//text.border = true;
+			//text.x = x;
+			//text.y = y;
+			//addChild(text);
+			
+			if (!locked && held) {
 				x += touch.globalX - touch.previousGlobalX;
 				y += touch.globalY - touch.previousGlobalY;
 				checkGameBounds();
