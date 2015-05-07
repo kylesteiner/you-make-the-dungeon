@@ -62,6 +62,7 @@ package {
 		public static const ICON_RESET:String = "icon_reset";
 		public static const ICON_RUN:String = "icon_run";
 		public static const TILE_HUD:String = "tile_hud";
+		public static const CHAR_HUD:String = "char_hud";
 
 		public static const MUTE_KEY:String = "m";
 		public static const UP_KEY:String = "w";
