@@ -215,10 +215,13 @@ package {
 			// Tile placement
 			if (tileHud) {
 				var tileInUse:int = tileHud.indexOfTileInUse();
-				if (tileInUse != -1 && touch.phase == TouchPhase.ENDED) {
+				if (tileInUse == -1) {
+					return;
+				}
+				var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
+				if (touch.phase == TouchPhase.ENDED) {
 					// Player placed one of the available tiles
-					var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
-					
+					currentFloor.clearHighlightedLocations();
 					if (selectedTile.grid_x >= currentFloor.gridWidth ||
 						selectedTile.grid_y >= currentFloor.gridHeight ||
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y]) {
@@ -232,7 +235,7 @@ package {
 						selectedTile.positionTileOnGrid();
 					}
 				} else if (touch.phase == TouchPhase.BEGAN) {
-					// Highlight all possible tile locations
+					currentFloor.highlightAllowedLocations(selectedTile);
 				}
 			}
 		}
