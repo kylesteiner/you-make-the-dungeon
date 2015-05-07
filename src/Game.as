@@ -303,7 +303,7 @@ package {
 			textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
 			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
 
-			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, scale/2);
+			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
 			textures[Util.ICON_MUTE] = Texture.fromBitmap(new icon_mute(), true, false, scale);
 			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, scale);
 			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, scale);
