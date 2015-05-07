@@ -22,7 +22,7 @@ package {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
-		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
+		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
 		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/effects/large/fog.png')] private static var fog:Class;
