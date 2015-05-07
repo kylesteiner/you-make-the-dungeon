@@ -18,9 +18,7 @@ package {
 		private var tileRates:Array;
 		
 		// List of available tiles displayed on HUD
-		private var availableTiles:Array;
-		
-		
+		private var availableTiles:Array;	
 		
 		// TODO: Comment
 		public function TileHud(tileRatesBytes:ByteArray,
@@ -69,6 +67,13 @@ package {
 		public function removeAndReplaceTile(index:int):void {
 			removeChild(availableTiles[index]);
 			availableTiles[index] = getNextTile(index)
+		}
+		
+		// TODO: Comment
+		public function resetTileHud(): void {
+			for (var i:int = 0; i < availableTiles.length; i++) {
+				removeAndReplaceTile(i);
+			}
 		}
 		
 		// TODO: Comment
