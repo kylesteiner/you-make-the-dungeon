@@ -45,7 +45,9 @@ package tiles {
 
         override public function handleChar(c:Character):void {
             // Let Floor handle the combat. Bounce it back up with an event.
-            dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y, c));
+            if (hp > 0) {
+                dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y, c));
+            }
         }
 
         override public function reset():void {

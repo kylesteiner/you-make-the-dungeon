@@ -305,6 +305,7 @@ package {
 		// invoked.
 		private function onCombat(e:TileEvent):void {
 			char.inCombat = true;
+			characterCombatTurn = true;
 			enemy = grid[e.grid_x][e.grid_y];
 		}
 	}
