@@ -13,6 +13,7 @@ package {
 
 	public class Character extends Sprite {
 		public static const BASE_HP:int = 5;
+		public static const PIXELS_PER_FRAME:int = 2;
 
 		// Character attributes
 		public var level:int;
@@ -87,16 +88,16 @@ package {
 		private function onEnterFrame(e:Event):void {
 			if (moving) {
 				if (x > destX) {
-					x--;
+					x -= PIXELS_PER_FRAME;
 				}
 				if (x < destX) {
-					x++;
+					x += PIXELS_PER_FRAME;
 				}
 				if (y > destY) {
-					y--;
+					y -= PIXELS_PER_FRAME;
 				}
 				if (y < destY) {
-					y++;
+					y += PIXELS_PER_FRAME;
 				}
 
 				if (x == destX && y == destY) {
