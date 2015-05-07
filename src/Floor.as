@@ -34,8 +34,8 @@ package {
 		private var initialGrid:Array;
 		private var initialXp:int;
 
-		private var gridHeight:int;
-		private var gridWidth:int;
+		public var gridHeight:int;
+		public var gridWidth:int;
 
 		// Character's initial grid coordinates.
 		private var initialX:int;
@@ -120,6 +120,11 @@ package {
 		// Returns a 2D array with the given dimensions.
 		private function initializeGrid(x:int, y:int):Array {
 			var arr:Array = new Array(x);
+			// Potential bug exists here when appending Tiles to
+			// the end of the outside array (which should never occur)
+			// Code elsewhere will treat an Array of 5 Arrays and a Tile
+			// as 6 Arrays, which then bugs when we set properties of the
+			// 6th "Array".
 			for (var i:int = 0; i < x; i++) {
 				arr[i] = new Array(y);
 			}
@@ -205,6 +210,8 @@ package {
 					}
 					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.KEY], oName, prereqs));
 					objectiveState[oName] = false;
+				} else if (tType == "none") {
+					tileData.push(new ImpassableTile(tX, tY, textures[Util.TILE_NONE]));
 				}
 			}
 

@@ -154,13 +154,13 @@ package {
 			addChild(muteButton);
 		}
 
-		public function switchToFloor(newFloor:ByteArray):void {
+		public function switchToFloor(newFloorData:Array):void {
 			prepareSwap();
 
 			isMenu = false;
 
 			// TODO: find out how to pass in xp
-			currentFloor = new Floor(newFloor, textures, 0, logger);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } ); 
 			world.addChild(currentFloor);
@@ -170,7 +170,7 @@ package {
 			addChild(muteButton);
 			addChild(resetButton);
 			addChild(runButton);
-			tileHud = new TileHud(new tiles0(), textures); // TODO: Allow multiple levels
+			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
 		}
 
@@ -183,6 +183,8 @@ package {
 		public function createFloorSelect():void {
 			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 0", "Bebas", Util.MEDIUM_FONT_SIZE));
 			floor0Button.addParameter(new floor0());
+			floor0Button.addParameter(new tiles0());
+			floor0Button.addParameter(0);
 			switchToMenu(new Menu(new Array(floor0Button)));
 		}
 
@@ -200,6 +202,7 @@ package {
 			// TODO: keep track of tiles placed to put as value here
 			logger.logAction(8, {"numberOfTiles":0} );
 			currentFloor.resetFloor();
+			tileHud.resetTileHud();
 		}
 
 		public function runFloor():void {
@@ -227,6 +230,30 @@ package {
 			// TODO: make it so cursorImage can move outside of the world
 			cursorImage.x = touch.globalX;
 			cursorImage.y = touch.globalY;
+
+			// Tile placement
+			if (tileHud) {
+				var tileInUse:int = tileHud.indexOfTileInUse();
+				if (tileInUse != -1 && touch.phase == TouchPhase.ENDED) {
+					// Player placed one of the available tiles
+					var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
+					
+					if (selectedTile.grid_x >= currentFloor.gridWidth ||
+						selectedTile.grid_y >= currentFloor.gridHeight ||
+						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y]) {
+						// Tile wasn't placed correctly. Return tile to HUD.
+						tileHud.returnTileInUse();
+					} else {
+						// Move tile from HUD to grid. Add new tile to HUD.
+						tileHud.removeAndReplaceTile(tileInUse);
+						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
+						currentFloor.addChild(selectedTile);
+						selectedTile.positionTileOnGrid();
+					}
+				} else if (touch.phase == TouchPhase.BEGAN) {
+					// Highlight all possible tile locations
+				}
+			}
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
