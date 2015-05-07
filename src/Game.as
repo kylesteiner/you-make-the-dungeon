@@ -231,12 +231,12 @@ package {
 		public function runFloor():void {
 			// TODO: complete this function
 			var floorAStar:AStar = new AStar(currentFloor.grid);
-			addChild(floorAStar);
+			//addChild(floorAStar);
 			var floorEntryTile:Tile = currentFloor.getEntry();
 			var floorExitTile:Tile = currentFloor.getExit();
 
 			if(!floorEntryTile || !floorExitTile) {
-				removeChild(floorAStar);
+				//removeChild(floorAStar);
 				return;
 			}
 
@@ -245,7 +245,7 @@ package {
 													 floorExitTile.grid_x,
 													 floorExitTile.grid_y);
 			if(!charPath) {
-				removeChild(floorAStar);
+				//removeChild(floorAStar);
 				return;
 			}
 
