@@ -26,14 +26,14 @@ package tiles {
 		}
 
 		override public function handleChar(c:Character):void {
-			if (used || c.currentHp == c.maxHp) {
+			if (used || c.hp == c.maxHp) {
 				return;
 			}
 			used = true;
 			removeChild(healthImage);
-			c.currentHp += health;
-			if (c.currentHp > c.maxHp) {
-				c.currentHp = c.maxHp;
+			c.hp += health;
+			if (c.hp > c.maxHp) {
+				c.hp = c.maxHp;
 			}
 		}
 

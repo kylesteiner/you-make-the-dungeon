@@ -4,6 +4,7 @@ package tiles {
     public class TileEvent extends Event {
         public static const CHAR_ARRIVED:String = "char_arrived";
         public static const CHAR_EXITED:String = "char_exited";
+        public static const COMBAT:String = "combat";
         public static const OBJ_COMPLETED:String = "obj_completed";
 
         public var grid_x:int;
