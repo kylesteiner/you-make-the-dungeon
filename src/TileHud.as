@@ -1,4 +1,5 @@
 package {
+	import flash.geom.Rectangle;
 	import starling.core.Starling;
 	import starling.display.*;
 	import flash.net.*;
@@ -11,12 +12,15 @@ package {
 	
 	public class TileHud extends Sprite {
 		private var textures:Dictionary;
+		private var HUD:Image;
 		
 		// Used to represent percent chance of drawing tiles.
 		private var tileRates:Array;
 		
 		// List of available tiles displayed on HUD
 		private var availableTiles:Array;
+		
+		
 		
 		// TODO: Comment
 		public function TileHud(tileRatesBytes:ByteArray,
@@ -26,15 +30,39 @@ package {
 			tileRates = new Array(100);
 			availableTiles = new Array(Util.NUM_AVAILABLE_TILES);
 			
-			var image:Image = new Image(textures[Util.TILE_HUD]);
-			x = (Util.STAGE_WIDTH - image.width) / 2;
-			y = 0;
-			addChild(image);
+			HUD = new Image(textures[Util.TILE_HUD]);
+			HUD.x = (Util.STAGE_WIDTH - HUD.width) / 2;
+			HUD.y = 0;
+			addChild(HUD);
 			
 			parseTileRates(tileRatesBytes);
 			for (var i:int = 0; i < Util.NUM_AVAILABLE_TILES; i++) {
 				availableTiles[i] = getNextTile(i);
 			}
+		}
+		
+		public function getTileByIndex(index:int):Tile {
+			return availableTiles[index];
+		}
+		
+		// TODO: Comment
+		public function indexOfTileInUse():int {
+			for (var i:int; i < availableTiles.length; i++) {
+				var tile:Tile = availableTiles[i];
+				if (tile.held) {
+					return availableTiles.indexOf(tile);
+				}
+			}
+			return -1;
+		}
+		
+		public function returnTileInUse():void {
+			var index:int = indexOfTileInUse()
+			var tileInUse:Tile = availableTiles[index];
+			tileInUse.held = false;
+			tileInUse.x = HUD.x + Util.HUD_PAD_LEFT +
+				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
+			tileInUse.y = HUD.y + Util.HUD_PAD_TOP;
 		}
 		
 		// TODO: Comment
@@ -83,9 +111,10 @@ package {
 			} else { // empty
 				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
 			}
-			tile.x = Util.HUD_PAD_LEFT +
+			tile.x = HUD.x + Util.HUD_PAD_LEFT +
 				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
-			tile.y = Util.HUD_PAD_TOP;
+			tile.y = HUD.y + Util.HUD_PAD_TOP;
+			tile.locked = false;
 			addChild(tile);
 			return tile;
 		}

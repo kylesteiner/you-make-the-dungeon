@@ -33,8 +33,8 @@ package {
 		private var initialGrid:Array;
 		private var initialXp:int;
 
-		private var gridHeight:int;
-		private var gridWidth:int;
+		public var gridHeight:int;
+		public var gridWidth:int;
 
 		// Character's initial grid coordinates.
 		private var initialX:int;

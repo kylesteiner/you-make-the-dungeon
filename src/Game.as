@@ -208,6 +208,24 @@ package {
 			// TODO: make it so cursorImage can move outside of the world
 			cursorImage.x = touch.globalX;
 			cursorImage.y = touch.globalY;
+			
+			// Tile placement
+			if (tileHud) {
+				var tileInUse:int = tileHud.indexOfTileInUse();
+				if (tileInUse != -1 && touch.phase == TouchPhase.ENDED) {
+					var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
+					trace(selectedTile.grid_x, selectedTile.grid_y, currentFloor.grid.width, currentFloor.grid.height);
+					if (selectedTile.grid_x > currentFloor.gridWidth ||
+						selectedTile.grid_y > currentFloor.gridHeight) {
+						tileHud.returnTileInUse();
+					} else {
+						tileHud.removeAndReplaceTile(tileInUse);
+						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y];
+						currentFloor.addChild(selectedTile);
+						selectedTile.positionTileOnGrid();
+					}
+				}
+			}
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {

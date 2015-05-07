@@ -86,7 +86,7 @@ package {
 			return min + (max - min) * Math.random();
 		}
 
-		//
+		// TODO: Comment this
 		public static function getTextureString(tN:Boolean, tS:Boolean, tE:Boolean, tW:Boolean):String {
 			var textureString:String = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
 			textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
