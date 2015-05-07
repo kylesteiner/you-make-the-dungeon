@@ -214,13 +214,13 @@ package {
 				var tileInUse:int = tileHud.indexOfTileInUse();
 				if (tileInUse != -1 && touch.phase == TouchPhase.ENDED) {
 					var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
-					trace(selectedTile.grid_x, selectedTile.grid_y, currentFloor.grid.width, currentFloor.grid.height);
+					trace(selectedTile.grid_x, selectedTile.grid_y, currentFloor.gridWidth, currentFloor.gridHeight);
 					if (selectedTile.grid_x > currentFloor.gridWidth ||
 						selectedTile.grid_y > currentFloor.gridHeight) {
 						tileHud.returnTileInUse();
 					} else {
 						tileHud.removeAndReplaceTile(tileInUse);
-						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y];
+						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
 						selectedTile.positionTileOnGrid();
 					}
