@@ -13,6 +13,7 @@ package {
 	import Character;
 	import tiles.*;
 	import TileHud;
+	import CharHud;
 	import Util;
 	import Menu;
 
@@ -22,6 +23,7 @@ package {
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
 		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
+		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
@@ -63,6 +65,7 @@ package {
 		private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var tileHud:TileHud;
+		private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var staticBackgroundImage:Image;
@@ -127,6 +130,7 @@ package {
 				// removeChild(muteButton);
 				removeChild(resetButton);
 				removeChild(runButton);
+				removeChild(charHud);
 				removeChild(tileHud);
 			}
 		}
@@ -154,6 +158,8 @@ package {
 			addChild(muteButton);
 			addChild(resetButton);
 			addChild(runButton);
+			charHud = new CharHud(currentFloor.char, textures);
+			addChild(charHud);
 			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
 		}
@@ -186,6 +192,7 @@ package {
 		public function resetFloor():void {
 			currentFloor.resetFloor();
 			tileHud.resetTileHud();
+			charHud.char = currentFloor.char
 		}
 
 		public function runFloor():void {
@@ -307,6 +314,7 @@ package {
 			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
 			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
+			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 			return textures;
 		}
 

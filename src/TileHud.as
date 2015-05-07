@@ -1,5 +1,4 @@
 package {
-	import flash.geom.Rectangle;
 	import starling.core.Starling;
 	import starling.display.*;
 	import flash.net.*;
