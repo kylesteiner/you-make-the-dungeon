@@ -121,6 +121,10 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
+
+			// Reset the combat state.
+			combatFrames = 0;
+			characterCombatTurn = true;
 		}
 
 		// Returns a 2D array with the given dimensions.
@@ -217,6 +221,55 @@ package {
 			// put tileData's tiles into a grid
 			for each (var tile:Tile in tileData) {
 				initialGrid[tile.grid_x][tile.grid_y] = tile;
+			}
+		}
+
+		private function onEnterFrame(e:Event):void {
+			if (char.inCombat && combatFrames == 0) {
+				// Time for the next combat round.
+				if (characterCombatTurn) {
+					enemy.hp -= char.attack;
+
+					dmgText = new TextField(64, 32, "-" + char.attack, "Verdana", 24, 0x0000FF, true);
+					dmgText.x = 200;
+					dmgText.y = 200;
+					addChild(dmgText);
+
+					// TODO: Adjust character damage on character HUD.
+					combatFrames = 30;
+
+					// Add XP if player wins the combat.
+					if (enemy.hp <= 0) {
+						char.xp += enemy.xpReward;
+						char.tryLevelUp();
+						enemy.removeImage();
+						char.inCombat = false;
+					}
+					characterCombatTurn = false;  // Swap turns.
+				} else {
+					char.hp -= enemy.attack;
+
+					dmgText = new TextField(64, 32, "-" + enemy.attack, "Verdana", 24, 0xFF0000, true);
+					dmgText.x = 200;
+					dmgText.y = 200;
+					addChild(dmgText);
+
+					combatFrames = 30;
+
+					if (char.hp <= 0) {
+						// TODO: handle character death.
+					}
+					characterCombatTurn = true;  // Swap turns.
+				}
+			}
+
+			// Remove the combat damage text after 15 frames.
+			if (combatFrames == 15) {
+				removeChild(dmgText);
+			}
+			// Tick down the frames between combat animations every frame.
+			if (combatFrames > 0) {
+				combatFrames--;
 			}
 		}
 

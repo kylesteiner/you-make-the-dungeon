@@ -146,7 +146,7 @@ package {
 			isMenu = false;
 
 			// TODO: find out how to pass in xp
-			currentFloor = new Floor(newFloor, textures, 0, 0);
+			currentFloor = new Floor(newFloor, textures, 1, 0);
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
