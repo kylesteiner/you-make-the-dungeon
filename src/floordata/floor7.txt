@@ -1,0 +1,10 @@
+floor7
+7	7
+1	4
+entry	1	4	1	1	1	0
+impassable	5	4	0	0	0	0
+impassable	5	5	0	0	0	0
+impassable	5	3	0	0	0	0
+impassable	4	3	0	0	0	0
+impassable	4	5	0	0	0	0
+exit	7	4	1	1	0	1
