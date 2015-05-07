@@ -16,6 +16,7 @@ package {
 	import CharHud;
 	import Util;
 	import Menu;
+	import ai.*;
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
@@ -196,12 +197,17 @@ package {
 		}
 
 		public function createFloorSelect():void {
-			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
-			floor0Button.addParameter(new floor1());
-			floor0Button.addParameter(new tiles1());
-			floor0Button.addParameter(1);  // Char level
-			floor0Button.addParameter(0);  // Char xp
-			switchToMenu(new Menu(new Array(floor0Button)));
+			var floor1Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor1Button.addParameter(new floor1());
+			floor1Button.addParameter(new tiles1());
+			floor1Button.addParameter(1);  // Char level
+			floor1Button.addParameter(0);  // Char xp
+			var floor4Button:Clickable = new Clickable(256, 256, switchToFloor, new TextField(128, 40, "Floor 4", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor4Button.addParameter(new floor4());
+			floor4Button.addParameter(new tiles4());
+			floor4Button.addParameter(1);  // Char level
+			floor4Button.addParameter(0);  // Char xp
+			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
 		}
 
 		public function createCredits():void {
@@ -222,6 +228,28 @@ package {
 
 		public function runFloor():void {
 			// TODO: complete this function
+			var floorAStar:AStar = new AStar(currentFloor.grid);
+			addChild(floorAStar);
+			var floorEntryTile:Tile = currentFloor.getEntry();
+			var floorExitTile:Tile = currentFloor.getExit();
+
+			if(!floorEntryTile || !floorExitTile) {
+				removeChild(floorAStar);
+				return;
+			}
+
+			var charPath:Array = floorAStar.findPath(floorEntryTile.grid_x,
+													 floorEntryTile.grid_y,
+													 floorExitTile.grid_x,
+													 floorExitTile.grid_y);
+			if(!charPath) {
+				removeChild(floorAStar);
+				return;
+			}
+
+			//floorAStar.screenState.text = charPath.length.toString();
+
+			currentFloor.char.moveThroughFloor(charPath);
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
