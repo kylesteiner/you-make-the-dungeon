@@ -140,13 +140,13 @@ package {
 			addChild(muteButton);
 		}
 
-		public function switchToFloor(newFloor:ByteArray):void {
+		public function switchToFloor(newFloorData:Array):void {
 			prepareSwap();
 
 			isMenu = false;
 
 			// TODO: find out how to pass in xp
-			currentFloor = new Floor(newFloor, textures, 0);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2]);
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -154,7 +154,7 @@ package {
 			addChild(muteButton);
 			addChild(resetButton);
 			addChild(runButton);
-			tileHud = new TileHud(new tiles0(), textures); // TODO: Allow multiple levels
+			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
 		}
 
@@ -167,6 +167,8 @@ package {
 		public function createFloorSelect():void {
 			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 0", "Bebas", Util.MEDIUM_FONT_SIZE));
 			floor0Button.addParameter(new floor0());
+			floor0Button.addParameter(new tiles0());
+			floor0Button.addParameter(0);
 			switchToMenu(new Menu(new Array(floor0Button)));
 		}
 
@@ -208,7 +210,7 @@ package {
 			// TODO: make it so cursorImage can move outside of the world
 			cursorImage.x = touch.globalX;
 			cursorImage.y = touch.globalY;
-			
+
 			// Tile placement
 			if (tileHud) {
 				var tileInUse:int = tileHud.indexOfTileInUse();

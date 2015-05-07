@@ -9,7 +9,7 @@ package {
         public var textureImage:Image;
         public var baseImage:DisplayObject;
         public var callback:Function;
-        public var parameter:Object;
+        public var parameters:Array;
 
         public function Clickable(xPos:int, yPos:int, action:Function, baseDisplay:DisplayObject = null, baseTexture:Texture = null) {
                 super();
@@ -17,7 +17,7 @@ package {
                 y = yPos;
                 height = 480;
                 width = 640;
-                parameter = null;
+                parameters = new Array();
 
                 if(baseDisplay) {
                     baseImage = baseDisplay;
@@ -42,15 +42,15 @@ package {
                 return;
             }
 
-            if(parameter) {
-                callback(parameter);
+            if(parameters.length > 0) {
+                callback(parameters);
             } else {
                 callback();
             }
 		}
 
         public function addParameter(param:Object):void {
-            parameter = param;
+            parameters.push(param);
         }
 
     }
