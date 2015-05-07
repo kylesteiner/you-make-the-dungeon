@@ -6,11 +6,12 @@ package tiles {
     public class EnemyTile extends Tile {
         public var enemyName:String;    // Name is already in use by a superclass
         public var level:int;
+        public var initialHp:int;
         public var hp:int;
         public var attack:int;
         public var xpReward:int;
 
-        public var enemy:Image;
+        private var enemy:Image;
 
         public function EnemyTile(g_x:int,
                                   g_y:int,
@@ -32,20 +33,26 @@ package tiles {
 
             this.enemyName = name;
             this.level = level;
+            initialHp = hp;
             this.hp = hp;
             this.attack = attack;
             this.xpReward = xpReward;
+        }
 
-            addEventListener(Event.ENTER_FRAME, onEnterFrame);
+        public function removeImage():void {
+            removeChild(enemy);
         }
 
         override public function handleChar(c:Character):void {
-            // TODO: Implement attack logic.
+            // Let Floor handle the combat. Bounce it back up with an event.
+            if (hp > 0) {
+                dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y, c));
+            }
         }
 
-        public function onEnterFrame(e:Event):void {
-            // TODO: Attack animations
+        override public function reset():void {
+            addChild(enemy);
+            hp = initialHp;
         }
     }
-
 }

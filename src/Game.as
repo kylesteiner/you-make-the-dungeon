@@ -146,7 +146,7 @@ package {
 			isMenu = false;
 
 			// TODO: find out how to pass in xp
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2]);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3]);
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -168,7 +168,8 @@ package {
 			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 0", "Bebas", Util.MEDIUM_FONT_SIZE));
 			floor0Button.addParameter(new floor0());
 			floor0Button.addParameter(new tiles0());
-			floor0Button.addParameter(0);
+			floor0Button.addParameter(1);  // Char level
+			floor0Button.addParameter(0);  // Char xp
 			switchToMenu(new Menu(new Array(floor0Button)));
 		}
 

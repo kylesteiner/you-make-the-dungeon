@@ -32,14 +32,22 @@ package {
 		public var objectiveState:Dictionary;
 
 		private var initialGrid:Array;
-		private var initialXp:int;
-
 		public var gridHeight:int;
 		public var gridWidth:int;
 
-		// Character's initial grid coordinates.
+		// Character's initial stats.
 		private var initialX:int;
 		private var initialY:int;
+		private var initialXp:int;
+		private var initialLevel:int;
+
+		// If the character is fighting, the enemy the character is fighting.
+		private var enemy:EnemyTile;
+		// Number of frames until the next combat animation.
+		private var combatFrames:int;
+		// True if character is attacking, false otherwise.
+		private var characterCombatTurn:Boolean;
+		private var dmgText:TextField;
 
 		private var textures:Dictionary;
 		private var highlightedLocations:Array;
@@ -48,28 +56,32 @@ package {
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
 							  textureDict:Dictionary,
+							  level:int,
 							  xp:int) {
 			super();
+			initialLevel = level;
 			initialXp = xp;
 			textures = textureDict;
 			objectiveState = new Dictionary();
 			highlightedLocations = new Array();
+			combatFrames = 0;
+			characterCombatTurn = true;
 
 			parseFloorData(floorData);
-
 			resetFloor();
 
-			// CHAR_EXITED events bubble up from Tile and Character, so we
+			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
-			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
+			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
+			addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
 
 		// Resets the character and grid state to their initial values.
 		public function resetFloor():void {
 			var i:int; var j:int;
-
 			if (grid) {
 				// Remove all tiles from the display tree.
 				for (i = 0; i < grid.length; i++) {
@@ -104,7 +116,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialXp, textures[Util.HERO]);
+					initialX, initialY, initialLevel, initialXp, textures[Util.HERO]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -112,8 +124,12 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
+
+			// Reset the combat state.
+			combatFrames = 0;
+			characterCombatTurn = true;
 		}
-		
+
 		// Returns true if the tile location the player chose is valid with the current dungeon setup.
 		public function fitsInDungeon(i:int, j:int, selectedTile:Tile):Boolean {
 			return (i + 1 < grid.length && grid[i + 1][j] && grid[i + 1][j].west && selectedTile.east) ||
@@ -121,7 +137,7 @@ package {
 				   (j + 1 < grid[0].length && grid[i][j + 1] && grid[i][j + 1].north && selectedTile.south) ||
 				   (j - 1 >= 0 && grid[i][j - 1] && grid[i][j - 1].south && selectedTile.north);
 		}
-		
+
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(selectedTile:Tile):void {
 			var i:int; var j:int; var hl:Image;
@@ -141,7 +157,7 @@ package {
 				}
 			}
 		}
-		
+
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
 			for (var i:int = 0; i < highlightedLocations.length; i++) {
@@ -189,7 +205,7 @@ package {
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialXp, textures[Util.HERO]);
+					initialX, initialY, initialLevel, initialXp, textures[Util.HERO]);
 
 			// Parse all of the tiles.
 			var lineData:Array;
@@ -254,6 +270,55 @@ package {
 			}
 		}
 
+		private function onEnterFrame(e:Event):void {
+			if (char.inCombat && combatFrames == 0) {
+				// Time for the next combat round.
+				if (characterCombatTurn) {
+					enemy.hp -= char.attack;
+
+					dmgText = new TextField(64, 32, "-" + char.attack, "Verdana", 24, 0x0000FF, true);
+					dmgText.x = 200;
+					dmgText.y = 200;
+					addChild(dmgText);
+
+					// TODO: Adjust character damage on character HUD.
+					combatFrames = 30;
+
+					// Add XP if player wins the combat.
+					if (enemy.hp <= 0) {
+						char.xp += enemy.xpReward;
+						char.tryLevelUp();
+						enemy.removeImage();
+						char.inCombat = false;
+					}
+					characterCombatTurn = false;  // Swap turns.
+				} else {
+					char.hp -= enemy.attack;
+
+					dmgText = new TextField(64, 32, "-" + enemy.attack, "Verdana", 24, 0xFF0000, true);
+					dmgText.x = 200;
+					dmgText.y = 200;
+					addChild(dmgText);
+
+					combatFrames = 30;
+
+					if (char.hp <= 0) {
+						// TODO: handle character death.
+					}
+					characterCombatTurn = true;  // Swap turns.
+				}
+			}
+
+			// Remove the combat damage text after 15 frames.
+			if (combatFrames == 15) {
+				removeChild(dmgText);
+			}
+			// Tick down the frames between combat animations every frame.
+			if (combatFrames > 0) {
+				combatFrames--;
+			}
+		}
+
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
 		private function onCharArrived(e:TileEvent):void {
@@ -279,6 +344,15 @@ package {
 		private function onObjCompleted(e:TileEvent):void {
 			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
 			objectiveState[t.objKey] = true;
+		}
+
+		// Called when a character runs into an enemy tile. Combat is executed
+		// step by step over several frames, so combat logic isn't directly
+		// invoked.
+		private function onCombat(e:TileEvent):void {
+			char.inCombat = true;
+			characterCombatTurn = true;
+			enemy = grid[e.grid_x][e.grid_y];
 		}
 	}
 }
