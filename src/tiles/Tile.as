@@ -59,7 +59,7 @@ package tiles {
 		// Override this function if the tile's state changes during gameplay.
 		public function reset():void { }
 		
-		// TODO: Comment
+		// Realigns the selected tile from the tile HUD on the Floor.
 		public function positionTileOnGrid():void {
 			//need to test that it is a legal position
 			//snap to function should be better than

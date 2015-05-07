@@ -184,6 +184,7 @@ package {
 
 		public function resetFloor():void {
 			currentFloor.resetFloor();
+			tileHud.resetTileHud();
 		}
 
 		public function runFloor():void {
@@ -215,16 +216,23 @@ package {
 			if (tileHud) {
 				var tileInUse:int = tileHud.indexOfTileInUse();
 				if (tileInUse != -1 && touch.phase == TouchPhase.ENDED) {
+					// Player placed one of the available tiles
 					var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
+					
 					if (selectedTile.grid_x >= currentFloor.gridWidth ||
-						selectedTile.grid_y >= currentFloor.gridHeight) {
+						selectedTile.grid_y >= currentFloor.gridHeight ||
+						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y]) {
+						// Tile wasn't placed correctly. Return tile to HUD.
 						tileHud.returnTileInUse();
 					} else {
+						// Move tile from HUD to grid. Add new tile to HUD.
 						tileHud.removeAndReplaceTile(tileInUse);
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
 						selectedTile.positionTileOnGrid();
 					}
+				} else if (touch.phase == TouchPhase.BEGAN) {
+					// Highlight all possible tile locations
 				}
 			}
 		}
