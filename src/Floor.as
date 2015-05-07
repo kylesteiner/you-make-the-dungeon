@@ -4,6 +4,7 @@
 package {
 	import flash.net.*;
 	import flash.utils.*;
+	import starling.display.Image;
 
 	import starling.core.Starling;
 	import starling.display.Sprite;
@@ -41,6 +42,7 @@ package {
 		private var initialY:int;
 
 		private var textures:Dictionary;
+		private var highlightedLocations:Array;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -51,6 +53,7 @@ package {
 			initialXp = xp;
 			textures = textureDict;
 			objectiveState = new Dictionary();
+			highlightedLocations = new Array();
 
 			parseFloorData(floorData);
 
@@ -109,6 +112,42 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
+		}
+		
+		// Returns true if the tile location the player chose is valid with the current dungeon setup.
+		public function fitsInDungeon(i:int, j:int, selectedTile:Tile):Boolean {
+			return (i + 1 < grid.length && grid[i + 1][j] && grid[i + 1][j].west && selectedTile.east) ||
+				   (i - 1 >= 0 && grid[i - 1][j] && grid[i - 1][j].east && selectedTile.west) ||
+				   (j + 1 < grid[0].length && grid[i][j + 1] && grid[i][j + 1].north && selectedTile.south) ||
+				   (j - 1 >= 0 && grid[i][j - 1] && grid[i][j - 1].south && selectedTile.north);
+		}
+		
+		// Highlights tiles on the grid that the player can move the selected tile to.
+		public function highlightAllowedLocations(selectedTile:Tile):void {
+			var i:int; var j:int; var hl:Image;
+
+			for (i = 0; i < grid.length; i++) {
+				for (j = 0; j < grid[i].length; j++) {
+					if (!grid[i][j]) {
+						var goodTile:Boolean = false;
+						if (fitsInDungeon(i, j, selectedTile)) {
+							hl = new Image(textures[Util.TILE_HL_Y]);
+							hl.x = i * Util.PIXELS_PER_TILE;
+							hl.y = j * Util.PIXELS_PER_TILE;
+							highlightedLocations.push(hl);
+							addChild(hl);
+						}
+					}
+				}
+			}
+		}
+		
+		// Removes all highlighted tiles on the grid.
+		public function clearHighlightedLocations():void {
+			for (var i:int = 0; i < highlightedLocations.length; i++) {
+				removeChild(highlightedLocations[i]);
+			}
+			highlightedLocations.splice()
 		}
 
 		// Returns a 2D array with the given dimensions.
