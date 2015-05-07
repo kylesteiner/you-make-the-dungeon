@@ -102,9 +102,9 @@ package {
 		private function initializeFloorWorld():void {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
-			muteButton = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
-			resetButton = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
-			runButton = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+			muteButton = new Clickable(0, 480 - Util.PIXELS_PER_TILE, toggleMute, null, textures[Util.ICON_MUTE]);
+			resetButton = new Clickable(Util.PIXELS_PER_TILE, 480- Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
+			runButton = new Clickable(2 * Util.PIXELS_PER_TILE, 480 - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
