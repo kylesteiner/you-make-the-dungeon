@@ -13,6 +13,7 @@ package {
 	public class CharHud extends Sprite {
 		private var textures:Dictionary;
 		public var char:Character;
+		private var level:TextField;
 		private var hp:TextField;
 		private var atk:TextField;
 		private var xp:TextField;
@@ -28,21 +29,26 @@ package {
 			y = Util.STAGE_HEIGHT - image.height - 2;
 			addChild(image);
 			
+			level = new TextField(64, 20, "LVL: " + char.level, "Bebas", 20);
+			addChild(level);
+			
 			hp = new TextField(64, 20, "HP: " + char.hp, "Bebas", 20);
 			addChild(hp);
+			hp.y = 22;
 			
 			atk = new TextField(64, 20, "Atk: " + char.attack, "Bebas", 20);
-			atk.y = 22;
+			atk.y = 44;
 			addChild(atk);
 			
 			xp = new TextField(64, 20, "Exp: " + char.xp, "Bebas", 20);
-			xp.y = 44;
+			xp.y = 66;
 			addChild(xp);
 			
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
 		}
 		
 		private function onFrameBegin(event:EnterFrameEvent):void {
+			level.text = "LVL: " + char.level;
 			hp.text = "HP: " + char.hp;
 			atk.text = "Atk: " + char.attack;
 			xp.text = "EXP: " + char.xp;
