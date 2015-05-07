@@ -19,7 +19,9 @@ package {
 	public class Floor extends Sprite {
 		// Number of lines at the beginning of floordata files that are
 		// dedicated to non-tile objects at the start.
-		public static const NON_TILE_LINES:int = 3;
+		public static const NON_TILE_LINES:int = 4;
+
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it! Click here for next level."
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
@@ -41,6 +43,10 @@ package {
 		private var initialXp:int;
 		private var initialLevel:int;
 
+		private var floorFiles:Dictionary;
+		private var nextFloor:String;
+		private var onCompleteCallback:Function;
+
 		// If the character is fighting, the enemy the character is fighting.
 		private var enemy:EnemyTile;
 		// Number of frames until the next combat animation.
@@ -57,7 +63,9 @@ package {
 		public function Floor(floorData:ByteArray,
 							  textureDict:Dictionary,
 							  level:int,
-							  xp:int) {
+							  xp:int,
+							  floorDict:Dictionary,
+							  nextFloorCallback:Function) {
 			super();
 			initialLevel = level;
 			initialXp = xp;
@@ -66,6 +74,9 @@ package {
 			highlightedLocations = new Array();
 			combatFrames = 0;
 			characterCombatTurn = true;
+
+			floorFiles = floorDict;
+			onCompleteCallback = nextFloorCallback;
 
 			parseFloorData(floorData);
 			resetFloor();
@@ -191,17 +202,22 @@ package {
 				floorDataBytes.readUTFBytes(floorDataBytes.length);
 
 			// Parse the floor name.
+			// Remove hidden escape characters from floor name.
 			var floorData:Array = floorDataString.split("\n");
-			floorName = floorData[0];
+			floorName = Util.stripString(floorData[0]);
+
+			// Parse the name of the next floor.
+			// Remove hidden escape characters
+			nextFloor = Util.stripString(floorData[1]);
 
 			// Parse the floor dimensions and initialize the grid array.
-			var floorSize:Array = floorData[1].split("\t");
+			var floorSize:Array = floorData[2].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
 			initialGrid = initializeGrid(gridWidth, gridHeight);
 
 			// Parse the character's starting position.
-			var characterData:Array = floorData[2].split("\t");
+			var characterData:Array = floorData[3].split("\t");
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
@@ -332,10 +348,15 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
-			var t:TextField = new TextField(256, 32, "You won!", "Verdana", 20);
-			t.x = 100
-			t.y = 200;
-			addChild(t);
+			var winText:TextField = new TextField(320, 128, NEXT_LEVEL_MESSAGE, "Verdana", Util.MEDIUM_FONT_SIZE);
+			var nextFloorButton:Clickable = new Clickable(128, 128,
+													onCompleteCallback,
+													winText);
+			nextFloorButton.addParameter(floorFiles[nextFloor][0]);
+			nextFloorButton.addParameter(floorFiles[nextFloor][1]);
+			nextFloorButton.addParameter(char.level);
+			nextFloorButton.addParameter(char.xp);
+			addChild(nextFloorButton);
 		}
 
 		// Called when the character moves into an objective tile. Updates objectiveState

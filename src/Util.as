@@ -73,6 +73,19 @@ package {
 		// up: 38		left: 37
 		// down: 40		right: 39
 
+		public static const FLOOR_0:String = "floor0";
+		public static const FLOOR_1:String = "floor1";
+		public static const FLOOR_2:String = "floor2";
+		public static const FLOOR_3:String = "floor3";
+		public static const FLOOR_4:String = "floor4";
+		public static const FLOOR_5:String = "floor5";
+		public static const FLOOR_6:String = "floor6";
+		public static const FLOOR_7:String = "floor7";
+		public static const FLOOR_8:String = "floor8";
+		public static const FLOOR_9:String = "floor9";
+		public static const FLOOR_10:String = "floor10";
+		public static const FLOOR_11:String = "floor11";
+
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
 		}
@@ -91,6 +104,36 @@ package {
 			var textureString:String = "tile_" + (tN ? "n" : "") + (tS ? "s" : "") + (tE ? "e" : "") + (tW ? "w" : "");
 			textureString += (!tN && !tS && !tE && !tW) ? "none" : "";
 			return textureString;
+		}
+
+		// Removes all non [A-Z][a-z][0-9] characters from the String
+		// Also makes the string lowercase. oops.
+		// Well, the documentation says it should. but it doesn't?
+		// spooky.
+		public static function stripString(target:String):String {
+			var validCharCodes:Array = new Array();
+			var rtn:String = "";
+
+			var i:int;
+			for(i = "A".charCodeAt(0); i <= "Z".charCodeAt(0); i++) {
+				validCharCodes.push(i);
+			}
+
+			for(i = "a".charCodeAt(0); i <= "z".charCodeAt(0); i++) {
+				validCharCodes.push(i);
+			}
+
+			for(i = "0".charCodeAt(0); i <= "9".charCodeAt(0); i++) {
+				validCharCodes.push(i);
+			}
+
+			for(i = 0; i < target.length; i++) {
+				if(validCharCodes.indexOf(target.charCodeAt(i)) != -1) {
+					rtn += target.charAt(i);
+				}
+			}
+
+			return rtn;
 		}
 	}
 }
