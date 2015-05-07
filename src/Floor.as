@@ -246,5 +246,13 @@ package {
 			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
 			objectiveState[t.objKey] = true;
 		}
+
+		// Called when a character runs into an enemy tile. Combat is executed
+		// step by step over several frames, so combat logic isn't directly
+		// invoked.
+		private function onCombat(e:TileEvent):void {
+			char.inCombat = true;
+			enemy = grid[e.grid_x][e.grid_y];
+		}
 	}
 }

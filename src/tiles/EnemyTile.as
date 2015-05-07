@@ -40,7 +40,8 @@ package tiles {
         }
 
         override public function handleChar(c:Character):void {
-            // TODO: Implement attack logic.
+            // Let Floor handle the combat. Bounce it back up with an event.
+            dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y, c));
         }
 
         public function onEnterFrame(e:Event):void {
