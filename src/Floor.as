@@ -199,6 +199,8 @@ package {
 					}
 					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.KEY], oName, prereqs));
 					objectiveState[oName] = false;
+				} else if (tType == "none") {
+					tileData.push(new ImpassableTile(tX, tY, textures[Util.TILE_NONE]));
 				}
 			}
 
