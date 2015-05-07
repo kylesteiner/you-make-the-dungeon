@@ -13,6 +13,7 @@ package {
 	import Character;
 	import tiles.*;
 	import TileHud;
+	import CharHud;
 	import Util;
 	import Menu;
 
@@ -22,6 +23,7 @@ package {
 		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
 		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
+		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
@@ -53,9 +55,32 @@ package {
 		[Embed(source='assets/tiles/tile_sew.png')] private static const tile_sew:Class;
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
+
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
+		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public var floor1:Class;
+		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public var floor2:Class;
+		[Embed(source='floordata/floor3.txt', mimeType="application/octet-stream")] public var floor3:Class;
+		[Embed(source='floordata/floor4.txt', mimeType="application/octet-stream")] public var floor4:Class;
+		[Embed(source='floordata/floor5.txt', mimeType="application/octet-stream")] public var floor5:Class;
+		[Embed(source='floordata/floor6.txt', mimeType="application/octet-stream")] public var floor6:Class;
+		[Embed(source='floordata/floor7.txt', mimeType="application/octet-stream")] public var floor7:Class;
+		[Embed(source='floordata/floor8.txt', mimeType="application/octet-stream")] public var floor8:Class;
+		[Embed(source='floordata/floor9.txt', mimeType="application/octet-stream")] public var floor9:Class;
+		[Embed(source='floordata/floor10.txt', mimeType="application/octet-stream")] public var floor10:Class;
+		[Embed(source='floordata/floor11.txt', mimeType="application/octet-stream")] public var floor11:Class;
+
 		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public var tiles0:Class;
 		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public var tiles1:Class;
+		[Embed(source='tilerates/floor2.txt', mimeType="application/octet-stream")] public var tiles2:Class;
+		[Embed(source='tilerates/floor3.txt', mimeType="application/octet-stream")] public var tiles3:Class;
+		[Embed(source='tilerates/floor4.txt', mimeType="application/octet-stream")] public var tiles4:Class;
+		[Embed(source='tilerates/floor5.txt', mimeType="application/octet-stream")] public var tiles5:Class;
+		[Embed(source='tilerates/floor6.txt', mimeType="application/octet-stream")] public var tiles6:Class;
+		[Embed(source='tilerates/floor7.txt', mimeType="application/octet-stream")] public var tiles7:Class;
+		[Embed(source='tilerates/floor8.txt', mimeType="application/octet-stream")] public var tiles8:Class;
+		[Embed(source='tilerates/floor9.txt', mimeType="application/octet-stream")] public var tiles9:Class;
+		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public var tiles10:Class;
+		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public var tiles11:Class;
 
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
@@ -63,8 +88,10 @@ package {
 		private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var tileHud:TileHud;
+		private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
+		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
 		private var staticBackgroundImage:Image;
 		private var world:Sprite;
 		private var menuWorld:Sprite;
@@ -76,6 +103,8 @@ package {
 			Mouse.hide();
 
 			textures = setupTextures();
+			floors = setupFloors();
+
 			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
 
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
@@ -127,6 +156,7 @@ package {
 				// removeChild(muteButton);
 				removeChild(resetButton);
 				removeChild(runButton);
+				removeChild(charHud);
 				removeChild(tileHud);
 			}
 		}
@@ -145,8 +175,9 @@ package {
 
 			isMenu = false;
 
-			// TODO: find out how to pass in xp
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3]);
+			var nextFloorData:Array = new Array();
+
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToFloor);
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -154,6 +185,8 @@ package {
 			addChild(muteButton);
 			addChild(resetButton);
 			addChild(runButton);
+			charHud = new CharHud(currentFloor.char, textures);
+			addChild(charHud);
 			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
 		}
@@ -165,9 +198,9 @@ package {
 		}
 
 		public function createFloorSelect():void {
-			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 0", "Bebas", Util.MEDIUM_FONT_SIZE));
-			floor0Button.addParameter(new floor0());
-			floor0Button.addParameter(new tiles0());
+			var floor0Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor0Button.addParameter(new floor1());
+			floor0Button.addParameter(new tiles1());
 			floor0Button.addParameter(1);  // Char level
 			floor0Button.addParameter(0);  // Char xp
 			switchToMenu(new Menu(new Array(floor0Button)));
@@ -186,6 +219,7 @@ package {
 		public function resetFloor():void {
 			currentFloor.resetFloor();
 			tileHud.resetTileHud();
+			charHud.char = currentFloor.char
 		}
 
 		public function runFloor():void {
@@ -307,7 +341,31 @@ package {
 			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
 			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
+			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 			return textures;
+		}
+
+		private function setupFloors():Dictionary {
+			var tFloors:Dictionary = new Dictionary();
+
+			// TODO: pass in unintialized vars
+			//		 currently can only read a level once
+			//		 and then crash if you try to reuse the dictionary
+			//		 need to read in the text files each level load :(
+			tFloors[Util.FLOOR_0] = new Array(new floor0(), new tiles0());
+			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1());
+			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2());
+			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3());
+			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4());
+			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5());
+			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6());
+			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7());
+			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8());
+			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9());
+			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10());
+			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11());
+
+			return tFloors;
 		}
 
 		//private function setupSFX():Dictionary {
