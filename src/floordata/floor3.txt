@@ -1,5 +1,5 @@
 floor3
 5	1
-1	1
-entry	1	1	0	0	1	0
-exit	5	1	0	0	0	1
+0	0
+entry	0	0	0	0	1	0
+exit	4	0	0	0	0	1
