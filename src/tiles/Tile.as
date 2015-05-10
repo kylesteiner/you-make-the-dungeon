@@ -70,8 +70,8 @@ package tiles {
 		public function displayInformation():void {
 			text = new TextField(100, 100, "Emtpy Tile\nNothing Dangerous Here", "Bebas", 12, Color.BLACK);
 			text.border = true;
-			text.x = 0;
-			text.y = 150;
+			text.x = getToPoint();
+			text.y = 0;
 			addChild(text);
 			text.visible = false;
 		}
@@ -136,6 +136,16 @@ package tiles {
 			if(y > Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE) {
 				y = Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE;
 			}
+		}
+		
+				
+		public function getToPoint():int {
+			var goal:int = Util.STAGE_WIDTH - 100;
+			var temp:int = 0;
+			while (x + temp != goal) {
+				temp++;
+			}
+			return temp;
 		}
 	}
 }

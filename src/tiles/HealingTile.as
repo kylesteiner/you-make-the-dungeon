@@ -48,8 +48,8 @@ package tiles {
 				//var
 				text = new TextField(100, 100, "Healing Tile\n Gives back " + health + " health", "Bebas", 12, Color.BLACK);
 				text.border = true;
-				text.x = 0;
-				text.y = 150;
+				text.x = getToPoint();
+				text.y = 0;
 				addChild(text);
 				text.visible = false;
 		}

@@ -31,8 +31,8 @@ package tiles {
 		override public function displayInformation():void {
 				text = new TextField(100, 100, "Exit Tile \n get here to complete level", "Bebas", 12, Color.BLACK);
 				text.border = true;
-				text.x = 0;
-				text.y = 150;
+				text.x = getToPoint();
+				text.y = 0;
 				addChild(text);
 				text.visible = false;
 		}

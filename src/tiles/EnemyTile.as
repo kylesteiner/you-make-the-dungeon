@@ -61,8 +61,8 @@ package tiles {
 				var info:String = "Enemy Tile\nLevel: " + level + "\nHP: " + hp + "\nAttack: " + attack + "\nxp: " + xpReward;
 				text = new TextField(100, 100, info, "Bebas", 12, Color.BLACK);
 				text.border = true;
-				text.x = 0;
-				text.y = 150;
+				text.x = getToPoint();
+				text.y = 0;
 				addChild(text);
 				text.visible = false;
 		}
