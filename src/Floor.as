@@ -86,8 +86,37 @@ package {
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
+			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+		}
+
+		public function getEntry():Tile {
+			var x:int; var y:int;
+
+			for(x = 0; x < grid.length; x++) {
+				for(y = 0; y < grid[x].length; y++) {
+					if(grid[x][y] is EntryTile) {
+						return grid[x][y];
+					}
+				}
+			}
+
+			return null;
+		}
+
+		public function getExit():Tile {
+			var x:int; var y:int;
+
+			for(x = 0; x < grid.length; x++) {
+				for(y = 0; y < grid[x].length; y++) {
+					if(grid[x][y] is ExitTile) {
+						return grid[x][y];
+					}
+				}
+			}
+
+			return null;
 		}
 
 		// Resets the character and grid state to their initial values.
@@ -245,10 +274,13 @@ package {
 				tY = Number(lineData[2]);
 
 				// Build the String referring to the texture.
+				// Final portion of each string needs to have
+				// escape characters stripped off. This will cause
+				// bugs with preplaced tiles otherwise.
 				tN = (lineData[3] == "1") ? true : false;
 				tS = (lineData[4] == "1") ? true : false;
 				tE = (lineData[5] == "1") ? true : false;
-				tW = (lineData[6] == "1") ? true : false;
+				tW = (Util.stripString(lineData[6]) == "1") ? true : false;
 				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
 				if (tType == "empty") {
@@ -306,6 +338,10 @@ package {
 						char.tryLevelUp();
 						enemy.removeImage();
 						char.inCombat = false;
+						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
+													Util.real_to_grid(x),
+													Util.real_to_grid(y),
+													char));
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
@@ -333,6 +369,8 @@ package {
 			if (combatFrames > 0) {
 				combatFrames--;
 			}
+
+			addChild(char);
 		}
 
 		// When a character arrives at a tile, it fires an event up to Floor.
@@ -342,6 +380,10 @@ package {
 			if (t) {
 				t.handleChar(e.char);
 			}
+		}
+
+		private function onCharHandled(e:TileEvent):void {
+			char.continueMovement();
 		}
 
 		// Event handler for when a character arrives at an exit tile.

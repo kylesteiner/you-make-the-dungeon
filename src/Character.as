@@ -27,6 +27,8 @@ package {
 		private var destX:int;
 		private var destY:int;
 
+		private var moveQueue:Array;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
 		public function Character(g_x:int, g_y:int, level:int, xp:int, texture:Texture) {
@@ -38,6 +40,8 @@ package {
 			attack = level;
 			maxHp = getMaxHp();
 			hp = maxHp;
+
+			moveQueue = new Array();
 
 			var image:Image = new Image(texture);
 			addChild(image);
@@ -72,6 +76,11 @@ package {
 			}
 		}
 
+		public function moveThroughFloor(path:Array):void {
+			moveQueue = moveQueue.concat(path);
+			move(moveQueue.shift());
+		}
+
 		private function onKeyDown(e:KeyboardEvent):void {
 			if (e.keyCode == Keyboard.UP) {
 				move(Util.NORTH)
@@ -81,6 +90,12 @@ package {
 				move(Util.WEST)
 			} else if (e.keyCode == Keyboard.RIGHT) {
 				move(Util.EAST)
+			}
+		}
+
+		public function continueMovement():void {
+			if(moveQueue.length > 0) {
+				move(moveQueue.shift());
 			}
 		}
 

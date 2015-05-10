@@ -29,6 +29,10 @@ package tiles {
 
 		override public function handleChar(c:Character):void {
 			if (used || c.hp == c.maxHp) {
+				dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
+											Util.real_to_grid(x),
+											Util.real_to_grid(y),
+											c));
 				return;
 			}
 			used = true;
@@ -37,6 +41,10 @@ package tiles {
 			if (c.hp > c.maxHp) {
 				c.hp = c.maxHp;
 			}
+			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
+										Util.real_to_grid(x),
+										Util.real_to_grid(y),
+										c));
 		}
 
 		override public function reset():void {

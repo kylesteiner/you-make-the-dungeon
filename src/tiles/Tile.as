@@ -42,24 +42,28 @@ package tiles {
 			south = s;
 			east = e;
 			west = w;
-			
+
 			image = new Image(texture);
 			addChild(image);
 
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-			
+
 			locked = true;
 			held = false;
 			
 			displayInformation();
-			
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
-		public function handleChar(c:Character):void {}
+		public function handleChar(c:Character):void {
+			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
+										Util.real_to_grid(x),
+										Util.real_to_grid(y),
+										c));
+		}
 
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
@@ -75,7 +79,6 @@ package tiles {
 			addChild(text);
 			text.visible = false;
 		}
-		
 		// Realigns the selected tile from the tile HUD on the Floor.
 		public function positionTileOnGrid():void {
 			//need to test that it is a legal position
@@ -87,9 +90,10 @@ package tiles {
 			grid_y = Util.real_to_grid(y + 16);
 			locked = true;
 		}
-		
+
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
+
 			if (!touch) {
 				text.visible = false;
 				return;
@@ -119,7 +123,7 @@ package tiles {
 				held = true;
 			}
 		}
-		
+
 		private function checkGameBounds():void {
 			if(x < 0) {
 				x = 0;
