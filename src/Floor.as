@@ -364,7 +364,10 @@ package {
 
 					if (char.hp <= 0) {
 						// TODO: handle character death.
-						
+						if (logger) {
+							logger.logAction(4, { "characterLevel":char.level, "characterAttack":char.attack, "enemyName":enemy.enemyName, 
+												 "enemyLevel":enemy.level, "enemyAttack":enemy.attack, "enemyHealthLeft":enemy.hp, "initialEnemyHealth":enemy.initialHp} );
+						}
 					}
 					characterCombatTurn = true;  // Swap turns.
 				}
@@ -387,6 +390,17 @@ package {
 		private function onCharArrived(e:TileEvent):void {
 			var t:Tile = grid[e.grid_x][e.grid_y];
 			if (t) {
+				if (t is EnemyTile && logger) {
+					var eTile:EnemyTile = t as EnemyTile;
+					logger.logAction(5, { "characterLevel":e.char.level, "characterHealthLeft":e.char.hp, "characterHealthMax":e.char.maxHp, 
+										 "characterAttack":e.char.attack, "enemyName": eTile.enemyName, 
+										 "enemyLevel":eTile.level, "enemyAttack":eTile.attack, "enemyHealth":eTile.initialHp} );
+				} else if (t is HealingTile && logger) {
+					var hTile:HealingTile = t as HealingTile;
+					if (!hTile.used) {
+						logger.logAction(6, { "characterHealth":e.char.hp, "characterMaxHealth":e.char.maxHp, "healthRestored":hTile.health } );
+					}
+				}
 				t.handleChar(e.char);
 			}
 		}
@@ -399,6 +413,9 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
+			if (logger) {
+				logger.logLevelEnd( {"characterLevel":e.char.level, "characterHpRemaining":e.char.hp, "characterMaxHP":e.char.maxHp } );
+			}
 			var winText:TextField = new TextField(320, 128, NEXT_LEVEL_MESSAGE, "Verdana", Util.MEDIUM_FONT_SIZE);
 			var nextFloorButton:Clickable = new Clickable(128, 128,
 													onCompleteCallback,

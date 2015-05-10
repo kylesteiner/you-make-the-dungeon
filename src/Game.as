@@ -248,7 +248,7 @@ package {
 
 		public function resetFloor():void {
 			logger.logAction(8, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-						     "EmptyTilesPlaced":emptytiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+						     "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			//reset counters
 			numberOfTilesPlaced = 0;
 			emptyTiles = 0;
@@ -282,7 +282,7 @@ package {
 
 			//floorAStar.screenState.text = charPath.length.toString();
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-								   "EmptyTilesPlaced":emptytiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			currentFloor.char.moveThroughFloor(charPath);
 		}
 
