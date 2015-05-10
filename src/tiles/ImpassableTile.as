@@ -10,12 +10,7 @@ package tiles {
 		}
 		
 		override public function displayInformation():void {
-				text = new TextField(100, 100, "Impassable Tile\n Impossible to travel over", "Bebas", 12, Color.BLACK);
-				text.border = true;
-				text.x = getToPoint();
-				text.y = 0;
-				addChild(text);
-				text.visible = false;
+			setUpInfo("Impassable Tile\n Impossible to travel over");
 		}
 	}
 }

@@ -53,13 +53,7 @@ package tiles {
 		}
 		
 		override public function displayInformation():void {
-				//var
-				text = new TextField(100, 100, "Healing Tile\n Gives back " + health + " health", "Bebas", 12, Color.BLACK);
-				text.border = true;
-				text.x = getToPoint();
-				text.y = 0;
-				addChild(text);
-				text.visible = false;
+			setUpInfo("Healing Tile\n Gives back " + health + " health");
 		}
 	}
 }

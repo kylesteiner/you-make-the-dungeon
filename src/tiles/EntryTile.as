@@ -22,12 +22,7 @@ package tiles {
         }
 		
 		override public function displayInformation():void {
-				text = new TextField(100, 100, "Starting Tile", "Bebas", 12, Color.BLACK);
-				text.border = true;
-				text.x = getToPoint();
-				text.y = 0;
-				addChild(text);
-				text.visible = false;
+			setUpInfo("Starting Tile");
 		}
     }
 }

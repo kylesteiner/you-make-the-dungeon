@@ -47,12 +47,7 @@ package tiles {
         }
 		
 		override public function displayInformation():void {
-				text = new TextField(100, 100, "Objective Tile\n doesn't exist", "Bebas", 12, Color.BLACK);
-				text.border = true;
-				text.x = getToPoint();
-				text.y = 0;
-				addChild(text);
-				text.visible = false;
+			setUpInfo("Objective Tile\n doesn't exist");
 		}
     }
 }
