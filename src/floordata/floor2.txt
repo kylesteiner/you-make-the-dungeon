@@ -1,5 +1,6 @@
 floor2
+floor4
 4	1
-1	1
-entry	1	1	0	0	1	0
-exit	4	1	0	0	0	1
+0	0
+entry	0	0	0	0	1	0
+exit	3	0	0	0	0	1

@@ -1,6 +1,9 @@
 package tiles {
     import starling.display.Image;
     import starling.textures.Texture;
+	import starling.utils.Color;
+	import starling.text.TextField;
+
 
     public class ObjectiveTile extends Tile {
         public var objImage:Image;
@@ -33,10 +36,18 @@ package tiles {
         override public function handleChar(c:Character):void {
             removeChild(objImage, true);
             dispatchEvent(new TileEvent(TileEvent.OBJ_COMPLETED, grid_x, grid_y, c));
+            dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
+                                        Util.real_to_grid(x),
+                                        Util.real_to_grid(y),
+                                        c));
         }
 
         override public function reset():void {
             addChild(objImage);
         }
+		
+		override public function displayInformation():void {
+			setUpInfo("Objective Tile\n doesn't exist");
+		}
     }
 }

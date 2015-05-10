@@ -1,6 +1,9 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
+	import flash.text.TextFormat;
+	import starling.text.TextField;
+	import starling.utils.Color
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.textures.Texture;
@@ -20,6 +23,11 @@ package tiles {
 		public var image:Image;
 		public var locked:Boolean;
 		public var held:Boolean;
+		public var text:TextField;
+		public var infoUpdated:Boolean;
+		
+		public var infoWidth:int;
+		public var infoHeight:int;
 
 		// Create a new Tile object at position (g_x,g_y) of the grid.
 		// If n, s, e, or w is true, that edge of the tile will be passable.
@@ -38,26 +46,41 @@ package tiles {
 			south = s;
 			east = e;
 			west = w;
-			
+			infoWidth = 150;
+			infoHeight = 150;
+
 			image = new Image(texture);
 			addChild(image);
 
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-			
+
 			locked = true;
 			held = false;
+			infoUpdated = false;
 			
+			displayInformation();
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
-		public function handleChar(c:Character):void {}
+		public function handleChar(c:Character):void {
+			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
+										Util.real_to_grid(x),
+										Util.real_to_grid(y),
+										c));
+		}
 
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
 		public function reset():void { }
+		
+		// when the user hovers over a tile, a small box will appear with the
+		// information for that tile.
+		public function displayInformation():void {
+			setUpInfo("Empty Tile\nNothing Dangerous Here");
+		}
 		
 		// Realigns the selected tile from the tile HUD on the Floor.
 		public function positionTileOnGrid():void {
@@ -69,16 +92,40 @@ package tiles {
 			grid_x = Util.real_to_grid(x + 16);
 			grid_y = Util.real_to_grid(y + 16);
 			locked = true;
+			if (!infoUpdated) {
+				text.x = getToPointX();
+				text.y = getToPointY();
+				infoUpdated = true;
+			}
 		}
-		
+
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
-			
-			if (!touch || locked) {
+
+			if (!touch) {
+				text.visible = false;
 				return;
+			} 
+			
+			if (!locked) {
+				text.x = getToPointX();
+				text.y = getToPointY();
 			}
 			
-			if (held) {
+			if (!held) {
+				text.visible = false;
+			}
+			
+			if (touch.phase == TouchPhase.HOVER) {
+				// display text here;
+				text.visible = true;
+
+				if (locked) {
+					return;
+				}
+			}
+			
+			if (!locked && held) {
 				x += touch.globalX - touch.previousGlobalX;
 				y += touch.globalY - touch.previousGlobalY;
 				checkGameBounds();
@@ -91,6 +138,17 @@ package tiles {
 			}
 		}
 		
+		// function to be inhereted that sets up the text field information
+		// with the given string.
+		protected function setUpInfo(info:String):void {
+			text = new TextField(infoWidth, infoHeight, info, "Bebas", 18, Color.BLACK);
+			text.border = true;
+			text.x = getToPointX();
+			text.y = getToPointY();
+			addChild(text);
+			text.visible = false;
+		}
+
 		private function checkGameBounds():void {
 			if(x < 0) {
 				x = 0;
@@ -107,6 +165,28 @@ package tiles {
 			if(y > Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE) {
 				y = Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE;
 			}
+		}
+		
+		// helps get the x offset for the tile info set to display
+		// in the upper right corner
+		public function getToPointX():int {
+			var goal:int = Util.STAGE_WIDTH - infoWidth;
+			var temp:int = 0;
+			while (x + temp != goal) {
+				temp++;
+			}
+			return temp;
+		}
+		
+		// helps get the y offset for the tile info set to display
+		// in the upper right corner
+		public function getToPointY():int {
+			var goal:int = 0;
+			var temp:int = 0;
+			while (y + temp != goal) {
+				temp--;
+			}
+			return temp;
 		}
 	}
 }

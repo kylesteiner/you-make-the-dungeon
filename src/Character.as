@@ -18,25 +18,30 @@ package {
 		public var level:int;
 		public var xp:int;
 		public var maxHp:int;
-		public var currentHp:int;
+		public var hp:int;
 		public var attack:int;
 
 		// Character movement state
 		private var moving:Boolean;
+		public var inCombat:Boolean;
 		private var destX:int;
 		private var destY:int;
 
+		private var moveQueue:Array;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, experience:int, texture:Texture) {
+		public function Character(g_x:int, g_y:int, level:int, xp:int, texture:Texture) {
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-			xp = experience;
-			xpToLevel();
+			this.level = level;
+			this.xp = xp;
 			attack = level;
 			maxHp = getMaxHp();
-			currentHp = maxHp;
+			hp = maxHp;
+
+			moveQueue = new Array();
 
 			var image:Image = new Image(texture);
 			addChild(image);
@@ -50,7 +55,7 @@ package {
 		// moved into will receive an event.
 		// If the Character is currently moving, this method will do nothing.
 		public function move(direction:int):void {
-			if (moving) {
+			if (moving || inCombat) {
 				return;
 			}
 
@@ -71,6 +76,11 @@ package {
 			}
 		}
 
+		public function moveThroughFloor(path:Array):void {
+			moveQueue = moveQueue.concat(path);
+			move(moveQueue.shift());
+		}
+
 		private function onKeyDown(e:KeyboardEvent):void {
 			if (e.keyCode == Keyboard.UP) {
 				move(Util.NORTH)
@@ -80,6 +90,12 @@ package {
 				move(Util.WEST)
 			} else if (e.keyCode == Keyboard.RIGHT) {
 				move(Util.EAST)
+			}
+		}
+
+		public function continueMovement():void {
+			if(moveQueue.length > 0) {
+				move(moveQueue.shift());
 			}
 		}
 
@@ -113,17 +129,15 @@ package {
 			return ((level * (level + 1)) / 2) + BASE_HP - 1;
 		}
 
-		// Sets the character's level based on its XP.
-		private function xpToLevel():void {
-			var t_level:int = 1;
-			var t_xp:int = xp;
-			while(t_xp >= t_level) {
-				t_xp -= t_level;
-				t_level++;
+		// Attempt to level up the character. This affects all stats.
+		public function tryLevelUp():void {
+			while (xp >= level) {
+				xp -= level;
+				level++;
+				maxHp = getMaxHp();
+				hp = maxHp;
+				attack = level;
 			}
-			level = t_level;
-			xp = t_xp;
 		}
-
 	}
 }

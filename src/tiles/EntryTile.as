@@ -1,6 +1,10 @@
 package tiles {
     import starling.textures.Texture;
     import starling.text.TextField;
+	import starling.utils.Color;
+	import starling.text.TextField;
+
+
 
     public class EntryTile extends Tile {
         public var label:TextField;
@@ -16,5 +20,9 @@ package tiles {
             label = new TextField(32,32,"Start","Verdana",8);
             addChild(label);
         }
+		
+		override public function displayInformation():void {
+			setUpInfo("Starting Tile");
+		}
     }
 }
