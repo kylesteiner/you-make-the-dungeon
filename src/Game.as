@@ -57,35 +57,38 @@ package {
 		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
 		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
 
-		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public var floor0:Class;
-		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public var floor1:Class;
-		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public var floor2:Class;
-		[Embed(source='floordata/floor3.txt', mimeType="application/octet-stream")] public var floor3:Class;
-		[Embed(source='floordata/floor4.txt', mimeType="application/octet-stream")] public var floor4:Class;
-		[Embed(source='floordata/floor5.txt', mimeType="application/octet-stream")] public var floor5:Class;
-		[Embed(source='floordata/floor6.txt', mimeType="application/octet-stream")] public var floor6:Class;
-		[Embed(source='floordata/floor7.txt', mimeType="application/octet-stream")] public var floor7:Class;
-		[Embed(source='floordata/floor8.txt', mimeType="application/octet-stream")] public var floor8:Class;
-		[Embed(source='floordata/floor9.txt', mimeType="application/octet-stream")] public var floor9:Class;
-		[Embed(source='floordata/floor10.txt', mimeType="application/octet-stream")] public var floor10:Class;
-		[Embed(source='floordata/floor11.txt', mimeType="application/octet-stream")] public var floor11:Class;
+		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
+		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
+		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public static const floor2:Class;
+		[Embed(source='floordata/floor3.txt', mimeType="application/octet-stream")] public static const floor3:Class;
+		[Embed(source='floordata/floor4.txt', mimeType="application/octet-stream")] public static const floor4:Class;
+		[Embed(source='floordata/floor5.txt', mimeType="application/octet-stream")] public static const floor5:Class;
+		[Embed(source='floordata/floor6.txt', mimeType="application/octet-stream")] public static const floor6:Class;
+		[Embed(source='floordata/floor7.txt', mimeType="application/octet-stream")] public static const floor7:Class;
+		[Embed(source='floordata/floor8.txt', mimeType="application/octet-stream")] public static const floor8:Class;
+		[Embed(source='floordata/floor9.txt', mimeType="application/octet-stream")] public static const floor9:Class;
+		[Embed(source='floordata/floor10.txt', mimeType="application/octet-stream")] public static const floor10:Class;
+		[Embed(source='floordata/floor11.txt', mimeType="application/octet-stream")] public static const floor11:Class;
 
-		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public var tiles0:Class;
-		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public var tiles1:Class;
-		[Embed(source='tilerates/floor2.txt', mimeType="application/octet-stream")] public var tiles2:Class;
-		[Embed(source='tilerates/floor3.txt', mimeType="application/octet-stream")] public var tiles3:Class;
-		[Embed(source='tilerates/floor4.txt', mimeType="application/octet-stream")] public var tiles4:Class;
-		[Embed(source='tilerates/floor5.txt', mimeType="application/octet-stream")] public var tiles5:Class;
-		[Embed(source='tilerates/floor6.txt', mimeType="application/octet-stream")] public var tiles6:Class;
-		[Embed(source='tilerates/floor7.txt', mimeType="application/octet-stream")] public var tiles7:Class;
-		[Embed(source='tilerates/floor8.txt', mimeType="application/octet-stream")] public var tiles8:Class;
-		[Embed(source='tilerates/floor9.txt', mimeType="application/octet-stream")] public var tiles9:Class;
-		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public var tiles10:Class;
-		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public var tiles11:Class;
+		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public static const tiles0:Class;
+		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public static const tiles1:Class;
+		[Embed(source='tilerates/floor2.txt', mimeType="application/octet-stream")] public static const tiles2:Class;
+		[Embed(source='tilerates/floor3.txt', mimeType="application/octet-stream")] public static const tiles3:Class;
+		[Embed(source='tilerates/floor4.txt', mimeType="application/octet-stream")] public static const tiles4:Class;
+		[Embed(source='tilerates/floor5.txt', mimeType="application/octet-stream")] public static const tiles5:Class;
+		[Embed(source='tilerates/floor6.txt', mimeType="application/octet-stream")] public static const tiles6:Class;
+		[Embed(source='tilerates/floor7.txt', mimeType="application/octet-stream")] public static const tiles7:Class;
+		[Embed(source='tilerates/floor8.txt', mimeType="application/octet-stream")] public static const tiles8:Class;
+		[Embed(source='tilerates/floor9.txt', mimeType="application/octet-stream")] public static const tiles9:Class;
+		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public static const tiles10:Class;
+		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public static const tiles11:Class;
+
+		[Embed(source='assets/transitions/floor0.png')] private static const transitions0:Class;
 
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
-		private var muteButton:Clickable;
+		private var bgmMuteButton:Clickable;
+		private var sfxMuteButton:Clickable;
 		private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var tileHud:TileHud;
@@ -97,8 +100,10 @@ package {
 		private var world:Sprite;
 		private var menuWorld:Sprite;
 		private var currentFloor:Floor;
+		private var currentTransition:Clickable;
 		private var currentMenu:Menu;
 		private var isMenu:Boolean;
+		private var sfxMuted:Boolean;
 
 		public function Game() {
 			Mouse.hide();
@@ -132,9 +137,12 @@ package {
 		private function initializeFloorWorld():void {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
-			muteButton = new Clickable(0, 480-32, toggleMute, null, textures[Util.ICON_MUTE]);
-			resetButton = new Clickable(32, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
-			runButton = new Clickable(64, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE]);
+			sfxMuteButton = new Clickable(32, 480-32, toggleSfxMute, null, textures[Util.ICON_MUTE]);
+			resetButton = new Clickable(64, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
+			runButton = new Clickable(96, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+
+			sfxMuted = false;
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -155,6 +163,7 @@ package {
 				removeChild(world);
 				// mute button should always be present
 				// removeChild(muteButton);
+				removeChild(currentTransition);
 				removeChild(resetButton);
 				removeChild(runButton);
 				removeChild(charHud);
@@ -168,7 +177,22 @@ package {
 			isMenu = true;
 			currentMenu = newMenu;
 			addChild(currentMenu);
-			addChild(muteButton);
+			addChild(bgmMuteButton);
+			addChild(sfxMuteButton);
+		}
+
+		public function switchToTransition(newTransitionData:Array):void {
+			prepareSwap();
+
+			isMenu = false;
+			currentTransition = new Clickable(0, 0, switchToFloor, null, newTransitionData[0]);
+
+			var i:int;
+			for(i = 1; i < newTransitionData.length; i++) {
+				currentTransition.addParameter(newTransitionData[i]);
+			}
+
+			addChild(currentTransition);
 		}
 
 		public function switchToFloor(newFloorData:Array):void {
@@ -178,12 +202,13 @@ package {
 
 			var nextFloorData:Array = new Array();
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToFloor);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition);
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
 			// mute button should always be on top
-			addChild(muteButton);
+			addChild(bgmMuteButton);
+			addChild(sfxMuteButton);
 			addChild(resetButton);
 			addChild(runButton);
 			charHud = new CharHud(currentFloor.char, textures);
@@ -199,16 +224,18 @@ package {
 		}
 
 		public function createFloorSelect():void {
-			var floor1Button:Clickable = new Clickable(256, 192, switchToFloor, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
-			floor1Button.addParameter(new floor1());
-			floor1Button.addParameter(new tiles1());
-			floor1Button.addParameter(1);  // Char level
-			floor1Button.addParameter(0);  // Char xp
-			var floor4Button:Clickable = new Clickable(256, 256, switchToFloor, new TextField(128, 40, "Floor 4", "Bebas", Util.MEDIUM_FONT_SIZE));
-			floor4Button.addParameter(new floor4());
-			floor4Button.addParameter(new tiles4());
-			floor4Button.addParameter(1);  // Char level
-			floor4Button.addParameter(0);  // Char xp
+			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
+			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
+			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
+			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
+			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
+			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", "Bebas", Util.MEDIUM_FONT_SIZE));
+			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
+			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
+			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
+			floor4Button.addParameter(Util.STARTING_LEVEL);  // Char level
+			floor4Button.addParameter(Util.STARTING_XP);  // Char xp
 			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
 		}
 
@@ -218,8 +245,12 @@ package {
 			switchToMenu(new Menu(new Array(startButton)));
 		}
 
-		public function toggleMute():void {
+		public function toggleBgmMute():void {
 			mixer.togglePlay();
+		}
+
+		public function toggleSfxMute():void {
+			sfxMuted = !sfxMuted;
 		}
 
 		public function resetFloor():void {
@@ -380,18 +411,18 @@ package {
 			//		 currently can only read a level once
 			//		 and then crash if you try to reuse the dictionary
 			//		 need to read in the text files each level load :(
-			tFloors[Util.FLOOR_0] = new Array(new floor0(), new tiles0());
-			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1());
-			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2());
-			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3());
-			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4());
-			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5());
-			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6());
-			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7());
-			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8());
-			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9());
-			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10());
-			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11());
+			tFloors[Util.FLOOR_0] = new Array(new floor0(), new tiles0(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));
 
 			return tFloors;
 		}

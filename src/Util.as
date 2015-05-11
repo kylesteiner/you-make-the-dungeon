@@ -87,6 +87,13 @@ package {
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
 
+		public static const DICT_FLOOR_INDEX:int = 0;
+		public static const DICT_TILES_INDEX:int = 1;
+		public static const DICT_TRANSITION_INDEX:int = 2;
+
+		public static const STARTING_LEVEL:int = 1;
+		public static const STARTING_XP:int = 0;
+
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
 		}
