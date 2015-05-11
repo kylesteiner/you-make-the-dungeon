@@ -16,6 +16,7 @@ package {
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
 
+		public static const DEFAULT_FONT:String = "Bebas";
 		public static const LARGE_FONT_SIZE:int = 48;
 		public static const MEDIUM_FONT_SIZE:int = 32;
 		public static const SMALL_FONT_SIZE:int = 24;
@@ -87,6 +88,13 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
+
+		public static const DICT_FLOOR_INDEX:int = 0;
+		public static const DICT_TILES_INDEX:int = 1;
+		public static const DICT_TRANSITION_INDEX:int = 2;
+
+		public static const STARTING_LEVEL:int = 1;
+		public static const STARTING_XP:int = 0;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

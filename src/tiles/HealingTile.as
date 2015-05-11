@@ -1,6 +1,8 @@
 package tiles {
 	import starling.display.Image;
-	import starling.textures.Texture;
+	import starling.utils.Color;
+	import starling.textures.Texture;	
+	import starling.text.TextField;
 
 	public class HealingTile extends Tile {
 		public var health:int;   // How much health is restored.
@@ -48,6 +50,10 @@ package tiles {
 		override public function reset():void {
 			addChild(healthImage);
 			used = false;
+		}
+		
+		override public function displayInformation():void {
+			setUpInfo("Healing Tile\n Gives back " + health + " health");
 		}
 	}
 }

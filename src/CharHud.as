@@ -29,18 +29,18 @@ package {
 			y = Util.STAGE_HEIGHT - image.height - 2;
 			addChild(image);
 
-			level = new TextField(64, 20, "LVL: " + char.level, "Bebas", 20);
+			level = new TextField(64, 20, "LVL: " + char.level, Util.DEFAULT_FONT, 20);
 			addChild(level);
 
-			hp = new TextField(64, 20, "HP: " + char.hp, "Bebas", 20);
+			hp = new TextField(64, 20, "HP: " + char.hp, Util.DEFAULT_FONT, 20);
 			addChild(hp);
 			hp.y = 22;
 
-			atk = new TextField(64, 20, "Attack: " + char.attack, "Bebas", 20);
+			atk = new TextField(64, 20, "Attack: " + char.attack, Util.DEFAULT_FONT, 20);
 			atk.y = 44;
 			addChild(atk);
 
-			xp = new TextField(64, 20, "XP: " + char.xp + "/" + char.level, "Bebas", 20);
+			xp = new TextField(64, 20, "XP: " + char.xp + "/" + char.level, Util.DEFAULT_FONT, 20);
 			xp.y = 66;
 			addChild(xp);
 

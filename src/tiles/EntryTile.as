@@ -1,6 +1,10 @@
 package tiles {
     import starling.textures.Texture;
     import starling.text.TextField;
+	import starling.utils.Color;
+	import starling.text.TextField;
+
+
 
     import Util;
 
@@ -22,5 +26,9 @@ package tiles {
                                   Util.SMALL_FONT_SIZE);
             addChild(label);
         }
+		
+		override public function displayInformation():void {
+			setUpInfo("Starting Tile");
+		}
     }
 }
