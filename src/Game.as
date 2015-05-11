@@ -33,7 +33,6 @@ package {
 		[Embed(source='assets/effects/hl_red.png')] private static const hl_red:Class;
 		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
 		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
-		[Embed(source='assets/entities/hero.png')] private static const entity_hero:Class;
 		[Embed(source='assets/entities/key.png')] private static const entity_key:Class;
 		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
@@ -87,6 +86,11 @@ package {
 
 		[Embed(source='assets/transitions/floor0.png')] private static const transitions0:Class;
 
+		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
+		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
+		[Embed(source='assets/animations/character/idle/character_2.png')] private static const characterIdleAnim2:Class;
+		[Embed(source='assets/animations/character/idle/character_3.png')] private static const characterIdleAnim3:Class;
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
@@ -98,6 +102,7 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
+		private var animations:Dictionary; // Map String -> Dictionary<String, MovieClip>
 		private var staticBackgroundImage:Image;
 		private var world:Sprite;
 		private var menuWorld:Sprite;
@@ -115,23 +120,24 @@ package {
 
 		public function Game() {
 			Mouse.hide();
-			
+
 			var gid:uint = 115;
 			var gname:String = "cgs_gc_YouMakeTheDungeon";
 			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
-			
-			// this is the current version, we'll treat 0 as the debugging 
+
+			// this is the current version, we'll treat 0 as the debugging
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
 			var cid:int = 0;
-			
+
 			logger = Logger.initialize(gid, gname, skey, cid, null);
-			
+
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
-			
+
 			textures = setupTextures();
 			floors = setupFloors();
+			animations = setupAnimations();
 
 			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
 
@@ -225,10 +231,10 @@ package {
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition);
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } );
-			
+
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -411,7 +417,6 @@ package {
 			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
 
-			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
 			textures[Util.KEY] = Texture.fromEmbeddedAsset(entity_key);
 			textures[Util.MONSTER_1] = Texture.fromEmbeddedAsset(entity_mon1);
@@ -446,6 +451,21 @@ package {
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 			return textures;
+		}
+
+		private function setupAnimations():Dictionary {
+			var tAnimations:Dictionary = new Dictionary();
+
+			var charDict:Dictionary = new Dictionary();
+			var charVector:Vector.<Texture> = new Vector.<Texture>();
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim0));
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
+			charDict[Util.CHAR_IDLE] = new MovieClip(charVector, Util.ANIM_FPS);
+			tAnimations[Util.CHARACTER] = charDict;
+
+			return tAnimations;
 		}
 
 		private function setupFloors():Dictionary {

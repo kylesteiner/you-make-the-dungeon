@@ -10,6 +10,7 @@ package {
 
 	import tiles.*;
 	import Util;
+	import flash.utils.Dictionary;
 
 	public class Character extends Sprite {
 		public static const BASE_HP:int = 5;
@@ -29,9 +30,12 @@ package {
 
 		private var moveQueue:Array;
 
+		private var animations:Dictionary;
+		private var currentAnimation:MovieClip;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, texture:Texture) {
+		public function Character(g_x:int, g_y:int, level:int, xp:int, animationDict:Dictionary) {
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
@@ -42,9 +46,14 @@ package {
 			hp = maxHp;
 
 			moveQueue = new Array();
+			animations = animationDict;
+			currentAnimation = animations[Util.CHAR_IDLE];
+			currentAnimation.play();
 
-			var image:Image = new Image(texture);
-			addChild(image);
+			//var image:Image = new Image(texture);
+			//addChild(image);
+
+			addChild(currentAnimation);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -99,7 +108,9 @@ package {
 			}
 		}
 
-		private function onEnterFrame(e:Event):void {
+		private function onEnterFrame(e:EnterFrameEvent):void {
+			currentAnimation.advanceTime(e.passedTime);
+
 			if (moving) {
 				if (x > destX) {
 					x--;

@@ -14,6 +14,7 @@ package {
 		public static const PIXELS_PER_TILE:int = 32;
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
+		public static const ANIM_FPS:int = 2;
 
 		public static const DEFAULT_FONT:String = "Bebas";
 		public static const LARGE_FONT_SIZE:int = 48;
@@ -27,11 +28,6 @@ package {
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
 		// Keys to the dictionary of textures.
-		public static const HERO:String = "hero";
-		public static const HEALING:String = "health";
-		public static const KEY:String = "key";
-		public static const MONSTER_1:String = "monster_1";
-
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
 
@@ -87,6 +83,13 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
+
+		// Keys to the dictionary of animations
+		public static const CHARACTER:String = "character";
+		public static const CHAR_IDLE:String = "character_idle";
+		public static const HEALING:String = "health";
+		public static const KEY:String = "key";
+		public static const MONSTER_1:String = "monster_1";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
