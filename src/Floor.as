@@ -26,6 +26,7 @@ package {
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
+		public var fogGrid:Array;
 		public var char:Character;
 		public var floorName:String;
 
@@ -35,6 +36,7 @@ package {
 		public var objectiveState:Dictionary;
 
 		private var initialGrid:Array;
+		private var initialFogGrid:Array;
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
@@ -145,6 +147,7 @@ package {
 
 			// Replace the current grid with a fresh one.
 			grid = initializeGrid(gridWidth, gridHeight);
+			fogGrid = initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
@@ -154,6 +157,16 @@ package {
 						var t:Tile = grid[i][j];
 						t.reset();
 						addChild(t);
+					}
+				}
+			}
+			
+			// Add all of the fogged places into the map
+			for (i = 0; i < initialFogGrid.length; i++) {
+				for (j = 0; j < initialFogGrid[i].length; j++) {
+					fogGrid[i][j] = initialFogGrid[i][j];
+					if(fogGrid[i][j]) {
+						addChild(fogGrid[i][j]); 
 					}
 				}
 			}
@@ -184,6 +197,68 @@ package {
 				   (i - 1 >= 0 && grid[i - 1][j] && grid[i - 1][j].east && selectedTile.west) ||
 				   (j + 1 < grid[0].length && grid[i][j + 1] && grid[i][j + 1].north && selectedTile.south) ||
 				   (j - 1 >= 0 && grid[i][j - 1] && grid[i][j - 1].south && selectedTile.north);
+		}
+		
+		// given an i and j (x and y) [position on the grid], removes the fogged locations around it 
+		// does 2 in each direction, and one in every diagonal direction
+		public function removeFoggedLocations(i:int, j:int):void {
+			var x:int; var y:int; var h1:Image;
+			
+			// should go two up, down, left, right, and one in each diagonal location, removing
+			// fog when needed
+			for (x = 1; x <= 2; x++) {
+				if (x + i < fogGrid.length && fogGrid[x + i][j]) {
+					h1 = fogGrid[x + i][j];
+					fogGrid[x + i][j] = false;
+					removeChild(h1);
+				}
+			}
+			for (x = -1; x >= -2; x--) {
+				if (x + i >= 0 && fogGrid[x + i][j]) {
+					h1 = fogGrid[i + x][j];
+					fogGrid[x + i][j] = false;
+					removeChild(h1);
+				}
+			}
+			for (y = -1; y >= -2; y--) {
+				if (y + j < fogGrid[i].length && fogGrid[i][y + j]) {
+					h1 = fogGrid[i][y + j];
+					fogGrid[i][y + j] = false;
+					removeChild(h1);
+				}
+			}
+			for (y = 1; y <= 2; y++) {
+				if (y + j >= 0 && fogGrid[i][y + j]) {
+					h1 = fogGrid[i][y + j];
+					fogGrid[i][y + j] = false;
+					removeChild(h1);
+				}
+			}
+			// diagonal cases
+			if (i + 1 < fogGrid.length) {
+				if (j + 1 < fogGrid[j].length && fogGrid[i + 1][j + 1]) {
+					h1 = fogGrid[i + 1][j + 1];
+					fogGrid[i + 1][j + 1] = false;
+					removeChild(h1);
+				}
+				if (j - 1 >= 0  && fogGrid[i + 1][j - 1]) {
+					h1 = fogGrid[i + 1][j - 1];
+					fogGrid[i + 1][j - 1] = false;
+					removeChild(h1);
+				}
+			}
+			if (i -1 >= 0) {
+				if (j + 1 < fogGrid[j].length  && fogGrid[i - 1][j + 1]) {
+					h1 = fogGrid[i - 1][j + 1];
+					fogGrid[i - 1][j + 1] = false;
+					removeChild(h1);
+				}
+				if (j - 1 >= 0  && fogGrid[i - 1][j - 1]) {
+					h1 = fogGrid[i - 1][j - 1];
+					fogGrid[i - 1][j - 1] = false;
+					removeChild(h1);
+				}
+			}
 		}
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
@@ -252,6 +327,16 @@ package {
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
 			initialGrid = initializeGrid(gridWidth, gridHeight);
+			initialFogGrid = initializeGrid(gridWidth, gridHeight);
+			
+			for (i = 0; i < initialFogGrid.length; i++) {
+				for (j = 0; j < initialFogGrid[i].length; j++) {
+					var fog:Image = new Image(textures[Util.TILE_FOG]);
+					fog.x = i * Util.PIXELS_PER_TILE;
+					fog.y = j * Util.PIXELS_PER_TILE;
+					initialFogGrid[i][j] = fog;
+				}
+			}
 
 			// Parse the character's starting position.
 			var characterData:Array = floorData[3].split("\t");
@@ -323,6 +408,61 @@ package {
 			// put tileData's tiles into a grid
 			for each (var tile:Tile in tileData) {
 				initialGrid[tile.grid_x][tile.grid_y] = tile;
+				if (tile is EntryTile) {
+					initialFogGrid[tile.grid_x][tile.grid_y] = false;
+					setUpInitialFoglessSpots(tile.grid_x, tile.grid_y);
+				} else if (tile is ExitTile) {
+					initialFogGrid[tile.grid_x][tile.grid_y] = false;
+				}
+			}
+			
+		}
+		
+		// given an i and j (x and y) [position on the grid], removes the fogged locations around it 
+		// does 2 in each direction, and one in every diagonal direction
+		// unlike the public function, just sets that spot to false
+		// and doesn't deal with trying to remove a child that might not exist.
+		private function setUpInitialFoglessSpots(i:int, j:int):void {
+			var x:int; var y:int;
+			
+			// should go two up, down, left, right, and one in each diagonal location, removing
+			// fog when needed
+			for (x = 1; x <= 2; x++) {
+				if (x + i < initialFogGrid.length) {
+					initialFogGrid[x + i][j] = false;
+				}
+			}
+			for (x = -1; x >= -2; x--) {
+				if (x + i >= 0) {
+					initialFogGrid[x + i][j] = false;
+				}
+			}
+			for (y = -1; y >= -2; y--) {
+				if (y + j < initialFogGrid[i].length) {
+					initialFogGrid[i][y + j] = false;
+				}
+			}
+			for (y = 1; y <= 2; y++) {
+				if (y + j >= 0) {
+					initialFogGrid[i][y + j] = false;
+				}
+			}
+			// diagonal cases
+			if (i + 1 < initialFogGrid.length) {
+				if (j + 1 < initialFogGrid[j].length) {
+					initialFogGrid[i + 1][j + 1] = false;
+				}
+				if (j - 1 >= 0) {
+					initialFogGrid[i + 1][j - 1] = false;
+				}
+			}
+			if (i -1 >= 0) {
+				if (j + 1 < initialFogGrid[j].length) {
+					initialFogGrid[i - 1][j + 1] = false;
+				}
+				if (j - 1 >= 0) {
+					initialFogGrid[i - 1][j - 1] = false;
+				}
 			}
 		}
 
