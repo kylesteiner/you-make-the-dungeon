@@ -303,7 +303,6 @@ package {
 				removeChild(floorAStar);
 				return;
 			}
-
 			var charPath:Array = floorAStar.findPath(floorEntryTile.grid_x,
 													 floorEntryTile.grid_y,
 													 floorExitTile.grid_x,
@@ -315,7 +314,7 @@ package {
 
 			//floorAStar.screenState.text = charPath.length.toString();
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles } );
 			currentFloor.char.moveThroughFloor(charPath);
 		}
 

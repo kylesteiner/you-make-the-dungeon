@@ -486,7 +486,13 @@ package {
 					// Add XP if player wins the combat.
 					if (enemy.hp <= 0) {
 						char.xp += enemy.xpReward;
+						var oldLevel:int = char.level;
 						char.tryLevelUp();
+						// check if the character leveled up
+						if (oldLevel != char.level) {
+							logger.logAction(10, {"previousLevel":oldLevel, "newLevel":char.level } );
+						}
+						
 						enemy.removeImage();
 						char.inCombat = false;
 						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
