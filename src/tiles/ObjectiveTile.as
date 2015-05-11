@@ -4,15 +4,12 @@ package tiles {
 	import starling.utils.Color;
 	import starling.text.TextField;
 
+    import ai.EntityState;
 
     public class ObjectiveTile extends Tile {
         public var objImage:Image;
-        // Identifies this tile in Floor.objectiveState, ObjectiveTile.prereqs
-        public var objKey:String;
-        // Objectives that must be completed before passing through this tile. Pathfinding/
-        // movement rules need to check this field and Floor.objectiveState to see if the
-        // tile is passable.
-        public var prereqs:Array;
+
+        public var state:EntityState;
 
         public function ObjectiveTile(g_x:int,
                                       g_y:int,
@@ -28,8 +25,7 @@ package tiles {
             objImage = new Image(foreground);
             addChild(objImage);
 
-            this.objKey = objKey;
-            this.prereqs = prereqs;
+            state = new EntityState(EntityState.OBJECTIVE, 0, 0, 0, 0, false, objKey, prereqs);
         }
 
         // Should not be called unless all prerequisite objectives are completed.
@@ -45,7 +41,7 @@ package tiles {
         override public function reset():void {
             addChild(objImage);
         }
-		
+
 		override public function displayInformation():void {
 			setUpInfo("Objective Tile\n doesn't exist");
 		}

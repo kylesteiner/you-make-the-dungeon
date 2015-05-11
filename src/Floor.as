@@ -325,19 +325,18 @@ package {
 			if (char.inCombat && combatFrames == 0) {
 				// Time for the next combat round.
 				if (characterCombatTurn) {
-					enemy.hp -= char.state.attack;
+					enemy.state.hp -= char.state.attack;
 
 					dmgText = new TextField(64, 32, "-" + char.state.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
 
-					// TODO: Adjust character damage on character HUD.
 					combatFrames = 30;
 
 					// Add XP if player wins the combat.
-					if (enemy.hp <= 0) {
-						char.state.xp += enemy.xpReward;
+					if (enemy.state.hp <= 0) {
+						char.state.xp += enemy.state.xpReward;
 						char.state.tryLevelUp();
 						enemy.removeImage();
 						char.inCombat = false;
@@ -348,9 +347,9 @@ package {
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
-					char.state.hp -= enemy.attack;
+					char.state.hp -= enemy.state.attack;
 
-					dmgText = new TextField(64, 32, "-" + enemy.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
+					dmgText = new TextField(64, 32, "-" + enemy.state.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
@@ -410,7 +409,7 @@ package {
 		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
 		private function onObjCompleted(e:TileEvent):void {
 			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
-			objectiveState[t.objKey] = true;
+			objectiveState[t.state.key] = true;
 		}
 
 		// Called when a character runs into an enemy tile. Combat is executed

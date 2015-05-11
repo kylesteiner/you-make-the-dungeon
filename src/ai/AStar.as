@@ -219,7 +219,7 @@ package ai {
             if(tile is EnemyTile) {
                 return visited ? enemyCost : emptyVisitedCost;
             } else if(tile is HealingTile) {
-                return visited ? -(tile as HealingTile).health * healthMultiplier : emptyVisitedCost;
+                return visited ? -(tile as HealingTile).state.health * healthMultiplier : emptyVisitedCost;
             } else if(tile is ImpassableTile) {
                 return visited ? MAX_COST : MAX_COST;
             } else if(tile is ObjectiveTile) {

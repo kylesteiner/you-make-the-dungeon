@@ -4,10 +4,10 @@ package tiles {
 	import starling.textures.Texture;
 	import starling.text.TextField;
 
-	public class HealingTile extends Tile {
-		public var health:int;   // How much health is restored.
-		public var used:Boolean; // Whether the character has used the tile.
+	import ai.EntityState;
 
+	public class HealingTile extends Tile {
+		public var state:EntityState;
 		private var healthImage:Image;
 
 		public function HealingTile(g_x:int,
@@ -23,24 +23,26 @@ package tiles {
 			healthImage = new Image(healthTexture);
 			addChild(healthImage);
 
-			this.health = health;
-			this.used = false;
+			state = new EntityState(EntityState.HEALING, 0, 0, 0, health, false);
 		}
 
 		override public function handleChar(c:Character):void {
-			if (used || c.state.hp == c.state.maxHp) {
+			if (state.healthUsed || c.state.hp == c.state.maxHp) {
 				dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 											Util.real_to_grid(x),
 											Util.real_to_grid(y),
 											c));
 				return;
 			}
-			used = true;
+			state.healthUsed = true;
 			removeChild(healthImage);
-			c.state.hp += health;
+
+			// TODO: refactor gameplay logic
+			c.state.hp += state.health;
 			if (c.state.hp > c.state.maxHp) {
 				c.state.hp = c.state.maxHp;
 			}
+
 			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 										Util.real_to_grid(x),
 										Util.real_to_grid(y),
@@ -49,11 +51,11 @@ package tiles {
 
 		override public function reset():void {
 			addChild(healthImage);
-			used = false;
+			state.healthUsed = false;
 		}
 
 		override public function displayInformation():void {
-			setUpInfo("Healing Tile\n Gives back " + health + " health");
+			setUpInfo("Healing Tile\n Gives back " + state.health + " health");
 		}
 	}
 }

@@ -5,13 +5,16 @@ package tiles {
 	import starling.text.TextField;
 	import starling.utils.Color;
 
+    import ai.EntityState;
+
     public class EnemyTile extends Tile {
+        // Gameplay state
+        public var state:EntityState;
+        public var initialHp:int;
+
+        // Eye candy attributes (not used in gameplay)
         public var enemyName:String;    // Name is already in use by a superclass
         public var level:int;
-        public var initialHp:int;
-        public var hp:int;
-        public var attack:int;
-        public var xpReward:int;
 
         private var enemy:Image;
 
@@ -36,9 +39,7 @@ package tiles {
             this.enemyName = name;
             this.level = level;
             initialHp = hp;
-            this.hp = hp;
-            this.attack = attack;
-            this.xpReward = xpReward;
+            state = new EntityState(EntityState.ENEMY, hp, attack, xpReward);
         }
 
         public function removeImage():void {
@@ -47,18 +48,18 @@ package tiles {
 
         override public function handleChar(c:Character):void {
             // Let Floor handle the combat. Bounce it back up with an event.
-            if (hp > 0) {
+            if (state.hp > 0) {
                 dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y, c));
             }
         }
 
         override public function reset():void {
             addChild(enemy);
-            hp = initialHp;
+            state.hp = initialHp;
         }
-		
+
 		override public function displayInformation():void {
-			var info:String = "Enemy Tile\nLevel: " + level + "\nHP: " + hp + "\nAttack: " + attack + "\nxp: " + xpReward;
+			var info:String = "Enemy Tile\nLevel: " + level + "\nHP: " + state.hp + "\nAttack: " + state.attack + "\nxp: " + state.xpReward;
 			setUpInfo(info);
 		}
     }

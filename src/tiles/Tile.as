@@ -58,7 +58,7 @@ package tiles {
 			locked = true;
 			held = false;
 			infoUpdated = false;
-			
+
 			displayInformation();
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
@@ -75,13 +75,13 @@ package tiles {
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
 		public function reset():void { }
-		
+
 		// when the user hovers over a tile, a small box will appear with the
 		// information for that tile.
 		public function displayInformation():void {
 			setUpInfo("Empty Tile\nNothing Dangerous Here");
 		}
-		
+
 		// Realigns the selected tile from the tile HUD on the Floor.
 		public function positionTileOnGrid():void {
 			//need to test that it is a legal position
@@ -105,17 +105,17 @@ package tiles {
 			if (!touch) {
 				text.visible = false;
 				return;
-			} 
-			
+			}
+
 			if (!locked) {
 				text.x = getToPointX();
 				text.y = getToPointY();
 			}
-			
+
 			if (!held) {
 				text.visible = false;
 			}
-			
+
 			if (touch.phase == TouchPhase.HOVER) {
 				// display text here;
 				text.visible = true;
@@ -124,7 +124,7 @@ package tiles {
 					return;
 				}
 			}
-			
+
 			if (!locked && held) {
 				x += touch.globalX - touch.previousGlobalX;
 				y += touch.globalY - touch.previousGlobalY;
@@ -137,7 +137,7 @@ package tiles {
 				held = true;
 			}
 		}
-		
+
 		// function to be inhereted that sets up the text field information
 		// with the given string.
 		protected function setUpInfo(info:String):void {
@@ -166,7 +166,7 @@ package tiles {
 				y = Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE;
 			}
 		}
-		
+
 		// helps get the x offset for the tile info set to display
 		// in the upper right corner
 		public function getToPointX():int {
@@ -177,7 +177,7 @@ package tiles {
 			}
 			return temp;
 		}
-		
+
 		// helps get the y offset for the tile info set to display
 		// in the upper right corner
 		public function getToPointY():int {

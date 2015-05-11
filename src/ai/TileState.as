@@ -3,18 +3,18 @@ package ai {
 		public var x:int;
 		public var y:int;
 
-		public var n:int;
-		public var s:int;
-		public var e:int;
-		public var w:int;
+		public var north:Boolean;
+		public var south:Boolean;
+		public var east:Boolean;
+		public var west:Boolean;
 
-		public function TileState(x:int, y:int, n:int, s:int, e:int, w:int) {
+		public function TileState(x:int, y:int, n:Boolean, s:Boolean, e:Boolean, w:Boolean) {
 			this.x = x;
 			this.y = y;
-			this.n = n;
-			this.s = s;
-			this.e = e;
-			this.w = w;
+			north = n;
+			south = s;
+			east = e;
+			west = w;
 		}
 	}
 }
