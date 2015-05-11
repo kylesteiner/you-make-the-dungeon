@@ -218,19 +218,19 @@ package {
 		}
 
 		public function createMainMenu():void {
-			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", "Bebas", Util.MEDIUM_FONT_SIZE));
-			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", "Bebas", Util.MEDIUM_FONT_SIZE));
+			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			switchToMenu(new Menu(new Array(startButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
-			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", "Bebas", Util.MEDIUM_FONT_SIZE));
+			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", "Bebas", Util.MEDIUM_FONT_SIZE));
+			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
@@ -240,8 +240,8 @@ package {
 		}
 
 		public function createCredits():void {
-			var startButton:Clickable = new Clickable(256, 192, createMainMenu, new TextField(128, 40, "BACK", "Bebas", Util.MEDIUM_FONT_SIZE));
-			var creditsLine:TextField = new TextField(256, 256, "THANKS", "Bebas", Util.LARGE_FONT_SIZE);
+			var startButton:Clickable = new Clickable(256, 192, createMainMenu, new TextField(128, 40, "BACK", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			var creditsLine:TextField = new TextField(256, 256, "THANKS", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
 			switchToMenu(new Menu(new Array(startButton)));
 		}
 

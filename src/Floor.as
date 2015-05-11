@@ -327,7 +327,7 @@ package {
 				if (characterCombatTurn) {
 					enemy.hp -= char.attack;
 
-					dmgText = new TextField(64, 32, "-" + char.attack, "Verdana", 24, 0x0000FF, true);
+					dmgText = new TextField(64, 32, "-" + char.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
@@ -350,7 +350,7 @@ package {
 				} else {
 					char.hp -= enemy.attack;
 
-					dmgText = new TextField(64, 32, "-" + enemy.attack, "Verdana", 24, 0xFF0000, true);
+					dmgText = new TextField(64, 32, "-" + enemy.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
@@ -393,7 +393,7 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
-			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, "Verdana", Util.MEDIUM_FONT_SIZE);
+			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);

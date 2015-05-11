@@ -15,6 +15,7 @@ package {
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
 
+		public static const DEFAULT_FONT:String = "Bebas";
 		public static const LARGE_FONT_SIZE:int = 48;
 		public static const MEDIUM_FONT_SIZE:int = 32;
 		public static const SMALL_FONT_SIZE:int = 24;
