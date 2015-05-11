@@ -8,38 +8,39 @@ package {
 	import starling.textures.Texture;
 	import flash.ui.Keyboard;
 
+	import ai.CharState;
 	import tiles.*;
 	import Util;
 
+	// Class representing the Character rendered in game.
 	public class Character extends Sprite {
-		public static const BASE_HP:int = 5;
+		// Character gameplay state. Holds all information about the Character
+		// that isn't relevant to how to render the Sprite.
+		public var state:CharState;
 
-		// Character attributes
-		public var level:int;
-		public var xp:int;
-		public var maxHp:int;
-		public var hp:int;
-		public var attack:int;
-
-		// Character movement state
-		private var moving:Boolean;
+		// Character movement state (for rendering).
 		public var inCombat:Boolean;
+		private var moving:Boolean;
 		private var destX:int;
 		private var destY:int;
 
+		// Queue of commands provided by the AI.
 		private var moveQueue:Array;
 
 		// Constructs the character at the provided grid position and with the
 		// correct stats
 		public function Character(g_x:int, g_y:int, level:int, xp:int, texture:Texture) {
 			super();
+			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-			this.level = level;
-			this.xp = xp;
-			attack = level;
-			maxHp = getMaxHp();
-			hp = maxHp;
+
+			// Calculate character state from level.
+			var attack:int = level;
+			var maxHp:int = CharState.getMaxHp(level);
+			var hp:int = maxHp;
+			// Setup character game state.
+			state = new CharState(g_x, g_x, xp, level, maxHp, hp, attack);
 
 			moveQueue = new Array();
 
@@ -121,22 +122,6 @@ package {
 												Util.real_to_grid(y),
 												this));
 				}
-			}
-		}
-
-		// Returns the maximum HP of the character based on its level.
-		private function getMaxHp():int {
-			return ((level * (level + 1)) / 2) + BASE_HP - 1;
-		}
-
-		// Attempt to level up the character. This affects all stats.
-		public function tryLevelUp():void {
-			while (xp >= level) {
-				xp -= level;
-				level++;
-				maxHp = getMaxHp();
-				hp = maxHp;
-				attack = level;
 			}
 		}
 	}

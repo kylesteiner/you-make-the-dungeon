@@ -1,7 +1,7 @@
 package tiles {
 	import starling.display.Image;
 	import starling.utils.Color;
-	import starling.textures.Texture;	
+	import starling.textures.Texture;
 	import starling.text.TextField;
 
 	public class HealingTile extends Tile {
@@ -28,7 +28,7 @@ package tiles {
 		}
 
 		override public function handleChar(c:Character):void {
-			if (used || c.hp == c.maxHp) {
+			if (used || c.state.hp == c.state.maxHp) {
 				dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 											Util.real_to_grid(x),
 											Util.real_to_grid(y),
@@ -37,9 +37,9 @@ package tiles {
 			}
 			used = true;
 			removeChild(healthImage);
-			c.hp += health;
-			if (c.hp > c.maxHp) {
-				c.hp = c.maxHp;
+			c.state.hp += health;
+			if (c.state.hp > c.state.maxHp) {
+				c.state.hp = c.state.maxHp;
 			}
 			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 										Util.real_to_grid(x),
@@ -51,7 +51,7 @@ package tiles {
 			addChild(healthImage);
 			used = false;
 		}
-		
+
 		override public function displayInformation():void {
 			setUpInfo("Healing Tile\n Gives back " + health + " health");
 		}

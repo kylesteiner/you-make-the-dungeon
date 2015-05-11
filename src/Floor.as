@@ -325,9 +325,9 @@ package {
 			if (char.inCombat && combatFrames == 0) {
 				// Time for the next combat round.
 				if (characterCombatTurn) {
-					enemy.hp -= char.attack;
+					enemy.hp -= char.state.attack;
 
-					dmgText = new TextField(64, 32, "-" + char.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
+					dmgText = new TextField(64, 32, "-" + char.state.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
@@ -337,8 +337,8 @@ package {
 
 					// Add XP if player wins the combat.
 					if (enemy.hp <= 0) {
-						char.xp += enemy.xpReward;
-						char.tryLevelUp();
+						char.state.xp += enemy.xpReward;
+						char.state.tryLevelUp();
 						enemy.removeImage();
 						char.inCombat = false;
 						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
@@ -348,7 +348,7 @@ package {
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
-					char.hp -= enemy.attack;
+					char.state.hp -= enemy.attack;
 
 					dmgText = new TextField(64, 32, "-" + enemy.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
 					dmgText.x = 200;
@@ -357,7 +357,7 @@ package {
 
 					combatFrames = 30;
 
-					if (char.hp <= 0) {
+					if (char.state.hp <= 0) {
 						// TODO: handle character death.
 					}
 					characterCombatTurn = true;  // Swap turns.
@@ -400,8 +400,8 @@ package {
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
-			nextFloorButton.addParameter(char.level);
-			nextFloorButton.addParameter(char.xp);
+			nextFloorButton.addParameter(char.state.level);
+			nextFloorButton.addParameter(char.state.xp);
 			addChild(nextFloorButton);
 		}
 
