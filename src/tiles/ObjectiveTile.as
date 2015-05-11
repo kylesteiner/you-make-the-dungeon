@@ -47,7 +47,7 @@ package tiles {
         }
 		
 		override public function displayInformation():void {
-			setUpInfo("Objective Tile\n doesn't exist");
+			setUpInfo("Objective Tile\n");
 		}
     }
 }
