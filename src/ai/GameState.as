@@ -41,7 +41,8 @@ package ai {
 		}
 
 		private function constructFromFloor(floor:Floor):void {
-			char = floor.char.state;
+			var floorChar:CharState = floor.char.state;
+			char = new CharState(floorChar.x, floorChar.y, floorChar.xp, floorChar.level, floorChar.maxHp, floorChar.hp, floorChar.attack);
 
 			// Initialize the grids.
 			gridHeight = floor.gridHeight;
@@ -51,8 +52,11 @@ package ai {
 
 			// Copy and translate tiles into EntityState and GridState.
 			for (var i:int = 0; i < gridWidth; i++) {
-				for (var j:int = 0; i < gridHeight; j++) {
-					var t:Tile = floor.grid[i][j]
+				for (var j:int = 0; j < gridHeight; j++) {
+					var t:Tile = floor.grid[i][j];
+					if (!t) {
+						continue;
+					}
 					grid[i][j] = new TileState(t.grid_x, t.grid_y, t.north, t.south, t.east, t.west);
 					if (t is EnemyTile) {
 						var enemy:EnemyTile = t as EnemyTile;
@@ -94,6 +98,7 @@ package ai {
 		}
 
 		public function getLegalActions():Array {
+			trace("getLegalActions for (" + char.x + ", " + char.y + ")");
 			var actions:Array = new Array();
 			var tile:TileState = grid[char.x][char.y];
 			if (tile.north
@@ -101,6 +106,7 @@ package ai {
 				&& grid[char.x][char.y - 1]
 				&& grid[char.x][char.y - 1].south
 				&& satisfiedObjectives(char.x, char.y - 1)) {
+				trace("  north is legal");
 				actions.push(Util.NORTH);
 			}
 			if (tile.south
@@ -108,20 +114,23 @@ package ai {
 				&& grid[char.x][char.y + 1]
 				&& grid[char.x][char.y + 1].north
 				&& satisfiedObjectives(char.x, char.y + 1)) {
+				trace("  south is legal");
 				actions.push(Util.SOUTH);
 			}
 			if (tile.east
-				&& char.x > 0
-				&& grid[char.x - 1][char.y]
-				&& grid[char.x - 1][char.y].west
-				&& satisfiedObjectives(char.x - 1, char.y)) {
+				&& char.x < gridWidth - 1
+				&& grid[char.x + 1][char.y]
+				&& grid[char.x + 1][char.y].west
+				&& satisfiedObjectives(char.x + 1, char.y)) {
+				trace("  east is legal");
 				actions.push(Util.EAST);
 			}
 			if (tile.west
-				&& char.x < gridWidth
-				&& grid[char.x + 1][char.y]
-				&& grid[char.x + 1][char.y]
-				&& satisfiedObjectives(char.x + 1, char.y)) {
+				&& char.x > 0
+				&& grid[char.x - 1][char.y]
+				&& grid[char.x - 1][char.y]
+				&& satisfiedObjectives(char.x - 1, char.y)) {
+				trace("  west is legal");
 				actions.push(Util.WEST);
 			}
 			return actions;
@@ -134,6 +143,7 @@ package ai {
 			var entity:Object = entities[x][y];
 			// Check if the objective exists first.
 			if (!entity || !(entity is ObjectiveState)) {
+				trace("no objective entity - satisfied");
 				return true;
 			}
 
@@ -143,14 +153,17 @@ package ai {
 			for (var i:int = 0; i < obj.prereqs.length; i++) {
 				var prereq:String = obj.prereqs[i];
 				if (!visitedObj[prereq]) {
+					trace("objectives not satisfied - didn't visit " + prereq);
 					return false;
 				}
 			}
+			trace("objectives satisified");
 			return true;
 		}
 
 		// Assumes that action is a legal action.
 		public function generateSuccessor(action:int):GameState {
+			trace("generateSuccessor(" + action + ")");
 			// Make a copy of char.
 			var nextChar:CharState = new CharState(char.x, char.y, char.xp, char.level, char.maxHp, char.hp, char.attack);
 
@@ -193,12 +206,16 @@ package ai {
 			switch (action) {
 				case Util.NORTH:
 					nextChar.y--;
+					break;
 				case Util.SOUTH:
 					nextChar.y++;
+					break;
 				case Util.EAST:
-					nextChar.x--;
-				case Util.WEST:
 					nextChar.x++;
+					break;
+				case Util.WEST:
+					nextChar.x--;
+					break;
 			}
 
 			// Calculate character-entity interaction
@@ -233,6 +250,7 @@ package ai {
 					nextEntities[nextChar.x][nextChar.y] = null;
 				}
 			}
+			trace("Successor char position = (" + nextChar.x + "," + nextChar.y + ")");
 
 			// The grid and exits won't change. Only the character, entities,
 			// and objective log will change.

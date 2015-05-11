@@ -106,7 +106,7 @@ package {
 			agent.computePath(this);
 			var firstAction:int = agent.getAction();
 			if (firstAction != -1) {
-				char.move(agent.getAction());
+				char.move(firstAction);
 			} else {
 				// TODO: display that it couldn't find a path.
 			}

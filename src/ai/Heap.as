@@ -36,10 +36,15 @@ package ai {
 			return result.data;
 		}
 
+		public function isEmpty():Boolean {
+			return size == 0;
+		}
+
 		private function percolateUp(hole:int, node:HeapNode):int {
-			while (hole > 1 && node.val < arr[hole/2].val) {
-				arr[hole] = arr[hole/2];
-				hole = hole/2
+			trace("percolateUp(" + hole + ")");
+			while (hole > 1 && node.val < arr[int(hole/2)].val) {
+				arr[hole] = arr[int(hole/2)];
+				hole = int(hole/2);
 			}
 			return hole;
 		}
@@ -49,7 +54,7 @@ package ai {
 				var left:int = 2 * hole;
 				var right:int = left + 1;
 				var target:int;
-				if (arr[left].val < arr[right].val || right > size) {
+				if (right > size || arr[left].val < arr[right].val) {
 					target = left;
 				} else {
 					target = right;

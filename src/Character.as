@@ -37,7 +37,7 @@ package {
 			var maxHp:int = CharState.getMaxHp(level);
 			var hp:int = maxHp;
 			// Setup character game state.
-			state = new CharState(g_x, g_x, xp, level, maxHp, hp, attack);
+			state = new CharState(g_x, g_y, xp, level, maxHp, hp, attack);
 
 			var image:Image = new Image(texture);
 			addChild(image);
@@ -51,6 +51,7 @@ package {
 		// moved into will receive an event.
 		// If the Character is currently moving, this method will do nothing.
 		public function move(direction:int):void {
+			trace("character.move(" + direction + ")");
 			if (moving || inCombat) {
 				return;
 			}
@@ -99,7 +100,7 @@ package {
 					y++;
 				}
 
-				if (x == destX && y == destY) {
+				if (x == destX && y == destY && moving) {
 					moving = false;
 					dispatchEvent(new TileEvent(TileEvent.CHAR_ARRIVED,
 												Util.real_to_grid(x),

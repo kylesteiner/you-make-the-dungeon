@@ -19,12 +19,12 @@ package ai {
 		}
 
 		// Returns an Dictionary mapping action->successor state
-		public function getSuccessors(state:GameState):Dictionary {
-			var successors:Dictionary = new Dictionary()
+		public function getSuccessors(state:GameState):Array {
+			var successors:Array = new Array();
 			var actions:Array = state.getLegalActions();
 			for (var i:int = 0; i < actions.length; i++) {
 				var newState:GameState = state.generateSuccessor(actions[i]);
-				successors[actions[i]] = newState;
+				successors.push(new Successor(newState, actions[i], 1));
 			}
 			return successors;
 		}
