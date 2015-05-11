@@ -95,7 +95,6 @@ package {
 
 		public function getEntry():Tile {
 			var x:int; var y:int;
-
 			for(x = 0; x < grid.length; x++) {
 				for(y = 0; y < grid[x].length; y++) {
 					if(grid[x][y] is EntryTile) {
@@ -103,13 +102,11 @@ package {
 					}
 				}
 			}
-
 			return null;
 		}
 
 		public function getExit():Tile {
 			var x:int; var y:int;
-
 			for(x = 0; x < grid.length; x++) {
 				for(y = 0; y < grid[x].length; y++) {
 					if(grid[x][y] is ExitTile) {
@@ -117,7 +114,6 @@ package {
 					}
 				}
 			}
-
 			return null;
 		}
 
@@ -138,7 +134,7 @@ package {
 			}
 
 			// Replace the current grid with a fresh one.
-			grid = initializeGrid(gridWidth, gridHeight);
+			grid = Util.initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
@@ -208,20 +204,6 @@ package {
 			highlightedLocations.splice()
 		}
 
-		// Returns a 2D array with the given dimensions.
-		private function initializeGrid(x:int, y:int):Array {
-			var arr:Array = new Array(x);
-			// Potential bug exists here when appending Tiles to
-			// the end of the outside array (which should never occur)
-			// Code elsewhere will treat an Array of 5 Arrays and a Tile
-			// as 6 Arrays, which then bugs when we set properties of the
-			// 6th "Array".
-			for (var i:int = 0; i < x; i++) {
-				arr[i] = new Array(y);
-			}
-			return arr;
-		}
-
 		private function parseFloorData(floorDataBytes:ByteArray):void {
 			// TODO: ensure loaded file always has correct number of lines
 			//		 as well as all necessary data (char, entry, exit).
@@ -247,7 +229,7 @@ package {
 			var floorSize:Array = floorData[3].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
-			initialGrid = initializeGrid(gridWidth, gridHeight);
+			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
 
 			// Parse the character's starting position.
 			var characterData:Array = floorData[4].split("\t");
