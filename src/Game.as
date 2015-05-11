@@ -277,12 +277,13 @@ package {
 
 			// Tile placement
 			if (tileHud) {
-				var tileInUse:int = tileHud.indexOfTileInUse();
-				if (tileInUse == -1) {
+				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
+				if (selectedTileIndex == -1) {
 					return;
 				}
-				var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
-				if (touch.phase == TouchPhase.ENDED) {
+				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
+				currentFloor.highlightAllowedLocations(selectedTile);
+				if (touch.phase == TouchPhase.BEGAN) {
 					// Player placed one of the available tiles
 					currentFloor.clearHighlightedLocations();
 					if (selectedTile.grid_x < currentFloor.gridWidth &&
@@ -290,16 +291,14 @@ package {
 						!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
 						currentFloor.fitsInDungeon(selectedTile.grid_x, selectedTile.grid_y, selectedTile)) {
 						// Move tile from HUD to grid. Add new tile to HUD.
-						tileHud.removeAndReplaceTile(tileInUse);
+						tileHud.removeAndReplaceTile(selectedTileIndex);
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
 						selectedTile.positionTileOnGrid();
 					} else {
 						// Tile wasn't placed correctly. Return tile to HUD.
-						tileHud.returnTileInUse();
+						tileHud.returnSelectedTile();
 					}
-				} else if (touch.phase == TouchPhase.BEGAN) {
-					currentFloor.highlightAllowedLocations(selectedTile);
 				}
 			}
 		}

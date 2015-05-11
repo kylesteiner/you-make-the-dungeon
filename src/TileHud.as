@@ -19,7 +19,6 @@ package {
 		// List of available tiles displayed on HUD
 		private var availableTiles:Array;
 
-		// TODO: Comment
 		public function TileHud(tileRatesBytes:ByteArray,
 								textureDict:Dictionary) {
 			super();
@@ -42,40 +41,36 @@ package {
 			return availableTiles[index];
 		}
 
-		// TODO: Comment
-		public function indexOfTileInUse():int {
+		public function indexOfSelectedTile():int {
 			for (var i:int; i < availableTiles.length; i++) {
 				var tile:Tile = availableTiles[i];
-				if (tile.held) {
+				if (tile.selected) {
 					return availableTiles.indexOf(tile);
 				}
 			}
 			return -1;
 		}
 
-		public function returnTileInUse():void {
-			var index:int = indexOfTileInUse()
-			var tileInUse:Tile = availableTiles[index];
-			tileInUse.held = false;
-			tileInUse.x = HUD.x + Util.HUD_PAD_LEFT +
+		public function returnSelectedTile():void {
+			var index:int = indexOfSelectedTile()
+			var selectedTile:Tile = availableTiles[index];
+			selectedTile.selected = false;
+			selectedTile.x = HUD.x + Util.HUD_PAD_LEFT +
 				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
-			tileInUse.y = HUD.y + Util.HUD_PAD_TOP;
+			selectedTile.y = HUD.y + Util.HUD_PAD_TOP;
 		}
 
-		// TODO: Comment
-		public function removeAndReplaceTile(index:int):void {
-			removeChild(availableTiles[index]);
-			availableTiles[index] = getNextTile(index)
-		}
-
-		// TODO: Comment
 		public function resetTileHud(): void {
 			for (var i:int = 0; i < availableTiles.length; i++) {
 				removeAndReplaceTile(i);
 			}
 		}
+		
+		public function removeAndReplaceTile(index:int):void {
+			removeChild(availableTiles[index]);
+			availableTiles[index] = getNextTile(index)
+		}
 
-		// TODO: Comment
 		public function getNextTile(index:int):Tile {
 			var tile:Tile; var tN:Boolean; var tS:Boolean; var tE:Boolean;
 			var tW:Boolean; var dir:int; var tTexture:Texture; var tType:String;
@@ -124,7 +119,6 @@ package {
 			return tile;
 		}
 
-		// TODO: Comment
 		private function parseTileRates(tileRatesBytes:ByteArray):void {
 			var i:int; var j:int; var end:int; var pos:int;
 			var lineData:Array; var tType:String; var tPercent:int;

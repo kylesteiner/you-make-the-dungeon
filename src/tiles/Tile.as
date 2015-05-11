@@ -22,7 +22,7 @@ package tiles {
 
 		public var image:Image;
 		public var locked:Boolean;
-		public var held:Boolean;
+		public var selected:Boolean;
 		public var text:TextField;
 		public var infoUpdated:Boolean;
 		
@@ -56,7 +56,7 @@ package tiles {
 			y = Util.grid_to_real(g_y);
 
 			locked = true;
-			held = false;
+			selected = false;
 			infoUpdated = false;
 			
 			displayInformation();
@@ -112,7 +112,7 @@ package tiles {
 				text.y = getToPointY();
 			}
 			
-			if (!held) {
+			if (!selected) {
 				text.visible = false;
 			}
 			
@@ -125,7 +125,7 @@ package tiles {
 				}
 			}
 			
-			if (!locked && held) {
+			if (!locked && selected) {
 				x += touch.globalX - touch.previousGlobalX;
 				y += touch.globalY - touch.previousGlobalY;
 				checkGameBounds();
@@ -134,7 +134,7 @@ package tiles {
 			}
 
 			if (touch.phase == TouchPhase.BEGAN) {
-				held = true;
+				selected = !selected;
 			}
 		}
 		
