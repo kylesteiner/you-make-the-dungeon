@@ -12,6 +12,7 @@ package {
 	import starling.text.TextField;
 	import starling.textures.*;
 
+	import ai.Combat;
 	import Character;
 	import tiles.*;
 	import Util;
@@ -321,12 +322,14 @@ package {
 			}
 		}
 
+		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
 			if (char.inCombat && combatFrames == 0) {
 				// Time for the next combat round.
 				if (characterCombatTurn) {
-					enemy.state.hp -= char.state.attack;
+					Combat.charAttacksEnemy(char.state, enemy.state);
 
+					// TODO: display damage more prettily
 					dmgText = new TextField(64, 32, "-" + char.state.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
@@ -334,10 +337,9 @@ package {
 
 					combatFrames = 30;
 
-					// Add XP if player wins the combat.
+					// If the enemy dies, remove the enemy image and end combat.
 					if (enemy.state.hp <= 0) {
-						char.state.xp += enemy.state.xpReward;
-						char.state.tryLevelUp();
+						// TODO: Display XP gain, healing
 						enemy.removeImage();
 						char.inCombat = false;
 						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
@@ -347,8 +349,8 @@ package {
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
-					char.state.hp -= enemy.state.attack;
-
+					Combat.enemyAttacksChar(char.state, enemy.state);
+					// TODO: display damage more prettily
 					dmgText = new TextField(64, 32, "-" + enemy.state.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
 					dmgText.x = 200;
 					dmgText.y = 200;

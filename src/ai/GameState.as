@@ -134,12 +134,27 @@ package ai {
 			if (nextEntities[nextChar.x][nextChar.y]) {
 				var entity:Object = nextEntities[nextChar.x][nextChar.y];
 				if (entity is EnemyState) {
-					// TODO: write combat rules.
+					var enemy:EnemyState = entity;
+					// Run combat loop until someone dies.
+					while (nextChar.hp > 0 && enemy.hp > 0) {
+						Combat.charAttacksEnemy(nextChar, enemy);
+						if (nextChar.hp <= 0) {
+							break;
+						}
+						Combat.enemyAttacksChar(nextChar, enemy);
+					}
+					if (enemy.hp <= 0) {
+						// Remove enemy entity if char won.
+						nextEntities[nextChar.x][nextChar.y] == null;
+					}
 				}
 				if (entity is HealingState) {
 					var heal:HealingState = entity;
-					heal.healCharacter(nextChar);
-					nextEntities[nextChar.x][nextChar.y] = null;
+					var healed:Boolean = heal.healCharacter(nextChar);
+					if (healed) {
+						// Only remove the healing entity if it was used.
+						nextEntities[nextChar.x][nextChar.y] = null;
+					}
 				}
 				if (entity is ObjectiveState) {
 					var obj:ObjectiveState = entity;
@@ -147,6 +162,10 @@ package ai {
 					nextEntities[nextChar.x][nextChar.y] = null;
 				}
 			}
+
+			// The grid and exits won't change. Only the character, entities,
+			// and objective log will change.
+			return new GameState(nextChar, grid, nextEntities, nextObj, exitX, exitY);
 		}
 	}
 }
