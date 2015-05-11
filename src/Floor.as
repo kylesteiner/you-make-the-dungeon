@@ -13,6 +13,7 @@ package {
 	import starling.textures.*;
 
 	import ai.Combat;
+	import ai.SearchAgent;
 	import Character;
 	import tiles.*;
 	import Util;
@@ -34,6 +35,7 @@ package {
 		// Map string (objective key) -> boolean (state)
 		public var objectiveState:Dictionary;
 
+		// Grid metadata.
 		private var initialGrid:Array;
 		public var gridHeight:int;
 		public var gridWidth:int;
@@ -43,6 +45,8 @@ package {
 		private var initialY:int;
 		private var initialXp:int;
 		private var initialLevel:int;
+
+		private var agent:SearchAgent;
 
 		private var floorFiles:Dictionary;
 		private var nextFloor:String;
@@ -73,7 +77,11 @@ package {
 			initialXp = xp;
 			textures = textureDict;
 			objectiveState = new Dictionary();
+
+			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
+
 			highlightedLocations = new Array();
+
 			combatFrames = 0;
 			characterCombatTurn = true;
 
@@ -91,6 +99,17 @@ package {
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+		}
+
+		// Called when the run button is clicked.
+		public function runFloor():void {
+			agent.computePath(this);
+			var firstAction:int = agent.getAction();
+			if (firstAction != -1) {
+				char.move(agent.getAction());
+			} else {
+				// TODO: display that it couldn't find a path.
+			}
 		}
 
 		public function getEntry():Tile {
@@ -369,7 +388,7 @@ package {
 		}
 
 		private function onCharHandled(e:TileEvent):void {
-			char.continueMovement();
+			char.move(agent.getAction());
 		}
 
 		// Event handler for when a character arrives at an exit tile.

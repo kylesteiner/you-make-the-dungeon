@@ -2,6 +2,7 @@ package ai {
 
 	public class CharState {
 		public static const BASE_HP:int = 5;
+		// (x,y) are grid coordinates.
 		public var x:int;
 		public var y:int;
 		public var xp:int;

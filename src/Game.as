@@ -260,29 +260,7 @@ package {
 		}
 
 		public function runFloor():void {
-			// TODO: complete this function
-			var floorAStar:AStar = new AStar(currentFloor.grid);
-			addChild(floorAStar);
-			var floorEntryTile:Tile = currentFloor.getEntry();
-			var floorExitTile:Tile = currentFloor.getExit();
-
-			if(!floorEntryTile || !floorExitTile) {
-				removeChild(floorAStar);
-				return;
-			}
-
-			var charPath:Array = floorAStar.findPath(floorEntryTile.grid_x,
-													 floorEntryTile.grid_y,
-													 floorExitTile.grid_x,
-													 floorExitTile.grid_y);
-			if(!charPath) {
-				removeChild(floorAStar);
-				return;
-			}
-
-			//floorAStar.screenState.text = charPath.length.toString();
-
-			currentFloor.char.moveThroughFloor(charPath);
+			currentFloor.runFloor();
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
