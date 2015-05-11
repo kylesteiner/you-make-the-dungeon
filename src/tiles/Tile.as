@@ -103,7 +103,6 @@ package tiles {
 			var touch:Touch = event.getTouch(this);
 
 			if (!touch) {
-				//text.visible = false;
 				removeChild(text);
 				return;
 			} 

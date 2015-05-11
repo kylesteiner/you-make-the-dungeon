@@ -1,5 +1,6 @@
 floor0
 floor1
+floor0
 5	5
 1	1
 entry	1	1	0	1	0	1
