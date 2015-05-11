@@ -19,9 +19,9 @@ package {
 	public class Floor extends Sprite {
 		// Number of lines at the beginning of floordata files that are
 		// dedicated to non-tile objects at the start.
-		public static const NON_TILE_LINES:int = 4;
+		public static const NON_TILE_LINES:int = 5;
 
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it! Click here for next level."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next level."
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
@@ -56,6 +56,7 @@ package {
 		private var dmgText:TextField;
 
 		private var textures:Dictionary;
+		private var nextTransition:String;
 		private var highlightedLocations:Array;
 
 		// grid: The initial layout of the floor.
@@ -239,14 +240,16 @@ package {
 			// Remove hidden escape characters
 			nextFloor = Util.stripString(floorData[1]);
 
+			nextTransition = Util.stripString(floorData[2]);
+
 			// Parse the floor dimensions and initialize the grid array.
-			var floorSize:Array = floorData[2].split("\t");
+			var floorSize:Array = floorData[3].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
 			initialGrid = initializeGrid(gridWidth, gridHeight);
 
 			// Parse the character's starting position.
-			var characterData:Array = floorData[3].split("\t");
+			var characterData:Array = floorData[4].split("\t");
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
@@ -390,12 +393,13 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
-			var winText:TextField = new TextField(320, 128, NEXT_LEVEL_MESSAGE, "Verdana", Util.MEDIUM_FONT_SIZE);
-			var nextFloorButton:Clickable = new Clickable(128, 128,
+			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, "Verdana", Util.MEDIUM_FONT_SIZE);
+			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);
-			nextFloorButton.addParameter(floorFiles[nextFloor][0]);
-			nextFloorButton.addParameter(floorFiles[nextFloor][1]);
+			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
+			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
+			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
 			nextFloorButton.addParameter(char.level);
 			nextFloorButton.addParameter(char.xp);
 			addChild(nextFloorButton);
