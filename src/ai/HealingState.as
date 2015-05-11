@@ -10,9 +10,16 @@ package ai {
 		// Attempts to heal the character with the given state. Returns false
 		// if the character doesn't require healing, true if the character
 		// was healed.
-		public function HealCharacter(c:CharState):Boolean {
-			// TODO: refactor logic out of HealingTile sprite.
-			return false;
+		public function healCharacter(c:CharState):Boolean {
+			if (c.hp == c.maxHp) {
+				return false;
+			}
+
+			c.hp += health;
+			if (c.hp > c.maxHp) {
+				c.hp = c.maxHp;
+			}
+			return true;
 		}
 	}
 }

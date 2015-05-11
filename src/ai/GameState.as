@@ -64,7 +64,7 @@ package ai {
 		// Assumes that action is a legal action.
 		public function generateSuccessor(action:int):GameState {
 			// Make a copy of char.
-			var next:CharState = new CharState(char.x, char.y, char.xp, char.level, char.maxHp, char.hp, char.attack);
+			var nextChar:CharState = new CharState(char.x, char.y, char.xp, char.level, char.maxHp, char.hp, char.attack);
 
 			// Make a deep copy of entities.
 			var nextEntities = new Array(gridWidth);
@@ -91,35 +91,30 @@ package ai {
 			// Set the next character position.
 			switch (action) {
 				case Util.NORTH:
-					next.y--;
+					nextChar.y--;
 				case Util.SOUTH:
-					next.y++;
+					nextChar.y++;
 				case Util.EAST:
-					next.x--;
+					nextChar.x--;
 				case Util.WEST:
-					next.x++;
+					nextChar.x++;
 			}
 
 			// Calculate character-entity interaction
-			if (nextEntities[next.x][next.y]) {
-				var entity:EntityState = nextEntities[next.x][next.y];
-				switch (entity.type) {
-					case (EntityState.ENEMY):
-						// TODO: write combat rules. Blocked on Character/
-						// CharState refactor.
-					case (EntityState.HEALING):
-						if (next.hp == next.maxHp) {
-							break;
-						}
-						next.hp += entity.health;
-						if (next.hp > next.maxHp) {
-							next.hp = next.maxHp;
-						}
-						nextEntities[next.x][next.y] = null;
-
-					case (EntityState.OBJECTIVE):
-						nextObj[entity.key] = true;
-						nextEntities[next.x][next.y] = null;
+			if (nextEntities[nextChar.x][nextChar.y]) {
+				var entity:Object = nextEntities[nextChar.x][nextChar.y];
+				if (entity is EnemyState) {
+					// TODO: write combat rules.
+				}
+				if (entity is HealingState) {
+					var heal:HealingState = entity;
+					heal.healCharacter(nextChar);
+					nextEntities[nextChar.x][nextChar.y] = null;
+				}
+				if (entity is ObjectiveState) {
+					var obj:ObjectiveState = entity;
+					nextObj[obj.key] = true;
+					nextEntities[nextChar.x][nextChar.y] = null;
 				}
 			}
 		}

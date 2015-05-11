@@ -7,7 +7,11 @@ package tiles {
 	import ai.HealingState;
 
 	public class HealingTile extends Tile {
+		// Contains the amount of health restored, and game logic.
 		public var state:HealingState;
+
+		// Marks whether the health at this tile has been used. If so, hide the
+		// image and prevent further healing.
 		public var used:Boolean;
 
 		private var healthImage:Image;
@@ -30,20 +34,12 @@ package tiles {
 		}
 
 		override public function handleChar(c:Character):void {
-			if (used || c.state.hp == c.state.maxHp) {
-				dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
-											Util.real_to_grid(x),
-											Util.real_to_grid(y),
-											c));
-				return;
-			}
-			used = true;
-			removeChild(healthImage);
-
-			// TODO: refactor gameplay logic
-			c.state.hp += state.health;
-			if (c.state.hp > c.state.maxHp) {
-				c.state.hp = c.state.maxHp;
+			if (!used) {
+				var healed:Boolean = state.healCharacter(c.state);
+				if (healed) {
+					used = true;
+					removeChild(healthImage);
+				}
 			}
 
 			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
