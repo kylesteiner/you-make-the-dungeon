@@ -347,9 +347,14 @@ package {
 					return;
 				}
 				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
+				tileHud.lockTiles();
+				selectedTile.moveToTouch(touch);
 				currentFloor.highlightAllowedLocations(selectedTile);
-				if (touch.phase == TouchPhase.BEGAN) {
+				// Trigger tile placement if they click outside the char
+				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
+					touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height)) {
 					// Player placed one of the available tiles
+					tileHud.unlockTiles();
 					currentFloor.clearHighlightedLocations();
 					if (selectedTile.grid_x < currentFloor.gridWidth &&
 						selectedTile.grid_y < currentFloor.gridHeight &&

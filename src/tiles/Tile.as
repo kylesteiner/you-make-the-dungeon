@@ -98,21 +98,30 @@ package tiles {
 				infoUpdated = true;
 			}
 		}
+		
+		// Moves the tiles to the given touch location (for tile selection)
+		public function moveToTouch(touch:Touch):void {
+			if (selected) {
+				x += touch.globalX - touch.previousGlobalX;
+				y += touch.globalY - touch.previousGlobalY;
+				checkGameBounds();
+				grid_x = Util.real_to_grid(x + 16);
+				grid_y = Util.real_to_grid(y + 16);
+			}
+		}
 
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
-
-			if (!touch) {
+			
+			if (!touch || locked) {
 				removeChild(text);
 				return;
 			} 
 			
-			if (!held && !locked) {
+			if (!selected) {
 				text.x = getToPointX();
 				text.y = getToPointY();
-			}
-			
-			if (selected) {
+			} else {
 				removeChild(text);
 			}
 			
@@ -120,21 +129,10 @@ package tiles {
 				// display text here;
 				text.visible = true;
 				addChild(text);
-				if (locked) {
-					return;
-				}
-			}
-			
-			if (!locked && selected) {
-				x += touch.globalX - touch.previousGlobalX;
-				y += touch.globalY - touch.previousGlobalY;
-				checkGameBounds();
-				grid_x = Util.real_to_grid(x + 16);
-				grid_y = Util.real_to_grid(y + 16);
 			}
 
-			if (touch.phase == TouchPhase.BEGAN) {
-				selected = !selected;
+			if (touch.phase == TouchPhase.ENDED) {
+				selected = true;
 			}
 		}
 		
