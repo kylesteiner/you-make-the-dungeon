@@ -2,7 +2,9 @@ package ai {
 	import Floor;
 
 	public class SearchAgent {
+		// function(problem:SearchProblem, heuristic:Function)
 		private var search:Function;
+		// function(state:GameState)
 		private var heuristic:Function;
 
 		private var path:Array;
@@ -35,7 +37,12 @@ package ai {
 		}
 
 		public static function aStar(problem:SearchProblem, heuristic:Function):Array {
-			var fringe:Heap = new Heap();
+			var fringe:Heap = new Heap(
+				// Priority function for the heap (anonymous).
+				function(node:SearchNode):int {
+					return node.cost + heuristic(node.state);
+				}
+			);
 			// TODO: implement
 			return null;
 		}

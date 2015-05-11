@@ -1,31 +1,39 @@
 package ai {
 
+	// A binary min-heap for sorting SearchNodes by priority. Used for the A*
+	// algorithm for the game AI.
 	public class Heap {
 		private var arr:Array;
 		private var size:int;
+		private var priorityFn:Function;
 
-		public function Heap() {
+		// Creates a new Heap, using the given function to assign priority to
+		// nodes.
+		public function Heap(priorityFn:Function) {
 			arr = new Array();
 			size = 0;
+			this.priorityFn = priorityFn;
 		}
 
-		public function insert(data:Object, priority:int):void {
-			var node:HeapNode = new HeapNode(data, priority);
+		// Insert a search node into the heap.
+		public function insert(searchNode:SearchNode):void {
+			var node:HeapNode = new HeapNode(searchNode, priorityFn(searchNode));
 			size++;
 			var i:int = percolateUp(size, node);
 			arr[i] = node;
 		}
 
-		public function popMin():Object {
+		// Remove the highest priority search node.
+		public function pop():SearchNode {
 			if (size == 0) {
 				return null;
 			}
 
-			var result:Object = arr[1];
+			var result:HeapNode = arr[1];
 			var hole:int = percolateDown(1, arr[size]);
 			arr[hole] = arr[size];
 			size--;
-			return result;
+			return result.data;
 		}
 
 		private function percolateUp(hole:int, node:HeapNode):int {
@@ -58,10 +66,11 @@ package ai {
 	}
 }
 
+import ai.SearchNode;
 class HeapNode {
-	public var data:Object;
+	public var data:SearchNode;
 	public var val:int;
-	public function HeapNode(data:Object, val:int) {
+	public function HeapNode(data:SearchNode, val:int) {
 		this.data = data;
 		this.val = val;
 	}
