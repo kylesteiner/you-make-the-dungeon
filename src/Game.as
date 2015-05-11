@@ -358,6 +358,8 @@ package {
 						tileHud.removeAndReplaceTile(tileInUse);
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
+						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
+						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
 						if (selectedTile is Tile) {
