@@ -43,5 +43,16 @@ package ai {
 				attack = level;
 			}
 		}
+
+		public function hash():int {
+			var sum:int = x * 99989 +
+						  y * 100019 +
+						  xp * 100069 +
+						  level * 100673 +
+						  maxHp * 101807 +
+						  hp * 103583 +
+						  attack * 103951;
+			return (sum * 104729) % Math.pow(2, 30);
+		}
 	}
 }

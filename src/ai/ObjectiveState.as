@@ -1,5 +1,6 @@
 package ai {
-	public class ObjectiveState {
+	import Util;
+	public class ObjectiveState extends EntityState {
 		// Identifies this tile in Floor.objectiveState, prereqs
 		public var key:String;
 		// Objectives that must be completed before passing through this tile. Pathfinding/
@@ -10,6 +11,14 @@ package ai {
 		public function ObjectiveState(key:String, prereqs:Array) {
 			this.key = key;
 			this.prereqs = prereqs;
+		}
+
+		override public function hash():int {
+			var hash:int = Util.hashString(key);
+			for (var i:int = 0; i < prereqs.length; i++) {
+				hash += Util.hashString(String(prereqs));
+			}
+			return hash;
 		}
 	}
 }

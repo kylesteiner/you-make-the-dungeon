@@ -1,6 +1,6 @@
 package ai {
 
-	public class HealingState {
+	public class HealingState extends EntityState {
 		public var health:int;
 
 		public function HealingState(health:int) {
@@ -20,6 +20,10 @@ package ai {
 				c.hp = c.maxHp;
 			}
 			return true;
+		}
+
+		override public function hash():int {
+			return health;
 		}
 	}
 }

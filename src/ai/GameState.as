@@ -238,5 +238,22 @@ package ai {
 			// and objective log will change.
 			return new GameState(null, nextChar, grid, nextEntities, nextObj, exitX, exitY);
 		}
+
+		public function hash():int {
+			var hash:int = char.hash() * 71;
+			for (var i:int = 0; i < gridWidth; i++) {
+				for (var j:int = 0; j < gridHeight; j++) {
+					var entity:EntityState = entities[i][j] as EntityState;
+					if (entity) {
+						hash += entity.hash();
+					}
+				}
+			}
+			for (var str:String in visitedObj) {
+				//var str:String = k as String;
+				hash += Util.hashString(str);
+			}
+			return hash % 1048575;
+		}
 	}
 }
