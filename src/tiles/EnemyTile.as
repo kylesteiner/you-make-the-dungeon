@@ -5,11 +5,11 @@ package tiles {
 	import starling.text.TextField;
 	import starling.utils.Color;
 
-    import ai.EntityState;
+    import ai.EnemyState;
 
     public class EnemyTile extends Tile {
         // Gameplay state
-        public var state:EntityState;
+        public var state:EnemyState;
         public var initialHp:int;
 
         // Eye candy attributes (not used in gameplay)
@@ -39,7 +39,7 @@ package tiles {
             this.enemyName = name;
             this.level = level;
             initialHp = hp;
-            state = new EntityState(EntityState.ENEMY, hp, attack, xpReward);
+            state = new EnemyState(hp, attack, xpReward);
         }
 
         public function removeImage():void {

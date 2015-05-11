@@ -1,13 +1,15 @@
 package tiles {
 	import starling.display.Image;
-	import starling.utils.Color;
-	import starling.textures.Texture;
 	import starling.text.TextField;
+	import starling.textures.Texture;
+	import starling.utils.Color;
 
-	import ai.EntityState;
+	import ai.HealingState;
 
 	public class HealingTile extends Tile {
-		public var state:EntityState;
+		public var state:HealingState;
+		public var used:Boolean;
+
 		private var healthImage:Image;
 
 		public function HealingTile(g_x:int,
@@ -23,18 +25,19 @@ package tiles {
 			healthImage = new Image(healthTexture);
 			addChild(healthImage);
 
-			state = new EntityState(EntityState.HEALING, 0, 0, 0, health, false);
+			state = new HealingState(health);
+			used = false;
 		}
 
 		override public function handleChar(c:Character):void {
-			if (state.healthUsed || c.state.hp == c.state.maxHp) {
+			if (used || c.state.hp == c.state.maxHp) {
 				dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 											Util.real_to_grid(x),
 											Util.real_to_grid(y),
 											c));
 				return;
 			}
-			state.healthUsed = true;
+			used = true;
 			removeChild(healthImage);
 
 			// TODO: refactor gameplay logic
@@ -51,7 +54,7 @@ package tiles {
 
 		override public function reset():void {
 			addChild(healthImage);
-			state.healthUsed = false;
+			used = false;
 		}
 
 		override public function displayInformation():void {

@@ -1,15 +1,14 @@
 package tiles {
     import starling.display.Image;
+    import starling.text.TextField;
     import starling.textures.Texture;
-	import starling.utils.Color;
-	import starling.text.TextField;
+    import starling.utils.Color;
 
-    import ai.EntityState;
+    import ai.ObjectiveState;
 
     public class ObjectiveTile extends Tile {
+        public var state:ObjectiveState;
         public var objImage:Image;
-
-        public var state:EntityState;
 
         public function ObjectiveTile(g_x:int,
                                       g_y:int,
@@ -25,7 +24,7 @@ package tiles {
             objImage = new Image(foreground);
             addChild(objImage);
 
-            state = new EntityState(EntityState.OBJECTIVE, 0, 0, 0, 0, false, objKey, prereqs);
+            state = new ObjectiveState(objKey, prereqs);
         }
 
         // Should not be called unless all prerequisite objectives are completed.
