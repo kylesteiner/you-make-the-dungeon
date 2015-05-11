@@ -39,6 +39,7 @@ package tiles {
             this.hp = hp;
             this.attack = attack;
             this.xpReward = xpReward;
+			displayInformation();
         }
 
         public function removeImage():void {
