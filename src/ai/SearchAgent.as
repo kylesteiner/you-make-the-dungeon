@@ -35,7 +35,8 @@ package ai {
 		}
 
 		public static function aStar(problem:SearchProblem, heuristic:Function):Array {
-			// TODO: implement!!!
+			var fringe:Heap = new Heap();
+			// TODO: implement
 			return null;
 		}
 
