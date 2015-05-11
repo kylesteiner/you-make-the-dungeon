@@ -25,6 +25,7 @@ package tiles {
 
 			this.health = health;
 			this.used = false;
+			displayInformation();
 		}
 
 		override public function handleChar(c:Character):void {

@@ -103,23 +103,23 @@ package tiles {
 			var touch:Touch = event.getTouch(this);
 
 			if (!touch) {
-				text.visible = false;
+				removeChild(text);
 				return;
 			} 
 			
-			if (!locked) {
+			if (!held && !locked) {
 				text.x = getToPointX();
 				text.y = getToPointY();
 			}
 			
-			if (!held) {
-				text.visible = false;
+			if (held) {
+				removeChild(text);
 			}
 			
 			if (touch.phase == TouchPhase.HOVER) {
 				// display text here;
 				text.visible = true;
-
+				addChild(text);
 				if (locked) {
 					return;
 				}

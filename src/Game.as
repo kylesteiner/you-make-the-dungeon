@@ -16,6 +16,8 @@ package {
 	import CharHud;
 	import Util;
 	import Menu;
+	//import cgs.logger.Logger;
+	import Logger;
 	import ai.*;
 
 	public class Game extends Sprite {
@@ -103,11 +105,31 @@ package {
 		private var currentTransition:Clickable;
 		private var currentMenu:Menu;
 		private var isMenu:Boolean;
+
+		private var logger:Logger;
+		private var numberOfTilesPlaced:int;
+		private var emptyTiles:int;
+		private var enemyTiles:int;
+		private var healingTiles:int;
 		private var sfxMuted:Boolean;
 
 		public function Game() {
 			Mouse.hide();
-
+			
+			var gid:uint = 115;
+			var gname:String = "cgs_gc_YouMakeTheDungeon";
+			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
+			
+			// this is the current version, we'll treat 0 as the debugging 
+			// version, and change this for each iteration on, back to 0
+			// for our own testing.
+			var cid:int = 0;
+			
+			logger = Logger.initialize(gid, gname, skey, cid, null);
+			
+			// for keeping track of how many tiles are placed before hitting reset
+			numberOfTilesPlaced = 0;
+			
 			textures = setupTextures();
 			floors = setupFloors();
 
@@ -199,10 +221,14 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-
+			// TODO: find out how to pass in xp
+			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
 
 			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition);
+			// the logger doesn't like 0 based indexing.
+			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } );
+			
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -254,6 +280,13 @@ package {
 		}
 
 		public function resetFloor():void {
+			logger.logAction(8, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
+						     "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+			//reset counters
+			numberOfTilesPlaced = 0;
+			emptyTiles = 0;
+			enemyTiles = 0;
+			healingTiles = 0;
 			currentFloor.resetFloor();
 			tileHud.resetTileHud();
 			charHud.char = currentFloor.char
@@ -281,7 +314,8 @@ package {
 			}
 
 			//floorAStar.screenState.text = charPath.length.toString();
-
+			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
+								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			currentFloor.char.moveThroughFloor(charPath);
 		}
 
@@ -324,7 +358,17 @@ package {
 						tileHud.removeAndReplaceTile(tileInUse);
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
+						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
+						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
 						selectedTile.positionTileOnGrid();
+						numberOfTilesPlaced++;
+						if (selectedTile is Tile) {
+							emptyTiles++;
+						} else if (selectedTile is EnemyTile) {
+							enemyTiles++;
+						} else if (selectedTile is HealingTile) {
+							healingTiles++;
+						}
 					} else {
 						// Tile wasn't placed correctly. Return tile to HUD.
 						tileHud.returnTileInUse();
