@@ -82,14 +82,14 @@ package tiles {
 		}
 
 		// Realigns the selected tile from the tile HUD on the Floor.
-		public function positionTileOnGrid():void {
+		public function positionTileOnGrid(worldX:int, worldY:int):void {
 			//need to test that it is a legal position
 			//snap to function should be better than
-			x = Util.grid_to_real(Util.real_to_grid(x + 16));
-			y = Util.grid_to_real(Util.real_to_grid(y + 16));
+			x = Util.grid_to_real(Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2));
+			y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
 			checkGameBounds();
-			grid_x = Util.real_to_grid(x + 16);
-			grid_y = Util.real_to_grid(y + 16);
+			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
+			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 			locked = true;
 			if (!infoUpdated) {
 				text.x = getToPointX();
@@ -99,13 +99,13 @@ package tiles {
 		}
 
 		// Moves the tiles to the given touch location (for tile selection)
-		public function moveToTouch(touch:Touch):void {
+		public function moveToTouch(touch:Touch, worldX:int, worldY:int):void {
 			if (selected) {
 				x += touch.globalX - touch.previousGlobalX;
 				y += touch.globalY - touch.previousGlobalY;
 				checkGameBounds();
-				grid_x = Util.real_to_grid(x + 16);
-				grid_y = Util.real_to_grid(y + 16);
+				grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
+				grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 			}
 		}
 
