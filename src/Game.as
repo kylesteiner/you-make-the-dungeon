@@ -25,7 +25,6 @@ package {
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] private var static_background:Class;
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
-		//[Embed(source='assets/backgrounds/tile_hud_new.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_new.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
 
@@ -292,7 +291,6 @@ package {
 				world.removeChild(currentFloor);
 				removeChild(world);
 				// mute button should always be present
-				// removeChild(muteButton);
 				removeChild(currentTransition);
 				removeChild(resetButton);
 				removeChild(runButton);
@@ -329,8 +327,7 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			// TODO: find out how to pass in xp
-			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
+
 			var nextFloorData:Array = new Array();
 			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger, newFloorData[4]);
 
@@ -347,7 +344,7 @@ package {
 			addChild(runButton);
 			charHud = new CharHud(currentFloor.char, textures);
 			addChild(charHud);
-			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
+			tileHud = new TileHud(newFloorData[1], textures);
 			addChild(tileHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
@@ -610,7 +607,6 @@ package {
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim0));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
-			//charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
 			charDict[Util.CHAR_IDLE] = charVector;
 
 			var charCombatIdleVector:Vector.<Texture> = new Vector.<Texture>();
@@ -622,8 +618,6 @@ package {
 			var charCombatAttackVector:Vector.<Texture> = new Vector.<Texture>();
 			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim0));
 			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim1));
-			//charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim2));
-			//charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim3));
 			charDict[Util.CHAR_COMBAT_ATTACK] = charCombatAttackVector;
 
 			var charCombatFaintVector:Vector.<Texture> = new Vector.<Texture>();

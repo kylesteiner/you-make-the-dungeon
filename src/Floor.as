@@ -60,10 +60,6 @@ package {
 
 		// If the character is fighting, the enemy the character is fighting.
 		private var enemy:EnemyTile;
-		// Number of frames until the next combat animation.
-		private var combatFrames:int;
-		// True if character is attacking, false otherwise.
-		private var characterCombatTurn:Boolean;
 		private var dmgText:TextField;
 
 		private var textures:Dictionary;
@@ -104,8 +100,6 @@ package {
 
 			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
 
-			combatFrames = 0;
-			characterCombatTurn = true;
 			this.logger = logger;
 
 			floorFiles = floorDict;
@@ -139,7 +133,6 @@ package {
 			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
-			//addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
 
@@ -242,10 +235,6 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-
-			// Reset the combat state.
-			combatFrames = 0;
-			characterCombatTurn = true;
 
 			if(tutorialImage && originalTutorialDisplaying) {
 				tutorialDisplaying = true;
@@ -566,65 +555,6 @@ package {
 
 		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
-			/*if (char.inCombat && combatFrames == 0) {
-				addChild(char);
-				return;
-				// Time for the next combat round.
-				if (characterCombatTurn) {
-					Combat.charAttacksEnemy(char.state, enemy.state);
-
-					// TODO: display damage more prettily
-					dmgText = new TextField(64, 32, "-" + char.state.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
-					dmgText.x = 200;
-					dmgText.y = 200;
-					addChild(dmgText);
-
-					combatFrames = 30;
-					// If the enemy dies, remove the enemy image and end combat.
-					if (enemy.state.hp <= 0) {
-						// TODO: Display XP gain, healing
-						enemy.removeImage();
-						char.inCombat = false;
-						var oldLevel:int = char.state.level;
-						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
-													Util.real_to_grid(x),
-													Util.real_to_grid(y)));
-						if (oldLevel != char.state.level) {
-							logger.logAction(10, {"previousLevel":oldLevel, "newLevel":char.state.level } );
-
-						}
-					}
-					characterCombatTurn = false;  // Swap turns.
-				} else {
-					Combat.enemyAttacksChar(char.state, enemy.state);
-					// TODO: display damage more prettily
-					dmgText = new TextField(64, 32, "-" + enemy.state.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
-					dmgText.x = 200;
-					dmgText.y = 200;
-					addChild(dmgText);
-
-					combatFrames = 30;
-
-					if (char.state.hp <= 0) {
-						// TODO: handle character death.
-						if (logger) {
-							logger.logAction(4, { "characterLevel":char.state.level, "characterAttack":char.state.attack, "enemyName":enemy.enemyName,
-												 "enemyLevel":enemy.level, "enemyAttack":enemy.state.attack, "enemyHealthLeft":enemy.state.hp, "initialEnemyHealth":enemy.initialHp} );
-						}
-					}
-					characterCombatTurn = true;  // Swap turns.
-				}
-			}
-
-			// Remove the combat damage text after 15 frames.
-			if (combatFrames == 15) {
-				removeChild(dmgText);
-			}
-			// Tick down the frames between combat animations every frame.
-			if (combatFrames > 0) {
-				combatFrames--;
-			}*/
-
 			addChild(char);
 
 			if(tutorialImage && tutorialDisplaying) {
@@ -692,16 +622,5 @@ package {
 			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
 			objectiveState[t.state.key] = true;
 		}
-
-		// Called when a character runs into an enemy tile. Combat is executed
-		// step by step over several frames, so combat logic isn't directly
-		// invoked.
-		/*private function onCombat(e:TileEvent):void {
-			char.inCombat = true;
-			characterCombatTurn = true;
-			enemy = grid[e.grid_x][e.grid_y];
-			//dispatchEvent(new AnimationEvent.COMBAT_START, char, enemy)
-			//onCombatCallback(char, enemy);
-		}*/
 	}
 }
