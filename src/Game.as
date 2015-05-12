@@ -25,7 +25,6 @@ package {
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] private var static_background:Class;
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
-		//[Embed(source='assets/backgrounds/tile_hud_new.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_new.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
 
@@ -101,6 +100,7 @@ package {
 		[Embed(source='assets/transitions/floor6.png')] private static const transitions6:Class;
 		[Embed(source='assets/transitions/floor7.png')] private static const transitions7:Class;
 		[Embed(source='assets/transitions/floor8.png')] private static const transitions8:Class;
+		[Embed(source='assets/transitions/floor_final.png')] private static const transitionsFinal:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
@@ -280,6 +280,8 @@ package {
 			// Prompt clickable into either floor reset or continue modifying floor
 			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
 								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
+
+			resetFloor();
 		}
 
 		private function prepareSwap():void {
@@ -290,7 +292,6 @@ package {
 				world.removeChild(currentFloor);
 				removeChild(world);
 				// mute button should always be present
-				// removeChild(muteButton);
 				removeChild(currentTransition);
 				removeChild(resetButton);
 				removeChild(runButton);
@@ -327,10 +328,12 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			// TODO: find out how to pass in xp
-			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
+
 			var nextFloorData:Array = new Array();
 			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger, newFloorData[4]);
+			if(currentFloor.floorName == Util.FLOOR_8) {
+				currentFloor.altCallback = transitionToStart;
+			}
 
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
@@ -349,12 +352,18 @@ package {
 			addChild(runButton);
 			charHud = new CharHud(currentFloor.char, textures);
 			addChild(charHud);
-			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
+			tileHud = new TileHud(newFloorData[1], textures);
 			addChild(tileHud);
+
+			mixer.play(Util.FLOOR_BEGIN);
+		}
+
+		public function transitionToStart(a:Array):void {
+			createMainMenu();
 		}
 
 		public function createMainMenu():void {
-			//var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 
 			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			beginGameButton.addParameter(switchToFloor);
@@ -366,7 +375,7 @@ package {
 			beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(beginGameButton, creditsButton)));
+			switchToMenu(new Menu(new Array(startButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
@@ -498,6 +507,9 @@ package {
 						selectedTile.positionTileOnGrid(world.x, world.y);
 						numberOfTilesPlaced++;
 						selectedTile.onGrid = true;
+
+						mixer.play(Util.TILE_MOVE);
+
 						if (selectedTile is Tile) {
 							emptyTiles++;
 						} else if (selectedTile is EnemyTile) {
@@ -615,7 +627,6 @@ package {
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim0));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
-			//charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
 			charDict[Util.CHAR_IDLE] = charVector;
 
 			var charCombatIdleVector:Vector.<Texture> = new Vector.<Texture>();
@@ -627,8 +638,6 @@ package {
 			var charCombatAttackVector:Vector.<Texture> = new Vector.<Texture>();
 			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim0));
 			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim1));
-			//charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim2));
-			//charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim3));
 			charDict[Util.CHAR_COMBAT_ATTACK] = charCombatAttackVector;
 
 			var charCombatFaintVector:Vector.<Texture> = new Vector.<Texture>();
@@ -672,7 +681,7 @@ package {
 			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions6));
 			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions7));
 			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitions8));
-			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitionsFinal));
 			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));
 
