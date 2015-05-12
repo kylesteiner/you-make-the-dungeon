@@ -148,7 +148,7 @@ package tiles {
 				addChild(text);
 			}
 
-			if (touch.phase == TouchPhase.ENDED) {
+			if (touch.phase == TouchPhase.BEGAN) {
 				selected = true;
 			}
 		}
