@@ -32,7 +32,7 @@ package {
 			level = new TextField(64, 20, "LVL: " + char.state.level, Util.DEFAULT_FONT, 20);
 			addChild(level);
 
-			hp = new TextField(64, 20, "HP: " + char.state.hp, Util.DEFAULT_FONT, 20);
+			hp = new TextField(64, 20, "HP: " + char.state.hp + "/" + char.state.maxHp, Util.DEFAULT_FONT, 20);
 			addChild(hp);
 			hp.y = 22;
 
@@ -49,7 +49,7 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			level.text = "LVL: " + char.state.level;
-			hp.text = "HP: " + char.state.hp;
+			hp.text = "HP: " + char.state.hp + "/" + char.state.maxHp;
 			atk.text = "Attack: " + char.state.attack;
 			xp.text = "XP: " + char.state.xp + "/" + char.state.level;
 		}

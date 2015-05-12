@@ -25,7 +25,8 @@ package {
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
-		[Embed(source='assets/backgrounds/tutorial.png')] private static const tutorial_hud:Class;
+		//[Embed(source='assets/backgrounds/tile_hud_new.png')] private static const tile_hud:Class;
+		[Embed(source='assets/backgrounds/tutorial_new.png')] private static const tutorial_hud:Class;
 
 		[Embed(source='assets/effects/large/fog.png')] private static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
@@ -94,7 +95,7 @@ package {
 		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
 		[Embed(source='assets/animations/character/idle/character_2.png')] private static const characterIdleAnim2:Class;
-		[Embed(source='assets/animations/character/idle/character_3.png')] private static const characterIdleAnim3:Class;
+		//[Embed(source='assets/animations/character/idle/character_3.png')] private static const characterIdleAnim3:Class;
 
 		[Embed(source='assets/backgrounds/combat_background.png')] private static const combatBackground:Class;
 		[Embed(source='assets/backgrounds/combat_shadow.png')] private static const combatShadow:Class;
@@ -214,11 +215,21 @@ package {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
-			bgmMuteButton = new Clickable(0, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
-			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
-			resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
-			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
+			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
+			bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
+			bgmMuteButton.y = Util.STAGE_HEIGHT - bgmMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
+			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+
+			resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
+			resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+
+			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
+			runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -564,7 +575,7 @@ package {
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim0));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
-			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
+			//charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
 			charDict[Util.CHAR_IDLE] = charVector;
 
 			var charCombatIdleVector:Vector.<Texture> = new Vector.<Texture>();
