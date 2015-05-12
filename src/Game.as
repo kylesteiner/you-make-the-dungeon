@@ -107,6 +107,9 @@ package {
 		[Embed(source='assets/animations/character/idle/character_2.png')] private static const characterIdleAnim2:Class;
 		//[Embed(source='assets/animations/character/idle/character_3.png')] private static const characterIdleAnim3:Class;
 
+		[Embed(source='assets/animations/character/move/character_move_0.png')] private static const characterMoveAnim0:Class;
+		[Embed(source='assets/animations/character/move/character_move_1.png')] private static const characterMoveAnim1:Class;
+
 		[Embed(source='assets/backgrounds/combat_background.png')] private static const combatBackground:Class;
 		[Embed(source='assets/backgrounds/combat_shadow.png')] private static const combatShadow:Class;
 
@@ -616,6 +619,11 @@ package {
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
 			charDict[Util.CHAR_IDLE] = charVector;
+
+			var charMoveVector:Vector.<Texture> = new Vector.<Texture>();
+			charMoveVector.push(Texture.fromEmbeddedAsset(characterMoveAnim0));
+			charMoveVector.push(Texture.fromEmbeddedAsset(characterMoveAnim1));
+			charDict[Util.CHAR_MOVE] = charMoveVector;
 
 			var charCombatIdleVector:Vector.<Texture> = new Vector.<Texture>();
 			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim0));
