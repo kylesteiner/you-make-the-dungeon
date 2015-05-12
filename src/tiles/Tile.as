@@ -25,6 +25,7 @@ package tiles {
 		public var selected:Boolean;
 		public var text:TextField;
 		public var infoUpdated:Boolean;
+		public var onGrid:Boolean;
 		
 		public var infoWidth:int;
 		public var infoHeight:int;
@@ -114,7 +115,11 @@ package tiles {
 			var touch:Touch = event.getTouch(this);
 			
 			if (!touch || locked) {
-				removeChild(text);
+				if (touch && onGrid) {
+					addChild(text);
+				} else {
+					removeChild(text);
+				}
 				return;
 			} 
 			
@@ -143,8 +148,6 @@ package tiles {
 			text.border = true;
 			text.x = getToPointX();
 			text.y = getToPointY();
-			addChild(text);
-			text.visible = false;
 		}
 
 		private function checkGameBounds():void {

@@ -411,6 +411,7 @@ package {
 			// put tileData's tiles into a grid
 			for each (var tile:Tile in tileData) {
 				initialGrid[tile.grid_x][tile.grid_y] = tile;
+				tile.onGrid = true;
 				if (tile is EntryTile) {
 					initialFogGrid[tile.grid_x][tile.grid_y] = false;
 					setUpInitialFoglessSpots(tile.grid_x, tile.grid_y);

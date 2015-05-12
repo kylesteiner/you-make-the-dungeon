@@ -368,6 +368,7 @@ package {
 						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
+						selectedTile.onGrid = true;
 						if (selectedTile is Tile) {
 							emptyTiles++;
 						} else if (selectedTile is EnemyTile) {
