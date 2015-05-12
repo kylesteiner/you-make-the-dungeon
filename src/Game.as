@@ -256,13 +256,13 @@ package {
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
-			floor4Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor4Button.addParameter(Util.STARTING_XP);  // Char xp
-			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
+			var floor7Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 7", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor7Button.addParameter(floors[Util.FLOOR_7][Util.DICT_TRANSITION_INDEX]);
+			floor7Button.addParameter(floors[Util.FLOOR_7][Util.DICT_FLOOR_INDEX]);
+			floor7Button.addParameter(floors[Util.FLOOR_7][Util.DICT_TILES_INDEX]);
+			floor7Button.addParameter(2);  // Char level
+			floor7Button.addParameter(1);  // Char xp
+			switchToMenu(new Menu(new Array(floor1Button, floor7Button)));
 		}
 
 		public function createCredits():void {
