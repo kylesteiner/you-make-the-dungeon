@@ -88,7 +88,7 @@ package {
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
 							  logger:Logger = null,
-							  showPrompt:Boolean = false) {
+							  showPrompt:int = 0) {
 			super();
 			initialLevel = level;
 			initialXp = xp;
@@ -117,8 +117,13 @@ package {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
-			if(showPrompt) {
-				tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
+			if(showPrompt > 0) {
+				if(showPrompt == 1) {
+					tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
+				} else if(showPrompt > 1) {
+					tutorialImage = new Image(textures[Util.TUTORIAL_PAN]);
+				}
+
 				tutorialImage.touchable = false;
 				tutorialImage.alpha = 0.7;
 				addChild(tutorialImage);
@@ -252,6 +257,10 @@ package {
 			// Reset the combat state.
 			combatFrames = 0;
 			characterCombatTurn = true;
+
+			if(tutorialImage) {
+				addChild(tutorialImage);
+			}
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -490,7 +499,10 @@ package {
 					var eHp:int = Number(lineData[9]);
 					var eAtk:int = Number(lineData[10]);
 					var eReward:int = Number(lineData[11]);
-					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.MONSTER_1], eName, eLvl, eHp, eAtk, eReward));
+
+					var tETexture:Texture = eName == "boss" ? textures[Util.MONSTER_2] : textures[Util.MONSTER_1];
+
+					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, tETexture, eName, eLvl, eHp, eAtk, eReward));
 				} else if (tType == "objective") {
 					var key:String = lineData[7];
 					var textureName:String = StringUtil.trim(lineData[8]);
@@ -663,7 +675,7 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
-			mixer.play(Util.FLOOR_COMPLETE);
+			//mixer.play(Util.FLOOR_COMPLETE);
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
@@ -674,7 +686,14 @@ package {
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
 			nextFloorButton.addParameter(char.state.level);
 			nextFloorButton.addParameter(char.state.xp);
-			nextFloorButton.addParameter(false);
+
+			var i:int = 0;
+			if(nextFloor == Util.FLOOR_1) {
+				i = 1;
+			} else if(nextFloor == Util.FLOOR_2) {
+				i = 2;
+			}
+			nextFloorButton.addParameter(i);
 			addChild(nextFloorButton);
 		}
 

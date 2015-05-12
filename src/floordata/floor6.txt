@@ -1,20 +1,8 @@
 floor6
 floor7
 floor6
-7	5
-0	2
-none	0	0	0	0	0	0
-none	0	1	0	0	0	0
-entry	0	2	0	0	1	0
-none	0	3	0	0	0	0
-none	0	4	0	0	0	0
-none	3	0	0	0	0	0
-none	3	1	0	0	0	0
-enemy	3	2	0	0	1	1	mon	2	6	2	1
-none	3	3	0	0	0	0
-none	3	4	0	0	0	0
-none	6	0	0	0	0	0
-none	6	1	0	0	0	0
-exit	6	2	0	0	0	1
-none	6	3	0	0	0	0
-none	6	4	0	0	0	0
+4	4
+0	0
+entry	0	0	0	1	1	0
+exit	3	3	1	0	0	0
+enemy	3	2	1	1	0	1	baraka	2	6	2	1

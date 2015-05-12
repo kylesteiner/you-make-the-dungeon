@@ -5,6 +5,5 @@ floor1
 0	0
 entry	0	0	0	0	1	0
 empty	1	0	0	1	1	1
-empty	1	1	1	1	0	0
-empty	1	2	1	0	1	0
-exit	2	2	0	0	0	1
+empty	1	1	1	0	1	0
+exit	2	1	0	0	0	1

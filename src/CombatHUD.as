@@ -31,9 +31,9 @@ package {
         private var logger:Logger;
 
         private static const CHAR_X:int = Util.STAGE_WIDTH / 4;
-        private static const CHAR_Y:int = 2 * (Util.STAGE_HEIGHT / 3);
+        private static const CHAR_Y:int = 3 * (Util.STAGE_HEIGHT / 4);
         private static const ENEMY_X:int = 3 * (Util.STAGE_WIDTH / 4);
-        private static const ENEMY_Y:int = 2 * (Util.STAGE_HEIGHT / 3);
+        private static const ENEMY_Y:int = 3 * (Util.STAGE_HEIGHT / 4);
         private static const SHADOW_Y_OFFSET:int = Util.PIXELS_PER_TILE * 2;
         private static const DAMAGE_Y_OFFSET:int = -Util.PIXELS_PER_TILE / 2;
         private static const DAMAGE_TEXT_SHIFT:int = -2; // Pixels per frame
@@ -72,12 +72,12 @@ package {
 
             charShadow = new Image(textures[Util.COMBAT_SHADOW]);
             charShadow.x = CHAR_X - (charShadow.width / 2);
-            charShadow.y = CHAR_Y + SHADOW_Y_OFFSET - (charShadow.height / 2);
+            charShadow.y = CHAR_Y - charShadow.height;
             addChild(charShadow);
 
             enemyShadow = new Image(textures[Util.COMBAT_SHADOW]);
             enemyShadow.x = ENEMY_X - (charShadow.width / 2);
-            enemyShadow.y = ENEMY_Y + SHADOW_Y_OFFSET - (charShadow.height / 2);
+            enemyShadow.y = ENEMY_Y - charShadow.height;
             addChild(enemyShadow);
 
             /*charAnim = new MovieClip(animations[Util.CHARACTER][Util.CHAR_COMBAT_IDLE], Util.ANIM_FPS);
@@ -106,9 +106,9 @@ package {
                 dispatchEvent(new AnimationEvent(AnimationEvent.CHAR_ATTACKED, char, enemy));
             } else if(charAnim.isComplete && charState == Util.CHAR_COMBAT_FAINT) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.CHAR_DIED, char, enemy));
-            } else if(enemyAnim.isComplete && enemyState == Util.CHAR_COMBAT_ATTACK) {
+            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_ATTACK) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_ATTACKED, char, enemy));
-            } else if(enemyAnim.isComplete && enemyState == Util.CHAR_COMBAT_FAINT) {
+            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_FAINT) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_DIED, char, enemy));
             }
         }
@@ -130,7 +130,7 @@ package {
             removeChild(charAnim);
             charAnim = new MovieClip(animations[Util.CHARACTER][animationString], Util.ANIM_FPS);
             charAnim.x = CHAR_X - (charAnim.width / 2);
-            charAnim.y = CHAR_Y - (charAnim.height / 2);
+            charAnim.y = CHAR_Y - charAnim.height;
             charAnim.loop = false;
             addChild(charAnim);
 
@@ -138,23 +138,24 @@ package {
         }
 
         public function setEnemyIdle():void {
-            setEnemyAnim(Util.CHAR_COMBAT_IDLE);
+            setEnemyAnim(Util.ENEMY_COMBAT_IDLE);
             enemyAnim.loop = true;
         }
 
         public function setEnemyAttack():void {
-            setEnemyAnim(Util.CHAR_COMBAT_ATTACK);
+            setEnemyAnim(Util.ENEMY_COMBAT_ATTACK);
         }
 
         public function setEnemyFaint():void {
-            setEnemyAnim(Util.CHAR_COMBAT_FAINT);
+            setEnemyAnim(Util.ENEMY_COMBAT_FAINT);
         }
 
         public function setEnemyAnim(animationString:String):void {
             removeChild(enemyAnim);
-            enemyAnim = new MovieClip(animations[Util.CHARACTER][animationString], Util.ANIM_FPS);
+            var s:String = enemy.enemyName == "boss" ? Util.MONSTER_2 : Util.MONSTER_1;
+            enemyAnim = new MovieClip(animations[s][animationString], Util.ANIM_FPS);
             enemyAnim.x = ENEMY_X - (enemyAnim.width / 2);
-            enemyAnim.y = ENEMY_Y - (enemyAnim.height / 2);
+            enemyAnim.y = ENEMY_Y - enemyAnim.height;
             enemyAnim.loop = false;
             addChild(enemyAnim);
 
@@ -162,7 +163,7 @@ package {
         }
 
         public function createDamageText(baseAnimation:MovieClip, amount:int):TextField {
-            var tDamage:TextField = new TextField(64, 64, amount.toString(), Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+            var tDamage:TextField = new TextField(64, 64, "-" + amount.toString(), Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
             tDamage.color = Color.RED;
             tDamage.x = baseAnimation.x + (baseAnimation.width / 2) - (tDamage.width / 2);
             tDamage.y = baseAnimation.y + DAMAGE_Y_OFFSET;
