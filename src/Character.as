@@ -2,11 +2,12 @@
 // In-game representation of the character.
 
 package {
+	import flash.ui.Keyboard;
+
 	import starling.core.Starling;
 	import starling.display.*;
 	import starling.events.*;
-	import starling.textures.Texture;
-	import flash.ui.Keyboard;
+	import starling.textures.Texture
 
 	import ai.CharState;
 	import tiles.*;
@@ -70,16 +71,16 @@ package {
 
 			moving = true;
 
-			if (direction == Util.NORTH && y - Util.PIXELS_PER_TILE > 0) {
+			if (direction == Util.NORTH) {
 				destX = x;
 				destY -= Util.PIXELS_PER_TILE;
-			} else if (direction == Util.EAST && x + Util.PIXELS_PER_TILE < Util.STAGE_WIDTH) {
+			} else if (direction == Util.EAST) {
 				destX += Util.PIXELS_PER_TILE;
 				destY = y;
-			} else if (direction == Util.SOUTH && y + Util.PIXELS_PER_TILE < Util.STAGE_HEIGHT) {
+			} else if (direction == Util.SOUTH) {
 				destX = x;
 				destY += Util.PIXELS_PER_TILE;
-			} else if (direction == Util.WEST && x - Util.PIXELS_PER_TILE > 0) {
+			} else if (direction == Util.WEST) {
 				destX -= Util.PIXELS_PER_TILE;
 				destY = y;
 			}
