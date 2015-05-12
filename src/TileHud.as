@@ -94,23 +94,25 @@ package {
 			var t2Texture:Texture; var name:String; var level:int; var hp:int;
 			var attack:int; var xpReward:int;
 
-			// 66% chance of having each direction open
-			// Changed to 75% as of 5.7.2015
-			tN = (Util.randomRange(0, 3) == 0) ? false : true;
-			tS = (Util.randomRange(0, 3) == 0) ? false : true;
-			tE = (Util.randomRange(0, 3) == 0) ? false : true;
-			tW = (Util.randomRange(0, 3) == 0) ? false : true;
-			if (!tN && !tS && !tE && !tW) {
-				dir = Util.randomRange(0, 3)
-				tN = (dir == Util.NORTH) ? true : false;
-				tS = (dir == Util.SOUTH) ? true : false;
-				tE = (dir == Util.EAST) ? true : false;
-				tW = (dir == Util.WEST) ? true : false;
-			}
-
 			// Create tile randomly influenced by tile rates for floor
-			tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 			tType = tileRates[Util.randomRange(0, 100)];
+			
+			// Generate walls. 75% chance of having each direction open.
+			var numSides:int = 0;
+			while ((tType == "empty" && numSides < 2) || (tType != "empty" && numSides == 0)) {
+				numSides = 0;
+				tN = (Util.randomRange(0, 3) == 0) ? false : true;
+				tS = (Util.randomRange(0, 3) == 0) ? false : true;
+				tE = (Util.randomRange(0, 3) == 0) ? false : true;
+				tW = (Util.randomRange(0, 3) == 0) ? false : true;
+				numSides += tN ? 1 : 0;
+				numSides += tS ? 1 : 0;
+				numSides += tE ? 1 : 0;
+				numSides += tW ? 1 : 0;
+			}
+			tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
+			
+			// Generate tile and add it to the HUD display
 			if (tType == "enemy") {
 				t2Texture = textures[Util.MONSTER_1];
 				name = "";
