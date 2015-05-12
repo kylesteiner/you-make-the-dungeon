@@ -268,7 +268,7 @@ package {
 			}
 			// diagonal cases
 			if (i + 1 < fogGrid.length) {
-				if (j + 1 < fogGrid[j].length && fogGrid[i + 1][j + 1]) {
+				if (j + 1 < fogGrid[i].length && fogGrid[i + 1][j + 1]) {
 					h1 = fogGrid[i + 1][j + 1];
 					fogGrid[i + 1][j + 1] = false;
 					removeChild(h1);
@@ -280,7 +280,7 @@ package {
 				}
 			}
 			if (i -1 >= 0) {
-				if (j + 1 < fogGrid[j].length  && fogGrid[i - 1][j + 1]) {
+				if (j + 1 < fogGrid[i].length  && fogGrid[i - 1][j + 1]) {
 					h1 = fogGrid[i - 1][j + 1];
 					fogGrid[i - 1][j + 1] = false;
 					removeChild(h1);
