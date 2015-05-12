@@ -72,6 +72,8 @@ package {
 		private var logger:Logger;
 		private var nextTransition:String;
 
+		private var tutorialImage:Image;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
@@ -81,7 +83,8 @@ package {
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
-							  logger:Logger = null) {
+							  logger:Logger = null,
+							  showPrompt:Boolean = false) {
 			super();
 			initialLevel = level;
 			initialXp = xp;
@@ -107,6 +110,13 @@ package {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
+			if(showPrompt) {
+				tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
+				tutorialImage.touchable = false;
+				tutorialImage.alpha = 0.7;
+				addChild(tutorialImage);
+			}
+
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -115,6 +125,12 @@ package {
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+		}
+
+		public function removeTutorial():void {
+			if(tutorialImage) {
+				removeChild(tutorialImage);
+			}
 		}
 
 		// Called when the run button is clicked.
@@ -619,6 +635,7 @@ package {
 			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);
+			nextFloorButton.addParameter(null); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);

@@ -25,6 +25,7 @@ package {
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
 		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
+		[Embed(source='assets/backgrounds/tutorial.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
@@ -38,8 +39,8 @@ package {
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
 		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
-		[Embed(source='assets/icons/reset.png')] private static const icon_reset:Class;
-		[Embed(source='assets/icons/run.png')] private static const icon_run:Class;
+		[Embed(source='assets/icons/medium/reset.png')] private static const icon_reset:Class;
+		[Embed(source='assets/icons/medium/run.png')] private static const icon_run:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -178,8 +179,8 @@ package {
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE]);
 			sfxMuteButton = new Clickable(32, 480-32, toggleSFXMute, null, textures[Util.ICON_MUTE]);
-			resetButton = new Clickable(64, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
-			runButton = new Clickable(96, 480-32, runFloor, null, textures[Util.ICON_RUN]);
+			resetButton = new Clickable(428, 0, resetFloor, null, textures[Util.ICON_RESET]);
+			runButton = new Clickable(428, 32, runFloor, null, textures[Util.ICON_RUN]);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -222,10 +223,10 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(0, 0, switchToFloor, null, newTransitionData[0]);
+			currentTransition = new Clickable(0, 0, newTransitionData[0] == null ? switchToFloor : newTransitionData[0], null, newTransitionData[1]);
 
 			var i:int;
-			for(i = 1; i < newTransitionData.length; i++) {
+			for(i = 2; i < newTransitionData.length; i++) {
 				currentTransition.addParameter(newTransitionData[i]);
 			}
 
@@ -240,7 +241,7 @@ package {
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, null, true);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
 
@@ -266,12 +267,15 @@ package {
 
 		public function createFloorSelect():void {
 			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor1Button.addParameter(switchToFloor);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
+
 			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor4Button.addParameter(switchToFloor);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
@@ -311,6 +315,7 @@ package {
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 
+			currentFloor.removeTutorial();
 			currentFloor.runFloor();
 		}
 
@@ -409,6 +414,7 @@ package {
 			var textures:Dictionary = new Dictionary();
 			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
+			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 
 			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);

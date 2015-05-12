@@ -34,6 +34,7 @@ package {
 
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
+		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
