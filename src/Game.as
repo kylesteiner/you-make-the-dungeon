@@ -226,7 +226,7 @@ package {
 
 		private function initializeFloorWorld():void {
 			world = new Sprite();
-			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
+			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
 			bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
@@ -343,6 +343,10 @@ package {
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
+			world.x = Util.STAGE_WIDTH / 4;
+			world.y = Util.STAGE_HEIGHT / 4;
+			currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
+			currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
 			addChild(world);
 			// mute button should always be on top
 			addChild(bgmMuteButton);
@@ -527,33 +531,41 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			// TODO: set up dictionary of charCode -> callback?
-			if(currentFloor.floorName == Util.FLOOR_2) {
-				currentFloor.removeTutorial();
-			}
+			// to ensure that they can't move the world around until
+			// a floor is loaded, and not cause flash errors
+			if (currentFloor) {
+				// TODO: set up dictionary of charCode -> callback?
+				if(currentFloor.floorName == Util.FLOOR_2) {
+					currentFloor.removeTutorial();
+				}
 
-			var input:String = String.fromCharCode(event.charCode);
-			if(input == Util.MUTE_KEY) {
-				mixer.togglePlay();
-			}
+				var input:String = String.fromCharCode(event.charCode);
+				if(input == Util.MUTE_KEY) {
+					mixer.togglePlay();
+				}
 
-			// TODO: add bounds that the camera cannot go beyond,
-			//		 and limit what contexts the camera movement
-			//		 can be used in.
-			if(input == Util.UP_KEY) {
-				world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
-			}
+				// TODO: add bounds that the camera cannot go beyond,
+				//		 and limit what contexts the camera movement
+				//		 can be used in.
+				if(input == Util.UP_KEY) {
+					world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 
-			if(input == Util.DOWN_KEY) {
-				world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
-			}
+				if(input == Util.DOWN_KEY) {
+					world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 
-			if(input == Util.LEFT_KEY) {
-				world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
-			}
+				if(input == Util.LEFT_KEY) {
+					world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 
-			if(input == Util.RIGHT_KEY) {
-				world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
+				if(input == Util.RIGHT_KEY) {
+					world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 			}
 		}
 

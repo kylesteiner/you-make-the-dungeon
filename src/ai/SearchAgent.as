@@ -27,7 +27,7 @@ package ai {
 			var problem:SearchProblem = new SearchProblem(floor);
 			path = search(problem, heuristic);
 			index = 0;
-			trace("Path: " + path + " length " + path.length);
+			//trace("Path: " + path + " length " + path.length);
 		}
 
 		// After the path is computed, this method can be called to get the next

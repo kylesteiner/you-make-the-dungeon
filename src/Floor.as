@@ -72,6 +72,8 @@ package {
 		private var nextTransition:String;
 
 		private var tutorialImage:Image;
+
+		private var nextFloorButton:Clickable;
 		private var tutorialDisplaying:Boolean;
 		private var originalTutorialDisplaying:Boolean;
 
@@ -128,6 +130,8 @@ package {
 				tutorialImage.alpha = 0.7;
 				originalTutorialDisplaying = true;
 				tutorialDisplaying = true;
+				tutorialImage.x = getToX(0);
+				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}
 
@@ -139,11 +143,51 @@ package {
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
+		
+		private function getToX(x:int):int {
+			var temp:int = 0;
+			if (parent) {
+				var shift:int = parent.x > 0 ? -1 : 1;
+				while (temp + parent.x != x) {
+					temp += shift;
+				}
+			}
+			return temp;
+		}
+		
+		private function getToY(y:int):int {
+			var temp:int = 0;
+			if (parent) {
+				var shift:int = parent.y > 0 ? -1 : 1;
+				while (temp + parent.y != y) {
+					temp += shift;
+				}
+			}
+			return temp;
+		}
 
 		public function removeTutorial():void {
 			if(tutorialImage) {
 				removeChild(tutorialImage);
 				tutorialDisplaying = false;
+			}
+		}
+		
+		public function shiftTutorialX(value:int):void {
+			if (tutorialImage) {
+				tutorialImage.x += value;
+			} 
+			if (nextFloorButton) {
+				nextFloorButton.x += value;
+			}
+		}
+		
+		public function shiftTutorialY(value:int):void {
+			if (tutorialImage) {
+				tutorialImage.y += value;
+			}
+			if (nextFloorButton) {
+				nextFloorButton.y += value;
 			}
 		}
 
@@ -240,10 +284,19 @@ package {
 				objectiveState[key] = false;
 			}
 
+			// move to center
+			if (parent) {
+				parent.x = Util.STAGE_WIDTH / 4;
+				parent.y = Util.STAGE_HEIGHT / 4;
+			}
+
 			if(tutorialImage && originalTutorialDisplaying) {
 				tutorialDisplaying = true;
+				tutorialImage.x = getToX(0);
+				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}
+			
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -410,6 +463,12 @@ package {
 			var floorSize:Array = floorData[3].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
+			var mapBoundsBackground:Image = new Image(textures[Util.GRID_BACKGROUND]);
+			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
+			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
+			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
+			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
+			addChild(mapBoundsBackground);
 
 			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
 			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
@@ -599,7 +658,7 @@ package {
 			}
 			//mixer.play(Util.FLOOR_COMPLETE);
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			var nextFloorButton:Clickable = new Clickable(0, 0,
+			nextFloorButton = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);
 			nextFloorButton.addParameter(altCallback); // Default = switchToFloor

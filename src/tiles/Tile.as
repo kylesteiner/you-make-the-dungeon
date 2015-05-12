@@ -24,7 +24,7 @@ package tiles {
 		public var locked:Boolean;
 		public var selected:Boolean;
 		public var text:TextField;
-		public var infoUpdated:Boolean;
+		public var textImage:Image;
 		public var onGrid:Boolean; // for determining if it is on the grid itself or not
 		public var infoWidth:int;
 		public var infoHeight:int;
@@ -46,8 +46,8 @@ package tiles {
 			south = s;
 			east = e;
 			west = w;
-			infoWidth = 150;
-			infoHeight = 150;
+			infoWidth = 125;
+			infoHeight = 125;
 
 			image = new Image(texture);
 			addChild(image);
@@ -57,7 +57,6 @@ package tiles {
 
 			locked = true;
 			selected = false;
-			infoUpdated = false;
 
 			displayInformation();
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
@@ -91,12 +90,22 @@ package tiles {
 			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
 			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 			locked = true;
-			if (!infoUpdated) {
-				text.x = getToPointX();
-				text.y = getToPointY();
-				infoUpdated = true;
+		}
+		
+		public function updateInfoPosition():void {
+			text.x = getToPointX();
+			text.y = getToPointY();
+			textImage.x = getToPointX();
+			textImage.y = getToPointY();
+			if (onGrid) {
+				trace(parent.parent);
+				text.x -= parent.parent.x;
+				text.y -= parent.parent.y;
+				textImage.x -= parent.parent.x;
+				textImage.y -= parent.parent.y;
 			}
 		}
+		
 
 		// Moves the tiles to the given touch location (for tile selection)
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int):void {
@@ -114,23 +123,28 @@ package tiles {
 
 			if (!touch || locked) {
 				if (touch && onGrid) {
+					updateInfoPosition();
+					addChild(textImage);
 					addChild(text);
 				} else {
 					removeChild(text);
+					removeChild(textImage);
 				}
 				return;
 			}
 
 			if (!selected) {
-				text.x = getToPointX();
-				text.y = getToPointY();
+				updateInfoPosition();
 			} else {
 				removeChild(text);
+				removeChild(textImage);
 			}
 
 			if (touch.phase == TouchPhase.HOVER) {
 				// display text here;
 				text.visible = true;
+				updateInfoPosition();
+				addChild(textImage);
 				addChild(text);
 			}
 
@@ -142,8 +156,11 @@ package tiles {
 		// function to be inhereted that sets up the text field information
 		// with the given string.
 		protected function setUpInfo(info:String):void {
+			textImage = new Image(Texture.fromColor(infoWidth, infoHeight, 0xffffffff));
 			text = new TextField(infoWidth, infoHeight, info, "Bebas", 18, Color.BLACK);
 			text.border = true;
+			textImage.x = getToPointX();
+			textImage.y = getToPointY();
 			text.x = getToPointX();
 			text.y = getToPointY();
 		}
