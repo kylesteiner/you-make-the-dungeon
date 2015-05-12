@@ -280,6 +280,8 @@ package {
 			// Prompt clickable into either floor reset or continue modifying floor
 			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
 								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
+
+			resetFloor();
 		}
 
 		private function prepareSwap():void {
@@ -498,7 +500,7 @@ package {
 						selectedTile.onGrid = true;
 
 						mixer.play(Util.TILE_MOVE);
-						
+
 						if (selectedTile is Tile) {
 							emptyTiles++;
 						} else if (selectedTile is EnemyTile) {
