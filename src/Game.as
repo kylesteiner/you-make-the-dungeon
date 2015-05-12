@@ -27,23 +27,25 @@ package {
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
 		//[Embed(source='assets/backgrounds/tile_hud_new.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_new.png')] private static const tutorial_hud:Class;
+		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
 
-		[Embed(source='assets/effects/large/fog.png')] private static var fog:Class;
+		[Embed(source='assets/effects/large/new_fog_2.png')] private static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
 		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_green:Class;
 		[Embed(source='assets/effects/large/hl_red.png')] private static var hl_red:Class;
-		[Embed(source='assets/effects/large/hl_yellow.png')] private static var hl_yellow:Class;
+		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_yellow:Class;
 
 		[Embed(source='assets/entities/large/door.png')] private static var entity_door:Class;
-		[Embed(source='assets/entities/large/healing.png')] private static var entity_healing:Class;
+		[Embed(source='assets/entities/large/new_healing.png')] private static var entity_healing:Class;
 		[Embed(source='assets/entities/large/hero.png')] private static var entity_hero:Class;
-		[Embed(source='assets/entities/large/key.png')] private static var entity_key:Class;
-		[Embed(source='assets/entities/large/monster_1.png')] private static var entity_mon1:Class;
+		[Embed(source='assets/entities/large/new_key.png')] private static var entity_key:Class;
+		[Embed(source='assets/entities/large/enemy_1.png')] private static var entity_fighter:Class;
+		[Embed(source='assets/entities/large/enemy_2.png')] private static var entity_mage:Class;
 
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 
-		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
+		[Embed(source='assets/icons/new_cursor_2.png')] private static const icon_cursor:Class;
 
 		[Embed(source='assets/icons/medium/mute_bgm.png')] private static const icon_mute_bgm:Class;
 		[Embed(source='assets/icons/medium/mute_sfx.png')] private static const icon_mute_sfx:Class;
@@ -91,6 +93,14 @@ package {
 		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public static const tiles10:Class;
 		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public static const tiles11:Class;
 		[Embed(source='assets/transitions/floor0.png')] private static const transitions0:Class;
+		[Embed(source='assets/transitions/floor1.png')] private static const transitions1:Class;
+		[Embed(source='assets/transitions/floor2.png')] private static const transitions2:Class;
+		[Embed(source='assets/transitions/floor3.png')] private static const transitions3:Class;
+		[Embed(source='assets/transitions/floor4.png')] private static const transitions4:Class;
+		[Embed(source='assets/transitions/floor5.png')] private static const transitions5:Class;
+		[Embed(source='assets/transitions/floor6.png')] private static const transitions6:Class;
+		[Embed(source='assets/transitions/floor7.png')] private static const transitions7:Class;
+		[Embed(source='assets/transitions/floor8.png')] private static const transitions8:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
@@ -106,8 +116,8 @@ package {
 
 		[Embed(source='assets/animations/character/combat_attack/char_ca_0.png')] private static const charCombatAtkAnim0:Class;
 		[Embed(source='assets/animations/character/combat_attack/char_ca_1.png')] private static const charCombatAtkAnim1:Class;
-		[Embed(source='assets/animations/character/combat_attack/char_ca_2.png')] private static const charCombatAtkAnim2:Class;
-		[Embed(source='assets/animations/character/combat_attack/char_ca_3.png')] private static const charCombatAtkAnim3:Class;
+		//[Embed(source='assets/animations/character/combat_attack/char_ca_2.png')] private static const charCombatAtkAnim2:Class;
+		//[Embed(source='assets/animations/character/combat_attack/char_ca_3.png')] private static const charCombatAtkAnim3:Class;
 
 		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] private static const charCombatFaintAnim0:Class;
 		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] private static const charCombatFaintAnim1:Class;
@@ -353,7 +363,7 @@ package {
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			floor1Button.addParameter(true);
+			floor1Button.addParameter(1);
 
 			var floor5button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 5", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor5button.addParameter(switchToFloor);
@@ -362,7 +372,7 @@ package {
 			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
 			floor5button.addParameter(1);  // Char level
 			floor5button.addParameter(0);  // Char xp
-			floor5button.addParameter(false);
+			floor5button.addParameter(0);
 
 			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor8button.addParameter(switchToFloor);
@@ -401,6 +411,7 @@ package {
 			currentFloor.resetFloor();
 			tileHud.resetTileHud();
 			charHud.char = currentFloor.char
+			mixer.play(Util.FLOOR_RESET);
 		}
 
 		public function runFloor():void {
@@ -491,6 +502,10 @@ package {
 
 		private function onKeyDown(event:KeyboardEvent):void {
 			// TODO: set up dictionary of charCode -> callback?
+			if(currentFloor.floorName == Util.FLOOR_2) {
+				currentFloor.removeTutorial();
+			}
+
 			var input:String = String.fromCharCode(event.charCode);
 			if(input == Util.MUTE_KEY) {
 				mixer.togglePlay();
@@ -522,12 +537,14 @@ package {
 			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
 			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
+			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
-			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_mon1(), true, false, scale);
+			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
+			textures[Util.MONSTER_2] = Texture.fromBitmap(new entity_mage(), true, false, scale);
 
 			textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
 			textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
@@ -587,8 +604,8 @@ package {
 			var charCombatAttackVector:Vector.<Texture> = new Vector.<Texture>();
 			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim0));
 			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim1));
-			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim2));
-			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim3));
+			//charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim2));
+			//charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim3));
 			charDict[Util.CHAR_COMBAT_ATTACK] = charCombatAttackVector;
 
 			var charCombatFaintVector:Vector.<Texture> = new Vector.<Texture>();
@@ -596,6 +613,22 @@ package {
 			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim1));
 			charDict[Util.CHAR_COMBAT_FAINT] = charCombatFaintVector;
 			tAnimations[Util.CHARACTER] = charDict;
+
+			var fighterDict:Dictionary = new Dictionary();
+			var fighterVector:Vector.<Texture> = new Vector.<Texture>();
+			fighterVector.push(Texture.fromEmbeddedAsset(entity_fighter));
+			fighterDict[Util.ENEMY_COMBAT_IDLE] = fighterVector;
+			fighterDict[Util.ENEMY_COMBAT_ATTACK] = fighterVector;
+			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterVector;
+			tAnimations[Util.MONSTER_1] = fighterDict;
+
+			var mageDict:Dictionary = new Dictionary();
+			var mageVector:Vector.<Texture> = new Vector.<Texture>();
+			mageVector.push(Texture.fromEmbeddedAsset(entity_mage));
+			mageDict[Util.ENEMY_COMBAT_IDLE] = mageVector;
+			mageDict[Util.ENEMY_COMBAT_ATTACK] = mageVector;
+			mageDict[Util.ENEMY_COMBAT_FAINT] = mageVector;
+			tAnimations[Util.MONSTER_2] = mageDict;
 
 			return tAnimations;
 		}
@@ -608,14 +641,14 @@ package {
 			//		 and then crash if you try to reuse the dictionary
 			//		 need to read in the text files each level load :(
 			tFloors[Util.FLOOR_0] = new Array(new floor0(), new tiles0(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1(), Texture.fromEmbeddedAsset(transitions1));
+			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2(), Texture.fromEmbeddedAsset(transitions2));
+			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3(), Texture.fromEmbeddedAsset(transitions3));
+			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4(), Texture.fromEmbeddedAsset(transitions4));
+			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions5));
+			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions6));
+			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions7));
+			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitions8));
 			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));

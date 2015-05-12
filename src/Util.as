@@ -38,6 +38,7 @@ package {
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
+		public static const TUTORIAL_PAN:String = "tutorial_pan";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -104,7 +105,11 @@ package {
 		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
 		public static const HEALING:String = "health";
 		public static const KEY:String = "key";
+		public static const ENEMY_COMBAT_IDLE:String = "enemy_combat_idle";
+		public static const ENEMY_COMBAT_ATTACK:String = "enemy_combat_attack";
+		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const MONSTER_1:String = "monster_1";
+		public static const MONSTER_2:String = "monster_2";
 
 		// Keys to the Dictionary of SFX
 		public static const FLOOR_COMPLETE:String = "floor_complete";
