@@ -347,6 +347,8 @@ package {
 			addChild(charHud);
 			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
+
+			mixer.play(Util.FLOOR_BEGIN);
 		}
 
 		public function createMainMenu():void {
@@ -494,6 +496,9 @@ package {
 						selectedTile.positionTileOnGrid(world.x, world.y);
 						numberOfTilesPlaced++;
 						selectedTile.onGrid = true;
+
+						mixer.play(Util.TILE_MOVE);
+						
 						if (selectedTile is Tile) {
 							emptyTiles++;
 						} else if (selectedTile is EnemyTile) {
