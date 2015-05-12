@@ -71,6 +71,11 @@ package {
 
 			moving = true;
 
+			removeChild(currentAnimation);
+			currentAnimation = new MovieClip(animations[Util.CHAR_MOVE], Util.ANIM_FPS);
+			currentAnimation.play();
+			addChild(currentAnimation);
+
 			if (direction == Util.NORTH) {
 				destX = x;
 				destY -= Util.PIXELS_PER_TILE;
@@ -117,6 +122,10 @@ package {
 
 				if (x == destX && y == destY && moving) {
 					moving = false;
+					removeChild(currentAnimation);
+					currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
+					currentAnimation.play();
+					addChild(currentAnimation);
 					dispatchEvent(new TileEvent(TileEvent.CHAR_ARRIVED,
 												Util.real_to_grid(x),
 												Util.real_to_grid(y)));

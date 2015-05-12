@@ -100,6 +100,7 @@ package {
 		// Keys to the dictionary of animations
 		public static const CHARACTER:String = "character";
 		public static const CHAR_IDLE:String = "character_idle";
+		public static const CHAR_MOVE:String = "character_move";
 		public static const CHAR_COMBAT_IDLE:String = "character_combat_idle";
 		public static const CHAR_COMBAT_ATTACK:String = "character_combat_attack";
 		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
