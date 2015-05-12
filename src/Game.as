@@ -23,8 +23,6 @@ package {
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
-		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
-		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
@@ -92,6 +90,15 @@ package {
 		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
 		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
+
+		[Embed(source='assets/bgm/diving-turtle.mp3')] private static const bgmDivingTurtle:Class;
+		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] private static const bgmGentleThoughts:Class;
+		[Embed(source='assets/bgm/glow-in-the-dark.mp3')] private static const bgmGlowInTheDark:Class;
+		[Embed(source='assets/bgm/lovers-walk.mp3')] private static const bgmLoversWalk:Class;
+		[Embed(source='assets/bgm/oriental-drift.mp3')] private static const bgmOrientalDrift:Class;
+
+		// Currently unused
+		[Embed(source='assets/bgm/warm-interlude.mp3')] private static const bgmWarmInterlude:Class;
 
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
@@ -482,7 +489,11 @@ package {
 		private function setupBGM():Array {
 			var tBgm:Array = new Array();
 
-			tBgm.push(new sfxFloorComplete());
+			tBgm.push(new bgmDivingTurtle());
+			tBgm.push(new bgmGentleThoughts());
+			tBgm.push(new bgmGlowInTheDark());
+			tBgm.push(new bgmLoversWalk());
+			tBgm.push(new bgmOrientalDrift());
 
 			return tBgm;
 		}
