@@ -16,7 +16,11 @@ package tiles {
                                  w:Boolean,
                                  texture:Texture) {
             super(g_x, g_y, n, s, e, w, texture);
-            label = new TextField(32,32,"Exit","Verdana",8);
+            label = new TextField(Util.PIXELS_PER_TILE,
+                                  Util.PIXELS_PER_TILE,
+                                  "Exit",
+                                  "Bebas",
+                                  Util.SMALL_FONT_SIZE);
             addChild(label);
         }
 

@@ -22,42 +22,48 @@ package {
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
-		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
-		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
+		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
+		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial.png')] private static const tutorial_hud:Class;
-		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
-		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
-		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
-		[Embed(source='assets/effects/hl_red.png')] private static const hl_red:Class;
-		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
-		[Embed(source='assets/entities/door.png')] private static const entity_door:Class;
-		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
-		[Embed(source='assets/entities/key.png')] private static const entity_key:Class;
-		[Embed(source='assets/entities/monster_1.png')] private static const entity_mon1:Class;
+
+		[Embed(source='assets/effects/large/fog.png')] private static var fog:Class;
+		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
+		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_green:Class;
+		[Embed(source='assets/effects/large/hl_red.png')] private static var hl_red:Class;
+		[Embed(source='assets/effects/large/hl_yellow.png')] private static var hl_yellow:Class;
+
+		[Embed(source='assets/entities/large/door.png')] private static var entity_door:Class;
+		[Embed(source='assets/entities/large/healing.png')] private static var entity_healing:Class;
+		[Embed(source='assets/entities/large/hero.png')] private static var entity_hero:Class;
+		[Embed(source='assets/entities/large/key.png')] private static var entity_key:Class;
+		[Embed(source='assets/entities/large/monster_1.png')] private static var entity_mon1:Class;
+
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
+
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
+
 		[Embed(source='assets/icons/medium/mute_bgm.png')] private static const icon_mute_bgm:Class;
 		[Embed(source='assets/icons/medium/mute_sfx.png')] private static const icon_mute_sfx:Class;
 		[Embed(source='assets/icons/medium/reset.png')] private static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] private static const icon_run:Class;
-		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
-		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
-		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
-		[Embed(source='assets/tiles/tile_ne.png')] private static const tile_ne:Class;
-		[Embed(source='assets/tiles/tile_new.png')] private static const tile_new:Class;
-		[Embed(source='assets/tiles/tile_none.png')] private static const tile_none:Class;
-		[Embed(source='assets/tiles/tile_ns.png')] private static const tile_ns:Class;
-		[Embed(source='assets/tiles/tile_nse.png')] private static const tile_nse:Class;
-		[Embed(source='assets/tiles/tile_nsew.png')] private static const tile_nsew:Class;
-		[Embed(source='assets/tiles/tile_nsw.png')] private static const tile_nsw:Class;
-		[Embed(source='assets/tiles/tile_nw.png')] private static const tile_nw:Class;
-		[Embed(source='assets/tiles/tile_s.png')] private static const tile_s:Class;
-		[Embed(source='assets/tiles/tile_se.png')] private static const tile_se:Class;
-		[Embed(source='assets/tiles/tile_sew.png')] private static const tile_sew:Class;
-		[Embed(source='assets/tiles/tile_sw.png')] private static const tile_sw:Class;
-		[Embed(source='assets/tiles/tile_w.png')] private static const tile_w:Class;
+		[Embed(source='assets/tiles/large/tile_e.png')] private static var tile_e:Class;
+		[Embed(source='assets/tiles/large/tile_ew.png')] private static var tile_ew:Class;
+		[Embed(source='assets/tiles/large/tile_n.png')] private static var tile_n:Class;
+		[Embed(source='assets/tiles/large/tile_ne.png')] private static var tile_ne:Class;
+		[Embed(source='assets/tiles/large/tile_new.png')] private static var tile_new:Class;
+		[Embed(source='assets/tiles/large/tile_none.png')] private static var tile_none:Class;
+		[Embed(source='assets/tiles/large/tile_ns.png')] private static var tile_ns:Class;
+		[Embed(source='assets/tiles/large/tile_nse.png')] private static var tile_nse:Class;
+		[Embed(source='assets/tiles/large/tile_nsew.png')] private static var tile_nsew:Class;
+		[Embed(source='assets/tiles/large/tile_nsw.png')] private static var tile_nsw:Class;
+		[Embed(source='assets/tiles/large/tile_nw.png')] private static var tile_nw:Class;
+		[Embed(source='assets/tiles/large/tile_s.png')] private static var tile_s:Class;
+		[Embed(source='assets/tiles/large/tile_se.png')] private static var tile_se:Class;
+		[Embed(source='assets/tiles/large/tile_sew.png')] private static var tile_sew:Class;
+		[Embed(source='assets/tiles/large/tile_sw.png')] private static var tile_sw:Class;
+		[Embed(source='assets/tiles/large/tile_w.png')] private static var tile_w:Class;
 
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
 		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
@@ -71,7 +77,6 @@ package {
 		[Embed(source='floordata/floor9.txt', mimeType="application/octet-stream")] public static const floor9:Class;
 		[Embed(source='floordata/floor10.txt', mimeType="application/octet-stream")] public static const floor10:Class;
 		[Embed(source='floordata/floor11.txt', mimeType="application/octet-stream")] public static const floor11:Class;
-
 		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public static const tiles0:Class;
 		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public static const tiles1:Class;
 		[Embed(source='tilerates/floor2.txt', mimeType="application/octet-stream")] public static const tiles2:Class;
@@ -84,7 +89,6 @@ package {
 		[Embed(source='tilerates/floor9.txt', mimeType="application/octet-stream")] public static const tiles9:Class;
 		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public static const tiles10:Class;
 		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public static const tiles11:Class;
-
 		[Embed(source='assets/transitions/floor0.png')] private static const transitions0:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
@@ -209,10 +213,12 @@ package {
 		private function initializeFloorWorld():void {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
-			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
-			sfxMuteButton = new Clickable(64, 480-32, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
-			resetButton = new Clickable(428, 0, resetFloor, null, textures[Util.ICON_RESET]);
-			runButton = new Clickable(428, 32, runFloor, null, textures[Util.ICON_RUN]);
+
+			bgmMuteButton = new Clickable(0, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
+			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
+			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
+
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -423,7 +429,7 @@ package {
 				}
 				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
 				tileHud.lockTiles();
-				selectedTile.moveToTouch(touch);
+				selectedTile.moveToTouch(touch, world.x, world.y);
 				currentFloor.highlightAllowedLocations(selectedTile);
 				// Trigger tile placement if they click outside the tile HUD
 				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
@@ -452,7 +458,7 @@ package {
 						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
 						}
-						selectedTile.positionTileOnGrid();
+						selectedTile.positionTileOnGrid(world.x, world.y);
 						numberOfTilesPlaced++;
 						selectedTile.onGrid = true;
 						if (selectedTile is Tile) {
@@ -501,45 +507,47 @@ package {
 
 		private function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
+			var scale:int = Util.REAL_TILE_SIZE / Util.PIXELS_PER_TILE;
 			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
 			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 
-			textures[Util.DOOR] = Texture.fromEmbeddedAsset(entity_door);
-			//textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
+			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
+			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
+			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
+			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
+			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_mon1(), true, false, scale);
 
-			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
-			textures[Util.KEY] = Texture.fromEmbeddedAsset(entity_key);
-			textures[Util.MONSTER_1] = Texture.fromEmbeddedAsset(entity_mon1);
+			textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
+			textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
+			textures[Util.TILE_N] = Texture.fromBitmap(new tile_n(), true, false, scale);
+			textures[Util.TILE_NE] = Texture.fromBitmap(new tile_ne(), true, false, scale);
+			textures[Util.TILE_NEW] = Texture.fromBitmap(new tile_new(), true, false, scale);
+			textures[Util.TILE_NONE] = Texture.fromBitmap(new tile_none(), true, false, scale);
+			textures[Util.TILE_NS] = Texture.fromBitmap(new tile_ns(), true, false, scale);
+			textures[Util.TILE_NSE] = Texture.fromBitmap(new tile_nse(), true, false, scale);
+			textures[Util.TILE_NSEW] = Texture.fromBitmap(new tile_nsew(), true, false, scale);
+			textures[Util.TILE_NSW] = Texture.fromBitmap(new tile_nsw(), true, false, scale);
+			textures[Util.TILE_NW] = Texture.fromBitmap(new tile_nw(), true, false, scale);
+			textures[Util.TILE_S] = Texture.fromBitmap(new tile_s(), true, false, scale);
+			textures[Util.TILE_SE] = Texture.fromBitmap(new tile_se(), true, false, scale);
+			textures[Util.TILE_SEW] = Texture.fromBitmap(new tile_sew(), true, false, scale);
+			textures[Util.TILE_SW] = Texture.fromBitmap(new tile_sw(), true, false, scale);
+			textures[Util.TILE_W] = Texture.fromBitmap(new tile_w(), true, false, scale);
 
-			textures[Util.TILE_E] = Texture.fromEmbeddedAsset(tile_e);
-			textures[Util.TILE_EW] = Texture.fromEmbeddedAsset(tile_ew);
-			textures[Util.TILE_N] = Texture.fromEmbeddedAsset(tile_n);
-			textures[Util.TILE_NE] = Texture.fromEmbeddedAsset(tile_ne);
-			textures[Util.TILE_NEW] = Texture.fromEmbeddedAsset(tile_new);
-			textures[Util.TILE_NONE] = Texture.fromEmbeddedAsset(tile_none);
-			textures[Util.TILE_NS] = Texture.fromEmbeddedAsset(tile_ns);
-			textures[Util.TILE_NSE] = Texture.fromEmbeddedAsset(tile_nse);
-			textures[Util.TILE_NSEW] = Texture.fromEmbeddedAsset(tile_nsew);
-			textures[Util.TILE_NSW] = Texture.fromEmbeddedAsset(tile_nsw);
-			textures[Util.TILE_NW] = Texture.fromEmbeddedAsset(tile_nw);
-			textures[Util.TILE_S] = Texture.fromEmbeddedAsset(tile_s);
-			textures[Util.TILE_SE] = Texture.fromEmbeddedAsset(tile_se);
-			textures[Util.TILE_SEW] = Texture.fromEmbeddedAsset(tile_sew);
-			textures[Util.TILE_SW] = Texture.fromEmbeddedAsset(tile_sw);
-			textures[Util.TILE_W] = Texture.fromEmbeddedAsset(tile_w);
+			textures[Util.TILE_FOG] = Texture.fromBitmap(new fog(), true, false, scale);
+			textures[Util.TILE_HL_Y] = Texture.fromBitmap(new hl_yellow(), true, false, scale);
+			textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
+			textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
+			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
 
-			textures[Util.TILE_FOG] = Texture.fromEmbeddedAsset(fog);
-			textures[Util.TILE_HL_Y] = Texture.fromEmbeddedAsset(hl_yellow);
-			textures[Util.TILE_HL_R] = Texture.fromEmbeddedAsset(hl_red);
-			textures[Util.TILE_HL_G] = Texture.fromEmbeddedAsset(hl_green);
-			textures[Util.TILE_HL_B] = Texture.fromEmbeddedAsset(hl_blue);
+			// WARNING: ICONS ARE NOT SCALED LIKE THE TILES
+			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
+			textures[Util.ICON_MUTE_BGM] =  Texture.fromBitmap(new icon_mute_bgm(), true, false, 1);
+			textures[Util.ICON_MUTE_SFX] = Texture.fromBitmap(new icon_mute_sfx(), true, false, 1);
+			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, 1);
+			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
 
-			textures[Util.ICON_CURSOR] = Texture.fromEmbeddedAsset(icon_cursor);
-			textures[Util.ICON_MUTE_BGM] = Texture.fromEmbeddedAsset(icon_mute_bgm);
-			textures[Util.ICON_MUTE_SFX] = Texture.fromEmbeddedAsset(icon_mute_sfx);
-			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
-			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 

@@ -15,6 +15,8 @@ package {
 
 	// Class representing the Character rendered in game.
 	public class Character extends Sprite {
+		public static const PIXELS_PER_FRAME:int = 2;
+
 		// Character gameplay state. Holds all information about the Character
 		// that isn't relevant to how to render the Sprite.
 		public var state:CharState;
@@ -100,16 +102,16 @@ package {
 
 			if (moving) {
 				if (x > destX) {
-					x--;
+					x -= PIXELS_PER_FRAME;
 				}
 				if (x < destX) {
-					x++;
+					x += PIXELS_PER_FRAME;
 				}
 				if (y > destY) {
-					y--;
+					y -= PIXELS_PER_FRAME;
 				}
 				if (y < destY) {
-					y++;
+					y += PIXELS_PER_FRAME;
 				}
 
 				if (x == destX && y == destY && moving) {
