@@ -213,7 +213,7 @@ package {
 
 		private function initializeFloorWorld():void {
 			world = new Sprite();
-			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
+			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
 			bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
@@ -499,20 +499,28 @@ package {
 			// TODO: add bounds that the camera cannot go beyond,
 			//		 and limit what contexts the camera movement
 			//		 can be used in.
-			if(input == Util.UP_KEY) {
-				world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
-			}
+			// to ensure that they can't move the world around until
+			// a floor is loaded
+			if (currentFloor) {
+				if(input == Util.UP_KEY) {
+					world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 
-			if(input == Util.DOWN_KEY) {
-				world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
-			}
+				if(input == Util.DOWN_KEY) {
+					world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 
-			if(input == Util.LEFT_KEY) {
-				world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
-			}
+				if(input == Util.LEFT_KEY) {
+					world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 
-			if(input == Util.RIGHT_KEY) {
-				world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
+				if(input == Util.RIGHT_KEY) {
+					world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
+					currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+				}
 			}
 		}
 

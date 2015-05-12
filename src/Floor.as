@@ -139,6 +139,22 @@ package {
 				removeChild(tutorialImage);
 			}
 		}
+		
+		public function shiftTutorialX(value:int):void {
+			if (tutorialImage) {
+				removeChild(tutorialImage);
+				tutorialImage.x += value;
+				addChild(tutorialImage);
+			}
+		}
+		
+		public function shiftTutorialY(value:int):void {
+			if (tutorialImage) {
+				removeChild(tutorialImage);
+				tutorialImage.y += value;
+				addChild(tutorialImage);
+			}
+		}
 
 		// Called when the run button is clicked.
 		public function runFloor():void {
