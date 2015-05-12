@@ -370,14 +370,14 @@ package {
 						if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
 						}
-						if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x -1][selectedTile.grid_y]) {
+						if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
 						}
 						if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
 						}
 						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
-							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y - 1);
+							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
 						}
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
