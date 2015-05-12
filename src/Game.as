@@ -241,7 +241,7 @@ package {
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, null, newFloorData[4]);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger, newFloorData[4]);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
 
@@ -373,7 +373,7 @@ package {
 						if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x -1][selectedTile.grid_y]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
 						}
-						if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y + 1]) {
+						if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
 						}
 						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
