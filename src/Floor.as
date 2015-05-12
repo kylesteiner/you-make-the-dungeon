@@ -31,6 +31,7 @@ package {
 		public var fogGrid:Array;
 		public var char:Character;
 		public var floorName:String;
+		public var highlightedLocations:Array;
 
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
@@ -69,7 +70,6 @@ package {
 		// logger
 		private var logger:Logger;
 		private var nextTransition:String;
-		private var highlightedLocations:Array;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -89,8 +89,6 @@ package {
 
 			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
 
-			highlightedLocations = new Array();
-
 			combatFrames = 0;
 			characterCombatTurn = true;
 			this.logger = logger;
@@ -100,7 +98,12 @@ package {
 
 			parseFloorData(floorData);
 			resetFloor();
-
+			
+			highlightedLocations = new Array(gridWidth);
+			for (var i:int = 0; i < gridWidth; i++) {
+				highlightedLocations[i] = new Array(gridHeight);
+			}
+			
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -160,6 +163,7 @@ package {
 						}
 					}
 				}
+				clearHighlightedLocations()
 			}
 
 			// Replace the current grid with a fresh one.
@@ -207,16 +211,8 @@ package {
 			combatFrames = 0;
 			characterCombatTurn = true;
 		}
-
-		// Returns true if the tile location the player chose is valid with the current dungeon setup.
-		public function fitsInDungeon(i:int, j:int, selectedTile:Tile):Boolean {
-			return (i + 1 < grid.length && grid[i + 1][j] && grid[i + 1][j].west && selectedTile.east) ||
-				   (i - 1 >= 0 && grid[i - 1][j] && grid[i - 1][j].east && selectedTile.west) ||
-				   (j + 1 < grid[0].length && grid[i][j + 1] && grid[i][j + 1].north && selectedTile.south) ||
-				   (j - 1 >= 0 && grid[i][j - 1] && grid[i][j - 1].south && selectedTile.north);
-		}
-
-		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
+		
+		// given an i and j (x and y) [position on the grid], removes the fogged locations around it 
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int; var h1:Image;
@@ -280,30 +276,79 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(selectedTile:Tile):void {
-			var i:int; var j:int; var hl:Image;
+			var i:int; var j:int; var start_i:int; var start_j:int; var visited:Array;
 
-			for (i = 0; i < grid.length; i++) {
+			// Find entry tile
+			OuterLoop: for (i = 0; i < grid.length; i++) {
 				for (j = 0; j < grid[i].length; j++) {
-					if (!grid[i][j]) {
-						var goodTile:Boolean = false;
-						if (fitsInDungeon(i, j, selectedTile)) {
-							hl = new Image(textures[Util.TILE_HL_Y]);
-							hl.x = i * Util.PIXELS_PER_TILE;
-							hl.y = j * Util.PIXELS_PER_TILE;
-							highlightedLocations.push(hl);
-							addChild(hl);
-						}
+					if (grid[i][j] is EntryTile) {
+						start_i = i;
+						start_j = j;
+						break OuterLoop;
 					}
 				}
+			}
+			
+			// Build visited grid
+			visited = new Array(gridWidth);
+			for (i = 0; i < gridWidth; i++) {
+				visited[i] = new Array(gridHeight);
+				for (j = 0; j < gridHeight; j++) {
+					visited[i][j] = false;
+				}
+			}
+			
+			highlightAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
+		}
+		
+		// Recursively iterates over the map from start and highlights allowed locations
+		public function highlightAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):void {
+			if (visited[i][j] || highlightedLocations[i][j]) {
+				return;
+			}
+			
+			if (!grid[i][j] && ((direction == Util.NORTH && selectedTile.north) || (direction == Util.SOUTH && selectedTile.south) ||
+					(direction == Util.WEST && selectedTile.west) || (direction == Util.EAST && selectedTile.east))) {
+				// Open spot on grid that the selected tile can be placed
+				var hl:Image = new Image(textures[Util.TILE_HL_Y]);
+				hl.x = i * Util.PIXELS_PER_TILE;
+				hl.y = j * Util.PIXELS_PER_TILE;
+				highlightedLocations[i][j] = hl;
+				addChild(highlightedLocations[i][j]);
+			} else if (grid[i][j] || direction == -1) {
+				// Currently traversing path (-1 direction indicates the start tile)
+				visited[i][j] = true;
+				if (i + 1 < gridWidth && grid[i][j].east) { highlightAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST); }
+				if (i - 1 >= 0 && grid[i][j].west) { highlightAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST); }
+				if (j + 1 < gridHeight && grid[i][j].south) { highlightAllowedLocationsHelper(i, j + 1, selectedTile, visited, Util.NORTH); }
+				if (j - 1 >= 0 && grid[i][j].north) { highlightAllowedLocationsHelper(i, j - 1, selectedTile, visited, Util.SOUTH); }
 			}
 		}
 
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
-			for (var i:int = 0; i < highlightedLocations.length; i++) {
-				removeChild(highlightedLocations[i]);
+			for (var i:int = 0; i < gridWidth; i++) {
+				for (var j:int = 0; j < gridHeight; j++) {
+					if (highlightedLocations[i][j]) {
+						removeChild(highlightedLocations[i][j]);
+						highlightedLocations[i][j] = null;
+					}
+				}
 			}
-			highlightedLocations.splice()
+		}
+
+		// Returns a 2D array with the given dimensions.
+		private function initializeGrid(x:int, y:int):Array {
+			var arr:Array = new Array(x);
+			// Potential bug exists here when appending Tiles to
+			// the end of the outside array (which should never occur)
+			// Code elsewhere will treat an Array of 5 Arrays and a Tile
+			// as 6 Arrays, which then bugs when we set properties of the
+			// 6th "Array".
+			for (var i:int = 0; i < x; i++) {
+				arr[i] = new Array(y);
+			}
+			return arr;
 		}
 
 		private function parseFloorData(floorDataBytes:ByteArray):void {
@@ -414,6 +459,7 @@ package {
 			// put tileData's tiles into a grid
 			for each (var tile:Tile in tileData) {
 				initialGrid[tile.grid_x][tile.grid_y] = tile;
+				tile.onGrid = true;
 				if (tile is EntryTile) {
 					initialFogGrid[tile.grid_x][tile.grid_y] = false;
 					setUpInitialFoglessSpots(tile.grid_x, tile.grid_y);
