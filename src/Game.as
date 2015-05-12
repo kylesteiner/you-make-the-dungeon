@@ -38,7 +38,8 @@ package {
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
-		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
+		[Embed(source='assets/icons/medium/mute_bgm.png')] private static const icon_mute_bgm:Class;
+		[Embed(source='assets/icons/medium/mute_sfx.png')] private static const icon_mute_sfx:Class;
 		[Embed(source='assets/icons/medium/reset.png')] private static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] private static const icon_run:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
@@ -208,8 +209,8 @@ package {
 		private function initializeFloorWorld():void {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
-			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE]);
-			sfxMuteButton = new Clickable(32, 480-32, toggleSFXMute, null, textures[Util.ICON_MUTE]);
+			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
+			sfxMuteButton = new Clickable(64, 480-32, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
 			resetButton = new Clickable(428, 0, resetFloor, null, textures[Util.ICON_RESET]);
 			runButton = new Clickable(428, 32, runFloor, null, textures[Util.ICON_RUN]);
 
@@ -535,7 +536,8 @@ package {
 			textures[Util.TILE_HL_B] = Texture.fromEmbeddedAsset(hl_blue);
 
 			textures[Util.ICON_CURSOR] = Texture.fromEmbeddedAsset(icon_cursor);
-			textures[Util.ICON_MUTE] = Texture.fromEmbeddedAsset(icon_mute);
+			textures[Util.ICON_MUTE_BGM] = Texture.fromEmbeddedAsset(icon_mute_bgm);
+			textures[Util.ICON_MUTE_SFX] = Texture.fromEmbeddedAsset(icon_mute_sfx);
 			textures[Util.ICON_RESET] = Texture.fromEmbeddedAsset(icon_reset);
 			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);

@@ -60,7 +60,8 @@ package {
 		public static const TILE_HL_R:String = "hl_r";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
-		public static const ICON_MUTE:String = "icon_mute";
+		public static const ICON_MUTE_BGM:String = "icon_mute_bgm";
+		public static const ICON_MUTE_SFX:String = "icon_mute_sfx";
 		public static const ICON_RESET:String = "icon_reset";
 		public static const ICON_RUN:String = "icon_run";
 		public static const TILE_HUD:String = "tile_hud";
