@@ -353,8 +353,6 @@ package {
 			addChild(charHud);
 			tileHud = new TileHud(newFloorData[1], textures);
 			addChild(tileHud);
-
-			mixer.play(Util.FLOOR_BEGIN);
 		}
 
 		public function transitionToStart(a:Array):void {
