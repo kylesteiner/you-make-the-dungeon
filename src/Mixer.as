@@ -14,6 +14,8 @@ package {
         public var sfx:Dictionary;
         public var sfxMuted:Boolean;
 
+        public var playTime:Number;
+
         public function Mixer(songs:Array, sfxDict:Dictionary) {
             super();
 
@@ -25,6 +27,7 @@ package {
             currentSound = pickRandomSong();
             player = currentSound.play();
             playing = true;
+            playTime = 0;
 
             addEventListener(Event.ENTER_FRAME, onEnterFrame);
         }
@@ -55,8 +58,12 @@ package {
         }
 
         public function onEnterFrame(e:EnterFrameEvent):void {
-            if(player.position >= currentSound.length - 1) {
+            playTime += e.passedTime;
+
+            //if(player.position >= currentSound.length - 1) {
+            if(playTime * 1000 >= currentSound.length) {
                 player.stop();
+                playTime = 0;
                 currentSound = pickRandomSong();
                 player = currentSound.play();
             }
