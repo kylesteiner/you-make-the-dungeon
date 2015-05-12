@@ -366,6 +366,10 @@ package {
 		}
 
 		public function createMainMenu():void {
+			var titleField:TextField = new TextField(256, 80, "MONSTER STORY", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
+			titleField.y = 32 + titleField.height / 2;
+
 			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 
 			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
@@ -378,7 +382,7 @@ package {
 			beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(startButton, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, startButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
