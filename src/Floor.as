@@ -4,9 +4,10 @@
 package {
 	import flash.net.*;
 	import flash.utils.*;
-	import starling.display.Image;
+	import mx.utils.StringUtil;
 
 	import starling.core.Starling;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.*;
 	import starling.text.TextField;
@@ -274,7 +275,7 @@ package {
 			}
 			// diagonal cases
 			if (i + 1 < fogGrid.length) {
-				if (j + 1 < fogGrid[j].length && fogGrid[i + 1][j + 1]) {
+				if (j + 1 < fogGrid[i].length && fogGrid[i + 1][j + 1]) {
 					h1 = fogGrid[i + 1][j + 1];
 					fogGrid[i + 1][j + 1] = false;
 					removeChild(h1);
@@ -286,7 +287,7 @@ package {
 				}
 			}
 			if (i -1 >= 0) {
-				if (j + 1 < fogGrid[j].length  && fogGrid[i - 1][j + 1]) {
+				if (j + 1 < fogGrid[i].length  && fogGrid[i - 1][j + 1]) {
 					h1 = fogGrid[i - 1][j + 1];
 					fogGrid[i - 1][j + 1] = false;
 					removeChild(h1);
@@ -469,13 +470,15 @@ package {
 					var eReward:int = Number(lineData[11]);
 					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.MONSTER_1], eName, eLvl, eHp, eAtk, eReward));
 				} else if (tType == "objective") {
-					var oName:String = lineData[7];
+					var key:String = lineData[7];
+					var textureName:String = StringUtil.trim(lineData[8]);
+					trace("Texture name for " + key + ": \"" + textureName + "\"");
 					var prereqs:Array = new Array();
-					for (j = 8; j < lineData.length; j++) {
-						prereqs.push(lineData[j]);
+					for (j = 9; j < lineData.length; j++) {
+						prereqs.push(StringUtil.trim(lineData[j]));
 					}
-					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.KEY], oName, prereqs));
-					objectiveState[oName] = false;
+					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[textureName], key, prereqs));
+					objectiveState[key] = false;
 				} else if (tType == "none") {
 					tileData.push(new ImpassableTile(tX, tY, textures[Util.TILE_NONE]));
 				}

@@ -18,6 +18,7 @@ package ai {
 		// Insert a search node into the heap.
 		public function insert(searchNode:SearchNode):void {
 			var node:HeapNode = new HeapNode(searchNode, priorityFn(searchNode));
+			trace("Inserting node with char (" + searchNode.state.char.x + "," + searchNode.state.char.y + "), hp = "+ searchNode.state.char.hp + ", cost " + priorityFn(searchNode));
 			size++;
 			var i:int = percolateUp(size, node);
 			arr[i] = node;
@@ -41,7 +42,6 @@ package ai {
 		}
 
 		private function percolateUp(hole:int, node:HeapNode):int {
-			trace("percolateUp(" + hole + ")");
 			while (hole > 1 && node.val < arr[int(hole/2)].val) {
 				arr[hole] = arr[int(hole/2)];
 				hole = int(hole/2);

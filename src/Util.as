@@ -30,6 +30,8 @@ package {
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
 		// Keys to the dictionary of textures.
+		public static const DOOR:String = "door";
+
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";

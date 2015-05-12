@@ -16,7 +16,7 @@ package ai {
 		override public function hash():int {
 			var hash:int = Util.hashString(key);
 			for (var i:int = 0; i < prereqs.length; i++) {
-				hash += Util.hashString(String(prereqs));
+				hash += 19 * Util.hashString(String(prereqs));
 			}
 			return hash;
 		}
