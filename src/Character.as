@@ -78,15 +78,15 @@ package {
 
 			if (direction == Util.NORTH) {
 				destX = x;
-				destY -= Util.PIXELS_PER_TILE;
+				destY = y - Util.PIXELS_PER_TILE;
 			} else if (direction == Util.EAST) {
-				destX += Util.PIXELS_PER_TILE;
+				destX = x + Util.PIXELS_PER_TILE;
 				destY = y;
 			} else if (direction == Util.SOUTH) {
 				destX = x;
-				destY += Util.PIXELS_PER_TILE;
+				destY = y + Util.PIXELS_PER_TILE;
 			} else if (direction == Util.WEST) {
-				destX -= Util.PIXELS_PER_TILE;
+				destX = x - Util.PIXELS_PER_TILE;
 				destY = y;
 			}
 		}
