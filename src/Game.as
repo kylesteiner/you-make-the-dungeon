@@ -365,6 +365,20 @@ package {
 						currentFloor.addChild(selectedTile);
 						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
 						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
+						// check if we placed the tile next to any preplaced tiles, and if we did, remove 
+						// the fogs for those as well. (it's so ugly D:)
+						if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
+						}
+						if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x -1][selectedTile.grid_y]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
+						}
+						if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y + 1]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
+						}
+						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y - 1);
+						}
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
 						selectedTile.onGrid = true;
