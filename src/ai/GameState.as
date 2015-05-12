@@ -142,8 +142,7 @@ package ai {
 		private function satisfiedObjectives(x:int, y:int):Boolean {
 			var entity:Object = entities[x][y];
 			// Check if the objective exists first.
-			if (!entity || !(entity is ObjectiveState)) {
-				trace("no objective entity - satisfied");
+			if (entity == null || !(entity is ObjectiveState)) {
 				return true;
 			}
 
@@ -184,11 +183,11 @@ package ai {
 							for (var k:int = 0; k < obj.prereqs.length; k++) {
 								prereqs.push(obj.prereqs[k]);
 							}
-							entities[i][j] = new ObjectiveState(obj.key, prereqs);
+							nextEntities[i][j] = new ObjectiveState(obj.key, prereqs);
 						}
 						if (e is EnemyState) {
 							var enemy:EnemyState = e as EnemyState;
-							entities[i][j] = new EnemyState(enemy.hp, enemy.attack, enemy.xpReward);
+							nextEntities[i][j] = new EnemyState(enemy.hp, enemy.attack, enemy.xpReward);
 						}
 					}
 				}
@@ -219,7 +218,7 @@ package ai {
 			}
 
 			// Calculate character-entity interaction
-			if (nextEntities[nextChar.x][nextChar.y]) {
+			if (nextEntities[nextChar.x][nextChar.y] != null) {
 				var entity:Object = nextEntities[nextChar.x][nextChar.y];
 				if (entity is EnemyState) {
 					var nextEnemy:EnemyState = entity as EnemyState;

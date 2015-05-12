@@ -56,7 +56,7 @@ package ai {
 
 			while (!fringe.isEmpty()) {
 				var currentNode:SearchNode = fringe.pop();
-				trace("Getting node from fringe - (" + currentNode.state.char.x + "," + currentNode.state.char.y + ")");
+				trace("Visiting Node (" + currentNode.state.char.x + "," + currentNode.state.char.y + ")");
 				if (visited[currentNode.state.hash()]) {
 					trace("Node already visited");
 					continue;
@@ -69,7 +69,6 @@ package ai {
 				visited[currentNode.state.hash()] = true;
 
 				var successors:Array = problem.getSuccessors(currentNode.state);
-				trace("Generated " + successors.length + " successors");
 				for (var i:int = 0; i < successors.length; i++) {
 					var successor:Successor = successors[i];
 					var path:Array = new Array();
@@ -79,7 +78,6 @@ package ai {
 					path.push(successor.action);
 					var node:SearchNode = new SearchNode(
 						successor.state, path, successor.cost + currentNode.cost);
-					trace("successor " + i + ": ("+ successor.state.char.x + "," + successor.state.char.y + "), " + successor.action);
 					fringe.insert(node);
 				}
 			}
@@ -87,8 +85,21 @@ package ai {
 		}
 
 		public static function heuristic(state:GameState):int {
-			// TODO: implement
-			return 0;
+			var val:int = 0;
+			// Dead characters are baaaad.
+			if (state.char.hp <= 0) {
+				val += 9999999;
+			}
+			val += manhattanDistance(state.char.x, state.char.y, state.exitX, state.exitY);
+			return val;
+		}
+
+		private static function manhattanDistance(x1:int, y1:int, x2:int, y2:int):int {
+			return int(Math.abs(x1 - x2) + Math.abs(y1 - y2));
+		}
+
+		private static function pythagoreanDistance(x1:int, y1:int, x2:int, y2:int):int {
+			return int(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
 		}
 	}
 }
