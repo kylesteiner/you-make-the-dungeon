@@ -75,6 +75,8 @@ package {
 		private var tutorialDisplaying:Boolean;
 		private var originalTutorialDisplaying:Boolean;
 
+		public var altCallback:Function;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
@@ -95,6 +97,8 @@ package {
 			animations = animationDict;
 
 			mixer = soundMixer;
+
+			altCallback = null;
 
 			objectiveState = new Dictionary();
 
@@ -598,7 +602,7 @@ package {
 			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);
-			nextFloorButton.addParameter(null); // Default = switchToFloor
+			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);

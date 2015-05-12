@@ -100,6 +100,7 @@ package {
 		[Embed(source='assets/transitions/floor6.png')] private static const transitions6:Class;
 		[Embed(source='assets/transitions/floor7.png')] private static const transitions7:Class;
 		[Embed(source='assets/transitions/floor8.png')] private static const transitions8:Class;
+		[Embed(source='assets/transitions/floor_final.png')] private static const transitionsFinal:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
@@ -330,6 +331,9 @@ package {
 
 			var nextFloorData:Array = new Array();
 			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger, newFloorData[4]);
+			if(currentFloor.floorName == Util.FLOOR_8) {
+				currentFloor.altCallback = transitionToStart;
+			}
 
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
@@ -350,8 +354,12 @@ package {
 			mixer.play(Util.FLOOR_BEGIN);
 		}
 
+		public function transitionToStart(a:Array):void {
+			createMainMenu();
+		}
+
 		public function createMainMenu():void {
-			//var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 
 			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			beginGameButton.addParameter(switchToFloor);
@@ -363,7 +371,7 @@ package {
 			beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(beginGameButton, creditsButton)));
+			switchToMenu(new Menu(new Array(startButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
@@ -661,7 +669,7 @@ package {
 			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions6));
 			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions7));
 			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitions8));
-			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitions0));
+			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitionsFinal));
 			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));
 
