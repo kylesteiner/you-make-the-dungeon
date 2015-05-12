@@ -76,6 +76,8 @@ package {
 		private var nextTransition:String;
 
 		private var tutorialImage:Image;
+		
+		private var nextFloorButton:Clickable;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -150,6 +152,9 @@ package {
 				removeChild(tutorialImage);
 				tutorialImage.x += value;
 				addChild(tutorialImage);
+			} 
+			if (nextFloorButton) {
+				nextFloorButton.x += value;
 			}
 		}
 		
@@ -158,6 +163,9 @@ package {
 				removeChild(tutorialImage);
 				tutorialImage.y += value;
 				addChild(tutorialImage);
+			}
+			if (nextFloorButton) {
+				nextFloorButton.y += value;
 			}
 		}
 
@@ -677,7 +685,7 @@ package {
 			}
 			//mixer.play(Util.FLOOR_COMPLETE);
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			var nextFloorButton:Clickable = new Clickable(0, 0,
+			nextFloorButton = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);
 			nextFloorButton.addParameter(null); // Default = switchToFloor
