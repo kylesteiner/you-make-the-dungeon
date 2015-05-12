@@ -4,9 +4,10 @@
 package {
 	import flash.net.*;
 	import flash.utils.*;
-	import starling.display.Image;
+	import mx.utils.StringUtil;
 
 	import starling.core.Starling;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.*;
 	import starling.text.TextField;
@@ -24,7 +25,7 @@ package {
 		// dedicated to non-tile objects at the start.
 		public static const NON_TILE_LINES:int = 5;
 
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next level."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next floor."
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
@@ -66,25 +67,37 @@ package {
 		private var dmgText:TextField;
 
 		private var textures:Dictionary;
+		private var animations:Dictionary;
+
+		private var mixer:Mixer;
 
 		// logger
 		private var logger:Logger;
 		private var nextTransition:String;
 
+		private var tutorialImage:Image;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
 							  textureDict:Dictionary,
+							  animationDict:Dictionary,
 							  level:int,
 							  xp:int,
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
-							  logger:Logger = null) {
+							  soundMixer:Mixer,
+							  logger:Logger = null,
+							  showPrompt:Boolean = false) {
 			super();
 			initialLevel = level;
 			initialXp = xp;
 			preplacedTiles = 0;
 			textures = textureDict;
+			animations = animationDict;
+
+			mixer = soundMixer;
+
 			objectiveState = new Dictionary();
 
 			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
@@ -98,20 +111,33 @@ package {
 
 			parseFloorData(floorData);
 			resetFloor();
-			
+
 			highlightedLocations = new Array(gridWidth);
 			for (var i:int = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
-			
+
+			if(showPrompt) {
+				tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
+				tutorialImage.touchable = false;
+				tutorialImage.alpha = 0.7;
+				addChild(tutorialImage);
+			}
+
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
-			addEventListener(TileEvent.COMBAT, onCombat);
+			//addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+		}
+
+		public function removeTutorial():void {
+			if(tutorialImage) {
+				removeChild(tutorialImage);
+			}
 		}
 
 		// Called when the run button is clicked.
@@ -198,7 +224,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, textures[Util.HERO]);
+					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -211,8 +237,8 @@ package {
 			combatFrames = 0;
 			characterCombatTurn = true;
 		}
-		
-		// given an i and j (x and y) [position on the grid], removes the fogged locations around it 
+
+		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int; var h1:Image;
@@ -249,7 +275,7 @@ package {
 			}
 			// diagonal cases
 			if (i + 1 < fogGrid.length) {
-				if (j + 1 < fogGrid[j].length && fogGrid[i + 1][j + 1]) {
+				if (j + 1 < fogGrid[i].length && fogGrid[i + 1][j + 1]) {
 					h1 = fogGrid[i + 1][j + 1];
 					fogGrid[i + 1][j + 1] = false;
 					removeChild(h1);
@@ -261,7 +287,7 @@ package {
 				}
 			}
 			if (i -1 >= 0) {
-				if (j + 1 < fogGrid[j].length  && fogGrid[i - 1][j + 1]) {
+				if (j + 1 < fogGrid[i].length  && fogGrid[i - 1][j + 1]) {
 					h1 = fogGrid[i - 1][j + 1];
 					fogGrid[i - 1][j + 1] = false;
 					removeChild(h1);
@@ -288,7 +314,7 @@ package {
 					}
 				}
 			}
-			
+
 			// Build visited grid
 			visited = new Array(gridWidth);
 			for (i = 0; i < gridWidth; i++) {
@@ -297,16 +323,16 @@ package {
 					visited[i][j] = false;
 				}
 			}
-			
+
 			highlightAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
 		}
-		
+
 		// Recursively iterates over the map from start and highlights allowed locations
 		public function highlightAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):void {
 			if (visited[i][j] || highlightedLocations[i][j]) {
 				return;
 			}
-			
+
 			if (!grid[i][j] && ((direction == Util.NORTH && selectedTile.north) || (direction == Util.SOUTH && selectedTile.south) ||
 					(direction == Util.WEST && selectedTile.west) || (direction == Util.EAST && selectedTile.east))) {
 				// Open spot on grid that the selected tile can be placed
@@ -394,7 +420,7 @@ package {
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, textures[Util.HERO]);
+					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
 
 			// Parse all of the tiles.
 			var lineData:Array;
@@ -444,13 +470,15 @@ package {
 					var eReward:int = Number(lineData[11]);
 					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.MONSTER_1], eName, eLvl, eHp, eAtk, eReward));
 				} else if (tType == "objective") {
-					var oName:String = lineData[7];
+					var key:String = lineData[7];
+					var textureName:String = StringUtil.trim(lineData[8]);
+					trace("Texture name for " + key + ": \"" + textureName + "\"");
 					var prereqs:Array = new Array();
-					for (j = 8; j < lineData.length; j++) {
-						prereqs.push(lineData[j]);
+					for (j = 9; j < lineData.length; j++) {
+						prereqs.push(StringUtil.trim(lineData[j]));
 					}
-					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.KEY], oName, prereqs));
-					objectiveState[oName] = false;
+					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[textureName], key, prereqs));
+					objectiveState[key] = false;
 				} else if (tType == "none") {
 					tileData.push(new ImpassableTile(tX, tY, textures[Util.TILE_NONE]));
 				}
@@ -520,7 +548,9 @@ package {
 
 		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
-			if (char.inCombat && combatFrames == 0) {
+			/*if (char.inCombat && combatFrames == 0) {
+				addChild(char);
+				return;
 				// Time for the next combat round.
 				if (characterCombatTurn) {
 					Combat.charAttacksEnemy(char.state, enemy.state);
@@ -532,15 +562,19 @@ package {
 					addChild(dmgText);
 
 					combatFrames = 30;
-
 					// If the enemy dies, remove the enemy image and end combat.
 					if (enemy.state.hp <= 0) {
 						// TODO: Display XP gain, healing
 						enemy.removeImage();
 						char.inCombat = false;
+						var oldLevel:int = char.state.level;
 						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 													Util.real_to_grid(x),
 													Util.real_to_grid(y)));
+						if (oldLevel != char.state.level) {
+							logger.logAction(10, {"previousLevel":oldLevel, "newLevel":char.state.level } );
+
+						}
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
@@ -571,7 +605,7 @@ package {
 			// Tick down the frames between combat animations every frame.
 			if (combatFrames > 0) {
 				combatFrames--;
-			}
+			}*/
 
 			addChild(char);
 		}
@@ -596,7 +630,7 @@ package {
 			}
 		}
 
-		private function onCharHandled(e:TileEvent):void {
+		public function onCharHandled(e:TileEvent):void {
 			char.move(agent.getAction());
 		}
 
@@ -607,15 +641,18 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
+			mixer.play(Util.FLOOR_COMPLETE);
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
 													winText);
+			nextFloorButton.addParameter(null); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
 			nextFloorButton.addParameter(char.state.level);
 			nextFloorButton.addParameter(char.state.xp);
+			nextFloorButton.addParameter(false);
 			addChild(nextFloorButton);
 		}
 
@@ -630,10 +667,12 @@ package {
 		// Called when a character runs into an enemy tile. Combat is executed
 		// step by step over several frames, so combat logic isn't directly
 		// invoked.
-		private function onCombat(e:TileEvent):void {
+		/*private function onCombat(e:TileEvent):void {
 			char.inCombat = true;
 			characterCombatTurn = true;
 			enemy = grid[e.grid_x][e.grid_y];
-		}
+			//dispatchEvent(new AnimationEvent.COMBAT_START, char, enemy)
+			//onCombatCallback(char, enemy);
+		}*/
 	}
 }

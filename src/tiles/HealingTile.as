@@ -25,11 +25,11 @@ package tiles {
 									backgroundTexture:Texture,
 									healthTexture:Texture,
 									health:int) {
+			state = new HealingState(health);
 			super(g_x, g_y, n, s, e, w, backgroundTexture);
 			healthImage = new Image(healthTexture);
 			addChild(healthImage);
 
-			state = new HealingState(health);
 			used = false;
 			displayInformation();
 		}

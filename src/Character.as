@@ -11,6 +11,7 @@ package {
 	import ai.CharState;
 	import tiles.*;
 	import Util;
+	import flash.utils.Dictionary;
 
 	// Class representing the Character rendered in game.
 	public class Character extends Sprite {
@@ -26,13 +27,23 @@ package {
 		private var destX:int;
 		private var destY:int;
 
+		private var moveQueue:Array;
+
+		private var animations:Dictionary;
+		private var currentAnimation:MovieClip;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, texture:Texture) {
+		public function Character(g_x:int, g_y:int, level:int, xp:int, animationDict:Dictionary) {
 			super();
 			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
+
+			moveQueue = new Array();
+			animations = animationDict;
+			currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
+			currentAnimation.play();
 
 			// Calculate character state from level.
 			var attack:int = level;
@@ -41,8 +52,7 @@ package {
 			// Setup character game state.
 			state = new CharState(g_x, g_y, xp, level, maxHp, hp, attack);
 
-			var image:Image = new Image(texture);
-			addChild(image);
+			addChild(currentAnimation);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -87,7 +97,9 @@ package {
 			}
 		}
 
-		private function onEnterFrame(e:Event):void {
+		private function onEnterFrame(e:EnterFrameEvent):void {
+			currentAnimation.advanceTime(e.passedTime);
+
 			if (moving) {
 				if (x > destX) {
 					x -= PIXELS_PER_FRAME;

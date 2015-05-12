@@ -25,22 +25,26 @@ package {
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
-		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
-		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
+		[Embed(source='assets/backgrounds/tutorial.png')] private static const tutorial_hud:Class;
+
 		[Embed(source='assets/effects/large/fog.png')] private static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
 		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_green:Class;
 		[Embed(source='assets/effects/large/hl_red.png')] private static var hl_red:Class;
 		[Embed(source='assets/effects/large/hl_yellow.png')] private static var hl_yellow:Class;
+
+		[Embed(source='assets/entities/large/door.png')] private static var entity_door:Class;
 		[Embed(source='assets/entities/large/healing.png')] private static var entity_healing:Class;
 		[Embed(source='assets/entities/large/hero.png')] private static var entity_hero:Class;
 		[Embed(source='assets/entities/large/key.png')] private static var entity_key:Class;
 		[Embed(source='assets/entities/large/monster_1.png')] private static var entity_mon1:Class;
+
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
-		[Embed(source='assets/icons/large/cursor.png')] private static var icon_cursor:Class;
-		[Embed(source='assets/icons/large/mute.png')] private static var icon_mute:Class;
-		[Embed(source='assets/icons/large/reset.png')] private static var icon_reset:Class;
+
+		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
+		[Embed(source='assets/icons/large/mute.png')] private static const icon_mute:Class;
+		[Embed(source='assets/icons/large/reset.png')] private static const icon_reset:Class;
 		[Embed(source='assets/icons/large/run.png')] private static var icon_run:Class;
 		[Embed(source='assets/tiles/large/tile_e.png')] private static var tile_e:Class;
 		[Embed(source='assets/tiles/large/tile_ew.png')] private static var tile_ew:Class;
@@ -58,6 +62,7 @@ package {
 		[Embed(source='assets/tiles/large/tile_sew.png')] private static var tile_sew:Class;
 		[Embed(source='assets/tiles/large/tile_sw.png')] private static var tile_sw:Class;
 		[Embed(source='assets/tiles/large/tile_w.png')] private static var tile_w:Class;
+
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
 		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
 		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public static const floor2:Class;
@@ -84,6 +89,41 @@ package {
 		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public static const tiles11:Class;
 		[Embed(source='assets/transitions/floor0.png')] private static const transitions0:Class;
 
+		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
+		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
+		[Embed(source='assets/animations/character/idle/character_2.png')] private static const characterIdleAnim2:Class;
+		[Embed(source='assets/animations/character/idle/character_3.png')] private static const characterIdleAnim3:Class;
+
+		[Embed(source='assets/backgrounds/combat_background.png')] private static const combatBackground:Class;
+		[Embed(source='assets/backgrounds/combat_shadow.png')] private static const combatShadow:Class;
+
+		[Embed(source='assets/animations/character/combat_idle/char_ci_0.png')] private static const charCombatIdleAnim0:Class;
+		[Embed(source='assets/animations/character/combat_idle/char_ci_1.png')] private static const charCombatIdleAnim1:Class;
+		[Embed(source='assets/animations/character/combat_idle/char_ci_2.png')] private static const charCombatIdleAnim2:Class;
+
+		[Embed(source='assets/animations/character/combat_attack/char_ca_0.png')] private static const charCombatAtkAnim0:Class;
+		[Embed(source='assets/animations/character/combat_attack/char_ca_1.png')] private static const charCombatAtkAnim1:Class;
+		[Embed(source='assets/animations/character/combat_attack/char_ca_2.png')] private static const charCombatAtkAnim2:Class;
+		[Embed(source='assets/animations/character/combat_attack/char_ca_3.png')] private static const charCombatAtkAnim3:Class;
+
+		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] private static const charCombatFaintAnim0:Class;
+		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] private static const charCombatFaintAnim1:Class;
+
+		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
+		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
+		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
+		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
+		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
+
+		[Embed(source='assets/bgm/diving-turtle.mp3')] private static const bgmDivingTurtle:Class;
+		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] private static const bgmGentleThoughts:Class;
+		[Embed(source='assets/bgm/glow-in-the-dark.mp3')] private static const bgmGlowInTheDark:Class;
+		[Embed(source='assets/bgm/lovers-walk.mp3')] private static const bgmLoversWalk:Class;
+		[Embed(source='assets/bgm/oriental-drift.mp3')] private static const bgmOrientalDrift:Class;
+
+		// Currently unused
+		[Embed(source='assets/bgm/warm-interlude.mp3')] private static const bgmWarmInterlude:Class;
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
@@ -95,20 +135,26 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
+		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
+
+		private var sfx:Dictionary; // Map String -> SFX
+		private var bgm:Array;
+
 		private var staticBackgroundImage:Image;
 		private var world:Sprite;
 		private var menuWorld:Sprite;
 		private var currentFloor:Floor;
 		private var currentTransition:Clickable;
 		private var currentMenu:Menu;
-		private var isMenu:Boolean;
+		private var isMenu:Boolean; // probably need to change to state;
 
 		private var logger:Logger;
 		private var numberOfTilesPlaced:int;
 		private var emptyTiles:int;
 		private var enemyTiles:int;
 		private var healingTiles:int;
-		private var sfxMuted:Boolean;
+
+		private var currentCombat:CombatHUD;
 
 		public function Game() {
 			Mouse.hide();
@@ -129,8 +175,13 @@ package {
 
 			textures = setupTextures();
 			floors = setupFloors();
+			animations = setupAnimations();
 
-			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
+			sfx = setupSFX();
+			bgm = setupBGM();
+
+			mixer = new Mixer(bgm, sfx);
+			addChild(mixer);
 
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(staticBg);
@@ -151,6 +202,10 @@ package {
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
+			addEventListener(TileEvent.COMBAT, startCombat);
+
+			addEventListener(AnimationEvent.CHAR_DIED, onCombatFailure);
+			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
 		}
 
 		private function initializeFloorWorld():void {
@@ -158,11 +213,9 @@ package {
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
 			bgmMuteButton = new Clickable(0, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleBgmMute, null, textures[Util.ICON_MUTE]);
-			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSfxMute, null, textures[Util.ICON_MUTE]);
+			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE]);
 			resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
-
-			sfxMuted = false;
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -172,6 +225,37 @@ package {
 		private function initializeMenuWorld():void {
 			menuWorld = new Sprite();
 			menuWorld.addChild(new Image(Texture.fromBitmap(new grid_background())));
+		}
+
+		private function startCombat(event:TileEvent):void {
+			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], logger);
+			addChild(currentCombat);
+		}
+
+		private function onCombatSuccess(event:AnimationEvent):void {
+			removeChild(currentCombat);
+			event.enemy.removeImage();
+
+			var tLevel:int = event.character.state.level;
+
+			event.character.state.xp += event.enemy.state.xpReward;
+			event.character.state.tryLevelUp();
+
+			if(event.character.state.level != tLevel) {
+				// Play any relevant level-up code / sounds / events here
+				logger.logAction(10, {"previousLevel":tLevel, "newLevel":event.character.state.level});
+			}
+
+			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
+										Util.real_to_grid(currentFloor.x),
+										Util.real_to_grid(currentFloor.y)));
+		}
+
+		private function onCombatFailure(event:AnimationEvent):void {
+			removeChild(currentCombat);
+			// Prompt clickable into either floor reset or continue modifying floor
+			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
+								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
 		}
 
 		private function prepareSwap():void {
@@ -205,10 +289,10 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(0, 0, switchToFloor, null, newTransitionData[0]);
+			currentTransition = new Clickable(0, 0, newTransitionData[0] == null ? switchToFloor : newTransitionData[0], null, newTransitionData[1]);
 
 			var i:int;
-			for(i = 1; i < newTransitionData.length; i++) {
+			for(i = 2; i < newTransitionData.length; i++) {
 				currentTransition.addParameter(newTransitionData[i]);
 			}
 
@@ -222,8 +306,8 @@ package {
 			// TODO: find out how to pass in xp
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger, newFloorData[4]);
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
 
@@ -249,18 +333,33 @@ package {
 
 		public function createFloorSelect():void {
 			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor1Button.addParameter(switchToFloor);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
-			floor4Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor4Button.addParameter(Util.STARTING_XP);  // Char xp
-			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
+			floor1Button.addParameter(true);
+
+			var floor5button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 5", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor5button.addParameter(switchToFloor);
+			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TRANSITION_INDEX]);
+			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_FLOOR_INDEX]);
+			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
+			floor5button.addParameter(1);  // Char level
+			floor5button.addParameter(0);  // Char xp
+			floor5button.addParameter(false);
+
+			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor8button.addParameter(switchToFloor);
+			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TRANSITION_INDEX]);
+			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_FLOOR_INDEX]);
+			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
+			floor8button.addParameter(3);  // Char level
+			floor8button.addParameter(0);  // Char xp
+			floor8button.addParameter(false);
+
+			switchToMenu(new Menu(new Array(floor1Button, floor5button, floor8button)));
 		}
 
 		public function createCredits():void {
@@ -273,8 +372,8 @@ package {
 			mixer.togglePlay();
 		}
 
-		public function toggleSfxMute():void {
-			sfxMuted = !sfxMuted;
+		public function toggleSFXMute():void {
+			mixer.toggleSFXMute();
 		}
 
 		public function resetFloor():void {
@@ -294,6 +393,7 @@ package {
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 
+			currentFloor.removeTutorial();
 			currentFloor.runFloor();
 		}
 
@@ -341,6 +441,20 @@ package {
 						currentFloor.addChild(selectedTile);
 						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
 						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
+						// check if we placed the tile next to any preplaced tiles, and if we did, remove
+						// the fogs for those as well. (it's so ugly D:)
+						if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
+						}
+						if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
+						}
+						if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
+						}
+						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
+							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
+						}
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
 						selectedTile.onGrid = true;
@@ -393,8 +507,10 @@ package {
 			var scale:int = Util.REAL_TILE_SIZE / Util.PIXELS_PER_TILE;
 			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
+			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 
-			textures[Util.HERO] = Texture.fromBitmap(new entity_hero(), true, false, scale);
+			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
+			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
 			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_mon1(), true, false, scale);
@@ -429,7 +545,43 @@ package {
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
+
+			textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
+			textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
 			return textures;
+		}
+
+		private function setupAnimations():Dictionary {
+			var tAnimations:Dictionary = new Dictionary();
+
+			var charDict:Dictionary = new Dictionary();
+			var charVector:Vector.<Texture> = new Vector.<Texture>();
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim0));
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
+			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
+			charDict[Util.CHAR_IDLE] = charVector;
+
+			var charCombatIdleVector:Vector.<Texture> = new Vector.<Texture>();
+			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim0));
+			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim1));
+			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim2));
+			charDict[Util.CHAR_COMBAT_IDLE] = charCombatIdleVector;
+
+			var charCombatAttackVector:Vector.<Texture> = new Vector.<Texture>();
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim0));
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim1));
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim2));
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim3));
+			charDict[Util.CHAR_COMBAT_ATTACK] = charCombatAttackVector;
+
+			var charCombatFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim0));
+			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim1));
+			charDict[Util.CHAR_COMBAT_FAINT] = charCombatFaintVector;
+			tAnimations[Util.CHARACTER] = charDict;
+
+			return tAnimations;
 		}
 
 		private function setupFloors():Dictionary {
@@ -455,8 +607,28 @@ package {
 			return tFloors;
 		}
 
-		//private function setupSFX():Dictionary {
-			// TODO: make an sfx dictionary
-		//}
+		private function setupBGM():Array {
+			var tBgm:Array = new Array();
+
+			tBgm.push(new bgmDivingTurtle());
+			tBgm.push(new bgmGentleThoughts());
+			tBgm.push(new bgmGlowInTheDark());
+			tBgm.push(new bgmLoversWalk());
+			tBgm.push(new bgmOrientalDrift());
+
+			return tBgm;
+		}
+
+		private function setupSFX():Dictionary {
+			var tSfx:Dictionary = new Dictionary();
+
+			tSfx[Util.FLOOR_COMPLETE] = new sfxFloorComplete();
+			tSfx[Util.TILE_MOVE] = new sfxTileMove();
+			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
+			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
+			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
+
+			return tSfx;
+		}
 	}
 }

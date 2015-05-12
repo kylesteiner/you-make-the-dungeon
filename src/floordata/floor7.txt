@@ -1,12 +1,19 @@
 floor7
 floor8
 floor7
-7	7
-0	3
-entry	0	3	1	1	1	0
-impassable	4	3	0	0	0	0
-impassable	4	4	0	0	0	0
-impassable	4	2	0	0	0	0
-impassable	3	2	0	0	0	0
-impassable	3	4	0	0	0	0
-exit	6	3	1	1	0	1
+4	5
+0	0
+entry	0	0	0	1	0	0
+enemy	0	4	1	0	0	0	chum	2	6	2	1
+enemy	2	2	0	0	1	1	boss	3	9	2	1
+exit	3	2	0	0	0	1
+none	1	0	0	0	0	0
+none	1	4	0	0	0	0
+none	2	0	0	0	0	0
+none	2	1	0	0	0	0
+none	2	3	0	0	0	0
+none	2	4	0	0	0	0
+none	3	0	0	0	0	0
+none	3	1	0	0	0	0
+none	3	3	0	0	0	0
+none	3	4	0	0	0	0

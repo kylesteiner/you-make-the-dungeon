@@ -15,6 +15,9 @@ package {
 		public static const PIXELS_PER_TILE:int = 64;
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
+		public static const ANIM_FPS:int = 2;
+		public static const VISITED_ALPHA:Number = 0.4;
+		public static const COMBAT_ALPHA:Number = 0.7;
 
 		public static const DEFAULT_FONT:String = "Bebas";
 		public static const LARGE_FONT_SIZE:int = 48;
@@ -28,13 +31,11 @@ package {
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
 		// Keys to the dictionary of textures.
-		public static const HERO:String = "hero";
-		public static const HEALING:String = "health";
-		public static const KEY:String = "key";
-		public static const MONSTER_1:String = "monster_1";
+		public static const DOOR:String = "door";
 
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
+		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -88,6 +89,26 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
+
+		public static const COMBAT_BG:String = "combat_bg";
+		public static const COMBAT_SHADOW:String = "combat_shadow";
+
+		// Keys to the dictionary of animations
+		public static const CHARACTER:String = "character";
+		public static const CHAR_IDLE:String = "character_idle";
+		public static const CHAR_COMBAT_IDLE:String = "character_combat_idle";
+		public static const CHAR_COMBAT_ATTACK:String = "character_combat_attack";
+		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
+		public static const HEALING:String = "health";
+		public static const KEY:String = "key";
+		public static const MONSTER_1:String = "monster_1";
+
+		// Keys to the Dictionary of SFX
+		public static const FLOOR_COMPLETE:String = "floor_complete";
+		public static const TILE_MOVE:String = "tile_move";
+		public static const FLOOR_BEGIN:String = "floor_begin";
+		public static const BUTTON_PRESS:String = "button_press";
+		public static const FLOOR_RESET:String = "floor_reset";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;

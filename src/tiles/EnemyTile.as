@@ -48,7 +48,8 @@ package tiles {
         }
 
         public function removeImage():void {
-            removeChild(enemy);
+            //removeChild(enemy);
+            enemy.alpha = Util.VISITED_ALPHA;
         }
 
         override public function handleChar(c:Character):void {
