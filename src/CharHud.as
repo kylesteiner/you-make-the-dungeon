@@ -29,18 +29,18 @@ package {
 			y = Util.STAGE_HEIGHT - image.height - 2;
 			addChild(image);
 
-			level = new TextField(64, 20, "LVL: " + char.level, Util.DEFAULT_FONT, 20);
+			level = new TextField(64, 20, "LVL: " + char.state.level, Util.DEFAULT_FONT, 20);
 			addChild(level);
 
-			hp = new TextField(64, 20, "HP: " + char.hp, Util.DEFAULT_FONT, 20);
+			hp = new TextField(64, 20, "HP: " + char.state.hp, Util.DEFAULT_FONT, 20);
 			addChild(hp);
 			hp.y = 22;
 
-			atk = new TextField(64, 20, "Attack: " + char.attack, Util.DEFAULT_FONT, 20);
+			atk = new TextField(64, 20, "Attack: " + char.state.attack, Util.DEFAULT_FONT, 20);
 			atk.y = 44;
 			addChild(atk);
 
-			xp = new TextField(64, 20, "XP: " + char.xp + "/" + char.level, Util.DEFAULT_FONT, 20);
+			xp = new TextField(64, 20, "XP: " + char.state.xp + "/" + char.state.level, Util.DEFAULT_FONT, 20);
 			xp.y = 66;
 			addChild(xp);
 
@@ -48,10 +48,10 @@ package {
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
-			level.text = "LVL: " + char.level;
-			hp.text = "HP: " + char.hp;
-			atk.text = "Attack: " + char.attack;
-			xp.text = "XP: " + char.xp + "/" + char.level;
+			level.text = "LVL: " + char.state.level;
+			hp.text = "HP: " + char.state.hp;
+			atk.text = "Attack: " + char.state.attack;
+			xp.text = "XP: " + char.state.xp + "/" + char.state.level;
 		}
 	}
 }

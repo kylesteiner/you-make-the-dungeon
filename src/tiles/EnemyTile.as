@@ -5,13 +5,16 @@ package tiles {
 	import starling.text.TextField;
 	import starling.utils.Color;
 
+    import ai.EnemyState;
+
     public class EnemyTile extends Tile {
+        // Gameplay state
+        public var state:EnemyState;
+        public var initialHp:int;
+
+        // Eye candy attributes (not used in gameplay)
         public var enemyName:String;    // Name is already in use by a superclass
         public var level:int;
-        public var initialHp:int;
-        public var hp:int;
-        public var attack:int;
-        public var xpReward:int;
 
         private var enemy:Image;
 
@@ -28,18 +31,20 @@ package tiles {
                                   hp:int,
                                   attack:int,
                                   xpReward:int) {
+            // Set up attributes before super constructor because they are used
+            // by displayInformation
+            // TODO: fix tile info hud to get rid of this workaround
+            this.enemyName = name;
+            this.level = level;
+            initialHp = hp;
+            state = new EnemyState(hp, attack, xpReward);
+
             super(g_x, g_y, n, s, e, w, background);
 
             this.enemy = new Image(enemy);
             addChild(this.enemy);
 
-            this.enemyName = name;
-            this.level = level;
-            initialHp = hp;
-            this.hp = hp;
-            this.attack = attack;
-            this.xpReward = xpReward;
-			displayInformation();
+            displayInformation();
         }
 
         public function removeImage():void {
@@ -49,18 +54,21 @@ package tiles {
 
         override public function handleChar(c:Character):void {
             // Let Floor handle the combat. Bounce it back up with an event.
-            if (hp > 0) {
-                dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y, c));
+            if (state.hp > 0) {
+                dispatchEvent(new TileEvent(TileEvent.COMBAT, grid_x, grid_y));
             }
         }
 
         override public function reset():void {
             addChild(enemy);
-            hp = initialHp;
+            state.hp = initialHp;
         }
 
 		override public function displayInformation():void {
-			var info:String = "Enemy Tile\nLevel: " + level + "\nHP: " + hp + "\nAttack: " + attack + "\nxp: " + xpReward;
+			var info:String = "Enemy Tile\nLevel: " + level;
+            info += "\nHP: " + state.hp;
+            info += "\nAttack: " + state.attack;
+            info += "\nxp: " + state.xpReward;
 			setUpInfo(info);
 		}
     }

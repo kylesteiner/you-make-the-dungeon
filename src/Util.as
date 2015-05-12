@@ -32,6 +32,7 @@ package {
 		// Keys to the dictionary of textures.
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
+		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -99,6 +100,13 @@ package {
 		public static const KEY:String = "key";
 		public static const MONSTER_1:String = "monster_1";
 
+		// Keys to the Dictionary of SFX
+		public static const FLOOR_COMPLETE:String = "floor_complete";
+		public static const TILE_MOVE:String = "tile_move";
+		public static const FLOOR_BEGIN:String = "floor_begin";
+		public static const BUTTON_PRESS:String = "button_press";
+		public static const FLOOR_RESET:String = "floor_reset";
+
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
 		public static const DICT_TRANSITION_INDEX:int = 2;
@@ -112,6 +120,20 @@ package {
 
 		public static function real_to_grid(coordinate:int):int {
 			return coordinate / PIXELS_PER_TILE;
+		}
+
+		// Returns a 2D array with the given dimensions.
+		public static function initializeGrid(x:int, y:int):Array {
+			var arr:Array = new Array(x);
+			// Potential bug exists here when appending Tiles to
+			// the end of the outside array (which should never occur)
+			// Code elsewhere will treat an Array of 5 Arrays and a Tile
+			// as 6 Arrays, which then bugs when we set properties of the
+			// 6th "Array".
+			for (var i:int = 0; i < x; i++) {
+				arr[i] = new Array(y);
+			}
+			return arr;
 		}
 
 		// Returns a random int between the min and max.
@@ -154,6 +176,19 @@ package {
 			}
 
 			return rtn;
+		}
+
+		public static function hashString(str:String):int {
+			var hash:int = 0;
+			if (str.length == 0) {
+				return hash;
+			}
+			for (var i:int = 0; i < str.length; i++) {
+				var char:int = str.charCodeAt(i);
+				hash = ((hash<<5)-hash)+char;
+				hash = hash & hash;
+			}
+			return hash;
 		}
 	}
 }

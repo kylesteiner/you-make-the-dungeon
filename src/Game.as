@@ -23,10 +23,9 @@ package {
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
 		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
-		[Embed(source='assets/bgm/ludum32.mp3')] private var bgm_ludum:Class;
-		[Embed(source='assets/bgm/gaur.mp3')] private var bgm_gaur:Class;
 		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
+		[Embed(source='assets/backgrounds/tutorial.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/effects/fog.png')] private static const fog:Class;
 		[Embed(source='assets/effects/hl_blue.png')] private static const hl_blue:Class;
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
@@ -39,8 +38,8 @@ package {
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
 		[Embed(source='assets/icons/mute.png')] private static const icon_mute:Class;
-		[Embed(source='assets/icons/reset.png')] private static const icon_reset:Class;
-		[Embed(source='assets/icons/run.png')] private static const icon_run:Class;
+		[Embed(source='assets/icons/medium/reset.png')] private static const icon_reset:Class;
+		[Embed(source='assets/icons/medium/run.png')] private static const icon_run:Class;
 		[Embed(source='assets/tiles/tile_e.png')] private static const tile_e:Class;
 		[Embed(source='assets/tiles/tile_ew.png')] private static const tile_ew:Class;
 		[Embed(source='assets/tiles/tile_n.png')] private static const tile_n:Class;
@@ -106,6 +105,21 @@ package {
 		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] private static const charCombatFaintAnim0:Class;
 		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] private static const charCombatFaintAnim1:Class;
 
+		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
+		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
+		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
+		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
+		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
+
+		[Embed(source='assets/bgm/diving-turtle.mp3')] private static const bgmDivingTurtle:Class;
+		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] private static const bgmGentleThoughts:Class;
+		[Embed(source='assets/bgm/glow-in-the-dark.mp3')] private static const bgmGlowInTheDark:Class;
+		[Embed(source='assets/bgm/lovers-walk.mp3')] private static const bgmLoversWalk:Class;
+		[Embed(source='assets/bgm/oriental-drift.mp3')] private static const bgmOrientalDrift:Class;
+
+		// Currently unused
+		[Embed(source='assets/bgm/warm-interlude.mp3')] private static const bgmWarmInterlude:Class;
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
@@ -118,6 +132,10 @@ package {
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
 		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
+
+		private var sfx:Dictionary; // Map String -> SFX
+		private var bgm:Array;
+
 		private var staticBackgroundImage:Image;
 		private var world:Sprite;
 		private var menuWorld:Sprite;
@@ -131,9 +149,8 @@ package {
 		private var emptyTiles:int;
 		private var enemyTiles:int;
 		private var healingTiles:int;
-		private var sfxMuted:Boolean;
 
-		private var currentCombat:Combat;
+		private var currentCombat:CombatHUD;
 
 		public function Game() {
 			Mouse.hide();
@@ -156,7 +173,11 @@ package {
 			floors = setupFloors();
 			animations = setupAnimations();
 
-			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
+			sfx = setupSFX();
+			bgm = setupBGM();
+
+			mixer = new Mixer(bgm, sfx);
+			addChild(mixer);
 
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(staticBg);
@@ -183,11 +204,9 @@ package {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE]);
-			sfxMuteButton = new Clickable(32, 480-32, toggleSfxMute, null, textures[Util.ICON_MUTE]);
-			resetButton = new Clickable(64, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
-			runButton = new Clickable(96, 480-32, runFloor, null, textures[Util.ICON_RUN]);
-
-			sfxMuted = false;
+			sfxMuteButton = new Clickable(32, 480-32, toggleSFXMute, null, textures[Util.ICON_MUTE]);
+			resetButton = new Clickable(428, 0, resetFloor, null, textures[Util.ICON_RESET]);
+			runButton = new Clickable(428, 32, runFloor, null, textures[Util.ICON_RUN]);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -230,10 +249,10 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(0, 0, switchToFloor, null, newTransitionData[0]);
+			currentTransition = new Clickable(0, 0, newTransitionData[0] == null ? switchToFloor : newTransitionData[0], null, newTransitionData[1]);
 
 			var i:int;
-			for(i = 1; i < newTransitionData.length; i++) {
+			for(i = 2; i < newTransitionData.length; i++) {
 				currentTransition.addParameter(newTransitionData[i]);
 			}
 
@@ -247,10 +266,9 @@ package {
 			// TODO: find out how to pass in xp
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
-
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition);
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, null, true);
 			// the logger doesn't like 0 based indexing.
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } );
+			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -265,7 +283,7 @@ package {
 			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
 
-			currentCombat = new Combat(textures, animations, null, null);
+			currentCombat = new CombatHUD(textures, animations, null, null);
 			addChild(currentCombat);
 		}
 
@@ -277,12 +295,15 @@ package {
 
 		public function createFloorSelect():void {
 			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor1Button.addParameter(switchToFloor);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
+
 			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor4Button.addParameter(switchToFloor);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
@@ -301,8 +322,8 @@ package {
 			mixer.togglePlay();
 		}
 
-		public function toggleSfxMute():void {
-			sfxMuted = !sfxMuted;
+		public function toggleSFXMute():void {
+			mixer.toggleSFXMute();
 		}
 
 		public function resetFloor():void {
@@ -319,30 +340,11 @@ package {
 		}
 
 		public function runFloor():void {
-			// TODO: complete this function
-			var floorAStar:AStar = new AStar(currentFloor.grid);
-			addChild(floorAStar);
-			var floorEntryTile:Tile = currentFloor.getEntry();
-			var floorExitTile:Tile = currentFloor.getExit();
-
-			if(!floorEntryTile || !floorExitTile) {
-				removeChild(floorAStar);
-				return;
-			}
-
-			var charPath:Array = floorAStar.findPath(floorEntryTile.grid_x,
-													 floorEntryTile.grid_y,
-													 floorExitTile.grid_x,
-													 floorExitTile.grid_y);
-			if(!charPath) {
-				removeChild(floorAStar);
-				return;
-			}
-
-			//floorAStar.screenState.text = charPath.length.toString();
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
-			currentFloor.char.moveThroughFloor(charPath);
+
+			currentFloor.removeTutorial();
+			currentFloor.runFloor();
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
@@ -368,26 +370,30 @@ package {
 
 			// Tile placement
 			if (tileHud) {
-				var tileInUse:int = tileHud.indexOfTileInUse();
-				if (tileInUse == -1) {
+				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
+				if (selectedTileIndex == -1) {
 					return;
 				}
-				var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
-				if (touch.phase == TouchPhase.ENDED) {
-					// Player placed one of the available tiles
-					currentFloor.clearHighlightedLocations();
-					if (selectedTile.grid_x < currentFloor.gridWidth &&
-						selectedTile.grid_y < currentFloor.gridHeight &&
-						!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
-						currentFloor.fitsInDungeon(selectedTile.grid_x, selectedTile.grid_y, selectedTile)) {
+				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
+				tileHud.lockTiles();
+				selectedTile.moveToTouch(touch);
+				currentFloor.highlightAllowedLocations(selectedTile);
+				// Trigger tile placement if they click outside the tile HUD
+				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
+					touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height)) {
+					if (selectedTile.grid_x < currentFloor.gridWidth && selectedTile.grid_y < currentFloor.gridHeight &&
+							!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
+							currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
+						// Player correctly placed one of the available tiles
 						// Move tile from HUD to grid. Add new tile to HUD.
-						tileHud.removeAndReplaceTile(tileInUse);
+						tileHud.removeAndReplaceTile(selectedTileIndex);
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
 						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
 						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
+						selectedTile.onGrid = true;
 						if (selectedTile is Tile) {
 							emptyTiles++;
 						} else if (selectedTile is EnemyTile) {
@@ -397,10 +403,10 @@ package {
 						}
 					} else {
 						// Tile wasn't placed correctly. Return tile to HUD.
-						tileHud.returnTileInUse();
+						tileHud.returnSelectedTile();
 					}
-				} else if (touch.phase == TouchPhase.BEGAN) {
-					currentFloor.highlightAllowedLocations(selectedTile);
+					tileHud.unlockTiles();
+					currentFloor.clearHighlightedLocations();
 				}
 			}
 		}
@@ -436,6 +442,7 @@ package {
 			var textures:Dictionary = new Dictionary();
 			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
+			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
 			textures[Util.KEY] = Texture.fromEmbeddedAsset(entity_key);
@@ -532,8 +539,28 @@ package {
 			return tFloors;
 		}
 
-		//private function setupSFX():Dictionary {
-			// TODO: make an sfx dictionary
-		//}
+		private function setupBGM():Array {
+			var tBgm:Array = new Array();
+
+			tBgm.push(new bgmDivingTurtle());
+			tBgm.push(new bgmGentleThoughts());
+			tBgm.push(new bgmGlowInTheDark());
+			tBgm.push(new bgmLoversWalk());
+			tBgm.push(new bgmOrientalDrift());
+
+			return tBgm;
+		}
+
+		private function setupSFX():Dictionary {
+			var tSfx:Dictionary = new Dictionary();
+
+			tSfx[Util.FLOOR_COMPLETE] = new sfxFloorComplete();
+			tSfx[Util.TILE_MOVE] = new sfxTileMove();
+			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
+			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
+			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
+
+			return tSfx;
+		}
 	}
 }
