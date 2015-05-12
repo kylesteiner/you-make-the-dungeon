@@ -402,6 +402,12 @@ package {
 			var floorSize:Array = floorData[3].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
+			var mapBoundsBackground:Image = new Image(textures[Util.GRID_BACKGROUND]);
+			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
+			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
+			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
+			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
+			addChild(mapBoundsBackground);
 
 			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
 			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
