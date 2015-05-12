@@ -43,9 +43,11 @@ package {
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 
 		[Embed(source='assets/icons/cursor.png')] private static const icon_cursor:Class;
-		[Embed(source='assets/icons/large/mute.png')] private static const icon_mute:Class;
-		[Embed(source='assets/icons/large/reset.png')] private static const icon_reset:Class;
-		[Embed(source='assets/icons/large/run.png')] private static var icon_run:Class;
+
+		[Embed(source='assets/icons/medium/mute_bgm.png')] private static const icon_mute_bgm:Class;
+		[Embed(source='assets/icons/medium/mute_sfx.png')] private static const icon_mute_sfx:Class;
+		[Embed(source='assets/icons/medium/reset.png')] private static const icon_reset:Class;
+		[Embed(source='assets/icons/medium/run.png')] private static const icon_run:Class;
 		[Embed(source='assets/tiles/large/tile_e.png')] private static var tile_e:Class;
 		[Embed(source='assets/tiles/large/tile_ew.png')] private static var tile_ew:Class;
 		[Embed(source='assets/tiles/large/tile_n.png')] private static var tile_n:Class;
@@ -212,10 +214,11 @@ package {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
-			bgmMuteButton = new Clickable(0, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleBgmMute, null, textures[Util.ICON_MUTE]);
-			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE]);
+			bgmMuteButton = new Clickable(0, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
+			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
 			resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
+
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -538,10 +541,12 @@ package {
 			textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
 			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
 
+			// WARNING: ICONS ARE NOT SCALED LIKE THE TILES
 			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
-			textures[Util.ICON_MUTE] = Texture.fromBitmap(new icon_mute(), true, false, scale);
-			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, scale);
-			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, scale);
+			textures[Util.ICON_MUTE_BGM] =  Texture.fromBitmap(new icon_mute_bgm(), true, false, 1);
+			textures[Util.ICON_MUTE_SFX] = Texture.fromBitmap(new icon_mute_sfx(), true, false, 1);
+			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, 1);
+			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
