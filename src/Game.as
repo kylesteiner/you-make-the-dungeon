@@ -487,7 +487,8 @@ package {
 				// Trigger tile placement if they click outside the tile HUD
 				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
 					touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height)) {
-					if (selectedTile.grid_x < currentFloor.gridWidth && selectedTile.grid_y < currentFloor.gridHeight &&
+					if (selectedTile.grid_x >= 0 && selectedTile.grid_x < currentFloor.gridWidth &&
+							selectedTile.grid_y >= 0 && selectedTile.grid_y < currentFloor.gridHeight &&
 							!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
 							currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
 						// Player correctly placed one of the available tiles

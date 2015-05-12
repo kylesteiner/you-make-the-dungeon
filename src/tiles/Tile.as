@@ -28,9 +28,6 @@ package tiles {
 		public var onGrid:Boolean; // for determining if it is on the grid itself or not
 		public var infoWidth:int;
 		public var infoHeight:int;
-		
-		public var touchOffsetX:int;
-		public var touchOffsetY:int;
 
 		// Create a new Tile object at position (g_x,g_y) of the grid.
 		// If n, s, e, or w is true, that edge of the tile will be passable.
@@ -113,8 +110,8 @@ package tiles {
 		// Moves the tiles to the given touch location (for tile selection)
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int):void {
 			if (selected) {
-				x = touch.globalX - touchOffsetX;
-				y = touch.globalY - touchOffsetY;
+				x = touch.globalX - Util.PIXELS_PER_TILE / 2;
+				y = touch.globalY - Util.PIXELS_PER_TILE / 2;
 				checkGameBounds();
 				grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
 				grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
@@ -153,8 +150,6 @@ package tiles {
 
 			if (touch.phase == TouchPhase.BEGAN) {
 				selected = true;
-				touchOffsetX = touch.globalX - x;
-				touchOffsetY = touch.globalY - y;
 			}
 		}
 
