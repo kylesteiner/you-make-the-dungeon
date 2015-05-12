@@ -641,6 +641,7 @@ package {
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
 			nextFloorButton.addParameter(char.state.level);
 			nextFloorButton.addParameter(char.state.xp);
+			nextFloorButton.addParameter(false);
 			addChild(nextFloorButton);
 		}
 

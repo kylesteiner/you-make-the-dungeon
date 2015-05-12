@@ -241,7 +241,7 @@ package {
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, null, true);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, null, newFloorData[4]);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
 
@@ -273,6 +273,7 @@ package {
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
+			floor1Button.addParameter(true);
 
 			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor4Button.addParameter(switchToFloor);
@@ -281,6 +282,7 @@ package {
 			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
 			floor4Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor4Button.addParameter(Util.STARTING_XP);  // Char xp
+			floor1Button.addParameter(false);
 			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
 		}
 
