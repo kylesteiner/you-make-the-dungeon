@@ -12,6 +12,8 @@ package {
 	import starling.text.TextField;
 	import starling.textures.*;
 
+	import ai.Combat;
+	import ai.SearchAgent;
 	import Character;
 	import tiles.*;
 	import Util;
@@ -29,12 +31,14 @@ package {
 		public var fogGrid:Array;
 		public var char:Character;
 		public var floorName:String;
+		public var highlightedLocations:Array;
 
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
 		// Map string (objective key) -> boolean (state)
 		public var objectiveState:Dictionary;
 
+		// Grid metadata.
 		private var initialGrid:Array;
 		private var initialFogGrid:Array;
 		public var gridHeight:int;
@@ -46,6 +50,8 @@ package {
 		private var initialY:int;
 		private var initialXp:int;
 		private var initialLevel:int;
+
+		private var agent:SearchAgent;
 
 		private var floorFiles:Dictionary;
 		private var nextFloor:String;
@@ -65,7 +71,6 @@ package {
 		// logger
 		private var logger:Logger;
 		private var nextTransition:String;
-		private var highlightedLocations:Array;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -84,7 +89,9 @@ package {
 			textures = textureDict;
 			mixer = soundMixer;
 			objectiveState = new Dictionary();
-			highlightedLocations = new Array();
+
+			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
+
 			combatFrames = 0;
 			characterCombatTurn = true;
 			this.logger = logger;
@@ -94,6 +101,11 @@ package {
 
 			parseFloorData(floorData);
 			resetFloor();
+
+			highlightedLocations = new Array(gridWidth);
+			for (var i:int = 0; i < gridWidth; i++) {
+				highlightedLocations[i] = new Array(gridHeight);
+			}
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
@@ -105,9 +117,19 @@ package {
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
 
+		// Called when the run button is clicked.
+		public function runFloor():void {
+			agent.computePath(this);
+			var firstAction:int = agent.getAction();
+			if (firstAction != -1) {
+				char.move(firstAction);
+			} else {
+				// TODO: display that it couldn't find a path.
+			}
+		}
+
 		public function getEntry():Tile {
 			var x:int; var y:int;
-
 			for(x = 0; x < grid.length; x++) {
 				for(y = 0; y < grid[x].length; y++) {
 					if(grid[x][y] is EntryTile) {
@@ -115,13 +137,11 @@ package {
 					}
 				}
 			}
-
 			return null;
 		}
 
 		public function getExit():Tile {
 			var x:int; var y:int;
-
 			for(x = 0; x < grid.length; x++) {
 				for(y = 0; y < grid[x].length; y++) {
 					if(grid[x][y] is ExitTile) {
@@ -129,7 +149,6 @@ package {
 					}
 				}
 			}
-
 			return null;
 		}
 
@@ -147,11 +166,12 @@ package {
 						}
 					}
 				}
+				clearHighlightedLocations()
 			}
 
 			// Replace the current grid with a fresh one.
-			grid = initializeGrid(gridWidth, gridHeight);
-			fogGrid = initializeGrid(gridWidth, gridHeight);
+			grid = Util.initializeGrid(gridWidth, gridHeight);
+			fogGrid = Util.initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
@@ -193,14 +213,6 @@ package {
 			// Reset the combat state.
 			combatFrames = 0;
 			characterCombatTurn = true;
-		}
-
-		// Returns true if the tile location the player chose is valid with the current dungeon setup.
-		public function fitsInDungeon(i:int, j:int, selectedTile:Tile):Boolean {
-			return (i + 1 < grid.length && grid[i + 1][j] && grid[i + 1][j].west && selectedTile.east) ||
-				   (i - 1 >= 0 && grid[i - 1][j] && grid[i - 1][j].east && selectedTile.west) ||
-				   (j + 1 < grid[0].length && grid[i][j + 1] && grid[i][j + 1].north && selectedTile.south) ||
-				   (j - 1 >= 0 && grid[i][j - 1] && grid[i][j - 1].south && selectedTile.north);
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -267,30 +279,65 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(selectedTile:Tile):void {
-			var i:int; var j:int; var hl:Image;
+			var i:int; var j:int; var start_i:int; var start_j:int; var visited:Array;
 
-			for (i = 0; i < grid.length; i++) {
+			// Find entry tile
+			OuterLoop: for (i = 0; i < grid.length; i++) {
 				for (j = 0; j < grid[i].length; j++) {
-					if (!grid[i][j]) {
-						var goodTile:Boolean = false;
-						if (fitsInDungeon(i, j, selectedTile)) {
-							hl = new Image(textures[Util.TILE_HL_Y]);
-							hl.x = i * Util.PIXELS_PER_TILE;
-							hl.y = j * Util.PIXELS_PER_TILE;
-							highlightedLocations.push(hl);
-							addChild(hl);
-						}
+					if (grid[i][j] is EntryTile) {
+						start_i = i;
+						start_j = j;
+						break OuterLoop;
 					}
 				}
+			}
+
+			// Build visited grid
+			visited = new Array(gridWidth);
+			for (i = 0; i < gridWidth; i++) {
+				visited[i] = new Array(gridHeight);
+				for (j = 0; j < gridHeight; j++) {
+					visited[i][j] = false;
+				}
+			}
+
+			highlightAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
+		}
+
+		// Recursively iterates over the map from start and highlights allowed locations
+		public function highlightAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):void {
+			if (visited[i][j] || highlightedLocations[i][j]) {
+				return;
+			}
+
+			if (!grid[i][j] && ((direction == Util.NORTH && selectedTile.north) || (direction == Util.SOUTH && selectedTile.south) ||
+					(direction == Util.WEST && selectedTile.west) || (direction == Util.EAST && selectedTile.east))) {
+				// Open spot on grid that the selected tile can be placed
+				var hl:Image = new Image(textures[Util.TILE_HL_Y]);
+				hl.x = i * Util.PIXELS_PER_TILE;
+				hl.y = j * Util.PIXELS_PER_TILE;
+				highlightedLocations[i][j] = hl;
+				addChild(highlightedLocations[i][j]);
+			} else if (grid[i][j] || direction == -1) {
+				// Currently traversing path (-1 direction indicates the start tile)
+				visited[i][j] = true;
+				if (i + 1 < gridWidth && grid[i][j].east) { highlightAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST); }
+				if (i - 1 >= 0 && grid[i][j].west) { highlightAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST); }
+				if (j + 1 < gridHeight && grid[i][j].south) { highlightAllowedLocationsHelper(i, j + 1, selectedTile, visited, Util.NORTH); }
+				if (j - 1 >= 0 && grid[i][j].north) { highlightAllowedLocationsHelper(i, j - 1, selectedTile, visited, Util.SOUTH); }
 			}
 		}
 
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
-			for (var i:int = 0; i < highlightedLocations.length; i++) {
-				removeChild(highlightedLocations[i]);
+			for (var i:int = 0; i < gridWidth; i++) {
+				for (var j:int = 0; j < gridHeight; j++) {
+					if (highlightedLocations[i][j]) {
+						removeChild(highlightedLocations[i][j]);
+						highlightedLocations[i][j] = null;
+					}
+				}
 			}
-			highlightedLocations.splice()
 		}
 
 		// Returns a 2D array with the given dimensions.
@@ -332,8 +379,9 @@ package {
 			var floorSize:Array = floorData[3].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
-			initialGrid = initializeGrid(gridWidth, gridHeight);
-			initialFogGrid = initializeGrid(gridWidth, gridHeight);
+
+			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
+			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
 
 			for (i = 0; i < initialFogGrid.length; i++) {
 				for (j = 0; j < initialFogGrid[i].length; j++) {
@@ -414,6 +462,7 @@ package {
 			// put tileData's tiles into a grid
 			for each (var tile:Tile in tileData) {
 				initialGrid[tile.grid_x][tile.grid_y] = tile;
+				tile.onGrid = true;
 				if (tile is EntryTile) {
 					initialFogGrid[tile.grid_x][tile.grid_y] = false;
 					setUpInitialFoglessSpots(tile.grid_x, tile.grid_y);
@@ -472,47 +521,50 @@ package {
 			}
 		}
 
+		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
 			if (char.inCombat && combatFrames == 0) {
 				// Time for the next combat round.
 				if (characterCombatTurn) {
-					enemy.hp -= char.attack;
+					Combat.charAttacksEnemy(char.state, enemy.state);
 
-					dmgText = new TextField(64, 32, "-" + char.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
+					// TODO: display damage more prettily
+					dmgText = new TextField(64, 32, "-" + char.state.attack, Util.DEFAULT_FONT, 24, 0x0000FF, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
 
-					// TODO: Adjust character damage on character HUD.
 					combatFrames = 30;
-
-					// Add XP if player wins the combat.
-					if (enemy.hp <= 0) {
-						char.xp += enemy.xpReward;
-						char.tryLevelUp();
+					// If the enemy dies, remove the enemy image and end combat.
+					if (enemy.state.hp <= 0) {
+						// TODO: Display XP gain, healing
 						enemy.removeImage();
 						char.inCombat = false;
+						var oldLevel:int = char.state.level;
 						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 													Util.real_to_grid(x),
-													Util.real_to_grid(y),
-													char));
+													Util.real_to_grid(y)));
+						if (oldLevel != char.state.level) {
+							logger.logAction(10, {"previousLevel":oldLevel, "newLevel":char.state.level } );
+
+						}
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
-					char.hp -= enemy.attack;
-
-					dmgText = new TextField(64, 32, "-" + enemy.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
+					Combat.enemyAttacksChar(char.state, enemy.state);
+					// TODO: display damage more prettily
+					dmgText = new TextField(64, 32, "-" + enemy.state.attack, Util.DEFAULT_FONT, 24, 0xFF0000, true);
 					dmgText.x = 200;
 					dmgText.y = 200;
 					addChild(dmgText);
 
 					combatFrames = 30;
 
-					if (char.hp <= 0) {
+					if (char.state.hp <= 0) {
 						// TODO: handle character death.
 						if (logger) {
-							logger.logAction(4, { "characterLevel":char.level, "characterAttack":char.attack, "enemyName":enemy.enemyName,
-												 "enemyLevel":enemy.level, "enemyAttack":enemy.attack, "enemyHealthLeft":enemy.hp, "initialEnemyHealth":enemy.initialHp} );
+							logger.logAction(4, { "characterLevel":char.state.level, "characterAttack":char.state.attack, "enemyName":enemy.enemyName,
+												 "enemyLevel":enemy.level, "enemyAttack":enemy.state.attack, "enemyHealthLeft":enemy.state.hp, "initialEnemyHealth":enemy.initialHp} );
 						}
 					}
 					characterCombatTurn = true;  // Swap turns.
@@ -538,21 +590,21 @@ package {
 			if (t) {
 				if (t is EnemyTile && logger) {
 					var eTile:EnemyTile = t as EnemyTile;
-					logger.logAction(5, { "characterLevel":e.char.level, "characterHealthLeft":e.char.hp, "characterHealthMax":e.char.maxHp,
-										 "characterAttack":e.char.attack, "enemyName": eTile.enemyName,
-										 "enemyLevel":eTile.level, "enemyAttack":eTile.attack, "enemyHealth":eTile.initialHp} );
+					logger.logAction(5, { "characterLevel":char.state.level, "characterHealthLeft":char.state.hp, "characterHealthMax":char.state.maxHp,
+										 "characterAttack":char.state.attack, "enemyName": eTile.enemyName,
+										 "enemyLevel":eTile.level, "enemyAttack":eTile.state.attack, "enemyHealth":eTile.initialHp} );
 				} else if (t is HealingTile && logger) {
 					var hTile:HealingTile = t as HealingTile;
 					if (!hTile.used) {
-						logger.logAction(6, { "characterHealth":e.char.hp, "characterMaxHealth":e.char.maxHp, "healthRestored":hTile.health } );
+						logger.logAction(6, { "characterHealth":char.state.hp, "characterMaxHealth":char.state.maxHp, "healthRestored":hTile.state.health } );
 					}
 				}
-				t.handleChar(e.char);
+				t.handleChar(char);
 			}
 		}
 
 		private function onCharHandled(e:TileEvent):void {
-			char.continueMovement();
+			char.move(agent.getAction());
 		}
 
 		// Event handler for when a character arrives at an exit tile.
@@ -560,7 +612,7 @@ package {
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
 			if (logger) {
-				logger.logLevelEnd( {"characterLevel":e.char.level, "characterHpRemaining":e.char.hp, "characterMaxHP":e.char.maxHp } );
+				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
 			mixer.play(Util.FLOOR_COMPLETE);
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
@@ -570,8 +622,8 @@ package {
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
-			nextFloorButton.addParameter(char.level);
-			nextFloorButton.addParameter(char.xp);
+			nextFloorButton.addParameter(char.state.level);
+			nextFloorButton.addParameter(char.state.xp);
 			addChild(nextFloorButton);
 		}
 
@@ -580,7 +632,7 @@ package {
 		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
 		private function onObjCompleted(e:TileEvent):void {
 			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
-			objectiveState[t.objKey] = true;
+			objectiveState[t.state.key] = true;
 		}
 
 		// Called when a character runs into an enemy tile. Combat is executed

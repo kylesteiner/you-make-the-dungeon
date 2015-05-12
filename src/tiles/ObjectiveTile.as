@@ -1,18 +1,14 @@
 package tiles {
     import starling.display.Image;
+    import starling.text.TextField;
     import starling.textures.Texture;
-	import starling.utils.Color;
-	import starling.text.TextField;
+    import starling.utils.Color;
 
+    import ai.ObjectiveState;
 
     public class ObjectiveTile extends Tile {
+        public var state:ObjectiveState;
         public var objImage:Image;
-        // Identifies this tile in Floor.objectiveState, ObjectiveTile.prereqs
-        public var objKey:String;
-        // Objectives that must be completed before passing through this tile. Pathfinding/
-        // movement rules need to check this field and Floor.objectiveState to see if the
-        // tile is passable.
-        public var prereqs:Array;
 
         public function ObjectiveTile(g_x:int,
                                       g_y:int,
@@ -28,24 +24,22 @@ package tiles {
             objImage = new Image(foreground);
             addChild(objImage);
 
-            this.objKey = objKey;
-            this.prereqs = prereqs;
+            state = new ObjectiveState(objKey, prereqs);
         }
 
         // Should not be called unless all prerequisite objectives are completed.
         override public function handleChar(c:Character):void {
             removeChild(objImage, true);
-            dispatchEvent(new TileEvent(TileEvent.OBJ_COMPLETED, grid_x, grid_y, c));
+            dispatchEvent(new TileEvent(TileEvent.OBJ_COMPLETED, grid_x, grid_y));
             dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
                                         Util.real_to_grid(x),
-                                        Util.real_to_grid(y),
-                                        c));
+                                        Util.real_to_grid(y)));
         }
 
         override public function reset():void {
             addChild(objImage);
         }
-		
+
 		override public function displayInformation():void {
 			setUpInfo("Objective Tile\n");
 		}

@@ -242,7 +242,7 @@ package {
 
 			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer);
 			// the logger doesn't like 0 based indexing.
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } );
+			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -308,30 +308,10 @@ package {
 		}
 
 		public function runFloor():void {
-			// TODO: complete this function
-			var floorAStar:AStar = new AStar(currentFloor.grid);
-			addChild(floorAStar);
-			var floorEntryTile:Tile = currentFloor.getEntry();
-			var floorExitTile:Tile = currentFloor.getExit();
-
-			if(!floorEntryTile || !floorExitTile) {
-				removeChild(floorAStar);
-				return;
-			}
-
-			var charPath:Array = floorAStar.findPath(floorEntryTile.grid_x,
-													 floorEntryTile.grid_y,
-													 floorExitTile.grid_x,
-													 floorExitTile.grid_y);
-			if(!charPath) {
-				removeChild(floorAStar);
-				return;
-			}
-
-			//floorAStar.screenState.text = charPath.length.toString();
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
-			currentFloor.char.moveThroughFloor(charPath);
+
+			currentFloor.runFloor();
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
@@ -357,26 +337,30 @@ package {
 
 			// Tile placement
 			if (tileHud) {
-				var tileInUse:int = tileHud.indexOfTileInUse();
-				if (tileInUse == -1) {
+				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
+				if (selectedTileIndex == -1) {
 					return;
 				}
-				var selectedTile:Tile = tileHud.getTileByIndex(tileInUse);
-				if (touch.phase == TouchPhase.ENDED) {
-					// Player placed one of the available tiles
-					currentFloor.clearHighlightedLocations();
-					if (selectedTile.grid_x < currentFloor.gridWidth &&
-						selectedTile.grid_y < currentFloor.gridHeight &&
-						!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
-						currentFloor.fitsInDungeon(selectedTile.grid_x, selectedTile.grid_y, selectedTile)) {
+				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
+				tileHud.lockTiles();
+				selectedTile.moveToTouch(touch);
+				currentFloor.highlightAllowedLocations(selectedTile);
+				// Trigger tile placement if they click outside the tile HUD
+				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
+					touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height)) {
+					if (selectedTile.grid_x < currentFloor.gridWidth && selectedTile.grid_y < currentFloor.gridHeight &&
+							!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
+							currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
+						// Player correctly placed one of the available tiles
 						// Move tile from HUD to grid. Add new tile to HUD.
-						tileHud.removeAndReplaceTile(tileInUse);
+						tileHud.removeAndReplaceTile(selectedTileIndex);
 						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 						currentFloor.addChild(selectedTile);
 						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
 						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
 						selectedTile.positionTileOnGrid();
 						numberOfTilesPlaced++;
+						selectedTile.onGrid = true;
 						if (selectedTile is Tile) {
 							emptyTiles++;
 						} else if (selectedTile is EnemyTile) {
@@ -386,10 +370,10 @@ package {
 						}
 					} else {
 						// Tile wasn't placed correctly. Return tile to HUD.
-						tileHud.returnTileInUse();
+						tileHud.returnSelectedTile();
 					}
-				} else if (touch.phase == TouchPhase.BEGAN) {
-					currentFloor.highlightAllowedLocations(selectedTile);
+					tileHud.unlockTiles();
+					currentFloor.clearHighlightedLocations();
 				}
 			}
 		}
