@@ -198,6 +198,10 @@ package {
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
+			addEventListener(TileEvent.COMBAT, startCombat);
+
+			addEventListener(AnimationEvent.CHAR_DIED, onCombatFailure);
+			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
 		}
 
 		private function initializeFloorWorld():void {
@@ -216,6 +220,37 @@ package {
 		private function initializeMenuWorld():void {
 			menuWorld = new Sprite();
 			menuWorld.addChild(new Image(Texture.fromBitmap(new grid_background())));
+		}
+
+		private function startCombat(event:TileEvent):void {
+			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], logger);
+			addChild(currentCombat);
+		}
+
+		private function onCombatSuccess(event:AnimationEvent):void {
+			removeChild(currentCombat);
+			event.enemy.removeImage();
+
+			var tLevel:int = event.character.state.level;
+
+			event.character.state.xp += event.enemy.state.xpReward;
+			event.character.state.tryLevelUp();
+
+			if(event.character.state.level != tLevel) {
+				// Play any relevant level-up code / sounds / events here
+				logger.logAction(10, {"previousLevel":tLevel, "newLevel":event.character.state.level});
+			}
+
+			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
+										Util.real_to_grid(currentFloor.x),
+										Util.real_to_grid(currentFloor.y)));
+		}
+
+		private function onCombatFailure(event:AnimationEvent):void {
+			removeChild(currentCombat);
+			// Prompt clickable into either floor reset or continue modifying floor
+			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
+								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
 		}
 
 		private function prepareSwap():void {
@@ -283,9 +318,6 @@ package {
 			addChild(charHud);
 			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
-
-			currentCombat = new CombatHUD(textures, animations, null, null);
-			addChild(currentCombat);
 		}
 
 		public function createMainMenu():void {
@@ -304,15 +336,15 @@ package {
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
 			floor1Button.addParameter(true);
 
-			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor4Button.addParameter(switchToFloor);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
-			floor4Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor4Button.addParameter(Util.STARTING_XP);  // Char xp
-			floor1Button.addParameter(false);
-			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
+			var floor8Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor8Button.addParameter(switchToFloor);
+			floor8Button.addParameter(floors[Util.FLOOR_8][Util.DICT_TRANSITION_INDEX]);
+			floor8Button.addParameter(floors[Util.FLOOR_8][Util.DICT_FLOOR_INDEX]);
+			floor8Button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
+			floor8Button.addParameter(Util.STARTING_LEVEL);  // Char level
+			floor8Button.addParameter(Util.STARTING_XP);  // Char xp
+			floor8Button.addParameter(false);
+			switchToMenu(new Menu(new Array(floor1Button, floor8Button)));
 		}
 
 		public function createCredits():void {

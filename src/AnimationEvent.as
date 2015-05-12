@@ -1,7 +1,10 @@
 package {
     import starling.events.Event;
+    import tiles.*;
+    import ai.*;
 
     public class AnimationEvent extends Event {
+        public static const COMBAT_BEGIN:String = "combat_begin";
         public static const CHAR_ATTACKED:String = "char_attacked";
         public static const ENEMY_ATTACKED:String = "enemy_attacked";
         public static const CHAR_DIED:String = "char_died";

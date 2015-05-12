@@ -27,7 +27,7 @@ package tiles {
         }
 
 		override public function displayInformation():void {
-			setUpInfo("Exit Tile \n get here to complete level");
+			setUpInfo("Exit Tile \n get here to complete floor");
 		}
     }
 }

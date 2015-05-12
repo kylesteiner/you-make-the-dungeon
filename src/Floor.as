@@ -24,7 +24,7 @@ package {
 		// dedicated to non-tile objects at the start.
 		public static const NON_TILE_LINES:int = 5;
 
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next level."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next floor."
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
@@ -129,7 +129,7 @@ package {
 			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
-			addEventListener(TileEvent.COMBAT, onCombat);
+			//addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
 
@@ -545,7 +545,9 @@ package {
 
 		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
-			if (char.inCombat && combatFrames == 0) {
+			/*if (char.inCombat && combatFrames == 0) {
+				addChild(char);
+				return;
 				// Time for the next combat round.
 				if (characterCombatTurn) {
 					Combat.charAttacksEnemy(char.state, enemy.state);
@@ -600,7 +602,7 @@ package {
 			// Tick down the frames between combat animations every frame.
 			if (combatFrames > 0) {
 				combatFrames--;
-			}
+			}*/
 
 			addChild(char);
 		}
@@ -625,7 +627,7 @@ package {
 			}
 		}
 
-		private function onCharHandled(e:TileEvent):void {
+		public function onCharHandled(e:TileEvent):void {
 			char.move(agent.getAction());
 		}
 
@@ -662,10 +664,12 @@ package {
 		// Called when a character runs into an enemy tile. Combat is executed
 		// step by step over several frames, so combat logic isn't directly
 		// invoked.
-		private function onCombat(e:TileEvent):void {
+		/*private function onCombat(e:TileEvent):void {
 			char.inCombat = true;
 			characterCombatTurn = true;
 			enemy = grid[e.grid_x][e.grid_y];
-		}
+			//dispatchEvent(new AnimationEvent.COMBAT_START, char, enemy)
+			//onCombatCallback(char, enemy);
+		}*/
 	}
 }
