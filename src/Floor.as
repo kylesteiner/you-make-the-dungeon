@@ -76,8 +76,10 @@ package {
 		private var nextTransition:String;
 
 		private var tutorialImage:Image;
-		
+
 		private var nextFloorButton:Clickable;
+		private var tutorialDisplaying:Boolean;
+		private var originalTutorialDisplaying:Boolean;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -128,6 +130,10 @@ package {
 
 				tutorialImage.touchable = false;
 				tutorialImage.alpha = 0.7;
+				originalTutorialDisplaying = true;
+				tutorialDisplaying = true;
+				tutorialImage.x = getToX(0);
+				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}
 
@@ -140,18 +146,39 @@ package {
 			//addEventListener(TileEvent.COMBAT, onCombat);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
+		
+		private function getToX(x:int):int {
+			var temp:int = 0;
+			if (parent) {
+				var shift:int = parent.x > 0 ? -1 : 1;
+				while (temp + parent.x != x) {
+					temp += shift;
+				}
+			}
+			return temp;
+		}
+		
+		private function getToY(y:int):int {
+			var temp:int = 0;
+			if (parent) {
+				var shift:int = parent.y > 0 ? -1 : 1;
+				while (temp + parent.y != y) {
+					temp += shift;
+				}
+			}
+			return temp;
+		}
 
 		public function removeTutorial():void {
 			if(tutorialImage) {
 				removeChild(tutorialImage);
+				tutorialDisplaying = false;
 			}
 		}
 		
 		public function shiftTutorialX(value:int):void {
 			if (tutorialImage) {
-				removeChild(tutorialImage);
 				tutorialImage.x += value;
-				addChild(tutorialImage);
 			} 
 			if (nextFloorButton) {
 				nextFloorButton.x += value;
@@ -160,9 +187,7 @@ package {
 		
 		public function shiftTutorialY(value:int):void {
 			if (tutorialImage) {
-				removeChild(tutorialImage);
 				tutorialImage.y += value;
-				addChild(tutorialImage);
 			}
 			if (nextFloorButton) {
 				nextFloorButton.y += value;
@@ -265,10 +290,20 @@ package {
 			// Reset the combat state.
 			combatFrames = 0;
 			characterCombatTurn = true;
+			
+			// move to center
+			if (parent) {
+				parent.x = Util.STAGE_WIDTH / 4;
+				parent.y = Util.STAGE_HEIGHT / 4;
+			}
 
-			if(tutorialImage) {
+			if(tutorialImage && originalTutorialDisplaying) {
+				tutorialDisplaying = true;
+				tutorialImage.x = getToX(0);
+				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}
+			
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -650,6 +685,10 @@ package {
 			}*/
 
 			addChild(char);
+
+			if(tutorialImage && tutorialDisplaying) {
+				addChild(tutorialImage);
+			}
 		}
 
 		// When a character arrives at a tile, it fires an event up to Floor.
