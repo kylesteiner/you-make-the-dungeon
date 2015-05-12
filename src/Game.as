@@ -23,7 +23,7 @@ package {
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
 		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
-		[Embed(source='assets/backgrounds/static_bg.png')] private var static_background:Class; //Credit to STU_WilliamHewitt for placeholder
+		[Embed(source='assets/backgrounds/new_static_bg.png')] private var static_background:Class;
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
 		//[Embed(source='assets/backgrounds/tile_hud_new.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_new.png')] private static const tutorial_hud:Class;
@@ -350,12 +350,23 @@ package {
 		}
 
 		public function createMainMenu():void {
-			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			//var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+
+			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			beginGameButton.addParameter(switchToFloor);
+			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
+			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
+			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
+			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
+			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
+			beginGameButton.addParameter(1);
+
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(startButton, creditsButton)));
+			switchToMenu(new Menu(new Array(beginGameButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
+			// TODO: eliminate or relegate to debug code
 			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor1Button.addParameter(switchToFloor);
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);

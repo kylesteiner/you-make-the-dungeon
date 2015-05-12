@@ -40,13 +40,13 @@ package {
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
 		}
-		
+
 		public function lockTiles():void {
 			for (var i:int; i < availableTiles.length; i++) {
 				availableTiles[i].locked = true;
 			}
 		}
-		
+
 		public function unlockTiles():void {
 			for (var i:int; i < availableTiles.length; i++) {
 				availableTiles[i].locked = false;
@@ -76,12 +76,12 @@ package {
 				removeAndReplaceTile(i);
 			}
 		}
-		
+
 		public function removeAndReplaceTile(index:int):void {
 			removeChild(availableTiles[index]);
 			getNextTile(index)
 		}
-		
+
 		public function setTileLocation(index:int):void {
 			availableTiles[index].x = HUD.x + Util.HUD_PAD_LEFT +
 				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;

@@ -620,6 +620,10 @@ package {
 			}*/
 
 			addChild(char);
+
+			if(tutorialImage) {
+				addChild(tutorialImage);
+			}
 		}
 
 		// When a character arrives at a tile, it fires an event up to Floor.
