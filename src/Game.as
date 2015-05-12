@@ -87,6 +87,12 @@ package {
 
 		[Embed(source='assets/transitions/floor0.png')] private static const transitions0:Class;
 
+		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
+		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
+		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
+		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
+		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
@@ -98,6 +104,8 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
+		private var sfx:Dictionary; // Map String -> SFX
+		private var bgm:Array;
 		private var staticBackgroundImage:Image;
 		private var world:Sprite;
 		private var menuWorld:Sprite;
@@ -111,29 +119,31 @@ package {
 		private var emptyTiles:int;
 		private var enemyTiles:int;
 		private var healingTiles:int;
-		private var sfxMuted:Boolean;
 
 		public function Game() {
 			Mouse.hide();
-			
+
 			var gid:uint = 115;
 			var gname:String = "cgs_gc_YouMakeTheDungeon";
 			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
-			
-			// this is the current version, we'll treat 0 as the debugging 
+
+			// this is the current version, we'll treat 0 as the debugging
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
 			var cid:int = 0;
-			
+
 			logger = Logger.initialize(gid, gname, skey, cid, null);
-			
+
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
-			
+
 			textures = setupTextures();
 			floors = setupFloors();
+			sfx = setupSFX();
+			bgm = setupBGM();
 
-			mixer = new Mixer(new Array(new bgm_gaur(), new bgm_ludum()));
+			mixer = new Mixer(bgm, sfx);
+			addChild(mixer);
 
 			var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(staticBg);
@@ -160,11 +170,9 @@ package {
 			world = new Sprite();
 			world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 			bgmMuteButton = new Clickable(0, 480-32, toggleBgmMute, null, textures[Util.ICON_MUTE]);
-			sfxMuteButton = new Clickable(32, 480-32, toggleSfxMute, null, textures[Util.ICON_MUTE]);
+			sfxMuteButton = new Clickable(32, 480-32, toggleSFXMute, null, textures[Util.ICON_MUTE]);
 			resetButton = new Clickable(64, 480-32, resetFloor, null, textures[Util.ICON_RESET]);
 			runButton = new Clickable(96, 480-32, runFloor, null, textures[Util.ICON_RUN]);
-
-			sfxMuted = false;
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -225,10 +233,10 @@ package {
 			//currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], logger);
 			var nextFloorData:Array = new Array();
 
-			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition);
+			currentFloor = new Floor(newFloorData[0], textures, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer);
 			// the logger doesn't like 0 based indexing.
 			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.level } );
-			
+
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
 			addChild(world);
@@ -275,8 +283,8 @@ package {
 			mixer.togglePlay();
 		}
 
-		public function toggleSfxMute():void {
-			sfxMuted = !sfxMuted;
+		public function toggleSFXMute():void {
+			mixer.toggleSFXMute();
 		}
 
 		public function resetFloor():void {
@@ -471,8 +479,24 @@ package {
 			return tFloors;
 		}
 
-		//private function setupSFX():Dictionary {
-			// TODO: make an sfx dictionary
-		//}
+		private function setupBGM():Array {
+			var tBgm:Array = new Array();
+
+			tBgm.push(new sfxFloorComplete());
+
+			return tBgm;
+		}
+
+		private function setupSFX():Dictionary {
+			var tSfx:Dictionary = new Dictionary();
+
+			tSfx[Util.FLOOR_COMPLETE] = new sfxFloorComplete();
+			tSfx[Util.TILE_MOVE] = new sfxTileMove();
+			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
+			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
+			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
+
+			return tSfx;
+		}
 	}
 }

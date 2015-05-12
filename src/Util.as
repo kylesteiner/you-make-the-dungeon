@@ -88,6 +88,13 @@ package {
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
 
+		// Keys to the Dictionary of SFX
+		public static const FLOOR_COMPLETE:String = "floor_complete";
+		public static const TILE_MOVE:String = "tile_move";
+		public static const FLOOR_BEGIN:String = "floor_begin";
+		public static const BUTTON_PRESS:String = "button_press";
+		public static const FLOOR_RESET:String = "floor_reset";
+
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
 		public static const DICT_TRANSITION_INDEX:int = 2;

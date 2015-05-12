@@ -60,7 +60,8 @@ package {
 		private var dmgText:TextField;
 
 		private var textures:Dictionary;
-		
+		private var mixer:Mixer;
+
 		// logger
 		private var logger:Logger;
 		private var nextTransition:String;
@@ -74,12 +75,14 @@ package {
 							  xp:int,
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
+							  soundMixer:Mixer,
 							  logger:Logger = null) {
 			super();
 			initialLevel = level;
 			initialXp = xp;
 			preplacedTiles = 0;
 			textures = textureDict;
+			mixer = soundMixer;
 			objectiveState = new Dictionary();
 			highlightedLocations = new Array();
 			combatFrames = 0;
@@ -161,13 +164,13 @@ package {
 					}
 				}
 			}
-			
+
 			// Add all of the fogged places into the map
 			for (i = 0; i < initialFogGrid.length; i++) {
 				for (j = 0; j < initialFogGrid[i].length; j++) {
 					fogGrid[i][j] = initialFogGrid[i][j];
 					if(fogGrid[i][j]) {
-						addChild(fogGrid[i][j]); 
+						addChild(fogGrid[i][j]);
 					}
 				}
 			}
@@ -199,12 +202,12 @@ package {
 				   (j + 1 < grid[0].length && grid[i][j + 1] && grid[i][j + 1].north && selectedTile.south) ||
 				   (j - 1 >= 0 && grid[i][j - 1] && grid[i][j - 1].south && selectedTile.north);
 		}
-		
-		// given an i and j (x and y) [position on the grid], removes the fogged locations around it 
+
+		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int; var h1:Image;
-			
+
 			// should go two up, down, left, right, and one in each diagonal location, removing
 			// fog when needed
 			for (x = 1; x <= 2; x++) {
@@ -331,7 +334,7 @@ package {
 			gridHeight = Number(floorSize[1]);
 			initialGrid = initializeGrid(gridWidth, gridHeight);
 			initialFogGrid = initializeGrid(gridWidth, gridHeight);
-			
+
 			for (i = 0; i < initialFogGrid.length; i++) {
 				for (j = 0; j < initialFogGrid[i].length; j++) {
 					var fog:Image = new Image(textures[Util.TILE_FOG]);
@@ -418,16 +421,16 @@ package {
 					initialFogGrid[tile.grid_x][tile.grid_y] = false;
 				}
 			}
-			
+
 		}
-		
-		// given an i and j (x and y) [position on the grid], removes the fogged locations around it 
+
+		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		// unlike the public function, just sets that spot to false
 		// and doesn't deal with trying to remove a child that might not exist.
 		private function setUpInitialFoglessSpots(i:int, j:int):void {
 			var x:int; var y:int;
-			
+
 			// should go two up, down, left, right, and one in each diagonal location, removing
 			// fog when needed
 			for (x = 1; x <= 2; x++) {
@@ -508,7 +511,7 @@ package {
 					if (char.hp <= 0) {
 						// TODO: handle character death.
 						if (logger) {
-							logger.logAction(4, { "characterLevel":char.level, "characterAttack":char.attack, "enemyName":enemy.enemyName, 
+							logger.logAction(4, { "characterLevel":char.level, "characterAttack":char.attack, "enemyName":enemy.enemyName,
 												 "enemyLevel":enemy.level, "enemyAttack":enemy.attack, "enemyHealthLeft":enemy.hp, "initialEnemyHealth":enemy.initialHp} );
 						}
 					}
@@ -535,8 +538,8 @@ package {
 			if (t) {
 				if (t is EnemyTile && logger) {
 					var eTile:EnemyTile = t as EnemyTile;
-					logger.logAction(5, { "characterLevel":e.char.level, "characterHealthLeft":e.char.hp, "characterHealthMax":e.char.maxHp, 
-										 "characterAttack":e.char.attack, "enemyName": eTile.enemyName, 
+					logger.logAction(5, { "characterLevel":e.char.level, "characterHealthLeft":e.char.hp, "characterHealthMax":e.char.maxHp,
+										 "characterAttack":e.char.attack, "enemyName": eTile.enemyName,
 										 "enemyLevel":eTile.level, "enemyAttack":eTile.attack, "enemyHealth":eTile.initialHp} );
 				} else if (t is HealingTile && logger) {
 					var hTile:HealingTile = t as HealingTile;
@@ -559,6 +562,7 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":e.char.level, "characterHpRemaining":e.char.hp, "characterMaxHP":e.char.maxHp } );
 			}
+			mixer.play(Util.FLOOR_COMPLETE);
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			var nextFloorButton:Clickable = new Clickable(0, 0,
 													onCompleteCallback,
