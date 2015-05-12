@@ -27,11 +27,9 @@ package tiles {
         override public function handleChar(c:Character):void {
             dispatchEvent(new TileEvent(TileEvent.CHAR_EXITED,
                                         grid_x,
-                                        grid_y,
-                                        c,
-                                        true));
+                                        grid_y));
         }
-		
+
 		override public function displayInformation():void {
 			setUpInfo("Exit Tile \n get here to complete level");
 		}

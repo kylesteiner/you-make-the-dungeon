@@ -11,7 +11,7 @@ package {
 
 	public class TileHud extends Sprite {
 		private var textures:Dictionary;
-		private var HUD:Image;
+		public var HUD:Image;
 
 		// Used to represent percent chance of drawing tiles.
 		private var tileRates:Array;
@@ -19,7 +19,6 @@ package {
 		// List of available tiles displayed on HUD
 		private var availableTiles:Array;
 
-		// TODO: Comment
 		public function TileHud(tileRatesBytes:ByteArray,
 								textureDict:Dictionary) {
 			super();
@@ -34,49 +33,62 @@ package {
 
 			parseTileRates(tileRatesBytes);
 			for (var i:int = 0; i < Util.NUM_AVAILABLE_TILES; i++) {
-				availableTiles[i] = getNextTile(i);
+				getNextTile(i);
 			}
 		}
 
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
 		}
+		
+		public function lockTiles():void {
+			for (var i:int; i < availableTiles.length; i++) {
+				availableTiles[i].locked = true;
+			}
+		}
+		
+		public function unlockTiles():void {
+			for (var i:int; i < availableTiles.length; i++) {
+				availableTiles[i].locked = false;
+			}
+		}
 
-		// TODO: Comment
-		public function indexOfTileInUse():int {
+		public function indexOfSelectedTile():int {
 			for (var i:int; i < availableTiles.length; i++) {
 				var tile:Tile = availableTiles[i];
-				if (tile.held) {
+				if (tile.selected) {
 					return availableTiles.indexOf(tile);
 				}
 			}
 			return -1;
 		}
 
-		public function returnTileInUse():void {
-			var index:int = indexOfTileInUse()
-			var tileInUse:Tile = availableTiles[index];
-			tileInUse.held = false;
-			tileInUse.x = HUD.x + Util.HUD_PAD_LEFT +
-				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
-			tileInUse.y = HUD.y + Util.HUD_PAD_TOP;
+		public function returnSelectedTile():void {
+			var index:int = indexOfSelectedTile()
+			if (index != -1) {
+				availableTiles[index].selected = false;
+				setTileLocation(index);
+			}
 		}
 
-		// TODO: Comment
-		public function removeAndReplaceTile(index:int):void {
-			removeChild(availableTiles[index]);
-			availableTiles[index] = getNextTile(index)
-		}
-
-		// TODO: Comment
 		public function resetTileHud(): void {
 			for (var i:int = 0; i < availableTiles.length; i++) {
 				removeAndReplaceTile(i);
 			}
 		}
+		
+		public function removeAndReplaceTile(index:int):void {
+			removeChild(availableTiles[index]);
+			getNextTile(index)
+		}
+		
+		public function setTileLocation(index:int):void {
+			availableTiles[index].x = HUD.x + Util.HUD_PAD_LEFT +
+				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
+			availableTiles[index].y = HUD.y + Util.HUD_PAD_TOP;
+		}
 
-		// TODO: Comment
-		public function getNextTile(index:int):Tile {
+		public function getNextTile(index:int):void {
 			var tile:Tile; var tN:Boolean; var tS:Boolean; var tE:Boolean;
 			var tW:Boolean; var dir:int; var tTexture:Texture; var tType:String;
 			var t2Texture:Texture; var name:String; var level:int; var hp:int;
@@ -116,15 +128,12 @@ package {
 			} else { // empty
 				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
 			}
-			tile.x = HUD.x + Util.HUD_PAD_LEFT +
-				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
-			tile.y = HUD.y + Util.HUD_PAD_TOP;
 			tile.locked = false;
+			availableTiles[index] = tile;
+			setTileLocation(index);
 			addChild(tile);
-			return tile;
 		}
 
-		// TODO: Comment
 		private function parseTileRates(tileRatesBytes:ByteArray):void {
 			var i:int; var j:int; var end:int; var pos:int;
 			var lineData:Array; var tType:String; var tPercent:int;
