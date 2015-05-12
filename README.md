@@ -35,5 +35,5 @@ TileType	Rate
 * empty
 * health - health restored (int)
 * enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
-* objective - name (string), names of prerequsite objectives... (strings)
+* objective - key (string), texture name (string), keys of prerequsite objectives... (strings)
 * none

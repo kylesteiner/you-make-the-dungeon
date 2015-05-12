@@ -31,6 +31,7 @@ package {
 		[Embed(source='assets/effects/hl_green.png')] private static const hl_green:Class;
 		[Embed(source='assets/effects/hl_red.png')] private static const hl_red:Class;
 		[Embed(source='assets/effects/hl_yellow.png')] private static const hl_yellow:Class;
+		[Embed(source='assets/entities/door.png')] private static const entity_door:Class;
 		[Embed(source='assets/entities/healing.png')] private static const entity_healing:Class;
 		[Embed(source='assets/entities/hero.png')] private static const entity_hero:Class;
 		[Embed(source='assets/entities/key.png')] private static const entity_key:Class;
@@ -275,15 +276,15 @@ package {
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
 			floor1Button.addParameter(true);
 
-			var floor4Button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 4", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor4Button.addParameter(switchToFloor);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TRANSITION_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_FLOOR_INDEX]);
-			floor4Button.addParameter(floors[Util.FLOOR_4][Util.DICT_TILES_INDEX]);
-			floor4Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor4Button.addParameter(Util.STARTING_XP);  // Char xp
+			var floor8button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			floor8button.addParameter(switchToFloor);
+			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TRANSITION_INDEX]);
+			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_FLOOR_INDEX]);
+			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
+			floor8button.addParameter(3);  // Char level
+			floor8button.addParameter(0);  // Char xp
 			floor1Button.addParameter(false);
-			switchToMenu(new Menu(new Array(floor1Button, floor4Button)));
+			switchToMenu(new Menu(new Array(floor1Button, floor8button)));
 		}
 
 		public function createCredits():void {
@@ -365,7 +366,7 @@ package {
 						currentFloor.addChild(selectedTile);
 						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
 						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
-						// check if we placed the tile next to any preplaced tiles, and if we did, remove 
+						// check if we placed the tile next to any preplaced tiles, and if we did, remove
 						// the fogs for those as well. (it's so ugly D:)
 						if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
@@ -432,6 +433,7 @@ package {
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
 			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 
+			textures[Util.DOOR] = Texture.fromEmbeddedAsset(entity_door);
 			textures[Util.HERO] = Texture.fromEmbeddedAsset(entity_hero);
 			textures[Util.HEALING] = Texture.fromEmbeddedAsset(entity_healing);
 			textures[Util.KEY] = Texture.fromEmbeddedAsset(entity_key);

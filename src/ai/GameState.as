@@ -268,7 +268,7 @@ package ai {
 			}
 			for (var str:String in visitedObj) {
 				//var str:String = k as String;
-				hash += Util.hashString(str);
+				hash += 13 * Util.hashString(str);
 			}
 			return hash % 1048575;
 		}

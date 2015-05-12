@@ -27,8 +27,9 @@ package {
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
 		// Keys to the dictionary of textures.
-		public static const HERO:String = "hero";
+		public static const DOOR:String = "door";
 		public static const HEALING:String = "health";
+		public static const HERO:String = "hero";
 		public static const KEY:String = "key";
 		public static const MONSTER_1:String = "monster_1";
 
