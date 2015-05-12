@@ -30,11 +30,10 @@ package tiles {
         // Should not be called unless all prerequisite objectives are completed.
         override public function handleChar(c:Character):void {
             removeChild(objImage, true);
-            dispatchEvent(new TileEvent(TileEvent.OBJ_COMPLETED, grid_x, grid_y, c));
+            dispatchEvent(new TileEvent(TileEvent.OBJ_COMPLETED, grid_x, grid_y));
             dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
                                         Util.real_to_grid(x),
-                                        Util.real_to_grid(y),
-                                        c));
+                                        Util.real_to_grid(y)));
         }
 
         override public function reset():void {

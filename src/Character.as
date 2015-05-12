@@ -104,8 +104,7 @@ package {
 					moving = false;
 					dispatchEvent(new TileEvent(TileEvent.CHAR_ARRIVED,
 												Util.real_to_grid(x),
-												Util.real_to_grid(y),
-												this));
+												Util.real_to_grid(y)));
 				}
 			}
 		}

@@ -45,8 +45,7 @@ package tiles {
 
 			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 										Util.real_to_grid(x),
-										Util.real_to_grid(y),
-										c));
+										Util.real_to_grid(y)));
 		}
 
 		override public function reset():void {

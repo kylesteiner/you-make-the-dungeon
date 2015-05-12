@@ -68,8 +68,7 @@ package tiles {
 		public function handleChar(c:Character):void {
 			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 										Util.real_to_grid(x),
-										Util.real_to_grid(y),
-										c));
+										Util.real_to_grid(y)));
 		}
 
 		// When the floor is reset, this function will be called on every tile.

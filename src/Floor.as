@@ -494,8 +494,7 @@ package {
 						char.inCombat = false;
 						dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
 													Util.real_to_grid(x),
-													Util.real_to_grid(y),
-													char));
+													Util.real_to_grid(y)));
 					}
 					characterCombatTurn = false;  // Swap turns.
 				} else {
@@ -538,16 +537,16 @@ package {
 			if (t) {
 				if (t is EnemyTile && logger) {
 					var eTile:EnemyTile = t as EnemyTile;
-					logger.logAction(5, { "characterLevel":e.char.state.level, "characterHealthLeft":e.char.state.hp, "characterHealthMax":e.char.state.maxHp,
-										 "characterAttack":e.char.state.attack, "enemyName": eTile.enemyName,
+					logger.logAction(5, { "characterLevel":char.state.level, "characterHealthLeft":char.state.hp, "characterHealthMax":char.state.maxHp,
+										 "characterAttack":char.state.attack, "enemyName": eTile.enemyName,
 										 "enemyLevel":eTile.level, "enemyAttack":eTile.state.attack, "enemyHealth":eTile.initialHp} );
 				} else if (t is HealingTile && logger) {
 					var hTile:HealingTile = t as HealingTile;
 					if (!hTile.used) {
-						logger.logAction(6, { "characterHealth":e.char.state.hp, "characterMaxHealth":e.char.state.maxHp, "healthRestored":hTile.state.health } );
+						logger.logAction(6, { "characterHealth":char.state.hp, "characterMaxHealth":char.state.maxHp, "healthRestored":hTile.state.health } );
 					}
 				}
-				t.handleChar(e.char);
+				t.handleChar(char);
 			}
 		}
 
@@ -560,7 +559,7 @@ package {
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
 			if (logger) {
-				logger.logLevelEnd( {"characterLevel":e.char.state.level, "characterHpRemaining":e.char.state.hp, "characterMaxHP":e.char.state.maxHp } );
+				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
 			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			var nextFloorButton:Clickable = new Clickable(0, 0,
