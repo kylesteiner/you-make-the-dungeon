@@ -91,6 +91,21 @@ package {
 		[Embed(source='assets/animations/character/idle/character_2.png')] private static const characterIdleAnim2:Class;
 		[Embed(source='assets/animations/character/idle/character_3.png')] private static const characterIdleAnim3:Class;
 
+		[Embed(source='assets/backgrounds/combat_background.png')] private static const combatBackground:Class;
+		[Embed(source='assets/backgrounds/combat_shadow.png')] private static const combatShadow:Class;
+
+		[Embed(source='assets/animations/character/combat_idle/char_ci_0.png')] private static const charCombatIdleAnim0:Class;
+		[Embed(source='assets/animations/character/combat_idle/char_ci_1.png')] private static const charCombatIdleAnim1:Class;
+		[Embed(source='assets/animations/character/combat_idle/char_ci_2.png')] private static const charCombatIdleAnim2:Class;
+
+		[Embed(source='assets/animations/character/combat_attack/char_ca_0.png')] private static const charCombatAtkAnim0:Class;
+		[Embed(source='assets/animations/character/combat_attack/char_ca_1.png')] private static const charCombatAtkAnim1:Class;
+		[Embed(source='assets/animations/character/combat_attack/char_ca_2.png')] private static const charCombatAtkAnim2:Class;
+		[Embed(source='assets/animations/character/combat_attack/char_ca_3.png')] private static const charCombatAtkAnim3:Class;
+
+		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] private static const charCombatFaintAnim0:Class;
+		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] private static const charCombatFaintAnim1:Class;
+
 		private var cursorImage:Image;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
@@ -102,14 +117,14 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
-		private var animations:Dictionary; // Map String -> Dictionary<String, MovieClip>
+		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 		private var staticBackgroundImage:Image;
 		private var world:Sprite;
 		private var menuWorld:Sprite;
 		private var currentFloor:Floor;
 		private var currentTransition:Clickable;
 		private var currentMenu:Menu;
-		private var isMenu:Boolean;
+		private var isMenu:Boolean; // probably need to change to state;
 
 		private var logger:Logger;
 		private var numberOfTilesPlaced:int;
@@ -117,6 +132,8 @@ package {
 		private var enemyTiles:int;
 		private var healingTiles:int;
 		private var sfxMuted:Boolean;
+
+		private var currentCombat:Combat;
 
 		public function Game() {
 			Mouse.hide();
@@ -247,6 +264,9 @@ package {
 			addChild(charHud);
 			tileHud = new TileHud(newFloorData[1], textures); // TODO: Allow multiple levels
 			addChild(tileHud);
+
+			currentCombat = new Combat(textures, animations, null, null);
+			addChild(currentCombat);
 		}
 
 		public function createMainMenu():void {
@@ -450,6 +470,9 @@ package {
 			textures[Util.ICON_RUN] = Texture.fromEmbeddedAsset(icon_run);
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
+
+			textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
+			textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
 			return textures;
 		}
 
@@ -462,7 +485,25 @@ package {
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim1));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim2));
 			charVector.push(Texture.fromEmbeddedAsset(characterIdleAnim3));
-			charDict[Util.CHAR_IDLE] = new MovieClip(charVector, Util.ANIM_FPS);
+			charDict[Util.CHAR_IDLE] = charVector;
+
+			var charCombatIdleVector:Vector.<Texture> = new Vector.<Texture>();
+			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim0));
+			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim1));
+			charCombatIdleVector.push(Texture.fromEmbeddedAsset(charCombatIdleAnim2));
+			charDict[Util.CHAR_COMBAT_IDLE] = charCombatIdleVector;
+
+			var charCombatAttackVector:Vector.<Texture> = new Vector.<Texture>();
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim0));
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim1));
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim2));
+			charCombatAttackVector.push(Texture.fromEmbeddedAsset(charCombatAtkAnim3));
+			charDict[Util.CHAR_COMBAT_ATTACK] = charCombatAttackVector;
+
+			var charCombatFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim0));
+			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim1));
+			charDict[Util.CHAR_COMBAT_FAINT] = charCombatFaintVector;
 			tAnimations[Util.CHARACTER] = charDict;
 
 			return tAnimations;

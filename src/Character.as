@@ -47,7 +47,7 @@ package {
 
 			moveQueue = new Array();
 			animations = animationDict;
-			currentAnimation = animations[Util.CHAR_IDLE];
+			currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
 			currentAnimation.play();
 
 			//var image:Image = new Image(texture);

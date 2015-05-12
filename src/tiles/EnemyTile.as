@@ -43,7 +43,8 @@ package tiles {
         }
 
         public function removeImage():void {
-            removeChild(enemy);
+            //removeChild(enemy);
+            enemy.alpha = Util.VISITED_ALPHA;
         }
 
         override public function handleChar(c:Character):void {
@@ -57,7 +58,7 @@ package tiles {
             addChild(enemy);
             hp = initialHp;
         }
-		
+
 		override public function displayInformation():void {
 			var info:String = "Enemy Tile\nLevel: " + level + "\nHP: " + hp + "\nAttack: " + attack + "\nxp: " + xpReward;
 			setUpInfo(info);

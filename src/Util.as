@@ -15,6 +15,8 @@ package {
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
 		// can update to pixels once tile movement is tied down
 		public static const ANIM_FPS:int = 2;
+		public static const VISITED_ALPHA:Number = 0.4;
+		public static const COMBAT_ALPHA:Number = 0.7;
 
 		public static const DEFAULT_FONT:String = "Bebas";
 		public static const LARGE_FONT_SIZE:int = 48;
@@ -84,9 +86,15 @@ package {
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
 
+		public static const COMBAT_BG:String = "combat_bg";
+		public static const COMBAT_SHADOW:String = "combat_shadow";
+
 		// Keys to the dictionary of animations
 		public static const CHARACTER:String = "character";
 		public static const CHAR_IDLE:String = "character_idle";
+		public static const CHAR_COMBAT_IDLE:String = "character_combat_idle";
+		public static const CHAR_COMBAT_ATTACK:String = "character_combat_attack";
+		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
 		public static const HEALING:String = "health";
 		public static const KEY:String = "key";
 		public static const MONSTER_1:String = "monster_1";
