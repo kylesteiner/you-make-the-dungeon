@@ -76,6 +76,8 @@ package {
 		private var nextTransition:String;
 
 		private var tutorialImage:Image;
+		private var tutorialDisplaying:Boolean;
+		private var originalTutorialDisplaying:Boolean;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -126,6 +128,8 @@ package {
 
 				tutorialImage.touchable = false;
 				tutorialImage.alpha = 0.7;
+				originalTutorialDisplaying = true;
+				tutorialDisplaying = true;
 				addChild(tutorialImage);
 			}
 
@@ -142,6 +146,7 @@ package {
 		public function removeTutorial():void {
 			if(tutorialImage) {
 				removeChild(tutorialImage);
+				tutorialDisplaying = false;
 			}
 		}
 
@@ -242,7 +247,8 @@ package {
 			combatFrames = 0;
 			characterCombatTurn = true;
 
-			if(tutorialImage) {
+			if(tutorialImage && originalTutorialDisplaying) {
+				tutorialDisplaying = true;
 				addChild(tutorialImage);
 			}
 		}
@@ -621,7 +627,7 @@ package {
 
 			addChild(char);
 
-			if(tutorialImage) {
+			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
 		}

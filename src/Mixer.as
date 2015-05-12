@@ -55,7 +55,7 @@ package {
         }
 
         public function onEnterFrame(e:EnterFrameEvent):void {
-            if(player.position >= currentSound.length) {
+            if(player.position >= currentSound.length - 1) {
                 player.stop();
                 currentSound = pickRandomSong();
                 player = currentSound.play();
