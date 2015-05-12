@@ -429,11 +429,12 @@ package {
 				}
 				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
 				tileHud.lockTiles();
-				selectedTile.moveToTouch(touch);
+				selectedTile.moveToTouch(touch, world.x, world.y);
 				currentFloor.highlightAllowedLocations(selectedTile);
 				// Trigger tile placement if they click outside the tile HUD
 				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
 					touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height)) {
+					trace(world.x, world.y, selectedTile.grid_x, selectedTile.grid_y);
 					if (selectedTile.grid_x < currentFloor.gridWidth && selectedTile.grid_y < currentFloor.gridHeight &&
 							!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
 							currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
@@ -458,7 +459,7 @@ package {
 						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
 							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
 						}
-						selectedTile.positionTileOnGrid();
+						selectedTile.positionTileOnGrid(world.x, world.y);
 						numberOfTilesPlaced++;
 						selectedTile.onGrid = true;
 						if (selectedTile is Tile) {
