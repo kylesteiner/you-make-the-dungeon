@@ -35,7 +35,7 @@ package {
         private static const ENEMY_X:int = 3 * (Util.STAGE_WIDTH / 4);
         private static const ENEMY_Y:int = 2 * (Util.STAGE_HEIGHT / 3);
         private static const SHADOW_Y_OFFSET:int = Util.PIXELS_PER_TILE * 2;
-        private static const DAMAGE_Y_OFFSET:int = -16;
+        private static const DAMAGE_Y_OFFSET:int = -Util.PIXELS_PER_TILE / 2;
         private static const DAMAGE_TEXT_SHIFT:int = -2; // Pixels per frame
 
         public function CombatHUD(textureDict:Dictionary,
