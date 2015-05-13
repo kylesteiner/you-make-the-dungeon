@@ -56,13 +56,13 @@ package ai {
 
 			while (!fringe.isEmpty()) {
 				var currentNode:SearchNode = fringe.pop();
-				trace("Visiting Node (" + currentNode.state.char.x + "," + currentNode.state.char.y + ")");
+				trace("Visiting Node (" + currentNode.path + ")");
 				if (visited[currentNode.state.hash()]) {
 					trace("Node already visited");
 					continue;
 				}
 				if (problem.isGoalState(currentNode.state)) {
-					trace("Goal state reached");
+					trace("Goal state reached, path = " + currentNode.path);
 					return currentNode.path;
 				}
 
@@ -90,7 +90,7 @@ package ai {
 			if (state.char.hp <= 0) {
 				val += 9999999;
 			}
-			val += manhattanDistance(state.char.x, state.char.y, state.exitX, state.exitY);
+			//val += manhattanDistance(state.char.x, state.char.y, state.exitX, state.exitY);
 			return val;
 		}
 
