@@ -71,7 +71,7 @@ package {
 		private var logger:Logger;
 		private var nextTransition:String;
 
-		private var tutorialImage:Image;
+		public var tutorialImage:Image;
 
 		private var nextFloorButton:Clickable;
 		private var tutorialDisplaying:Boolean;
@@ -122,7 +122,9 @@ package {
 			if(showPrompt > 0) {
 				if(showPrompt == 1) {
 					tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
-				} else if(showPrompt > 1) {
+				} else if(showPrompt == 2) {
+					tutorialImage = new Image(textures[Util.TUTORIAL_TILE]);
+				} else if(showPrompt > 2) {
 					tutorialImage = new Image(textures[Util.TUTORIAL_PAN]);
 				}
 
@@ -143,7 +145,7 @@ package {
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 		}
-		
+
 		private function getToX(x:int):int {
 			var temp:int = 0;
 			if (parent) {
@@ -154,7 +156,7 @@ package {
 			}
 			return temp;
 		}
-		
+
 		private function getToY(y:int):int {
 			var temp:int = 0;
 			if (parent) {
@@ -172,16 +174,16 @@ package {
 				tutorialDisplaying = false;
 			}
 		}
-		
+
 		public function shiftTutorialX(value:int):void {
 			if (tutorialImage) {
 				tutorialImage.x += value;
-			} 
+			}
 			if (nextFloorButton) {
 				nextFloorButton.x += value;
 			}
 		}
-		
+
 		public function shiftTutorialY(value:int):void {
 			if (tutorialImage) {
 				tutorialImage.y += value;
@@ -296,7 +298,7 @@ package {
 				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}
-			
+
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it

@@ -21,6 +21,9 @@ package {
 		public static const VISITED_ALPHA:Number = 0.4;
 		public static const COMBAT_ALPHA:Number = 0.7;
 
+		public static const CURSOR_OFFSET_X:int = -24;
+		public static const CURSOR_OFFSET_Y:int = -14;
+
 		public static const DEFAULT_FONT:String = "Bebas";
 		public static const LARGE_FONT_SIZE:int = 48;
 		public static const MEDIUM_FONT_SIZE:int = 32;
@@ -39,6 +42,9 @@ package {
 		public static const STATIC_BACKGROUND:String = "static_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
 		public static const TUTORIAL_PAN:String = "tutorial_pan";
+		public static const TUTORIAL_TILE:String = "tutorial_tile_hud";
+		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
+		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -64,10 +70,13 @@ package {
 		public static const TILE_HL_R:String = "hl_r";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
+		public static const ICON_CURSOR_2:String = "icon_cursor_2";
 		public static const ICON_MUTE_BGM:String = "icon_mute_bgm";
 		public static const ICON_MUTE_SFX:String = "icon_mute_sfx";
 		public static const ICON_RESET:String = "icon_reset";
 		public static const ICON_RUN:String = "icon_run";
+		public static const ICON_ATK:String = "icon_attack";
+		public static const ICON_HEALTH:String = "icon_health";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 

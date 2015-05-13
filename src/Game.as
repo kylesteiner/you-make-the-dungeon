@@ -22,10 +22,11 @@ package {
 
 	public class Game extends Sprite {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
-		[Embed(source='assets/backgrounds/char_hud.png')] private static const char_hud:Class;
+		[Embed(source='assets/backgrounds/char_hud_stretch.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] private var static_background:Class;
 		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
-		[Embed(source='assets/backgrounds/tutorial_new.png')] private static const tutorial_hud:Class;
+		[Embed(source='assets/backgrounds/tutorial_shifted.png')] private static const tutorial_hud:Class;
+		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] private static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
 
 		[Embed(source='assets/effects/large/new_fog_2.png')] private static var fog:Class;
@@ -44,12 +45,16 @@ package {
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] private static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] private static const league_font:Class;
 
-		[Embed(source='assets/icons/new_cursor_2.png')] private static const icon_cursor:Class;
+		[Embed(source='assets/animations/cursor/cursor_small.png')] private static const icon_cursor:Class;
+		[Embed(source='assets/animations/cursor/cursor_small_2.png')] private static const icon_cursor_2:Class;
 
 		[Embed(source='assets/icons/medium/mute_bgm.png')] private static const icon_mute_bgm:Class;
 		[Embed(source='assets/icons/medium/mute_sfx.png')] private static const icon_mute_sfx:Class;
 		[Embed(source='assets/icons/medium/reset.png')] private static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] private static const icon_run:Class;
+		[Embed(source='assets/icons/attack.png')] private static const icon_atk:Class;
+		[Embed(source='assets/icons/health.png')] private static const icon_health:Class;
+
 		[Embed(source='assets/tiles/large/tile_e.png')] private static var tile_e:Class;
 		[Embed(source='assets/tiles/large/tile_ew.png')] private static var tile_ew:Class;
 		[Embed(source='assets/tiles/large/tile_n.png')] private static var tile_n:Class;
@@ -140,7 +145,7 @@ package {
 		// Currently unused
 		[Embed(source='assets/bgm/warm-interlude.mp3')] private static const bgmWarmInterlude:Class;
 
-		private var cursorImage:Image;
+		private var cursorAnim:MovieClip;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
@@ -206,9 +211,11 @@ package {
 			initializeFloorWorld();
 			initializeMenuWorld();
 
-			cursorImage = new Image(textures[Util.ICON_CURSOR]);
-			cursorImage.touchable = false;
-			addChild(cursorImage);
+			cursorAnim = new MovieClip(animations[Util.ICON_CURSOR][Util.ICON_CURSOR], Util.ANIM_FPS);
+			cursorAnim.loop = true;
+			cursorAnim.play();
+			cursorAnim.touchable = false;
+			addChild(cursorAnim);
 
 			isMenu = false;
 			createMainMenu();
@@ -366,7 +373,7 @@ package {
 		}
 
 		public function createMainMenu():void {
-			var titleField:TextField = new TextField(256, 80, "MONSTER STORY", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+			var titleField:TextField = new TextField(512, 80, "You Make The Dungeon", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
 			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
 			titleField.y = 32 + titleField.height / 2;
 
@@ -454,8 +461,8 @@ package {
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
-			removeChild(cursorImage);
-			addChild(cursorImage);
+			cursorAnim.advanceTime(event.passedTime);
+			addChild(cursorAnim);
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
@@ -465,14 +472,18 @@ package {
 				return;
 			}
 
+			/*if(currentFloor && currentFloor.tutorialImage && touch.phase == TouchPhase.BEGAN && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
+				currentFloor.removeTutorial();
+			}*/
+
 			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
 			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
 
-			// TODO: make it so cursorImage can move outside of the world
-			cursorImage.x = touch.globalX;
-			cursorImage.y = touch.globalY;
+			// TODO: make it so cursorAnim can move outside of the world
+			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
+			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
 			// Tile placement
 			if (tileHud) {
@@ -481,6 +492,11 @@ package {
 					return;
 				}
 				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
+
+				if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
+					currentFloor.removeTutorial();
+				}
+
 				tileHud.lockTiles();
 				selectedTile.moveToTouch(touch, world.x, world.y);
 				currentFloor.highlightAllowedLocations(selectedTile);
@@ -540,7 +556,7 @@ package {
 			// a floor is loaded, and not cause flash errors
 			if (currentFloor) {
 				// TODO: set up dictionary of charCode -> callback?
-				if(currentFloor.floorName == Util.FLOOR_2) {
+				if(currentFloor.floorName == Util.TUTORIAL_PAN_FLOOR) {
 					currentFloor.removeTutorial();
 				}
 
@@ -581,6 +597,7 @@ package {
 			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
 			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
+			textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
 
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
@@ -618,6 +635,8 @@ package {
 			textures[Util.ICON_MUTE_SFX] = Texture.fromBitmap(new icon_mute_sfx(), true, false, 1);
 			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, 1);
 			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
+			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
+			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
@@ -629,6 +648,13 @@ package {
 
 		private function setupAnimations():Dictionary {
 			var tAnimations:Dictionary = new Dictionary();
+
+			var cursorDict:Dictionary = new Dictionary();
+			var cursorVector:Vector.<Texture> = new Vector.<Texture>();
+			cursorVector.push(Texture.fromEmbeddedAsset(icon_cursor));
+			cursorVector.push(Texture.fromEmbeddedAsset(icon_cursor_2));
+			cursorDict[Util.ICON_CURSOR] = cursorVector;
+			tAnimations[Util.ICON_CURSOR] = cursorDict;
 
 			var charDict:Dictionary = new Dictionary();
 			var charVector:Vector.<Texture> = new Vector.<Texture>();
