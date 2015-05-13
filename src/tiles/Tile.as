@@ -84,7 +84,7 @@ package tiles {
 		public function positionTileOnGrid(worldX:int, worldY:int):void {
 			//need to test that it is a legal position
 			//snap to function should be better than
-			x = Util.grid_to_real(Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2));
+			x = Util.grid_to_real(Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2)); // TODO: Make this calculation better
 			y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
 			checkGameBounds();
 			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
@@ -108,14 +108,12 @@ package tiles {
 		
 
 		// Moves the tiles to the given touch location (for tile selection)
-		public function moveToTouch(touch:Touch, worldX:int, worldY:int):void {
-			if (selected) {
-				x = touch.globalX - Util.PIXELS_PER_TILE / 2;
-				y = touch.globalY - Util.PIXELS_PER_TILE / 2;
-				checkGameBounds();
-				grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
-				grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
-			}
+		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:Image):void {
+			x = touch.globalX - Util.PIXELS_PER_TILE / 2 + cursor.width / 2;
+			y = touch.globalY - Util.PIXELS_PER_TILE / 2;
+			checkGameBounds();
+			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2); // TODO: Make this calculation better
+			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
