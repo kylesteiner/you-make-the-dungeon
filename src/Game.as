@@ -584,22 +584,42 @@ package {
 				//		 can be used in.
 				if(input == Util.UP_KEY) {
 					world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
-					currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
+					if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
+						currentFloor.shiftTutorialY(Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1) + world.y + Util.grid_to_real(Util.CAMERA_SHIFT));
+						world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1);
+					} else {
+						currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
+					}
 				}
 
 				if(input == Util.DOWN_KEY) {
 					world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
-					currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+					if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
+						currentFloor.shiftTutorialY(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.y - Util.STAGE_HEIGHT + Util.PIXELS_PER_TILE);
+						world.y = Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT
+					} else {
+						currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+					}
 				}
 
 				if(input == Util.LEFT_KEY) {
 					world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
-					currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
+					if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
+						currentFloor.shiftTutorialX(Util.PIXELS_PER_TILE * (currentFloor.gridWidth -1 ) + world.x + Util.grid_to_real(Util.CAMERA_SHIFT));
+						world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1);
+					} else {
+						currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
+					}
 				}
 
 				if(input == Util.RIGHT_KEY) {
 					world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
-					currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+					if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
+						currentFloor.shiftTutorialX(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.x - Util.STAGE_WIDTH + Util.PIXELS_PER_TILE);
+						world.x = Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH
+					} else {
+						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
+					}
 				}
 			}
 		}
