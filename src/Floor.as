@@ -675,6 +675,8 @@ package {
 				i = 1;
 			} else if(nextFloor == Util.FLOOR_2) {
 				i = 2;
+			} else if(nextFloor == Util.FLOOR_8) {
+				i = 3;
 			}
 			nextFloorButton.addParameter(i);
 			addChild(nextFloorButton);
