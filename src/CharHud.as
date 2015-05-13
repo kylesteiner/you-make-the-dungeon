@@ -67,7 +67,7 @@ package {
 			atk.x = attack.width;
 			addChild(atk);
 
-			xp = new TextField(64, 20, char.state.xp + " / " + char.state.level, Util.DEFAULT_FONT, 20);
+			xp = new TextField(64, 20, char.state.xp + " / " + 2 * char.state.level, Util.DEFAULT_FONT, 20);
 			xp.y = (3*image.height) / 4 + 8;// + (image.height / 8);
 			xp.x = xpImage.width;
 			addChild(xp);
@@ -79,7 +79,7 @@ package {
 			level.text = char.state.level.toString();
 			hp.text = char.state.hp + " / " + char.state.maxHp;
 			atk.text = char.state.attack.toString();
-			xp.text = char.state.xp + " / " + char.state.level;
+			xp.text = char.state.xp + " / " + 2 * char.state.level;
 		}
 	}
 }

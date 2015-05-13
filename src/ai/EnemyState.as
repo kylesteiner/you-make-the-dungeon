@@ -11,7 +11,7 @@ package ai {
 		}
 
 		override public function hash():int {
-			return ((hp * 92369 + attack * 93559 + xpReward * 102259) * 104677) % Math.pow(2, 30);
+			return ((hp * 317 + attack * 7603 + xpReward * 31151) * 104677) % Math.pow(2, 30);
 		}
 	}
 }

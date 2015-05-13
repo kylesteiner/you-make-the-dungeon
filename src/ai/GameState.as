@@ -225,7 +225,7 @@ package ai {
 					// Run combat loop until someone dies.
 					while (nextChar.hp > 0 && nextEnemy.hp > 0) {
 						Combat.charAttacksEnemy(nextChar, nextEnemy);
-						if (nextChar.hp <= 0) {
+						if (nextEnemy.hp <= 0) {
 							break;
 						}
 						Combat.enemyAttacksChar(nextChar, nextEnemy);
@@ -262,12 +262,12 @@ package ai {
 				for (var j:int = 0; j < gridHeight; j++) {
 					var entity:EntityState = entities[i][j] as EntityState;
 					if (entity) {
+						trace("hashing entity");
 						hash += entity.hash();
 					}
 				}
 			}
 			for (var str:String in visitedObj) {
-				//var str:String = k as String;
 				hash += 13 * Util.hashString(str);
 			}
 			return hash % 1048575;

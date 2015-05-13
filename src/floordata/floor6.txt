@@ -1,8 +1,14 @@
 floor6
 floor7
 floor6
-4	4
+5	4
 0	0
 entry	0	0	0	1	1	0
-exit	3	3	1	0	0	0
-enemy	3	2	1	1	0	1	baraka	2	6	2	1
+exit	4	1	0	0	0	1
+objective	3	1	0	0	1	1	door	door	key
+objective	0	3	1	0	1	0	key	key
+none	3	0	0	0	0	0
+none	4	0	0	0	0	0
+none	3	2	0	0	0	0
+none	4	2	0	0	0	0
+none	3	3	0	0	0	0

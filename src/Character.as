@@ -16,7 +16,7 @@ package {
 
 	// Class representing the Character rendered in game.
 	public class Character extends Sprite {
-		public static const PIXELS_PER_FRAME:int = 2;
+		public static const PIXELS_PER_FRAME:int = 4;
 
 		// Character gameplay state. Holds all information about the Character
 		// that isn't relevant to how to render the Sprite.

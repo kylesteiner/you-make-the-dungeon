@@ -409,7 +409,7 @@ package {
 			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_FLOOR_INDEX]);
 			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
 			floor5button.addParameter(1);  // Char level
-			floor5button.addParameter(0);  // Char xp
+			floor5button.addParameter(1);  // Char xp
 			floor5button.addParameter(0);
 
 			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
@@ -491,6 +491,7 @@ package {
 				if (selectedTileIndex == -1) {
 					return;
 				}
+				// A tile is selected. Adjust its position to follow the cursor and allow player to place it.
 				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
 
 				if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
@@ -498,55 +499,68 @@ package {
 				}
 
 				tileHud.lockTiles();
-				selectedTile.moveToTouch(touch, world.x, world.y);
+				selectedTile.moveToTouch(touch, world.x, world.y, cursorAnim);
 				currentFloor.highlightAllowedLocations(selectedTile);
-				// Trigger tile placement if they click outside the tile HUD
-				if (touch.phase == TouchPhase.ENDED && (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
-					touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height)) {
-					if (selectedTile.grid_x >= 0 && selectedTile.grid_x < currentFloor.gridWidth &&
-							selectedTile.grid_y >= 0 && selectedTile.grid_y < currentFloor.gridHeight &&
-							!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
-							currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
-						// Player correctly placed one of the available tiles
-						// Move tile from HUD to grid. Add new tile to HUD.
-						tileHud.removeAndReplaceTile(selectedTileIndex);
-						currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
-						currentFloor.addChild(selectedTile);
-						currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
-						currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
-						// check if we placed the tile next to any preplaced tiles, and if we did, remove
-						// the fogs for those as well. (it's so ugly D:)
-						if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
-							currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
-						}
-						if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
-							currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
-						}
-						if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
-							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
-						}
-						if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
-							currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
-						}
-						selectedTile.positionTileOnGrid(world.x, world.y);
-						numberOfTilesPlaced++;
-						selectedTile.onGrid = true;
+				if (touch.phase == TouchPhase.ENDED) {
+					if (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
+						touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height) {
+						// Player clicked outside the tile HUD bounds
+						if (touch.globalX >= world.x && touch.globalX < world.x + currentFloor.width &&
+							touch.globalY >= world.y && touch.globalY < world.y + currentFloor.height) {
+							// Player clicked inside grid
+							if (selectedTile.grid_x >= 0 && selectedTile.grid_x < currentFloor.gridWidth &&
+								selectedTile.grid_y >= 0 && selectedTile.grid_y < currentFloor.gridHeight &&
+								!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
+								currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
+								// Player correctly placed one of the available tiles
+								// Move tile from HUD to grid. Add new tile to HUD.
+								tileHud.removeAndReplaceTile(selectedTileIndex);
+								currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
+								currentFloor.addChild(selectedTile);
+								currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
+								currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
+								// check if we placed the tile next to any preplaced tiles, and if we did, remove
+								// the fogs for those as well. (it's so ugly D:)
+								if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
+								}
+								if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
+								}
+								if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
+								}
+								if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
+								}
+								selectedTile.positionTileOnGrid(world.x, world.y);
+								numberOfTilesPlaced++;
+								selectedTile.onGrid = true;
 
-						mixer.play(Util.TILE_MOVE);
+								mixer.play(Util.TILE_MOVE);
 
-						if (selectedTile is Tile) {
-							emptyTiles++;
-						} else if (selectedTile is EnemyTile) {
-							enemyTiles++;
-						} else if (selectedTile is HealingTile) {
-							healingTiles++;
+								if (selectedTile is Tile) {
+									emptyTiles++;
+								} else if (selectedTile is EnemyTile) {
+									enemyTiles++;
+								} else if (selectedTile is HealingTile) {
+									healingTiles++;
+								}
+								tileHud.unlockTiles();
+								currentFloor.clearHighlightedLocations();
+							} // else: Tile wasn't placed correctly on grid. Do nothing.
+						} else {
+							// Player clicked outside grid
+							tileHud.returnSelectedTile();
+							tileHud.unlockTiles();
+							currentFloor.clearHighlightedLocations();
 						}
 					} else {
-						// Tile wasn't placed correctly. Return tile to HUD.
+						// Player clicked inside tile HUD
 						tileHud.returnSelectedTile();
+						tileHud.unlockTiles();
+						currentFloor.clearHighlightedLocations();
 					}
-					tileHud.unlockTiles();
-					currentFloor.clearHighlightedLocations();
 				}
 			}
 		}
