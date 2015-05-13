@@ -176,6 +176,8 @@ package {
 		private var healingTiles:int;
 
 		private var currentCombat:CombatHUD;
+		
+		private var currentTile:Tile;
 
 		public function Game() {
 			Mouse.hide();
@@ -484,11 +486,29 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-
+			trace(currentFloor);
 			// Tile placement
 			if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
+					if (currentFloor) {
+						var tempX:int = touch.globalX - world.x;
+						var tempY:int = touch.globalY - world.y;
+						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
+						    && tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
+							var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
+							if (currentTile != temp) {
+								if (currentTile) 
+									currentTile.removeInfo();
+								currentTile = temp;
+								if (currentTile)
+									currentTile.showInfo();
+							}
+						} else if (currentTile) {
+							currentTile.removeInfo();
+							currentTile = null;
+						}
+					}
 					return;
 				}
 				// A tile is selected. Adjust its position to follow the cursor and allow player to place it.
@@ -620,6 +640,14 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+				}
+				trace(currentTile);
+				if (currentTile) {
+					trace("called");
+					trace(currentTile);
+					currentTile.updateInfoPosition();
+					currentTile.removeInfo();
+					currentTile.showInfo();
 				}
 			}
 		}

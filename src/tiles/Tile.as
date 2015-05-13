@@ -115,6 +115,16 @@ package tiles {
 			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2); // TODO: Make this calculation better
 			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 		}
+		
+		public function showInfo():void {
+			addChild(textImage);
+			addChild(text);
+		}
+		
+		public function removeInfo():void {
+			removeChild(text);
+			removeChild(textImage);
+		}
 
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
@@ -122,11 +132,9 @@ package tiles {
 			if (!touch || locked) {
 				if (touch && onGrid) {
 					updateInfoPosition();
-					addChild(textImage);
-					addChild(text);
+					showInfo();
 				} else {
-					removeChild(text);
-					removeChild(textImage);
+					removeInfo();
 				}
 				return;
 			}
@@ -134,16 +142,14 @@ package tiles {
 			if (!selected) {
 				updateInfoPosition();
 			} else {
-				removeChild(text);
-				removeChild(textImage);
+				removeInfo();
 			}
 
 			if (touch.phase == TouchPhase.HOVER) {
 				// display text here;
 				text.visible = true;
 				updateInfoPosition();
-				addChild(textImage);
-				addChild(text);
+				showInfo();
 			}
 
 			if (touch.phase == TouchPhase.BEGAN) {
@@ -157,6 +163,8 @@ package tiles {
 		protected function setUpInfo(info:String):void {
 			textImage = new Image(Texture.fromColor(infoWidth, infoHeight, 0xffffffff));
 			text = new TextField(infoWidth, infoHeight, info, "Bebas", 18, Color.BLACK);
+			text.name = "infoText";
+			textImage.name = "infoImage";
 			text.border = true;
 			textImage.x = getToPointX();
 			textImage.y = getToPointY();
