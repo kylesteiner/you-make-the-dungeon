@@ -25,7 +25,7 @@ package {
 		// dedicated to non-tile objects at the start.
 		public static const NON_TILE_LINES:int = 5;
 
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next floor."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
@@ -682,10 +682,15 @@ package {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
 			//mixer.play(Util.FLOOR_COMPLETE);
-			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			nextFloorButton = new Clickable(0, 0,
-													onCompleteCallback,
-													winText);
+			
+			var winBox:Sprite = new Sprite();
+			var popup:Image = new Image(textures[Util.POPUP_BACKGROUND])
+			winBox.addChild(popup);
+			winBox.addChild(new TextField(popup.width, popup.height, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
+			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+			
+			nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
 			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);

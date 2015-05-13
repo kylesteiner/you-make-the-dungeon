@@ -27,6 +27,7 @@ package {
 		[Embed(source='assets/backgrounds/tutorial_shifted.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] private static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
+		[Embed(source='assets/backgrounds/popup.png')] private static const popup_background:Class;
 
 		[Embed(source='assets/effects/large/new_fog_2.png')] private static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
@@ -669,6 +670,7 @@ package {
 			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 			textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
+			textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
 
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
