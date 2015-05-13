@@ -129,6 +129,11 @@ package {
 		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] private static const charCombatFaintAnim0:Class;
 		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] private static const charCombatFaintAnim1:Class;
 
+		[Embed(source='assets/animations/generic/attack/attack_0.png')] private static const genericAttackAnim0:Class;
+		[Embed(source='assets/animations/generic/attack/attack_1.png')] private static const genericAttackAnim1:Class;
+		[Embed(source='assets/animations/generic/attack/attack_2.png')] private static const genericAttackAnim2:Class;
+		[Embed(source='assets/animations/generic/attack/attack_3.png')] private static const genericAttackAnim3:Class;
+
 		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
@@ -175,7 +180,7 @@ package {
 		private var healingTiles:int;
 
 		private var currentCombat:CombatHUD;
-		
+
 		private var currentTile:Tile;
 
 		public function Game() {
@@ -499,7 +504,7 @@ package {
 						    && tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
 							var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
 							if (currentTile != temp) {
-								if (currentTile) 
+								if (currentTile)
 									currentTile.removeInfo();
 								currentTile = temp;
 								if (currentTile)
@@ -723,6 +728,15 @@ package {
 			cursorVector.push(Texture.fromEmbeddedAsset(icon_cursor_2));
 			cursorDict[Util.ICON_CURSOR] = cursorVector;
 			tAnimations[Util.ICON_CURSOR] = cursorDict;
+
+			var genericDict:Dictionary = new Dictionary();
+			var genericVector:Vector.<Texture> = new Vector.<Texture>();
+			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim0));
+			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim1));
+			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim2));
+			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim3));
+			genericDict[Util.GENERIC_ATTACK] = genericVector;
+			tAnimations[Util.GENERIC_ATTACK] = genericDict;
 
 			var charDict:Dictionary = new Dictionary();
 			var charVector:Vector.<Texture> = new Vector.<Texture>();
