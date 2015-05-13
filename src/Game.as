@@ -16,7 +16,6 @@ package {
 	import CharHud;
 	import Util;
 	import Menu;
-	//import cgs.logger.Logger;
 	import Logger;
 	import ai.*;
 
@@ -33,7 +32,7 @@ package {
 		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
 		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_green:Class;
 		[Embed(source='assets/effects/large/hl_red.png')] private static var hl_red:Class;
-		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_yellow:Class;
+		[Embed(source='assets/effects/large/hl_yellow.png')] private static var hl_yellow:Class;
 
 		[Embed(source='assets/entities/large/door.png')] private static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] private static var entity_healing:Class;
@@ -486,12 +485,14 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-			trace(currentFloor);
-			// Tile placement
+			
 			if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
+					// There is no selected tile
 					if (currentFloor) {
+						//tileHud.highlightUsableTiles(currentFloor);
+						
 						var tempX:int = touch.globalX - world.x;
 						var tempY:int = touch.globalY - world.y;
 						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
@@ -511,13 +512,13 @@ package {
 					}
 					return;
 				}
-				// A tile is selected. Adjust its position to follow the cursor and allow player to place it.
-				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
 
 				if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
 					currentFloor.removeTutorial();
 				}
 
+				// A tile is selected. Adjust its position to follow the cursor and allow player to place it.
+				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
 				tileHud.lockTiles();
 				selectedTile.moveToTouch(touch, world.x, world.y, cursorAnim);
 				currentFloor.highlightAllowedLocations(selectedTile);
@@ -568,7 +569,12 @@ package {
 								}
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
-							} // else: Tile wasn't placed correctly on grid. Do nothing.
+							} else {
+								// Tile wasn't placed correctly on grid
+								tileHud.returnSelectedTile();
+								tileHud.unlockTiles();
+								currentFloor.clearHighlightedLocations();
+							}
 						} else {
 							// Player clicked outside grid
 							tileHud.returnSelectedTile();

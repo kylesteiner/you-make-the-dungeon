@@ -109,8 +109,8 @@ package tiles {
 
 		// Moves the tiles to the given touch location (for tile selection)
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
-			x = touch.globalX - Util.PIXELS_PER_TILE / 2 + cursor.width / 2;
-			y = touch.globalY - Util.PIXELS_PER_TILE / 2;
+			x = touch.globalX - Util.PIXELS_PER_TILE / 2;
+			y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
 			checkGameBounds();
 			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2); // TODO: Make this calculation better
 			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);

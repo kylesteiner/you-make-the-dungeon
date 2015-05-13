@@ -14,17 +14,21 @@ package {
 		public var HUD:Image;
 
 		// Used to represent percent chance of drawing tiles.
-		private var tileRates:Array;
+		public var tileRates:Array;
 
 		// List of available tiles displayed on HUD
-		private var availableTiles:Array;
+		public var availableTiles:Array;
 
+		// Array of currently highlighted locations
+		public var highlightedLocations:Array;
+		
 		public function TileHud(tileRatesBytes:ByteArray,
 								textureDict:Dictionary) {
 			super();
 			textures = textureDict;
 			tileRates = new Array(100);
 			availableTiles = new Array(Util.NUM_AVAILABLE_TILES);
+			highlightedLocations = new Array(Util.NUM_AVAILABLE_TILES);
 
 			HUD = new Image(textures[Util.TILE_HUD]);
 			HUD.x = (Util.STAGE_WIDTH - HUD.width) / 2;
@@ -37,6 +41,23 @@ package {
 			}
 		}
 
+		public function highlightUsableTiles(currentFloor:Floor):void {
+			for (var i:int = 0; i < availableTiles.length; i++) {
+				var hudTile:Tile = availableTiles[i]
+				if (highlightedLocations[i]) {
+					// Already highlighted HUD tiles
+					return;
+				} else if (currentFloor.getAllowedLocations(hudTile).length > 0) {
+					// This tile has at least one allowed location. Highlight it
+					var hl:Image = new Image(textures[Util.TILE_HL_Y]);
+					hl.x = hudTile.x;
+					hl.y = hudTile.y;
+					highlightedLocations[i] = hl;
+					addChild(highlightedLocations[i]);
+				}
+			}
+		}
+		
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
 		}

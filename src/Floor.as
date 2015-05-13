@@ -362,9 +362,22 @@ package {
 				}
 			}
 		}
-
+		
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(selectedTile:Tile):void {
+			var coords:Array = getAllowedLocations(selectedTile);
+			for (var i:int = 0; i < coords.length; i++) {
+				var coord:Object = coords[i];
+				var hl:Image = new Image(textures[Util.TILE_HL_G]);
+				hl.x = coord.x * Util.PIXELS_PER_TILE;
+				hl.y = coord.y * Util.PIXELS_PER_TILE;
+				highlightedLocations[coord.x][coord.y] = hl;
+				addChild(highlightedLocations[coord.x][coord.y]);
+			}
+		}
+		
+		// Returned an array of tiles on the grid that the player can move the selected tile to.
+		public function getAllowedLocations(selectedTile:Tile):Array {
 			var i:int; var j:int; var start_i:int; var start_j:int; var visited:Array;
 
 			// Find entry tile
@@ -386,31 +399,41 @@ package {
 					visited[i][j] = false;
 				}
 			}
-
-			highlightAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
+			return getAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
 		}
-
-		// Recursively iterates over the map from start and highlights allowed locations
-		public function highlightAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):void {
+		
+		// Recursively iterates over the map from the start and finds allowed locations
+		public function getAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):Array {
 			if (visited[i][j] || highlightedLocations[i][j]) {
-				return;
+				return new Array();
 			}
 
 			if (!grid[i][j] && ((direction == Util.NORTH && selectedTile.north) || (direction == Util.SOUTH && selectedTile.south) ||
 					(direction == Util.WEST && selectedTile.west) || (direction == Util.EAST && selectedTile.east))) {
 				// Open spot on grid that the selected tile can be placed
-				var hl:Image = new Image(textures[Util.TILE_HL_Y]);
-				hl.x = i * Util.PIXELS_PER_TILE;
-				hl.y = j * Util.PIXELS_PER_TILE;
-				highlightedLocations[i][j] = hl;
-				addChild(highlightedLocations[i][j]);
+				var coordinate:Object = {x:int, y:int};
+				coordinate.x = i;
+				coordinate.y = j;
+				return new Array(coordinate);
 			} else if (grid[i][j] || direction == -1) {
 				// Currently traversing path (-1 direction indicates the start tile)
 				visited[i][j] = true;
-				if (i + 1 < gridWidth && grid[i][j].east) { highlightAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST); }
-				if (i - 1 >= 0 && grid[i][j].west) { highlightAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST); }
-				if (j + 1 < gridHeight && grid[i][j].south) { highlightAllowedLocationsHelper(i, j + 1, selectedTile, visited, Util.NORTH); }
-				if (j - 1 >= 0 && grid[i][j].north) { highlightAllowedLocationsHelper(i, j - 1, selectedTile, visited, Util.SOUTH); }
+				var ret:Array = new Array();
+				if (i + 1 < gridWidth && grid[i][j].east) {
+					ret = ret.concat(getAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST));	
+				}
+				if (i - 1 >= 0 && grid[i][j].west) {
+					ret = ret.concat(getAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST));
+				}
+				if (j + 1 < gridHeight && grid[i][j].south) {
+					ret = ret.concat(getAllowedLocationsHelper(i, j + 1, selectedTile, visited, Util.NORTH));
+				}
+				if (j - 1 >= 0 && grid[i][j].north) {
+					ret = ret.concat(getAllowedLocationsHelper(i, j - 1, selectedTile, visited, Util.SOUTH));
+				}
+				return ret;
+			} else {
+				return new Array()
 			}
 		}
 
