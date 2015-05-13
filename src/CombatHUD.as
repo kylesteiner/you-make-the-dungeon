@@ -23,6 +23,19 @@ package {
         private var charShadow:Image;
         private var enemyShadow:Image;
 
+        private var xpText:TextField;
+
+        private var charHealthImage:Image;
+        private var enemyHealthImage:Image;
+        private var charAttackImage:Image;
+        private var enemyAttackImage:Image;
+        private var charHealthText:TextField;
+        private var enemyHealthText:TextField;
+        private var charAttackText:TextField;
+        private var enemyAttackText:TextField;
+
+        private var attackAnimation:MovieClip;
+
         private var charState:String;
         private var enemyState:String;
 
@@ -30,13 +43,20 @@ package {
 
         private var logger:Logger;
 
+        private var charRetreating:Boolean;
+        private var enemyRetreating:Boolean;
+
         private static const CHAR_X:int = Util.STAGE_WIDTH / 4;
         private static const CHAR_Y:int = 3 * (Util.STAGE_HEIGHT / 4);
         private static const ENEMY_X:int = 3 * (Util.STAGE_WIDTH / 4);
         private static const ENEMY_Y:int = 3 * (Util.STAGE_HEIGHT / 4);
-        private static const SHADOW_Y_OFFSET:int = Util.PIXELS_PER_TILE * 2;
+        //private static const SHADOW_Y_OFFSET:int = Util.PIXELS_PER_TILE * 2;
+        //private static const HEALTH_Y_OFFSET:int = Util.PIXELS_PER_TILE * 3;
+        //private static const ATTACK_Y_OFFSET:int = Util.PIXELS_PER_TILE * 4;
         private static const DAMAGE_Y_OFFSET:int = -Util.PIXELS_PER_TILE / 2;
         private static const DAMAGE_TEXT_SHIFT:int = -2; // Pixels per frame
+        private static const XP_TEXT_SHIFT:int = -2;
+        private static const RETREAT_SPEED:int = 8;
 
         public function CombatHUD(textureDict:Dictionary,
                                animDict:Dictionary,
@@ -80,6 +100,46 @@ package {
             enemyShadow.y = ENEMY_Y - charShadow.height;
             addChild(enemyShadow);
 
+            charHealthImage = new Image(textures[Util.ICON_HEALTH]);
+            charHealthImage.x = charShadow.x;
+            charHealthImage.y = CHAR_Y;
+            addChild(charHealthImage);
+
+            charHealthText = new TextField(64, charHealthImage.height, char.state.hp + " / " + char.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            charHealthText.x = charHealthImage.x + charHealthImage.width;
+            charHealthText.y = charHealthImage.y;
+            addChild(charHealthText);
+
+            charAttackImage = new Image(textures[Util.ICON_ATK]);
+            charAttackImage.x = charShadow.x;
+            charAttackImage.y = CHAR_Y + charHealthImage.height;
+            addChild(charAttackImage);
+
+            charAttackText = new TextField(64, charAttackImage.height, char.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            charAttackText.x = charAttackImage.x + charAttackImage.width;
+            charAttackText.y = charAttackImage.y;
+            addChild(charAttackText);
+
+            enemyHealthImage = new Image(textures[Util.ICON_HEALTH]);
+            enemyHealthImage.x = enemyShadow.x;
+            enemyHealthImage.y = ENEMY_Y;
+            addChild(enemyHealthImage);
+
+            enemyAttackImage = new Image(textures[Util.ICON_ATK]);
+            enemyAttackImage.x = enemyShadow.x;
+            enemyAttackImage.y = ENEMY_Y + enemyHealthImage.height;
+            addChild(enemyAttackImage);
+
+            enemyHealthText = new TextField(64, enemyHealthImage.height, enemy.state.hp + " / " + enemy.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyHealthText.x = enemyHealthImage.x + enemyHealthImage.width;
+            enemyHealthText.y = enemyHealthImage.y;
+            addChild(enemyHealthText);
+
+            enemyAttackText = new TextField(64, enemyAttackImage.height, enemy.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyAttackText.x = enemyAttackImage.x + enemyAttackImage.width;
+            enemyAttackText.y = enemyAttackImage.y;
+            addChild(enemyAttackText);
+
             /*charAnim = new MovieClip(animations[Util.CHARACTER][Util.CHAR_COMBAT_IDLE], Util.ANIM_FPS);
             charAnim.x = CHAR_X - (charAnim.width / 2);
             charAnim.y = CHAR_Y - (charAnim.height / 2);
@@ -94,6 +154,14 @@ package {
             charAnim.advanceTime(e.passedTime);
             enemyAnim.advanceTime(e.passedTime);
 
+            if(attackAnimation) {
+                attackAnimation.advanceTime(e.passedTime);
+                addChild(attackAnimation);
+            }
+
+            charHealthText.text = char.state.hp + " / " + char.state.maxHp;
+            enemyHealthText.text = enemy.state.hp + " / " + enemy.state.maxHp;
+
             if(charDamagedText) {
                 charDamagedText.y += DAMAGE_TEXT_SHIFT;
             }
@@ -102,13 +170,23 @@ package {
                 enemyDamagedText.y += DAMAGE_TEXT_SHIFT;
             }
 
-            if(charAnim.isComplete && charState == Util.CHAR_COMBAT_ATTACK) {
+            if(charRetreating) {
+                charAnim.x -= RETREAT_SPEED;
+            } else if(enemyRetreating) {
+                enemyAnim.x += RETREAT_SPEED;
+            }
+
+            if(xpText) {
+                xpText.y += XP_TEXT_SHIFT;
+            }
+
+            if(charAnim.isComplete && charState == Util.CHAR_COMBAT_ATTACK && attackAnimation.isComplete) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.CHAR_ATTACKED, char, enemy));
-            } else if(charAnim.isComplete && charState == Util.CHAR_COMBAT_FAINT) {
+            } else if(charAnim.isComplete && charState == Util.CHAR_COMBAT_FAINT && charAnim.x <= -charAnim.width) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.CHAR_DIED, char, enemy));
-            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_ATTACK) {
+            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_ATTACK && attackAnimation.isComplete) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_ATTACKED, char, enemy));
-            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_FAINT) {
+            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_FAINT && enemyAnim.x >= Util.STAGE_WIDTH) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_DIED, char, enemy));
             }
         }
@@ -116,6 +194,7 @@ package {
         public function setCharIdle():void {
             setCharAnim(Util.CHAR_COMBAT_IDLE);
             charAnim.loop = true;
+            //charAnim.scaleX = -1;
         }
 
         public function setCharAttack():void {
@@ -124,6 +203,7 @@ package {
 
         public function setCharFaint():void {
             setCharAnim(Util.CHAR_COMBAT_FAINT);
+            charRetreating = true;
         }
 
         public function setCharAnim(animationString:String):void {
@@ -148,6 +228,7 @@ package {
 
         public function setEnemyFaint():void {
             setEnemyAnim(Util.ENEMY_COMBAT_FAINT);
+            enemyRetreating = true;
         }
 
         public function setEnemyAnim(animationString:String):void {
@@ -170,6 +251,25 @@ package {
             return tDamage;
         }
 
+        public function createXpText(amount:int):TextField {
+            var tXp:TextField = new TextField(256, 128, "+" + amount + " EXP", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+            tXp.color = Color.GREEN;
+            tXp.x = (Util.STAGE_WIDTH / 2) - (tXp.width / 2);
+            tXp.y = (Util.STAGE_HEIGHT / 2) - tXp.height;
+            return tXp;
+        }
+
+        public function createAttackAnimation(anim:MovieClip, flip:Boolean=false):void {
+            attackAnimation = new MovieClip(animations[Util.GENERIC_ATTACK][Util.GENERIC_ATTACK], Util.ANIM_FPS * 3);
+            attackAnimation.loop = false;
+            attackAnimation.scaleX = anim.width / attackAnimation.width;
+            attackAnimation.scaleY = attackAnimation.scaleX;
+            attackAnimation.scaleX *= (flip ? -1 : 1);
+            attackAnimation.x = anim.x + (anim.width / 2) - attackAnimation.width / 2 + (flip ? anim.width : 0);
+            attackAnimation.y = anim.y + (anim.height / 2) - attackAnimation.height / 2;
+            attackAnimation.play();
+        }
+
         public function onNextAttack(e:AnimationEvent):void {
             removeChild(charDamagedText);
             removeChild(enemyDamagedText);
@@ -178,6 +278,9 @@ package {
             enemyDamagedText = null;
 
             if(e.type == AnimationEvent.ENEMY_ATTACKED) {
+                removeChild(attackAnimation);
+                attackAnimation = null;
+
                 setEnemyIdle();
 
                 if(char.state.hp <= 0) {
@@ -191,12 +294,28 @@ package {
                     enemyDamagedText = createDamageText(enemyAnim, char.state.attack);
                     addChild(enemyDamagedText);
 
+                    createAttackAnimation(enemyAnim);
+                    addChild(attackAnimation);
+
                 }
             } else if(e.type == AnimationEvent.CHAR_ATTACKED) {
+                removeChild(attackAnimation);
+                attackAnimation = null;
+
                 setCharIdle();
 
                 if(enemy.state.hp <= 0) {
                     setEnemyFaint();
+
+                    xpText = createXpText(enemy.state.xpReward);
+                    addChild(xpText);
+
+                    // TODO: add delayed level-up text
+                    // TODO: add sound effects for:
+                    //       attack
+                    //       retreat/victory
+                    //       level-up
+                    // TODO: add "you died, level restart on-death"
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();
@@ -204,6 +323,9 @@ package {
 
                     charDamagedText = createDamageText(charAnim, enemy.state.attack);
                     addChild(charDamagedText);
+
+                    createAttackAnimation(charAnim, true);
+                    addChild(attackAnimation)
                 }
             }
         }

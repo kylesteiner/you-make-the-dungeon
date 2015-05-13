@@ -121,6 +121,8 @@ package {
 		public static const MONSTER_1:String = "monster_1";
 		public static const MONSTER_2:String = "monster_2";
 
+		public static const GENERIC_ATTACK:String = "generic_attack";
+
 		// Keys to the Dictionary of SFX
 		public static const FLOOR_COMPLETE:String = "floor_complete";
 		public static const TILE_MOVE:String = "tile_move";
