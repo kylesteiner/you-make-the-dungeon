@@ -496,8 +496,6 @@ package {
 				if (selectedTileIndex == -1) {
 					// There is no selected tile
 					if (currentFloor) {
-						//tileHud.highlightUsableTiles(currentFloor);
-						
 						var tempX:int = touch.globalX - world.x;
 						var tempY:int = touch.globalY - world.y;
 						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE

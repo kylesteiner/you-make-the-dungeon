@@ -40,23 +40,6 @@ package {
 				getNextTile(i);
 			}
 		}
-
-		public function highlightUsableTiles(currentFloor:Floor):void {
-			for (var i:int = 0; i < availableTiles.length; i++) {
-				var hudTile:Tile = availableTiles[i]
-				if (highlightedLocations[i]) {
-					// Already highlighted HUD tiles
-					return;
-				} else if (currentFloor.getAllowedLocations(hudTile).length > 0) {
-					// This tile has at least one allowed location. Highlight it
-					var hl:Image = new Image(textures[Util.TILE_HL_Y]);
-					hl.x = hudTile.x;
-					hl.y = hudTile.y;
-					highlightedLocations[i] = hl;
-					addChild(highlightedLocations[i]);
-				}
-			}
-		}
 		
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
