@@ -148,6 +148,7 @@ package tiles {
 
 			if (touch.phase == TouchPhase.BEGAN) {
 				selected = true;
+				this.parent.setChildIndex(this, this.parent.numChildren - 1);
 			}
 		}
 
