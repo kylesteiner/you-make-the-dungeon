@@ -402,7 +402,7 @@ package {
 			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_FLOOR_INDEX]);
 			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
 			floor5button.addParameter(1);  // Char level
-			floor5button.addParameter(0);  // Char xp
+			floor5button.addParameter(1);  // Char xp
 			floor5button.addParameter(0);
 
 			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));

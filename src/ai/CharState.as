@@ -35,9 +35,11 @@ package ai {
 
 		// Attempt to level up the character. This affects all stats.
 		public function tryLevelUp():void {
-			while (xp >= level) {
-				xp -= level;
+			var nextLevel:int = level * 2;
+			while (xp >= level * 2) {
+				xp -= level * 2;
 				level++;
+				nextLevel = level * 2;
 				maxHp = getMaxHp(level);
 				hp = maxHp;
 				attack = level;
@@ -45,13 +47,13 @@ package ai {
 		}
 
 		public function hash():int {
-			var sum:int = x * 99989 +
-						  y * 100019 +
-						  xp * 100069 +
-						  level * 100673 +
-						  maxHp * 101807 +
-						  hp * 103583 +
-						  attack * 103951;
+			var sum:int = x * 31 +
+						  y * 14437 +
+						  xp * 68639 +
+						  level * 77269 +
+						  maxHp * 84047 +
+						  hp * 101641 +
+						  attack * 1033   ;
 			return (sum * 104729) % Math.pow(2, 30);
 		}
 	}

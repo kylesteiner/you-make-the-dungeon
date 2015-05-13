@@ -91,21 +91,20 @@ package tiles {
 			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 			locked = true;
 		}
-		
+
 		public function updateInfoPosition():void {
 			text.x = getToPointX();
 			text.y = getToPointY();
 			textImage.x = getToPointX();
 			textImage.y = getToPointY();
 			if (onGrid) {
-				trace(parent.parent);
 				text.x -= parent.parent.x;
 				text.y -= parent.parent.y;
 				textImage.x -= parent.parent.x;
 				textImage.y -= parent.parent.y;
 			}
 		}
-		
+
 
 		// Moves the tiles to the given touch location (for tile selection)
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:Image):void {

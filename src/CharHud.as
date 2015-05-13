@@ -51,7 +51,7 @@ package {
 			level.text = "LVL: " + char.state.level;
 			hp.text = "HP: " + char.state.hp + "/" + char.state.maxHp;
 			atk.text = "Attack: " + char.state.attack;
-			xp.text = "XP: " + char.state.xp + "/" + char.state.level;
+			xp.text = "XP: " + char.state.xp + "/" + 2 * char.state.level;
 		}
 	}
 }
