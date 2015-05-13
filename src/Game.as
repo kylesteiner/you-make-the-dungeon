@@ -401,7 +401,7 @@ package {
 			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
 			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			floor1Button.addParameter(1);
+			floor1Button.addParameter(1); // Tutorial to display
 
 			var floor5button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 5", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor5button.addParameter(switchToFloor);
@@ -410,7 +410,7 @@ package {
 			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
 			floor5button.addParameter(1);  // Char level
 			floor5button.addParameter(1);  // Char xp
-			floor5button.addParameter(0);
+			floor5button.addParameter(0); // Tutorial to display
 
 			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			floor8button.addParameter(switchToFloor);
@@ -419,7 +419,7 @@ package {
 			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
 			floor8button.addParameter(3);  // Char level
 			floor8button.addParameter(0);  // Char xp
-			floor8button.addParameter(false);
+			floor8button.addParameter(3); // Tutorial to display
 
 			switchToMenu(new Menu(new Array(floor1Button, floor5button, floor8button)));
 		}
@@ -753,7 +753,7 @@ package {
 			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions5));
 			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions6));
 			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions7));
-			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitions8));
+			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitionsFinal));
 			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitionsFinal));
 			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));

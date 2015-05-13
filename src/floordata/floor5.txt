@@ -1,6 +1,6 @@
 floor5
 floor6
-floor5
+floor7
 4	5
 0	0
 entry	0	0	0	1	0	0
