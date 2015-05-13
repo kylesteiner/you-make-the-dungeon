@@ -644,7 +644,11 @@ package {
 		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
-
+			
+			if (nextFloorButton) {
+				addChild(nextFloorButton);
+			}
+			
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
@@ -707,7 +711,6 @@ package {
 				i = 3;
 			}
 			nextFloorButton.addParameter(i);
-			addChild(nextFloorButton);
 		}
 
 		// Called when the character moves into an objective tile. Updates objectiveState
