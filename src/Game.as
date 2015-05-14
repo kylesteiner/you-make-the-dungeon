@@ -471,7 +471,7 @@ package {
 			floors = setupFloors();
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startButton, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, beginGameButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
