@@ -563,8 +563,10 @@ package {
 								if (currentTile)
 									currentTile.removeInfo();
 								currentTile = temp;
-								if (currentTile)
+								if (currentTile && !currentFloor.fogGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)]) {
+									currentTile.updateInfoPosition();
 									currentTile.showInfo();
+								}
 							}
 						} else if (currentTile) {
 							currentTile.removeInfo();
@@ -672,7 +674,7 @@ package {
 				// TODO: add bounds that the camera cannot go beyond,
 				//		 and limit what contexts the camera movement
 				//		 can be used in.
-				if(input == Util.UP_KEY) {
+				if (input == Util.DOWN_KEY) {
 					world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
 						currentFloor.shiftTutorialY(Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1) + world.y + Util.grid_to_real(Util.CAMERA_SHIFT));
@@ -682,7 +684,7 @@ package {
 					}
 				}
 
-				if(input == Util.DOWN_KEY) {
+				if (input == Util.UP_KEY) {
 					world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
 						currentFloor.shiftTutorialY(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.y - Util.STAGE_HEIGHT + Util.PIXELS_PER_TILE);
@@ -692,7 +694,7 @@ package {
 					}
 				}
 
-				if(input == Util.LEFT_KEY) {
+				if (input == Util.RIGHT_KEY) {
 					world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
 						currentFloor.shiftTutorialX(Util.PIXELS_PER_TILE * (currentFloor.gridWidth -1 ) + world.x + Util.grid_to_real(Util.CAMERA_SHIFT));
@@ -702,7 +704,7 @@ package {
 					}
 				}
 
-				if(input == Util.RIGHT_KEY) {
+				if (input == Util.LEFT_KEY) {
 					world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
 						currentFloor.shiftTutorialX(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.x - Util.STAGE_WIDTH + Util.PIXELS_PER_TILE);
@@ -711,13 +713,9 @@ package {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
 				}
-				trace(currentTile);
 				if (currentTile) {
-					trace("called");
-					trace(currentTile);
 					currentTile.updateInfoPosition();
 					currentTile.removeInfo();
-					currentTile.showInfo();
 				}
 			}
 		}
