@@ -1,5 +1,5 @@
 package tiles {
-    import starling.display.Image;
+    import starling.display.*;
     import starling.events.*;
     import starling.textures.Texture;
 	import starling.text.TextField;
@@ -17,6 +17,9 @@ package tiles {
         public var level:int;
 
         private var enemy:Image;
+
+        //private var baseSprite:Sprite;
+        //private var textDisplay:TextField;
 
         public function EnemyTile(g_x:int,
                                   g_y:int,
@@ -44,11 +47,19 @@ package tiles {
             this.enemy = new Image(enemy);
             addChild(this.enemy);
 
+            /*baseSprite = new Sprite();
+            addChild(baseSprite);
+            textDisplay = new TextField(64, 32, hp + " | " + attack, Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
+            //th.y = enemy.height;
+            textDisplay.x = Util.PIXELS_PER_TILE;
+            baseSprite.addChild(textDisplay);*/
+
             displayInformation();
         }
 
         public function removeImage():void {
             removeChild(enemy);
+            //removeChild(textDisplay);
             //enemy.alpha = Util.VISITED_ALPHA;
         }
 
@@ -61,6 +72,7 @@ package tiles {
 
         override public function reset():void {
             addChild(enemy);
+            //addChild(textDisplay);
             state.hp = initialHp;
         }
 

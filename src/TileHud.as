@@ -21,7 +21,7 @@ package {
 
 		// Array of currently highlighted locations
 		public var highlightedLocations:Array;
-		
+
 		public function TileHud(tileRatesBytes:ByteArray,
 								textureDict:Dictionary) {
 			super();
@@ -40,7 +40,7 @@ package {
 				getNextTile(i);
 			}
 		}
-		
+
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
 		}
@@ -95,12 +95,12 @@ package {
 		public function getNextTile(index:int):void {
 			var tile:Tile; var tN:Boolean; var tS:Boolean; var tE:Boolean;
 			var tW:Boolean; var dir:int; var tTexture:Texture; var tType:String;
-			var t2Texture:Texture; var name:String; var level:int; var hp:int;
+			var t2Texture:Texture; var enemyName:String; var level:int; var hp:int;
 			var attack:int; var xpReward:int;
 
 			// Create tile randomly influenced by tile rates for floor
-			tType = tileRates[Util.randomRange(0, 100)];
-			
+			tType = tileRates[Util.randomRange(0, 99)];
+
 			// Generate walls. 75% chance of having each direction open.
 			var numSides:int = 0;
 			while ((tType == "empty" && numSides < 2) || (tType != "empty" && numSides == 0)) {
@@ -115,20 +115,25 @@ package {
 				numSides += tW ? 1 : 0;
 			}
 			tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
-			
+
 			// Generate tile and add it to the HUD display
 			if (tType == "enemy") {
-				t2Texture = textures[Util.MONSTER_1];
-				name = "";
-				level = 1;
-				hp = 1;
-				attack = 1;
-				xpReward = 1;
+				t2Texture = Util.randomRange(1, 2) == 1 ? textures[Util.MONSTER_1] : textures[Util.MONSTER_2];
+				enemyName = "";
+				level = Util.randomRange(1, 4);
+				hp = level * Util.randomRange(2, 3);
+				attack = level;
+				xpReward = Util.randomRange(1, level);
 				tile = new EnemyTile(0, 0, tN, tS, tE, tW, tTexture,
-					t2Texture, name, level, hp, attack, xpReward);
+					t2Texture, enemyName, level, hp, attack, xpReward);
+				/*eTile.locked = false;
+				availableTiles[index] = eTile;
+				setTileLocation(index);
+				addChild(eTile);
+				return;*/
 			} else if (tType == "healing") {
-				t2Texture = textures[Util.HEALING],
-				hp = 1
+				t2Texture = textures[Util.HEALING];
+				hp = Util.randomRange(1, 10);
 				tile = new HealingTile(0, 0, tN, tS, tE, tW, tTexture,
 					t2Texture, hp);
 			} else { // empty

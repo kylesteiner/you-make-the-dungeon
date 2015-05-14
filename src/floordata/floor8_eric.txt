@@ -1,0 +1,40 @@
+floor8
+floor9
+floor8
+9	9
+0	4
+enemy	0	0	0	1	1	0	mob	3	7	1	1
+none	0	2	0	0	0	0
+none	0	3	0	0	0	0
+entry	0	4	0	0	1	0
+none	0	5	0	0	0	0
+health	1	0	0	1	1	1	5
+none	1	2	0	0	0	0
+enemy	2	0	0	1	0	1	mob	3	7	1	1
+enemy	2	2	1	1	0	0	mob	3	7	1	1
+none	2	7	0	0	0	0
+enemy	2	8	0	0	1	1	mob	3	7	1	1
+none	3	0	0	0	0	0
+none	3	1	0	0	0	0
+none	3	2	0	0	0	0
+enemy	3	4	1	1	1	1	mob	3	7	1	1
+none	3	7	0	0	0	0
+health	3	8	0	0	0	1	5
+none	4	7	0	0	0	0
+none	4	8	0	0	0	0
+enemy	5	0	0	1	1	1	mob	3	7	1	1
+enemy	5	8	1	0	0	0	mob	3	7	1	1
+enemy	6	4	1	1	1	1	mob	3	7	1	1
+none	6	7	0	0	0	0
+none	6	8	0	0	0	0
+none	7	0	0	0	0	0
+enemy	7	1	0	0	1	1	boss	4	10	5	2
+none	7	2	0	0	0	0
+enemy	7	7	1	1	0	0	boss	4	10	5	2
+exit	7	8	1	0	0	0
+none	8	0	0	0	0	0
+exit	8	1	0	0	0	1
+none	8	2	0	0	0	0
+enemy	8	4	1	1	0	1	mob	3	7	1	1
+none	8	7	0	0	0	0
+none	8	8	0	0	0	0

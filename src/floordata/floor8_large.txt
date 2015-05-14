@@ -1,0 +1,18 @@
+floor8
+floor9
+floor8
+9	9
+2	2
+entry	2	2	1	1	1	1
+exit	7	7	1	1	1	0
+enemy	7	6	1	1	1	1	boss	3	12	3	3
+enemy	6	7	1	1	1	1	fgtr	3	18	2	3
+enemy	0	0	0	1	1	1	boss	1	5	1	1
+objective	7	8	1	1	1	1	door	door	key
+objective	0	8	1	1	1	1	key	key
+enemy	4	5	1	0	1	1	fgtr	2	10	3	2
+enemy	7	2	1	1	1	1	fgtr	4	8	4	2
+none	7	4	0	0	0	0
+none	3	3	0	0	0	0
+none	3	4	0	0	0	0
+none	1	6	0	0	0	0

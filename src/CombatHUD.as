@@ -134,12 +134,12 @@ package {
             enemyAttackImage.y = ENEMY_Y + enemyHealthImage.height;
             addChild(enemyAttackImage);
 
-            enemyHealthText = new TextField(64, enemyHealthImage.height, enemy.state.hp + " / " + enemy.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyHealthText = new TextField(128, enemyHealthImage.height, enemy.state.hp + " / " + enemy.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             enemyHealthText.x = enemyHealthImage.x + enemyHealthImage.width;
             enemyHealthText.y = enemyHealthImage.y;
             addChild(enemyHealthText);
 
-            enemyAttackText = new TextField(64, enemyAttackImage.height, enemy.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyAttackText = new TextField(128, enemyAttackImage.height, enemy.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             enemyAttackText.x = enemyAttackImage.x + enemyAttackImage.width;
             enemyAttackText.y = enemyAttackImage.y;
             addChild(enemyAttackText);

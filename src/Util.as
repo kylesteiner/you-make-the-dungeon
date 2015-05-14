@@ -168,9 +168,10 @@ package {
 			return arr;
 		}
 
-		// Returns a random int between the min and max.
+		// Returns a random int between the min and max, including max.
 		public static function randomRange(min:int, max:int):int {
-			return min + (max - min) * Math.random();
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+			//return min + (max - min) * Math.random();
 		}
 
 		// Returns a string thats maps into the global texture dictionary given which sides of the tile are open.
