@@ -109,7 +109,7 @@ package {
             charHealthImage.y = CHAR_Y;
             addChild(charHealthImage);
 
-            charHealthText = new TextField(64, charHealthImage.height, char.state.hp + " / " + char.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            charHealthText = new TextField(96, charHealthImage.height, char.state.hp + " / " + char.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             charHealthText.x = charHealthImage.x + charHealthImage.width;
             charHealthText.y = charHealthImage.y;
             addChild(charHealthText);
@@ -119,7 +119,7 @@ package {
             charAttackImage.y = CHAR_Y + charHealthImage.height;
             addChild(charAttackImage);
 
-            charAttackText = new TextField(64, charAttackImage.height, char.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            charAttackText = new TextField(96, charAttackImage.height, char.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             charAttackText.x = charAttackImage.x + charAttackImage.width;
             charAttackText.y = charAttackImage.y;
             addChild(charAttackText);

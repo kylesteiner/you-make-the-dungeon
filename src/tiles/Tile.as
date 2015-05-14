@@ -88,8 +88,10 @@ package tiles {
 			x = Util.grid_to_real(Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2)); // TODO: Make this calculation better
 			y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
 			checkGameBounds();
-			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
-			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
+			grid_x = Util.real_to_grid(x + Util.PIXELS_PER_TILE / 2);
+			//grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
+			//grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
+			grid_y = Util.real_to_grid(y + Util.PIXELS_PER_TILE / 2);
 			locked = true;
 		}
 
@@ -118,14 +120,14 @@ package tiles {
 			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2); // TODO: Make this calculation better
 			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 		}
-		
+
 		public function showInfo():void {
 			if (parent && parent.parent) {
 				parent.parent.addChild(textImage);
 				parent.parent.addChild(text);
 			}
 		}
-		
+
 		public function removeInfo():void {
 			if (parent && parent.parent) {
 				parent.parent.removeChild(text);
