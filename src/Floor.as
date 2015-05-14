@@ -685,7 +685,7 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
-			//mixer.play(Util.FLOOR_COMPLETE);
+			mixer.play(Util.FLOOR_COMPLETE);
 			
 			var winBox:Sprite = new Sprite();
 			var popup:Image = new Image(textures[Util.POPUP_BACKGROUND])

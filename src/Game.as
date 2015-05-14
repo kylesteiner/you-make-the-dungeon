@@ -137,9 +137,12 @@ package {
 
 		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
+		[Embed(source='assets/sfx/tile_failure.mp3')] private static const sfxTileFailure:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
 		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
+		[Embed(source='assets/sfx/combat_failure.mp3')] private static const sfxCombatFailure:Class;
+		[Embed(source='assets/sfx/combat_success.mp3')] private static const sfxCombatSuccess:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] private static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] private static const bgmGentleThoughts:Class;
@@ -274,6 +277,7 @@ package {
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
+			mixer.play(Util.COMBAT_SUCCESS);
 			removeChild(currentCombat);
 			event.enemy.removeImage();
 
@@ -293,6 +297,7 @@ package {
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
+			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
 			// Prompt clickable into either floor reset or continue modifying floor
 			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
@@ -575,18 +580,21 @@ package {
 								currentFloor.clearHighlightedLocations();
 							} else {
 								// Tile wasn't placed correctly on grid
+								mixer.play(Util.TILE_FAILURE);
 								tileHud.returnSelectedTile();
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
 							}
 						} else {
 							// Player clicked outside grid
+							mixer.play(Util.TILE_FAILURE);
 							tileHud.returnSelectedTile();
 							tileHud.unlockTiles();
 							currentFloor.clearHighlightedLocations();
 						}
 					} else {
 						// Player clicked inside tile HUD
+						mixer.play(Util.TILE_FAILURE);
 						tileHud.returnSelectedTile();
 						tileHud.unlockTiles();
 						currentFloor.clearHighlightedLocations();
@@ -826,9 +834,12 @@ package {
 
 			tSfx[Util.FLOOR_COMPLETE] = new sfxFloorComplete();
 			tSfx[Util.TILE_MOVE] = new sfxTileMove();
+			tSfx[Util.TILE_FAILURE] = new sfxTileFailure();
 			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
 			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
 			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
+			tSfx[Util.COMBAT_FAILURE] = new sfxCombatFailure();
+			tSfx[Util.COMBAT_SUCCESS] = new sfxCombatSuccess();
 
 			return tSfx;
 		}
