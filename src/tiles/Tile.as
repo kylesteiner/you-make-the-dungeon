@@ -94,16 +94,18 @@ package tiles {
 		}
 
 		public function updateInfoPosition():void {
-			if (!onGrid) {
-				text.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
-				text.y = getToPointY(0);
-				textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
-				textImage.y = getToPointY(0);
-			} else {
-				text.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
-				text.y = getToPointY(0 - parent.parent.y);
-				textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
-				textImage.y = getToPointY(0 - parent.parent.y);
+			if (text && textImage) {
+				if (!onGrid) {
+					text.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
+					text.y = getToPointY(0);
+					textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
+					textImage.y = getToPointY(0);
+				} else if (parent && parent.parent) {
+					text.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
+					text.y = getToPointY(0 - parent.parent.y);
+					textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
+					textImage.y = getToPointY(0 - parent.parent.y);
+				}
 			}
 		}
 
@@ -118,13 +120,17 @@ package tiles {
 		}
 		
 		public function showInfo():void {
-			parent.parent.addChild(textImage);
-			parent.parent.addChild(text);
+			if (parent && parent.parent) {
+				parent.parent.addChild(textImage);
+				parent.parent.addChild(text);
+			}
 		}
 		
 		public function removeInfo():void {
-			parent.parent.removeChild(text);
-			parent.parent.removeChild(textImage);
+			if (parent && parent.parent) {
+				parent.parent.removeChild(text);
+				parent.parent.removeChild(textImage);
+			}
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
