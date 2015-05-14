@@ -25,7 +25,7 @@ package {
 		// dedicated to non-tile objects at the start.
 		public static const NON_TILE_LINES:int = 5;
 
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick anywhere for next floor."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
 
 		// 2D Array of Tiles. Represents the current state of all tiles.
 		public var grid:Array;
@@ -195,12 +195,11 @@ package {
 
 		// Called when the run button is clicked.
 		public function runFloor():void {
-			agent.computePath(this);
-			var firstAction:int = agent.getAction();
-			if (firstAction != -1) {
-				char.move(firstAction);
+			var foundPath:Boolean = agent.computePath(this);
+			if (foundPath) {
+				char.move(agent.getAction());
 			} else {
-				// TODO: display that it couldn't find a path.
+				// TODO: Indicate to the player that there is no path.
 			}
 		}
 
@@ -362,7 +361,7 @@ package {
 				}
 			}
 		}
-		
+
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(selectedTile:Tile):void {
 			var coords:Array = getAllowedLocations(selectedTile);
@@ -375,7 +374,7 @@ package {
 				addChild(highlightedLocations[coord.x][coord.y]);
 			}
 		}
-		
+
 		// Returned an array of tiles on the grid that the player can move the selected tile to.
 		public function getAllowedLocations(selectedTile:Tile):Array {
 			var i:int; var j:int; var start_i:int; var start_j:int; var visited:Array;
@@ -401,7 +400,7 @@ package {
 			}
 			return getAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
 		}
-		
+
 		// Recursively iterates over the map from the start and finds allowed locations
 		public function getAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):Array {
 			if (visited[i][j] || highlightedLocations[i][j]) {
@@ -420,7 +419,7 @@ package {
 				visited[i][j] = true;
 				var ret:Array = new Array();
 				if (i + 1 < gridWidth && grid[i][j].east) {
-					ret = ret.concat(getAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST));	
+					ret = ret.concat(getAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST));
 				}
 				if (i - 1 >= 0 && grid[i][j].west) {
 					ret = ret.concat(getAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST));
@@ -567,7 +566,6 @@ package {
 				} else if (tType == "objective") {
 					var key:String = lineData[7];
 					var textureName:String = StringUtil.trim(lineData[8]);
-					trace("Texture name for " + key + ": \"" + textureName + "\"");
 					var prereqs:Array = new Array();
 					for (j = 9; j < lineData.length; j++) {
 						prereqs.push(StringUtil.trim(lineData[j]));
@@ -645,6 +643,10 @@ package {
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
 
+			if (nextFloorButton) {
+				addChild(nextFloorButton);
+			}
+
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
@@ -681,11 +683,16 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
-			//mixer.play(Util.FLOOR_COMPLETE);
-			var winText:TextField = new TextField(640, 480, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			nextFloorButton = new Clickable(0, 0,
-													onCompleteCallback,
-													winText);
+			mixer.play(Util.FLOOR_COMPLETE);
+
+			var winBox:Sprite = new Sprite();
+			var popup:Image = new Image(textures[Util.POPUP_BACKGROUND])
+			winBox.addChild(popup);
+			winBox.addChild(new TextField(popup.width, popup.height, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
+			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+
+			nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
 			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
@@ -702,7 +709,6 @@ package {
 				i = 3;
 			}
 			nextFloorButton.addParameter(i);
-			addChild(nextFloorButton);
 		}
 
 		// Called when the character moves into an objective tile. Updates objectiveState

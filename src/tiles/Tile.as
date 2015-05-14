@@ -155,7 +155,7 @@ package tiles {
 
 			if (touch.phase == TouchPhase.BEGAN) {
 				selected = true;
-				this.parent.setChildIndex(this, this.parent.numChildren - 1);
+				this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
 			}
 		}
 

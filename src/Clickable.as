@@ -15,8 +15,8 @@ package {
                 super();
                 x = xPos;
                 y = yPos;
-                height = 480;
-                width = 640;
+                height = Util.STAGE_HEIGHT;
+                width = Util.STAGE_WIDTH;
                 parameters = new Array();
 
                 if(baseDisplay) {

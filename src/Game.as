@@ -27,6 +27,7 @@ package {
 		[Embed(source='assets/backgrounds/tutorial_shifted.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] private static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
+		[Embed(source='assets/backgrounds/popup.png')] private static const popup_background:Class;
 
 		[Embed(source='assets/effects/large/new_fog_2.png')] private static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] private static var hl_blue:Class;
@@ -136,9 +137,12 @@ package {
 
 		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
+		[Embed(source='assets/sfx/tile_failure.mp3')] private static const sfxTileFailure:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
 		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
+		[Embed(source='assets/sfx/combat_failure.mp3')] private static const sfxCombatFailure:Class;
+		[Embed(source='assets/sfx/combat_success.mp3')] private static const sfxCombatSuccess:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] private static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] private static const bgmGentleThoughts:Class;
@@ -273,6 +277,7 @@ package {
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
+			mixer.play(Util.COMBAT_SUCCESS);
 			removeChild(currentCombat);
 			event.enemy.removeImage();
 
@@ -292,6 +297,7 @@ package {
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
+			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
 			// Prompt clickable into either floor reset or continue modifying floor
 			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
@@ -490,7 +496,7 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-			
+
 			if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
@@ -576,18 +582,21 @@ package {
 								currentFloor.clearHighlightedLocations();
 							} else {
 								// Tile wasn't placed correctly on grid
+								mixer.play(Util.TILE_FAILURE);
 								tileHud.returnSelectedTile();
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
 							}
 						} else {
 							// Player clicked outside grid
+							mixer.play(Util.TILE_FAILURE);
 							tileHud.returnSelectedTile();
 							tileHud.unlockTiles();
 							currentFloor.clearHighlightedLocations();
 						}
 					} else {
 						// Player clicked inside tile HUD
+						mixer.play(Util.TILE_FAILURE);
 						tileHud.returnSelectedTile();
 						tileHud.unlockTiles();
 						currentFloor.clearHighlightedLocations();
@@ -613,7 +622,7 @@ package {
 				// TODO: add bounds that the camera cannot go beyond,
 				//		 and limit what contexts the camera movement
 				//		 can be used in.
-				if(input == Util.UP_KEY) {
+				if (input == Util.DOWN_KEY) {
 					world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
 						currentFloor.shiftTutorialY(Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1) + world.y + Util.grid_to_real(Util.CAMERA_SHIFT));
@@ -623,7 +632,7 @@ package {
 					}
 				}
 
-				if(input == Util.DOWN_KEY) {
+				if (input == Util.UP_KEY) {
 					world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
 						currentFloor.shiftTutorialY(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.y - Util.STAGE_HEIGHT + Util.PIXELS_PER_TILE);
@@ -633,7 +642,7 @@ package {
 					}
 				}
 
-				if(input == Util.LEFT_KEY) {
+				if (input == Util.RIGHT_KEY) {
 					world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
 						currentFloor.shiftTutorialX(Util.PIXELS_PER_TILE * (currentFloor.gridWidth -1 ) + world.x + Util.grid_to_real(Util.CAMERA_SHIFT));
@@ -643,7 +652,7 @@ package {
 					}
 				}
 
-				if(input == Util.RIGHT_KEY) {
+				if (input == Util.LEFT_KEY) {
 					world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
 					if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
 						currentFloor.shiftTutorialX(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.x - Util.STAGE_WIDTH + Util.PIXELS_PER_TILE);
@@ -667,6 +676,7 @@ package {
 			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 			textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
+			textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
 
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
@@ -822,9 +832,12 @@ package {
 
 			tSfx[Util.FLOOR_COMPLETE] = new sfxFloorComplete();
 			tSfx[Util.TILE_MOVE] = new sfxTileMove();
+			tSfx[Util.TILE_FAILURE] = new sfxTileFailure();
 			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
 			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
 			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
+			tSfx[Util.COMBAT_FAILURE] = new sfxCombatFailure();
+			tSfx[Util.COMBAT_SUCCESS] = new sfxCombatSuccess();
 
 			return tSfx;
 		}

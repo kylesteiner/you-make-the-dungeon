@@ -45,6 +45,7 @@ package {
 		public static const TUTORIAL_TILE:String = "tutorial_tile_hud";
 		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
 		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
+		public static const POPUP_BACKGROUND:String = "popup_background";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -126,9 +127,12 @@ package {
 		// Keys to the Dictionary of SFX
 		public static const FLOOR_COMPLETE:String = "floor_complete";
 		public static const TILE_MOVE:String = "tile_move";
+		public static const TILE_FAILURE:String = "tile_failure";
 		public static const FLOOR_BEGIN:String = "floor_begin";
 		public static const BUTTON_PRESS:String = "button_press";
 		public static const FLOOR_RESET:String = "floor_reset";
+		public static const COMBAT_FAILURE:String = "combat_failure";
+		public static const COMBAT_SUCCESS:String = "combat_success";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
