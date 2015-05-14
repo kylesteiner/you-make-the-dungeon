@@ -94,15 +94,16 @@ package tiles {
 		}
 
 		public function updateInfoPosition():void {
-			text.x = getToPointX();
-			text.y = getToPointY();
-			textImage.x = getToPointX();
-			textImage.y = getToPointY();
-			if (onGrid) {
-				text.x -= parent.parent.x;
-				text.y -= parent.parent.y;
-				textImage.x -= parent.parent.x;
-				textImage.y -= parent.parent.y;
+			if (!onGrid) {
+				text.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
+				text.y = getToPointY(0);
+				textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
+				textImage.y = getToPointY(0);
+			} else {
+				text.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
+				text.y = getToPointY(0 - parent.parent.y);
+				textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
+				textImage.y = getToPointY(0 - parent.parent.y);
 			}
 		}
 
@@ -117,13 +118,13 @@ package tiles {
 		}
 		
 		public function showInfo():void {
-			addChild(textImage);
-			addChild(text);
+			parent.parent.addChild(textImage);
+			parent.parent.addChild(text);
 		}
 		
 		public function removeInfo():void {
-			removeChild(text);
-			removeChild(textImage);
+			parent.parent.removeChild(text);
+			parent.parent.removeChild(textImage);
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
@@ -166,10 +167,7 @@ package tiles {
 			text.name = "infoText";
 			textImage.name = "infoImage";
 			text.border = true;
-			textImage.x = getToPointX();
-			textImage.y = getToPointY();
-			text.x = getToPointX();
-			text.y = getToPointY();
+			updateInfoPosition();
 		}
 
 		private function checkGameBounds():void {
@@ -192,22 +190,22 @@ package tiles {
 
 		// helps get the x offset for the tile info set to display
 		// in the upper right corner
-		public function getToPointX():int {
-			var goal:int = Util.STAGE_WIDTH - infoWidth;
+		public function getToPointX(goal:int):int {
 			var temp:int = 0;
-			while (x + temp != goal) {
-				temp++;
+			var shift:int = goal > 0 ? 1 : -1;
+			while (temp != goal) {
+				temp += shift;
 			}
 			return temp;
 		}
 
 		// helps get the y offset for the tile info set to display
 		// in the upper right corner
-		public function getToPointY():int {
-			var goal:int = 0;
+		public function getToPointY(goal:int):int {
 			var temp:int = 0;
-			while (y + temp != goal) {
-				temp--;
+			var shift:int = goal > 0 ? 1 : -1;
+			while (temp != goal) {
+				temp += shift;
 			}
 			return temp;
 		}

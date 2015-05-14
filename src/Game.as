@@ -505,8 +505,10 @@ package {
 								if (currentTile)
 									currentTile.removeInfo();
 								currentTile = temp;
-								if (currentTile)
+								if (currentTile && !currentFloor.fogGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)]) {
+									currentTile.updateInfoPosition();
 									currentTile.showInfo();
+								}
 							}
 						} else if (currentTile) {
 							currentTile.removeInfo();
@@ -650,13 +652,9 @@ package {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
 				}
-				trace(currentTile);
 				if (currentTile) {
-					trace("called");
-					trace(currentTile);
 					currentTile.updateInfoPosition();
 					currentTile.removeInfo();
-					currentTile.showInfo();
 				}
 			}
 		}
