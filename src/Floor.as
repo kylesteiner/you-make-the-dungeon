@@ -566,7 +566,6 @@ package {
 				} else if (tType == "objective") {
 					var key:String = lineData[7];
 					var textureName:String = StringUtil.trim(lineData[8]);
-					trace("Texture name for " + key + ": \"" + textureName + "\"");
 					var prereqs:Array = new Array();
 					for (j = 9; j < lineData.length; j++) {
 						prereqs.push(StringUtil.trim(lineData[j]));
