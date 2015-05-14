@@ -496,7 +496,7 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-			
+
 			if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
@@ -661,8 +661,8 @@ package {
 				}
 				trace(currentTile);
 				if (currentTile) {
-					trace("called");
-					trace(currentTile);
+					// trace("called");
+					// trace(currentTile);
 					currentTile.updateInfoPosition();
 					currentTile.removeInfo();
 					currentTile.showInfo();

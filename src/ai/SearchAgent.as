@@ -23,18 +23,27 @@ package ai {
 
 		// Computes a new path using floor as the initial state. The path can
 		// be retrieved step by step using getAction().
-		public function computePath(floor:Floor):void {
+		// Returns true if a path was found, false otherwise.
+		public function computePath(floor:Floor):Boolean {
 			var problem:SearchProblem = new SearchProblem(floor);
 			path = search(problem, heuristic);
 			index = 0;
-			//trace("Path: " + path + " length " + path.length);
+
+			if (path) {
+				trace("Path: " + path + " length " + path.length);
+			} else {
+				trace("Could not compute a path.");
+			}
+
+			return path != null;
+
 		}
 
 		// After the path is computed, this method can be called to get the next
 		// action. Returns -1 if there is no path.
 		public function getAction():int {
 			trace("getAction(), current index = " + index);
-			if (index == path.length) {
+			if (path == null || index == path.length) {
 				return -1;
 			}
 			var next:int = path[index];
