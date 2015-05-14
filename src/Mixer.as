@@ -61,7 +61,7 @@ package {
             playTime += e.passedTime;
 
             //if(player.position >= currentSound.length - 1) {
-            if(playTime * 1000 >= currentSound.length) {
+            if(playing && playTime * 1000 >= currentSound.length) {
                 player.stop();
                 playTime = 0;
                 currentSound = pickRandomSong();

@@ -233,6 +233,8 @@ package {
         public function setEnemyFaint():void {
             setEnemyAnim(Util.ENEMY_COMBAT_FAINT);
             enemyRetreating = true;
+            // enemyAnim.scaleX *= -1;
+            // Make enemies turn around when they leave battle
         }
 
         public function setEnemyAnim(animationString:String):void {
@@ -264,7 +266,7 @@ package {
         }
 
         public function createAttackAnimation(anim:MovieClip, flip:Boolean=false):void {
-            attackAnimation = new MovieClip(animations[Util.GENERIC_ATTACK][Util.GENERIC_ATTACK], Util.ANIM_FPS * 3);
+            attackAnimation = new MovieClip(animations[Util.GENERIC_ATTACK][Util.GENERIC_ATTACK], Util.ANIM_FPS * 5);
             attackAnimation.loop = false;
             attackAnimation.scaleX = anim.width / attackAnimation.width;
             attackAnimation.scaleY = attackAnimation.scaleX;
@@ -320,15 +322,8 @@ package {
                     addChild(xpText);
 
                     if(char.state.xp + enemy.state.xpReward >= char.state.level * 2) {
-                        
+                        // If the character levels up
                     }
-
-                    // TODO: add delayed level-up text
-                    // TODO: add sound effects for:
-                    //       attack
-                    //       retreat/victory
-                    //       level-up
-                    // TODO: add "you died, level restart on-death"
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();

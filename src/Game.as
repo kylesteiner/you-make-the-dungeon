@@ -110,7 +110,9 @@ package {
 		[Embed(source='assets/transitions/floor6.png')] private static const transitions6:Class;
 		[Embed(source='assets/transitions/floor7.png')] private static const transitions7:Class;
 		[Embed(source='assets/transitions/floor8.png')] private static const transitions8:Class;
+		[Embed(source='assets/transitions/floor9.png')] private static const transitions9:Class;
 		[Embed(source='assets/transitions/floor_final.png')] private static const transitionsFinal:Class;
+		[Embed(source='assets/transitions/floor_final_exp.png')] private static const transitionsFinalExp:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] private static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] private static const characterIdleAnim1:Class;
@@ -134,6 +136,14 @@ package {
 
 		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] private static const charCombatFaintAnim0:Class;
 		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] private static const charCombatFaintAnim1:Class;
+
+		[Embed(source='assets/animations/fighter/idle/fighter_idle_0.png')] private static const enemyFighterCombatIdleAnim0:Class;
+		[Embed(source='assets/animations/fighter/idle/fighter_idle_1.png')] private static const enemyFighterCombatIdleAnim1:Class;
+		[Embed(source='assets/animations/fighter/idle/fighter_idle_2.png')] private static const enemyFighterCombatIdleAnim2:Class;
+
+		[Embed(source='assets/animations/mage/idle/mage_idle_0.png')] private static const enemyMageCombatIdleAnim0:Class;
+		[Embed(source='assets/animations/mage/idle/mage_idle_1.png')] private static const enemyMageCombatIdleAnim1:Class;
+		[Embed(source='assets/animations/mage/idle/mage_idle_2.png')] private static const enemyMageCombatIdleAnim2:Class;
 
 		[Embed(source='assets/animations/generic/attack/attack_0.png')] private static const genericAttackAnim0:Class;
 		[Embed(source='assets/animations/generic/attack/attack_1.png')] private static const genericAttackAnim1:Class;
@@ -541,7 +551,7 @@ package {
 			if(!touch) {
 				return;
 			}
-			
+
 
 			/*if(currentFloor && currentFloor.tutorialImage && touch.phase == TouchPhase.BEGAN && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
 				currentFloor.removeTutorial();
@@ -840,18 +850,26 @@ package {
 
 			var fighterDict:Dictionary = new Dictionary();
 			var fighterVector:Vector.<Texture> = new Vector.<Texture>();
-			fighterVector.push(Texture.fromEmbeddedAsset(entity_fighter));
+			fighterVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
+			fighterVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim2));
 			fighterDict[Util.ENEMY_COMBAT_IDLE] = fighterVector;
 			fighterDict[Util.ENEMY_COMBAT_ATTACK] = fighterVector;
-			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterVector;
+
+			var fighterFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			fighterFaintVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
+			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
 			tAnimations[Util.MONSTER_1] = fighterDict;
 
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
-			mageVector.push(Texture.fromEmbeddedAsset(entity_mage));
+			mageVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
+			mageVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim2));
 			mageDict[Util.ENEMY_COMBAT_IDLE] = mageVector;
 			mageDict[Util.ENEMY_COMBAT_ATTACK] = mageVector;
-			mageDict[Util.ENEMY_COMBAT_FAINT] = mageVector;
+
+			var mageFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
+			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
 			tAnimations[Util.MONSTER_2] = mageDict;
 
 			return tAnimations;
@@ -867,12 +885,12 @@ package {
 			tFloors[Util.FLOOR_0] = new Array(new floor0(), new tiles0(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1(), Texture.fromEmbeddedAsset(transitions1));
 			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2(), Texture.fromEmbeddedAsset(transitions2));
-			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3(), Texture.fromEmbeddedAsset(transitions3));
-			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4(), Texture.fromEmbeddedAsset(transitions4));
-			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions5));
-			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions6));
-			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions7));
-			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitionsFinal));
+			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3(), Texture.fromEmbeddedAsset(transitions4));
+			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4(), Texture.fromEmbeddedAsset(transitions5));
+			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions7));
+			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions8));
+			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions9));
+			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitionsFinalExp));
 			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitionsFinal));
 			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
 			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));
