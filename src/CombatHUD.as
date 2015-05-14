@@ -41,6 +41,8 @@ package {
 
         private var background:Image;
 
+        private var mixer:Mixer;
+
         private var logger:Logger;
 
         private var charRetreating:Boolean;
@@ -61,12 +63,14 @@ package {
         public function CombatHUD(textureDict:Dictionary,
                                animDict:Dictionary,
                                c:Character, e:EnemyTile,
+                               soundMixer:Mixer,
                                dataLogger:Logger) {
             super();
             char = c;
             enemy = e;
             textures = textureDict;
             animations = animDict;
+            mixer = soundMixer;
             logger = dataLogger;
 
             touchable = false;
@@ -285,10 +289,13 @@ package {
 
                 if(char.state.hp <= 0) {
                     setCharFaint();
+
+                    mixer.play(Util.COMBAT_FAILURE);
                     // Do something to fire floor-failure event
                 } else {
                     // Character's turn to attack
                     setCharAttack();
+                    mixer.play(Util.SFX_ATTACK);
                     Combat.charAttacksEnemy(char.state, enemy.state, false);
 
                     enemyDamagedText = createDamageText(enemyAnim, char.state.attack);
@@ -307,8 +314,14 @@ package {
                 if(enemy.state.hp <= 0) {
                     setEnemyFaint();
 
+                    mixer.play(Util.COMBAT_SUCCESS);
+
                     xpText = createXpText(enemy.state.xpReward);
                     addChild(xpText);
+
+                    if(char.state.xp + enemy.state.xpReward >= char.state.level * 2) {
+                        
+                    }
 
                     // TODO: add delayed level-up text
                     // TODO: add sound effects for:
@@ -319,6 +332,7 @@ package {
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();
+                    mixer.play(Util.SFX_ATTACK);
                     Combat.enemyAttacksChar(char.state, enemy.state, false);
 
                     charDamagedText = createDamageText(charAnim, enemy.state.attack);

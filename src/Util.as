@@ -69,6 +69,9 @@ package {
 		public static const TILE_HL_B:String = "hl_b";
 		public static const TILE_HL_G:String = "hl_g";
 		public static const TILE_HL_R:String = "hl_r";
+		public static const TILE_HL_G_NEW:String = "hl_g_new";
+		public static const TILE_CHECK_B:String = "check_b";
+		public static const TILE_CHECK_UB:String = "check_ub";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
 		public static const ICON_CURSOR_2:String = "icon_cursor_2";
@@ -133,6 +136,8 @@ package {
 		public static const FLOOR_RESET:String = "floor_reset";
 		public static const COMBAT_FAILURE:String = "combat_failure";
 		public static const COMBAT_SUCCESS:String = "combat_success";
+		public static const LEVEL_UP:String = "level_up";
+		public static const SFX_ATTACK:String = "sfx_attack";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;

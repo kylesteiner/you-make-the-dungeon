@@ -301,6 +301,15 @@ package {
 
 		}
 
+		public function resetCharacter():void {
+			if (char) {
+				char.removeFromParent();
+			}
+			char = new Character(
+					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+			addChild(char);
+		}
+
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
@@ -362,20 +371,20 @@ package {
 				}
 			}
 		}
-		
+
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(selectedTile:Tile):void {
 			var coords:Array = getAllowedLocations(selectedTile);
 			for (var i:int = 0; i < coords.length; i++) {
 				var coord:Object = coords[i];
-				var hl:Image = new Image(textures[Util.TILE_HL_G]);
+				var hl:Image = new Image(textures[Util.TILE_HL_G_NEW]);
 				hl.x = coord.x * Util.PIXELS_PER_TILE;
 				hl.y = coord.y * Util.PIXELS_PER_TILE;
 				highlightedLocations[coord.x][coord.y] = hl;
 				addChild(highlightedLocations[coord.x][coord.y]);
 			}
 		}
-		
+
 		// Returned an array of tiles on the grid that the player can move the selected tile to.
 		public function getAllowedLocations(selectedTile:Tile):Array {
 			var i:int; var j:int; var start_i:int; var start_j:int; var visited:Array;
@@ -401,7 +410,7 @@ package {
 			}
 			return getAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
 		}
-		
+
 		// Recursively iterates over the map from the start and finds allowed locations
 		public function getAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):Array {
 			if (visited[i][j] || highlightedLocations[i][j]) {
@@ -420,7 +429,7 @@ package {
 				visited[i][j] = true;
 				var ret:Array = new Array();
 				if (i + 1 < gridWidth && grid[i][j].east) {
-					ret = ret.concat(getAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST));	
+					ret = ret.concat(getAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST));
 				}
 				if (i - 1 >= 0 && grid[i][j].west) {
 					ret = ret.concat(getAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST));
@@ -644,11 +653,11 @@ package {
 		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
-			
+
 			if (nextFloorButton) {
 				addChild(nextFloorButton);
 			}
-			
+
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
@@ -685,15 +694,16 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
+
 			mixer.play(Util.FLOOR_COMPLETE);
-			
+
 			var winBox:Sprite = new Sprite();
 			var popup:Image = new Image(textures[Util.POPUP_BACKGROUND])
 			winBox.addChild(popup);
 			winBox.addChild(new TextField(popup.width, popup.height, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
-			
+
 			nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
 			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);

@@ -10,6 +10,8 @@ package {
 	import flash.media.*;
 	import flash.ui.Mouse;
 
+	import mx.utils.StringUtil;
+
 	import Character;
 	import tiles.*;
 	import TileHud;
@@ -34,6 +36,9 @@ package {
 		[Embed(source='assets/effects/large/hl_green.png')] private static var hl_green:Class;
 		[Embed(source='assets/effects/large/hl_red.png')] private static var hl_red:Class;
 		[Embed(source='assets/effects/large/hl_yellow.png')] private static var hl_yellow:Class;
+		[Embed(source='assets/effects/large/hl_green_new.png')] private static var hl_green_new:Class;
+		[Embed(source='assets/effects/large/check_bordered.png')] private static var check_bordered:Class;
+		[Embed(source='assets/effects/large/check_unbordered.png')] private static var check_unbordered:Class;
 
 		[Embed(source='assets/entities/large/door.png')] private static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] private static var entity_healing:Class;
@@ -135,14 +140,16 @@ package {
 		[Embed(source='assets/animations/generic/attack/attack_2.png')] private static const genericAttackAnim2:Class;
 		[Embed(source='assets/animations/generic/attack/attack_3.png')] private static const genericAttackAnim3:Class;
 
-		[Embed(source='assets/sfx/floor_complete.mp3')] private static const sfxFloorComplete:Class;
+		[Embed(source='assets/sfx/floor_complete_new.mp3')] private static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] private static const sfxTileMove:Class;
-		[Embed(source='assets/sfx/tile_failure.mp3')] private static const sfxTileFailure:Class;
+		[Embed(source='assets/sfx/tile_failure_new.mp3')] private static const sfxTileFailure:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] private static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] private static const sfxButtonPress:Class;
 		[Embed(source='assets/sfx/floor_reset.mp3')] private static const sfxFloorReset:Class;
-		[Embed(source='assets/sfx/combat_failure.mp3')] private static const sfxCombatFailure:Class;
-		[Embed(source='assets/sfx/combat_success.mp3')] private static const sfxCombatSuccess:Class;
+		[Embed(source='assets/sfx/combat_failure_new.mp3')] private static const sfxCombatFailure:Class;
+		[Embed(source='assets/sfx/combat_success_long.mp3')] private static const sfxCombatSuccess:Class;
+		[Embed(source='assets/sfx/level_up.mp3')] private static const sfxLevelUp:Class;
+		[Embed(source='assets/sfx/attack.mp3')] private static const sfxAttack:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] private static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] private static const bgmGentleThoughts:Class;
@@ -152,6 +159,9 @@ package {
 
 		// Currently unused
 		[Embed(source='assets/bgm/warm-interlude.mp3')] private static const bgmWarmInterlude:Class;
+
+		public static const FLOOR_FAIL_TEXT:String = "Nea was defeated!\nClick here to continue building.";
+		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
 
 		private var cursorAnim:MovieClip;
 		private var cursorHighlight:Image;
@@ -176,6 +186,7 @@ package {
 		private var currentTransition:Clickable;
 		private var currentMenu:Menu;
 		private var isMenu:Boolean; // probably need to change to state;
+		private var messageToPlayer:Clickable;
 
 		private var logger:Logger;
 		private var numberOfTilesPlaced:int;
@@ -272,12 +283,11 @@ package {
 		}
 
 		private function startCombat(event:TileEvent):void {
-			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], logger);
+			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], mixer, logger);
 			addChild(currentCombat);
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
-			mixer.play(Util.COMBAT_SUCCESS);
 			removeChild(currentCombat);
 			event.enemy.removeImage();
 
@@ -289,8 +299,29 @@ package {
 			if(event.character.state.level != tLevel) {
 				// Play any relevant level-up code / sounds / events here
 				logger.logAction(10, {"previousLevel":tLevel, "newLevel":event.character.state.level});
-			}
+				mixer.play(Util.LEVEL_UP);
 
+				var alertBox:Sprite = new Sprite();
+				var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
+				alertBox.addChild(alertPopup);
+				alertBox.addChild(new TextField(alertPopup.width, alertPopup.height, StringUtil.substitute(LEVEL_UP_TEXT, event.character.state.level, 1), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+				alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
+				alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
+
+				messageToPlayer = new Clickable(0, 0, fireTileHandled, alertBox);
+				//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width / 2);
+				//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height / 2);
+
+				addChild(messageToPlayer);
+			} else {
+				currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
+											Util.real_to_grid(currentFloor.x),
+											Util.real_to_grid(currentFloor.y)));
+			}
+		}
+
+		private function fireTileHandled():void {
+			removeChild(messageToPlayer);
 			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
 										Util.real_to_grid(currentFloor.x),
 										Util.real_to_grid(currentFloor.y)));
@@ -299,11 +330,31 @@ package {
 		private function onCombatFailure(event:AnimationEvent):void {
 			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
+			event.enemy.state.hp = event.enemy.state.maxHp;
 			// Prompt clickable into either floor reset or continue modifying floor
 			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
 								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
 
-			resetFloor();
+			var alertBox:Sprite = new Sprite();
+			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
+			alertBox.addChild(alertPopup);
+			alertBox.addChild(new TextField(alertPopup.width, alertPopup.height, FLOOR_FAIL_TEXT, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
+			alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
+
+			messageToPlayer = new Clickable(0, 0, resetFloorCharacter, alertBox);
+			//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width);
+			//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height);
+
+			addChild(messageToPlayer);
+		}
+
+		private function resetFloorCharacter():void {
+			removeChild(messageToPlayer);
+			removeChild(charHud);
+			currentFloor.resetCharacter();
+			charHud = new CharHud(currentFloor.char, textures);
+			addChild(charHud);
 		}
 
 		private function prepareSwap():void {
@@ -313,6 +364,7 @@ package {
 			} else {
 				world.removeChild(currentFloor);
 				removeChild(world);
+				removeChild(messageToPlayer);
 				// mute button should always be present
 				removeChild(currentTransition);
 				removeChild(resetButton);
@@ -496,7 +548,7 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-			
+
 			if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
@@ -709,6 +761,9 @@ package {
 			textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
 			textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
 			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
+			textures[Util.TILE_HL_G_NEW] = Texture.fromBitmap(new hl_green_new(), true, false, scale);
+			textures[Util.TILE_CHECK_B] = Texture.fromBitmap(new check_bordered(), true, false, scale);
+			textures[Util.TILE_CHECK_UB] = Texture.fromBitmap(new check_unbordered(), true, false, scale);
 
 			// WARNING: ICONS ARE NOT SCALED LIKE THE TILES
 			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
@@ -840,6 +895,8 @@ package {
 			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
 			tSfx[Util.COMBAT_FAILURE] = new sfxCombatFailure();
 			tSfx[Util.COMBAT_SUCCESS] = new sfxCombatSuccess();
+			tSfx[Util.LEVEL_UP] = new sfxLevelUp();
+			tSfx[Util.SFX_ATTACK] = new sfxAttack();
 
 			return tSfx;
 		}
