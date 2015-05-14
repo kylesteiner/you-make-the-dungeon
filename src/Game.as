@@ -197,6 +197,9 @@ package {
 		private var currentCombat:CombatHUD;
 
 		private var currentTile:Tile;
+		// for sanity
+		private var currentText:TextField;
+		private var currentTextImage:Image;
 
 		public function Game() {
 			Mouse.hide();
@@ -363,6 +366,9 @@ package {
 				removeChild(currentMenu);
 			} else {
 				world.removeChild(currentFloor);
+				while (world.numChildren > 0) {
+					world.removeChildAt(0);
+				}
 				removeChild(world);
 				removeChild(messageToPlayer);
 				// mute button should always be present
@@ -535,6 +541,7 @@ package {
 			if(!touch) {
 				return;
 			}
+			
 
 			/*if(currentFloor && currentFloor.tutorialImage && touch.phase == TouchPhase.BEGAN && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
 				currentFloor.removeTutorial();
@@ -553,7 +560,7 @@ package {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
 					// There is no selected tile
-					if (currentFloor) {
+					if (currentFloor && !currentFloor.completed) {
 						var tempX:int = touch.globalX - world.x;
 						var tempY:int = touch.globalY - world.y;
 						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
@@ -563,9 +570,12 @@ package {
 								if (currentTile)
 									currentTile.removeInfo();
 								currentTile = temp;
+								if (currentTile) {
+									currentText = currentTile.text;
+									currentTextImage = currentTile.textImage;
+								}
 								if (currentTile && !currentFloor.fogGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)]) {
 									currentTile.updateInfoPosition();
-									currentTile.showInfo();
 								}
 							}
 						} else if (currentTile) {

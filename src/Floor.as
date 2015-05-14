@@ -45,6 +45,7 @@ package {
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
+		public var completed:Boolean;
 
 		// Character's initial stats.
 		private var initialX:int;
@@ -692,6 +693,7 @@ package {
 			if (logger) {
 				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
 			}
+			completed = true;
 
 			mixer.play(Util.FLOOR_COMPLETE);
 
