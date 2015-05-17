@@ -60,22 +60,22 @@ package {
 		[Embed(source='assets/icons/attack.png')] private static const icon_atk:Class;
 		[Embed(source='assets/icons/health.png')] private static const icon_health:Class;
 
-		[Embed(source='assets/tiles/large/tile_e.png')] private static var tile_e:Class;
-		[Embed(source='assets/tiles/large/tile_ew.png')] private static var tile_ew:Class;
-		[Embed(source='assets/tiles/large/tile_n.png')] private static var tile_n:Class;
-		[Embed(source='assets/tiles/large/tile_ne.png')] private static var tile_ne:Class;
-		[Embed(source='assets/tiles/large/tile_new.png')] private static var tile_new:Class;
-		[Embed(source='assets/tiles/large/tile_none.png')] private static var tile_none:Class;
-		[Embed(source='assets/tiles/large/tile_ns.png')] private static var tile_ns:Class;
-		[Embed(source='assets/tiles/large/tile_nse.png')] private static var tile_nse:Class;
-		[Embed(source='assets/tiles/large/tile_nsew.png')] private static var tile_nsew:Class;
-		[Embed(source='assets/tiles/large/tile_nsw.png')] private static var tile_nsw:Class;
-		[Embed(source='assets/tiles/large/tile_nw.png')] private static var tile_nw:Class;
-		[Embed(source='assets/tiles/large/tile_s.png')] private static var tile_s:Class;
-		[Embed(source='assets/tiles/large/tile_se.png')] private static var tile_se:Class;
-		[Embed(source='assets/tiles/large/tile_sew.png')] private static var tile_sew:Class;
-		[Embed(source='assets/tiles/large/tile_sw.png')] private static var tile_sw:Class;
-		[Embed(source='assets/tiles/large/tile_w.png')] private static var tile_w:Class;
+		[Embed(source='assets/tiles/clean/tile_e.png')] private static var tile_e:Class;
+		[Embed(source='assets/tiles/clean/tile_ew.png')] private static var tile_ew:Class;
+		[Embed(source='assets/tiles/clean/tile_n.png')] private static var tile_n:Class;
+		[Embed(source='assets/tiles/clean/tile_ne.png')] private static var tile_ne:Class;
+		[Embed(source='assets/tiles/clean/tile_new.png')] private static var tile_new:Class;
+		[Embed(source='assets/tiles/clean/tile_none.png')] private static var tile_none:Class;
+		[Embed(source='assets/tiles/clean/tile_ns.png')] private static var tile_ns:Class;
+		[Embed(source='assets/tiles/clean/tile_nse.png')] private static var tile_nse:Class;
+		[Embed(source='assets/tiles/clean/tile_nsew.png')] private static var tile_nsew:Class;
+		[Embed(source='assets/tiles/clean/tile_nsw.png')] private static var tile_nsw:Class;
+		[Embed(source='assets/tiles/clean/tile_nw.png')] private static var tile_nw:Class;
+		[Embed(source='assets/tiles/clean/tile_s.png')] private static var tile_s:Class;
+		[Embed(source='assets/tiles/clean/tile_se.png')] private static var tile_se:Class;
+		[Embed(source='assets/tiles/clean/tile_sew.png')] private static var tile_sew:Class;
+		[Embed(source='assets/tiles/clean/tile_sw.png')] private static var tile_sw:Class;
+		[Embed(source='assets/tiles/clean/tile_w.png')] private static var tile_w:Class;
 
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
 		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
