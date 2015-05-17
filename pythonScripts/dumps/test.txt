@@ -1,0 +1,926 @@
+Number of players: 113
+Player: 0209B25F-538D-DC43-4EE2-175708ACA33F
+level:  2  activeTime:  2768
+level:  3  activeTime:  0
+Total Levels played: 2
+Time elapsed: 2
+Player: 024B3930-2FA8-6F20-9966-63097F0175B7
+level:  2  activeTime:  2619
+level:  3  activeTime:  23466
+level:  4  activeTime:  28500
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 54
+Player: 05E2B649-BBC9-1B75-C80E-912CB68FA015
+level:  2  activeTime:  2402
+level:  3  activeTime:  17996
+level:  4  activeTime:  20364
+level:  5  activeTime:  13820
+level:  6  activeTime:  26870
+level:  7  activeTime:  22353
+level:  8  activeTime:  128406
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 232
+Player: 0CD37591-D513-3F9A-97C2-8BC839CA5AE0
+level:  2  activeTime:  20895
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 80
+Player: 10B972B5-C1D2-B280-4C64-AB78FF0A7F31
+level:  2  activeTime:  1903
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+Total Levels played: 3
+Time elapsed: 61
+Player: 11469337-3229-F6A8-DCA3-46D81F30880C
+level:  2  activeTime:  2351
+level:  3  activeTime:  0
+Total Levels played: 2
+Time elapsed: 2
+Player: 1391448D-1B34-9C09-D43E-0535131E700B
+level:  2  activeTime:  11489
+level:  3  activeTime:  30000
+level:  4  activeTime:  22696
+level:  5  activeTime:  18409
+level:  6  activeTime:  78750
+level:  7  activeTime:  13162
+level:  8  activeTime:  63050
+level:  9  activeTime:  49083
+Total Levels played: 8
+Time elapsed: 286
+Player: 1473C65B-D1EE-ABA5-47FD-82AB87706F96
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: 1500EF1A-D2EB-38AE-BC27-15265C07507E
+level:  2  activeTime:  3184
+level:  3  activeTime:  84078
+level:  4  activeTime:  115614
+Total Levels played: 3
+Time elapsed: 202
+Player: 1D506244-53FD-4E8A-690E-3004D7F76290
+level:  2  activeTime:  1986
+level:  3  activeTime:  18296
+level:  4  activeTime:  17829
+level:  5  activeTime:  16998
+level:  6  activeTime:  61001
+level:  7  activeTime:  20777
+level:  8  activeTime:  60240
+level:  9  activeTime:  35474
+Total Levels played: 8
+Time elapsed: 232
+Player: 1DF0E8A3-B80E-1023-0821-60E7E6E4DE1A
+level:  2  activeTime:  5036
+level:  3  activeTime:  30000
+level:  4  activeTime:  25024
+level:  5  activeTime:  28854
+level:  6  activeTime:  46250
+level:  7  activeTime:  26233
+level:  8  activeTime:  62918
+level:  9  activeTime:  268849
+Total Levels played: 8
+Time elapsed: 493
+Player: 1F5B836C-E62C-B0A8-C773-A912E0A6114B
+level:  2  activeTime:  18319
+level:  3  activeTime:  23417
+level:  4  activeTime:  30000
+level:  5  activeTime:  40946
+level:  6  activeTime:  42158
+level:  7  activeTime:  19160
+level:  8  activeTime:  63332
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 237
+Player: 21BC4542-2472-EB41-1276-C4938DA69D5C
+level:  2  activeTime:  2762
+level:  3  activeTime:  10745
+level:  4  activeTime:  20860
+level:  5  activeTime:  11437
+level:  6  activeTime:  41188
+level:  7  activeTime:  21609
+level:  8  activeTime:  59843
+level:  9  activeTime:  23036
+Total Levels played: 8
+Time elapsed: 191
+Player: 2736C5C7-4A48-1FF7-A391-5A6B8A8BB931
+level:  2  activeTime:  8379
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  19357
+level:  6  activeTime:  45169
+level:  7  activeTime:  30000
+level:  8  activeTime:  63169
+level:  9  activeTime:  90967
+level:  2  activeTime:  0
+Total Levels played: 9
+Time elapsed: 317
+Player: 28F60B5F-CC4E-DA49-D7C6-8B840748F2A7
+level:  2  activeTime:  3289
+level:  3  activeTime:  37362
+level:  4  activeTime:  61582
+level:  5  activeTime:  31950
+level:  6  activeTime:  62735
+level:  7  activeTime:  31647
+level:  8  activeTime:  0
+Total Levels played: 7
+Time elapsed: 228
+Player: 2B3F4F56-C3E0-B57A-4032-8202F637F4BA
+level:  2  activeTime:  6655
+level:  3  activeTime:  17000
+level:  4  activeTime:  56245
+Total Levels played: 3
+Time elapsed: 79
+Player: 2CC084B0-66DD-6D2B-4F2D-344CB11482B3
+level:  2  activeTime:  21222
+level:  3  activeTime:  44331
+level:  4  activeTime:  30000
+level:  5  activeTime:  22426
+Total Levels played: 4
+Time elapsed: 117
+Player: 2E1F26BC-11AA-4CE6-FBA8-DD521620067E
+level:  2  activeTime:  2984
+level:  3  activeTime:  22665
+level:  4  activeTime:  74386
+level:  5  activeTime:  31945
+level:  6  activeTime:  74917
+level:  7  activeTime:  20418
+level:  8  activeTime:  63000
+level:  9  activeTime:  30000
+Total Levels played: 8
+Time elapsed: 320
+Player: 3142AD5A-F885-4100-ACFF-C0E364B8EC02
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: 3344C445-FF8B-E00A-1259-5E6FD3F6C30D
+level:  2  activeTime:  21660
+level:  3  activeTime:  28532
+level:  4  activeTime:  30000
+level:  5  activeTime:  28840
+level:  6  activeTime:  74942
+level:  7  activeTime:  24572
+level:  8  activeTime:  62863
+level:  9  activeTime:  77967
+Total Levels played: 8
+Time elapsed: 349
+Player: 3367D14A-729E-D3B4-27A5-164FDC4B201B
+level:  2  activeTime:  2903
+level:  3  activeTime:  20578
+level:  4  activeTime:  30000
+level:  5  activeTime:  28141
+level:  6  activeTime:  91854
+level:  7  activeTime:  44745
+level:  8  activeTime:  0
+Total Levels played: 7
+Time elapsed: 218
+Player: 37C22E29-311C-2334-8A85-0A9E17A578DC
+level:  2  activeTime:  6818
+level:  3  activeTime:  38577
+level:  4  activeTime:  20185
+Total Levels played: 3
+Time elapsed: 65
+Player: 3923EDAF-E3B1-A421-91C8-A6939E19B0BC
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: 3AEADA0C-1A23-D1B1-5E49-790F2A4C1084
+level:  2  activeTime:  38024
+level:  3  activeTime:  15671
+level:  4  activeTime:  60000
+level:  5  activeTime:  65923
+level:  6  activeTime:  46383
+level:  7  activeTime:  33141
+level:  8  activeTime:  68958
+level:  9  activeTime:  57774
+Total Levels played: 8
+Time elapsed: 385
+Player: 3D0B6FC9-F093-BC6D-C235-F104E99E9060
+level:  2  activeTime:  27597
+level:  3  activeTime:  28162
+level:  4  activeTime:  30000
+level:  5  activeTime:  31951
+level:  6  activeTime:  73155
+level:  7  activeTime:  29409
+level:  8  activeTime:  63616
+level:  9  activeTime:  60777
+Total Levels played: 8
+Time elapsed: 344
+Player: 3E4E0734-5467-0EB1-F652-AF4767CBFB51
+level:  2  activeTime:  1492
+level:  3  activeTime:  34779
+Total Levels played: 2
+Time elapsed: 36
+Player: 42115AC2-800F-0181-5312-FF564B252D7F
+level:  2  activeTime:  7906
+level:  3  activeTime:  30000
+level:  4  activeTime:  58112
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 96
+Player: 43543B95-DE86-946E-6FE9-1C7F09C9B4A5
+level:  2  activeTime:  3263
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  20065
+level:  6  activeTime:  70475
+Total Levels played: 5
+Time elapsed: 153
+Player: 4518BBBC-29AA-021B-449B-A82156EE9392
+level:  2  activeTime:  2531
+level:  3  activeTime:  18364
+level:  4  activeTime:  16664
+level:  5  activeTime:  9987
+level:  6  activeTime:  44821
+Total Levels played: 5
+Time elapsed: 92
+Player: 45DD72AA-CC11-8A0D-0E25-97940C240EE3
+level:  2  activeTime:  30000
+level:  3  activeTime:  17379
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 47
+Player: 4644F83A-C1E2-CF14-EE9E-72D00264BEB0
+level:  2  activeTime:  12191
+level:  3  activeTime:  25081
+Total Levels played: 2
+Time elapsed: 37
+Player: 46B689EF-61BD-8B8A-7278-3D5662A01DED
+level:  2  activeTime:  4038
+level:  3  activeTime:  24410
+level:  4  activeTime:  19106
+level:  5  activeTime:  13687
+Total Levels played: 4
+Time elapsed: 61
+Player: 4A9007D2-852F-91A1-66C8-3D973F9BFCE3
+level:  2  activeTime:  2321
+level:  3  activeTime:  22246
+Total Levels played: 2
+Time elapsed: 24
+Player: 4C07F019-9917-04ED-DFE1-624757DA6031
+level:  2  activeTime:  3230
+level:  3  activeTime:  82913
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 86
+Player: 4D22F0B2-F88F-4CBA-9548-B11D8F48204F
+level:  2  activeTime:  4214
+level:  3  activeTime:  17243
+level:  4  activeTime:  22480
+level:  5  activeTime:  19970
+level:  6  activeTime:  47050
+level:  7  activeTime:  24820
+level:  8  activeTime:  62830
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 198
+Player: 512807FE-17BF-7512-0D83-0C5F4B5D62D4
+level:  2  activeTime:  9212
+level:  3  activeTime:  19824
+level:  4  activeTime:  22104
+level:  5  activeTime:  30788
+level:  6  activeTime:  0
+Total Levels played: 5
+Time elapsed: 81
+Player: 5435C416-6A01-0568-9256-3F763876BF31
+level:  2  activeTime:  7451
+level:  3  activeTime:  30000
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 37
+Player: 54B5D52D-ABAD-F674-E8DA-2D99384AAF82
+level:  2  activeTime:  2343
+level:  3  activeTime:  15844
+level:  4  activeTime:  30000
+level:  5  activeTime:  18875
+level:  6  activeTime:  68001
+level:  7  activeTime:  19781
+level:  8  activeTime:  62782
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 217
+Player: 571E8BEC-219A-04DC-B1BE-64EB7940284F
+level:  2  activeTime:  9555
+level:  3  activeTime:  27999
+level:  4  activeTime:  24694
+level:  5  activeTime:  21745
+level:  6  activeTime:  0
+Total Levels played: 5
+Time elapsed: 83
+Player: 577FDB9F-F721-E146-4C46-441B65C6C4A5
+level:  2  activeTime:  17644
+level:  3  activeTime:  60593
+level:  4  activeTime:  30000
+level:  5  activeTime:  30000
+level:  6  activeTime:  124811
+level:  7  activeTime:  36617
+level:  8  activeTime:  43826
+level:  9  activeTime:  28403
+level:  2  activeTime:  9252
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  30000
+level:  6  activeTime:  29458
+level:  7  activeTime:  24423
+level:  8  activeTime:  45155
+level:  9  activeTime:  30000
+level:  2  activeTime:  11119
+level:  3  activeTime:  0
+level:  2  activeTime:  5887
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  30000
+level:  6  activeTime:  45945
+level:  7  activeTime:  39295
+level:  8  activeTime:  85038
+level:  9  activeTime:  30000
+level:  2  activeTime:  3023
+level:  3  activeTime:  17914
+level:  4  activeTime:  30000
+level:  5  activeTime:  11988
+level:  6  activeTime:  0
+level:  2  activeTime:  2696
+level:  3  activeTime:  19457
+level:  4  activeTime:  0
+Total Levels played: 34
+Time elapsed: 992
+Player: 581A4B6A-B745-6CE6-7CE3-D86EE6B39F6F
+level:  2  activeTime:  12202
+level:  3  activeTime:  27248
+level:  4  activeTime:  30000
+level:  5  activeTime:  92276
+level:  6  activeTime:  107994
+level:  7  activeTime:  0
+Total Levels played: 6
+Time elapsed: 269
+Player: 5A3E709C-1E2A-92E8-DB0A-21434B3C33BA
+level:  2  activeTime:  2716
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  32158
+Total Levels played: 4
+Time elapsed: 94
+Player: 5E7A1B80-3806-A9D7-4CE1-38F79C8C209F
+level:  2  activeTime:  7084
+level:  3  activeTime:  11790
+level:  4  activeTime:  16335
+level:  5  activeTime:  28903
+level:  6  activeTime:  62035
+level:  7  activeTime:  0
+Total Levels played: 6
+Time elapsed: 126
+Player: 63175C16-5D0E-F647-D27C-B3431FE2D4DF
+level:  2  activeTime:  2685
+level:  3  activeTime:  21745
+Total Levels played: 2
+Time elapsed: 24
+Player: 6344204C-2579-B339-4A14-443EF15F6BB8
+level:  2  activeTime:  3957
+level:  3  activeTime:  14716
+level:  4  activeTime:  14496
+level:  5  activeTime:  27626
+level:  6  activeTime:  34158
+level:  7  activeTime:  15377
+level:  8  activeTime:  0
+Total Levels played: 7
+Time elapsed: 110
+Player: 67EF0235-03A3-683F-E4C2-8C1E47C19AFC
+level:  2  activeTime:  30000
+level:  3  activeTime:  16882
+level:  4  activeTime:  30000
+level:  5  activeTime:  47532
+level:  6  activeTime:  53430
+level:  7  activeTime:  30000
+level:  8  activeTime:  63169
+level:  9  activeTime:  75465
+Total Levels played: 8
+Time elapsed: 346
+Player: 6BC0E540-56AB-D338-B080-169978643B54
+level:  2  activeTime:  21073
+level:  3  activeTime:  25276
+level:  4  activeTime:  24291
+level:  5  activeTime:  18690
+level:  6  activeTime:  44416
+level:  7  activeTime:  14693
+level:  8  activeTime:  52681
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 201
+Player: 6CC28050-1E1C-B3AC-8664-F5EE623B408B
+level:  2  activeTime:  24731
+level:  3  activeTime:  10828
+level:  4  activeTime:  18791
+level:  5  activeTime:  11841
+level:  6  activeTime:  0
+Total Levels played: 5
+Time elapsed: 66
+Player: 6EB9931C-6BEB-2033-30E4-562773879B29
+level:  2  activeTime:  3147
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  31947
+level:  6  activeTime:  30000
+Total Levels played: 5
+Time elapsed: 125
+Player: 7228CF4E-8C5B-7C5E-D2CD-2E6F0321E74E
+level:  2  activeTime:  13510
+level:  3  activeTime:  29541
+level:  4  activeTime:  30000
+level:  5  activeTime:  52042
+level:  6  activeTime:  47250
+level:  7  activeTime:  30000
+level:  8  activeTime:  63083
+Total Levels played: 7
+Time elapsed: 265
+Player: 730B8904-CA15-30EB-2BD8-CCEA73621649
+level:  2  activeTime:  12269
+level:  3  activeTime:  30000
+level:  4  activeTime:  23664
+Total Levels played: 3
+Time elapsed: 65
+Player: 741CC4A7-36D3-75DB-D27B-0785CFFF9D22
+level:  2  activeTime:  5953
+level:  3  activeTime:  30045
+level:  4  activeTime:  30000
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 65
+Player: 79D96C14-761A-564F-4B72-25549B28653C
+level:  2  activeTime:  6335
+level:  3  activeTime:  21079
+level:  4  activeTime:  21287
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 48
+Player: 79DA6AD2-DD45-6344-95EB-033551A346E4
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: 79E863F7-8162-F20C-D1B4-23ADE17BE350
+level:  2  activeTime:  2366
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  31949
+level:  6  activeTime:  82794
+level:  7  activeTime:  23161
+level:  8  activeTime:  78335
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 278
+Player: 7A5802E2-9D43-09FC-EE8F-66141E0C56AD
+level:  2  activeTime:  14994
+level:  3  activeTime:  0
+Total Levels played: 2
+Time elapsed: 14
+Player: 7B09F1EF-3032-EB5C-3A79-85336B555636
+level:  2  activeTime:  30000
+level:  3  activeTime:  13578
+level:  4  activeTime:  30000
+level:  5  activeTime:  22339
+level:  6  activeTime:  35374
+level:  7  activeTime:  30000
+level:  8  activeTime:  55920
+level:  9  activeTime:  57418
+Total Levels played: 8
+Time elapsed: 274
+Player: 7BC3BFD9-D53E-BD1F-ACD6-A832BFA7D464
+level:  2  activeTime:  2773
+level:  3  activeTime:  30000
+level:  4  activeTime:  28665
+level:  5  activeTime:  20960
+level:  6  activeTime:  44833
+level:  7  activeTime:  21961
+level:  8  activeTime:  62801
+level:  9  activeTime:  46416
+Total Levels played: 8
+Time elapsed: 258
+Player: 7EC3ADDA-2D35-51DA-59CA-601F95BB3550
+level:  2  activeTime:  3446
+level:  3  activeTime:  0
+Total Levels played: 2
+Time elapsed: 3
+Player: 8269270A-77FC-D4FF-AFAB-A641FC3FE5BC
+level:  2  activeTime:  2493
+level:  3  activeTime:  30000
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 32
+Player: 8390FEA5-5E46-2979-B6F0-6248DCA00BB3
+level:  2  activeTime:  2016
+level:  3  activeTime:  63450
+level:  4  activeTime:  29036
+Total Levels played: 3
+Time elapsed: 94
+Player: 89749476-1DE5-8EB8-5BEC-E03133A5ECFA
+level:  2  activeTime:  14552
+level:  3  activeTime:  8414
+level:  4  activeTime:  27454
+level:  5  activeTime:  22084
+level:  6  activeTime:  59150
+Total Levels played: 5
+Time elapsed: 131
+Player: 89B40635-2EC2-DB06-FC1F-33F4A1B3D59C
+level:  2  activeTime:  1569
+level:  3  activeTime:  30000
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 31
+Player: 8C0DADF9-3359-1FCD-2597-855B77EE967F
+level:  2  activeTime:  30000
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  31938
+level:  6  activeTime:  35123
+level:  7  activeTime:  19777
+level:  8  activeTime:  63133
+level:  9  activeTime:  52675
+Total Levels played: 8
+Time elapsed: 292
+Player: 8C14C220-0730-0365-E8D6-A57B79EC4E6B
+level:  2  activeTime:  5871
+level:  3  activeTime:  18830
+level:  4  activeTime:  28280
+level:  5  activeTime:  17244
+level:  6  activeTime:  47779
+level:  7  activeTime:  0
+Total Levels played: 6
+Time elapsed: 118
+Player: 8CAB122C-974F-D8B5-5642-6848881416AB
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: 8DEE380F-C44B-54B7-50BC-1DA986A9304A
+level:  2  activeTime:  4116
+level:  3  activeTime:  34414
+level:  4  activeTime:  29245
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 67
+Player: 8EA3E19B-D3EE-1121-172F-F3F25EF744D4
+level:  2  activeTime:  19638
+level:  3  activeTime:  16496
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 36
+Player: 92562BD2-11A8-2622-84F6-9A9219CF5A83
+level:  2  activeTime:  2535
+level:  3  activeTime:  34465
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 37
+Player: 9831FC80-C67F-D5B3-86E8-67FCF18CA433
+level:  2  activeTime:  4407
+level:  3  activeTime:  26383
+level:  4  activeTime:  19581
+level:  5  activeTime:  22195
+level:  6  activeTime:  59111
+level:  7  activeTime:  30000
+level:  8  activeTime:  62884
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 224
+Player: 99E05154-7FD8-F71A-43B1-8D50B6F295BC
+level:  2  activeTime:  2220
+level:  3  activeTime:  19491
+Total Levels played: 2
+Time elapsed: 21
+Player: 9C2DE8AE-2FEE-C11A-001B-BC195DFAC3EA
+level:  2  activeTime:  7645
+level:  3  activeTime:  29584
+Total Levels played: 2
+Time elapsed: 37
+Player: 9C7A3212-8DAE-6BA8-90B7-46E5C4D3E63E
+level:  2  activeTime:  2215
+level:  3  activeTime:  12214
+level:  4  activeTime:  30000
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 44
+Player: A10F68A1-A5AE-61C1-EED6-EA6DBE639A3F
+level:  2  activeTime:  2571
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  31950
+level:  6  activeTime:  44417
+level:  7  activeTime:  20406
+level:  8  activeTime:  100753
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 260
+Player: A2ADA497-F8AF-5EFB-C35A-264827244F6B
+level:  2  activeTime:  2520
+level:  3  activeTime:  28913
+Total Levels played: 2
+Time elapsed: 31
+Player: A684F059-FF16-5B0D-3C29-374DBFA5DCBB
+level:  2  activeTime:  12067
+level:  3  activeTime:  28585
+level:  4  activeTime:  30000
+Total Levels played: 3
+Time elapsed: 70
+Player: AA45F010-929A-40F7-435B-98C582061038
+level:  2  activeTime:  30000
+level:  3  activeTime:  14089
+level:  4  activeTime:  77327
+Total Levels played: 3
+Time elapsed: 121
+Player: ADA2A62D-0CC5-7792-1EB8-EF9F97E967D2
+level:  2  activeTime:  3725
+level:  3  activeTime:  43952
+level:  4  activeTime:  30000
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 77
+Player: AFD26774-293D-7322-6556-9CB19E69E9C8
+level:  2  activeTime:  2416
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  41414
+level:  6  activeTime:  68692
+level:  7  activeTime:  0
+Total Levels played: 6
+Time elapsed: 172
+Player: B3E1D07D-BA2F-B36D-C13F-B7E37FA7664E
+level:  2  activeTime:  30000
+level:  3  activeTime:  20955
+level:  4  activeTime:  29131
+level:  5  activeTime:  30577
+level:  6  activeTime:  32047
+Total Levels played: 5
+Time elapsed: 142
+Player: B837C225-C809-4833-568C-0C6C64FAE418
+level:  2  activeTime:  2989
+level:  3  activeTime:  25084
+Total Levels played: 2
+Time elapsed: 28
+Player: BCD93412-707D-CFB3-A490-7318C22B9F19
+level:  2  activeTime:  1730
+level:  3  activeTime:  29964
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 31
+Player: C1052286-C755-7ADF-1BED-A1B5BBA45665
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: C201520F-2245-1C54-A1C8-9F8A7C56460B
+level:  2  activeTime:  2451
+level:  3  activeTime:  31996
+level:  4  activeTime:  30000
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 64
+Player: C5EB408C-9ABF-C90A-3AF9-B84594F71BD5
+level:  2  activeTime:  2824
+level:  3  activeTime:  12246
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 15
+Player: C90291E8-AC0B-4918-8836-23DCFF348E0A
+level:  2  activeTime:  1759
+level:  3  activeTime:  11863
+level:  4  activeTime:  41626
+level:  5  activeTime:  16733
+level:  6  activeTime:  60321
+level:  7  activeTime:  29105
+level:  8  activeTime:  91695
+Total Levels played: 7
+Time elapsed: 253
+Player: CC0BE554-B931-638C-DA2A-B0444375B4FA
+level:  2  activeTime:  2120
+level:  3  activeTime:  33331
+level:  4  activeTime:  55380
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 90
+Player: CC8F0783-34A8-7BA5-071A-87E7938E62C2
+level:  2  activeTime:  2351
+level:  3  activeTime:  32798
+level:  4  activeTime:  30000
+level:  5  activeTime:  26662
+level:  6  activeTime:  0
+Total Levels played: 5
+Time elapsed: 91
+Player: CDFEE9B1-1909-C9D7-86B3-03DE4D23ADC6
+level:  2  activeTime:  10117
+level:  3  activeTime:  4329
+Total Levels played: 2
+Time elapsed: 14
+Player: CF09F0D5-80A4-FC0C-E579-61D457C72BE8
+level:  2  activeTime:  2200
+level:  3  activeTime:  23995
+level:  2  activeTime:  2013
+level:  3  activeTime:  25127
+level:  4  activeTime:  26825
+level:  5  activeTime:  23541
+Total Levels played: 6
+Time elapsed: 103
+Player: D069EA92-17E6-C37D-2A12-7A3194E02F0A
+level:  2  activeTime:  6129
+level:  3  activeTime:  15548
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 21
+Player: D2F6E14F-93BA-FD3E-CD9F-CED9BD6CAF8A
+level:  2  activeTime:  8544
+level:  3  activeTime:  42883
+level:  4  activeTime:  24543
+level:  5  activeTime:  45524
+Total Levels played: 4
+Time elapsed: 121
+Player: DF696D05-1748-0D8A-6663-ACFEC444665C
+level:  2  activeTime:  0
+level:  2  activeTime:  1450
+level:  3  activeTime:  23326
+level:  4  activeTime:  44570
+level:  2  activeTime:  0
+level:  2  activeTime:  12201
+level:  3  activeTime:  30000
+level:  4  activeTime:  30000
+level:  5  activeTime:  22328
+level:  6  activeTime:  71566
+level:  7  activeTime:  49927
+level:  8  activeTime:  112375
+level:  9  activeTime:  110419
+level:  2  activeTime:  12505
+level:  3  activeTime:  30118
+level:  4  activeTime:  30000
+level:  5  activeTime:  31853
+level:  6  activeTime:  66745
+level:  7  activeTime:  30000
+level:  8  activeTime:  63085
+level:  9  activeTime:  98010
+level:  2  activeTime:  0
+Total Levels played: 22
+Time elapsed: 870
+Player: E2DCDB26-BAFC-9639-CDB5-80CF0DB13167
+level:  2  activeTime:  3389
+level:  3  activeTime:  0
+Total Levels played: 2
+Time elapsed: 3
+Player: E553FD4B-25FD-D7D1-F329-C597423A0397
+level:  2  activeTime:  18062
+level:  3  activeTime:  74167
+level:  4  activeTime:  0
+Total Levels played: 3
+Time elapsed: 92
+Player: E5B2026D-EB37-6608-0EC8-58BA202A9BB7
+level:  2  activeTime:  2166
+level:  3  activeTime:  54947
+level:  4  activeTime:  30000
+Total Levels played: 3
+Time elapsed: 87
+Player: E65201D1-1F87-B705-85DE-F79C1D0534C3
+level:  2  activeTime:  30206
+level:  3  activeTime:  50047
+level:  4  activeTime:  30000
+level:  5  activeTime:  18659
+level:  6  activeTime:  135200
+level:  7  activeTime:  21649
+level:  8  activeTime:  128307
+level:  9  activeTime:  52122
+Total Levels played: 8
+Time elapsed: 466
+Player: E79EC71C-FB00-0391-B7D0-6AD47346B861
+level:  2  activeTime:  2576
+level:  3  activeTime:  21466
+level:  4  activeTime:  30000
+level:  5  activeTime:  25861
+level:  6  activeTime:  0
+Total Levels played: 5
+Time elapsed: 79
+Player: E7BE049B-03ED-819F-259E-1EB29CD31639
+level:  2  activeTime:  0
+Total Levels played: 1
+Time elapsed: 0
+Player: E82E6D51-ECF2-0A4C-46B0-FB42971F58CB
+level:  2  activeTime:  1646
+level:  3  activeTime:  10417
+level:  4  activeTime:  22597
+level:  5  activeTime:  21978
+level:  6  activeTime:  69284
+level:  7  activeTime:  18819
+level:  8  activeTime:  63833
+level:  9  activeTime:  66601
+level:  2  activeTime:  1764
+level:  3  activeTime:  0
+Total Levels played: 10
+Time elapsed: 276
+Player: E87F0A2D-33EB-5C55-DAD1-C3E7BDBDEEC9
+level:  2  activeTime:  20108
+level:  3  activeTime:  0
+Total Levels played: 2
+Time elapsed: 20
+Player: E94FAD2F-875C-A349-A6F2-F18CBF4E1C4D
+level:  2  activeTime:  24330
+level:  3  activeTime:  12781
+level:  4  activeTime:  18582
+level:  5  activeTime:  30000
+level:  6  activeTime:  36648
+level:  7  activeTime:  19075
+level:  8  activeTime:  69135
+level:  9  activeTime:  29615
+level:  9  activeTime:  5338
+level:  2  activeTime:  30000
+level:  3  activeTime:  45945
+level:  4  activeTime:  30000
+level:  5  activeTime:  36314
+level:  6  activeTime:  212749
+level:  7  activeTime:  33155
+level:  8  activeTime:  62965
+level:  9  activeTime:  226399
+Total Levels played: 17
+Time elapsed: 923
+Player: ED5B9A49-1E3A-691C-0D43-4A56617DE3EE
+level:  2  activeTime:  11243
+level:  3  activeTime:  24253
+level:  4  activeTime:  30000
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 65
+Player: F1563903-3E33-0FEA-3C14-037EE0535E91
+level:  2  activeTime:  6657
+level:  3  activeTime:  63163
+level:  4  activeTime:  30000
+level:  5  activeTime:  15201
+level:  6  activeTime:  34203
+level:  7  activeTime:  30458
+level:  8  activeTime:  62999
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 242
+Player: F2528CA4-6326-B2F6-089D-D72F705A2A9F
+level:  2  activeTime:  1821
+level:  3  activeTime:  47866
+level:  4  activeTime:  18321
+level:  5  activeTime:  54300
+level:  6  activeTime:  50810
+level:  7  activeTime:  22315
+level:  8  activeTime:  62783
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 258
+Player: F4A2BAF1-8001-39DA-9DE1-31236443EE58
+level:  2  activeTime:  60000
+level:  3  activeTime:  41665
+Total Levels played: 2
+Time elapsed: 101
+Player: F5B15A9A-59A6-2F46-7CD7-54A5D0CCB03F
+level:  2  activeTime:  1987
+level:  3  activeTime:  25699
+Total Levels played: 2
+Time elapsed: 27
+Player: F9999E8D-3420-0FFF-C356-CB697E13E515
+level:  2  activeTime:  2655
+level:  3  activeTime:  29865
+Total Levels played: 2
+Time elapsed: 32
+Player: FA05E2C2-01F7-D8F6-097B-7D2B45CD3DB7
+level:  2  activeTime:  3350
+level:  3  activeTime:  30000
+level:  4  activeTime:  29448
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 62
+Player: FB415676-217A-6189-0EC4-8DC9930CBDD5
+level:  2  activeTime:  30000
+level:  3  activeTime:  20905
+level:  4  activeTime:  28090
+level:  5  activeTime:  0
+Total Levels played: 4
+Time elapsed: 78
+Player: FC0D0B7F-2386-3CE1-20BB-08181831CA56
+level:  2  activeTime:  3906
+level:  3  activeTime:  12999
+level:  4  activeTime:  20913
+level:  5  activeTime:  19615
+level:  6  activeTime:  33575
+level:  7  activeTime:  16995
+level:  8  activeTime:  133533
+level:  9  activeTime:  11366
+level:  2  activeTime:  3387
+level:  3  activeTime:  30000
+level:  4  activeTime:  10341
+level:  5  activeTime:  40509
+Total Levels played: 12
+Time elapsed: 337
+Player: FEFD6ABE-FE12-94E9-9DA4-971D6E13F5C2
+level:  2  activeTime:  2738
+level:  3  activeTime:  26494
+level:  4  activeTime:  20991
+level:  5  activeTime:  23819
+Total Levels played: 4
+Time elapsed: 74
+Player: FFD97DB2-A2A7-04AA-E185-C81AF35C917C
+level:  2  activeTime:  3733
+level:  3  activeTime:  10880
+level:  4  activeTime:  46214
+level:  5  activeTime:  15165
+level:  6  activeTime:  62587
+level:  7  activeTime:  20513
+level:  8  activeTime:  63132
+level:  9  activeTime:  0
+Total Levels played: 8
+Time elapsed: 222

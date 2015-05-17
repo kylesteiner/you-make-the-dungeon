@@ -1,0 +1,469 @@
+Number of players: 36
+
+Player: 024B3930-2FA8-6F20-9966-63097F0175B7
+	Times Played: 1
+	Number of levels played: 4
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 4
+
+Player: 05E2B649-BBC9-1B75-C80E-912CB68FA015
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 0CD37591-D513-3F9A-97C2-8BC839CA5AE0
+	Times Played: 1
+	Number of levels played: 4
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 4
+
+Player: 11469337-3229-F6A8-DCA3-46D81F30880C
+	Times Played: 1
+	Number of levels played: 2
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 2
+
+Player: 1391448D-1B34-9C09-D43E-0535131E700B
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 1473C65B-D1EE-ABA5-47FD-82AB87706F96
+	Times Played: 1
+	Number of levels played: 1
+level 1 played 1 times
+level 2 played 0 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 1
+
+Player: 1DF0E8A3-B80E-1023-0821-60E7E6E4DE1A
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 1F5B836C-E62C-B0A8-C773-A912E0A6114B
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 2736C5C7-4A48-1FF7-A391-5A6B8A8BB931
+	Times Played: 2
+	Number of levels played: 9
+level 1 played 2 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 4
+
+Player: 28F60B5F-CC4E-DA49-D7C6-8B840748F2A7
+	Times Played: 1
+	Number of levels played: 7
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 0 times
+	Average levels per visit: 7
+
+Player: 2CC084B0-66DD-6D2B-4F2D-344CB11482B3
+	Times Played: 1
+	Number of levels played: 4
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 4
+
+Player: 2E1F26BC-11AA-4CE6-FBA8-DD521620067E
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 37C22E29-311C-2334-8A85-0A9E17A578DC
+	Times Played: 1
+	Number of levels played: 3
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 3
+
+Player: 3E4E0734-5467-0EB1-F652-AF4767CBFB51
+	Times Played: 1
+	Number of levels played: 2
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 2
+
+Player: 43543B95-DE86-946E-6FE9-1C7F09C9B4A5
+	Times Played: 1
+	Number of levels played: 5
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 5
+
+Player: 4644F83A-C1E2-CF14-EE9E-72D00264BEB0
+	Times Played: 1
+	Number of levels played: 2
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 2
+
+Player: 4D22F0B2-F88F-4CBA-9548-B11D8F48204F
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 54B5D52D-ABAD-F674-E8DA-2D99384AAF82
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: 571E8BEC-219A-04DC-B1BE-64EB7940284F
+	Times Played: 1
+	Number of levels played: 5
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 5
+
+Player: 577FDB9F-F721-E146-4C46-441B65C6C4A5
+	Times Played: 5
+	Number of levels played: 31
+level 1 played 5 times
+level 2 played 5 times
+level 3 played 4 times
+level 4 played 4 times
+level 5 played 4 times
+level 6 played 3 times
+level 7 played 3 times
+level 8 played 3 times
+	Average levels per visit: 6
+
+Player: 6344204C-2579-B339-4A14-443EF15F6BB8
+	Times Played: 1
+	Number of levels played: 7
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 0 times
+	Average levels per visit: 7
+
+Player: 6CC28050-1E1C-B3AC-8664-F5EE623B408B
+	Times Played: 1
+	Number of levels played: 5
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 5
+
+Player: 7228CF4E-8C5B-7C5E-D2CD-2E6F0321E74E
+	Times Played: 1
+	Number of levels played: 7
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 0 times
+	Average levels per visit: 7
+
+Player: 79E863F7-8162-F20C-D1B4-23ADE17BE350
+	Times Played: 2
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 4
+
+Player: A2ADA497-F8AF-5EFB-C35A-264827244F6B
+	Times Played: 1
+	Number of levels played: 2
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 2
+
+Player: BCD93412-707D-CFB3-A490-7318C22B9F19
+	Times Played: 1
+	Number of levels played: 3
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 3
+
+Player: C201520F-2245-1C54-A1C8-9F8A7C56460B
+	Times Played: 1
+	Number of levels played: 4
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 4
+
+Player: C90291E8-AC0B-4918-8836-23DCFF348E0A
+	Times Played: 1
+	Number of levels played: 7
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 0 times
+	Average levels per visit: 7
+
+Player: CC0BE554-B931-638C-DA2A-B0444375B4FA
+	Times Played: 1
+	Number of levels played: 4
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 4
+
+Player: CC8F0783-34A8-7BA5-071A-87E7938E62C2
+	Times Played: 1
+	Number of levels played: 5
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 5
+
+Player: DF696D05-1748-0D8A-6663-ACFEC444665C
+	Times Played: 5
+	Number of levels played: 13
+level 1 played 4 times
+level 2 played 2 times
+level 3 played 2 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 2
+
+Player: E2DCDB26-BAFC-9639-CDB5-80CF0DB13167
+	Times Played: 1
+	Number of levels played: 2
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 2
+
+Player: E65201D1-1F87-B705-85DE-F79C1D0534C3
+	Times Played: 1
+	Number of levels played: 8
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 1 times
+level 6 played 1 times
+level 7 played 1 times
+level 8 played 1 times
+	Average levels per visit: 8
+
+Player: E87F0A2D-33EB-5C55-DAD1-C3E7BDBDEEC9
+	Times Played: 1
+	Number of levels played: 2
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 0 times
+level 4 played 0 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 2
+
+Player: E94FAD2F-875C-A349-A6F2-F18CBF4E1C4D
+	Times Played: 3
+	Number of levels played: 17
+level 1 played 2 times
+level 2 played 2 times
+level 3 played 2 times
+level 4 played 2 times
+level 5 played 2 times
+level 6 played 2 times
+level 7 played 2 times
+level 8 played 3 times
+	Average levels per visit: 5
+
+Player: FA05E2C2-01F7-D8F6-097B-7D2B45CD3DB7
+	Times Played: 1
+	Number of levels played: 4
+level 1 played 1 times
+level 2 played 1 times
+level 3 played 1 times
+level 4 played 1 times
+level 5 played 0 times
+level 6 played 0 times
+level 7 played 0 times
+level 8 played 0 times
+	Average levels per visit: 4

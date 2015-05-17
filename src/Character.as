@@ -56,7 +56,7 @@ package {
 			addChild(currentAnimation);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			//addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		// Begins moving the Character from one tile to the next.
