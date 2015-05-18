@@ -4,6 +4,7 @@
 package {
 	import flash.net.*;
 	import flash.utils.*;
+	import flash.ui.Keyboard;
 	import mx.utils.StringUtil;
 
 	import starling.core.Starling;
@@ -151,6 +152,7 @@ package {
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		private function getToX(x:int):int {
@@ -301,13 +303,6 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-
-			// move to center
-			/*
-			if (parent) {
-				parent.x = Util.STAGE_WIDTH / 4;
-				parent.y = Util.STAGE_HEIGHT / 4;
-			}*/
 
 			/*
 			if(tutorialImage && originalTutorialDisplaying) {
@@ -640,46 +635,6 @@ package {
 					}
 				}
 			}
-
-			// should go two up, down, left, right, and one in each diagonal location, removing
-			// fog when needed
-			/*for (x = 1; x <= 2; x++) {
-				if (x + i < initialFogGrid.length) {
-					initialFogGrid[x + i][j] = false;
-				}
-			}
-			for (x = -1; x >= -2; x--) {
-				if (x + i >= 0) {
-					initialFogGrid[x + i][j] = false;
-				}
-			}
-			for (y = -1; y >= -2; y--) {
-				if (y + j < initialFogGrid[i].length) {
-					initialFogGrid[i][y + j] = false;
-				}
-			}
-			for (y = 1; y <= 2; y++) {
-				if (y + j >= 0) {
-					initialFogGrid[i][y + j] = false;
-				}
-			}
-			// diagonal cases
-			if (i + 1 < initialFogGrid.length) {
-				if (j + 1 < initialFogGrid[j].length) {
-					initialFogGrid[i + 1][j + 1] = false;
-				}
-				if (j - 1 >= 0) {
-					initialFogGrid[i + 1][j - 1] = false;
-				}
-			}
-			if (i -1 >= 0) {
-				if (j + 1 < initialFogGrid[j].length) {
-					initialFogGrid[i - 1][j + 1] = false;
-				}
-				if (j - 1 >= 0) {
-					initialFogGrid[i - 1][j - 1] = false;
-				}
-			}*/
 		}
 
 		// Game update loop. Currently handles combat over a series of frames.
@@ -692,6 +647,60 @@ package {
 
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
+			}
+		}
+
+		private function onKeyDown(event:KeyboardEvent):void {
+			if(!char.runState) {
+				return;
+			}
+
+			var cgx:int = Util.real_to_grid(char.x);
+			var cgy:int = Util.real_to_grid(char.y);
+
+			if(!grid[cgx][cgy]) {
+				return; // empty tile, invalid state
+			}
+
+			var charTile:Tile = grid[cgx][cgy];
+			var nextTile:Tile;
+
+			if (event.keyCode == Keyboard.UP && cgy > 0) {
+				if(!grid[cgx][cgy-1]) {
+					return;
+				}
+
+				nextTile = grid[cgx][cgy-1];
+				if(charTile.north && nextTile.south) {
+					char.move(Util.NORTH);
+				}
+			} else if (event.keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
+				if(!grid[cgx][cgy+1]) {
+					return;
+				}
+
+				nextTile = grid[cgx][cgy+1];
+				if(charTile.south && nextTile.north) {
+					char.move(Util.SOUTH);
+				}
+			} else if (event.keyCode == Keyboard.LEFT && cgx > 0) {
+				if(!grid[cgx-1][cgy]) {
+					return;
+				}
+
+				nextTile = grid[cgx-1][cgy];
+				if(charTile.west && nextTile.east) {
+					char.move(Util.WEST);
+				}
+			} else if (event.keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
+				if(!grid[cgx+1][cgy]) {
+					return;
+				}
+
+				nextTile = grid[cgx+1][cgy];
+				if(charTile.east && nextTile.west) {
+					char.move(Util.EAST);
+				}
 			}
 		}
 

@@ -34,7 +34,7 @@ package {
 		private var animations:Dictionary;
 		private var currentAnimation:MovieClip;
 
-		private var runState:Boolean;
+		public var runState:Boolean;
 		//private var dispField:TextField;
 
 		public var maxStamina:int;
@@ -89,7 +89,6 @@ package {
 			//addChild(dispField);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		public function toggleRun():void {
@@ -136,22 +135,6 @@ package {
 			} else if (direction == Util.WEST) {
 				destX = x - Util.PIXELS_PER_TILE;
 				destY = y;
-			}
-		}
-
-		private function onKeyDown(e:KeyboardEvent):void {
-			if(!runState) {
-				return;
-			}
-
-			if (e.keyCode == Keyboard.UP) {
-				move(Util.NORTH)
-			} else if (e.keyCode == Keyboard.DOWN) {
-				move(Util.SOUTH)
-			} else if (e.keyCode == Keyboard.LEFT) {
-				move(Util.WEST)
-			} else if (e.keyCode == Keyboard.RIGHT) {
-				move(Util.EAST)
 			}
 		}
 
