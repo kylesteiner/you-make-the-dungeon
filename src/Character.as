@@ -4,7 +4,6 @@
 package {
 	import flash.ui.Keyboard;
 
-	import starling.core.Starling;
 	import starling.display.*;
 	import starling.events.*;
 	import starling.textures.Texture
@@ -46,6 +45,7 @@ package {
 			grid_x = x;
 			grid_y = y;
 			this.maxHp = maxHp;
+			this.hp = hp;
 			this.stamina = stamina;
 			this.attack = attack;
 
