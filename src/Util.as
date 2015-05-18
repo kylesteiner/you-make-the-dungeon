@@ -149,7 +149,7 @@ package {
 
 		public static const STARTING_LEVEL:int = 1;
 		public static const STARTING_XP:int = 0;
-		public static const STARTING_STAMINA:int = 5;
+		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

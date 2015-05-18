@@ -305,10 +305,18 @@ package {
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
-			world.x = Util.STAGE_WIDTH / 4;
-			world.y = Util.STAGE_HEIGHT / 4;
-			currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
-			currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
+			//world.x = Util.STAGE_WIDTH / 4;
+
+			/*var charWidth:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.width;
+			var charX:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.x;
+			world.x = Util.STAGE_WIDTH / 2 - Util.grid_to_real(Util.real_to_grid(charX));
+
+			var charHeight:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.height;
+			var charY:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.y;
+			world.y = Util.STAGE_HEIGHT / 2 - Util.grid_to_real(Util.real_to_grid(charY)) - (Util.PIXELS_PER_TILE * 3.0 / 4);*/
+			centerWorldOnCharacter();
+			//currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
+			//currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
 			addChild(world);
 			// mute button should always be on top
 			addChild(bgmMuteButton);
@@ -440,6 +448,28 @@ package {
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
 			currentFloor.resetFloor();
+
+			centerWorldOnCharacter();
+		}
+
+		private function centerWorldOnCharacter(exact:Boolean = false):void {
+			// Set exact to simulate camera snapping
+			// Only really useful for ensuring that the top-left is well-centered
+			// Parameter becomes completely useless with sliding instead of snapping pan
+
+			var charWidth:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.width;
+			var charX:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.x;
+			if(exact) {
+				charX = Util.grid_to_real(Util.real_to_grid(charX));
+			}
+			world.x = Util.STAGE_WIDTH / 2 - charX - Util.PIXELS_PER_TILE;
+
+			var charHeight:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.height;
+			var charY:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.y;
+			if(exact) {
+				charY = Util.grid_to_real(Util.real_to_grid(charY));
+			}
+			world.y = Util.STAGE_HEIGHT / 2 - charY - (Util.PIXELS_PER_TILE * 3.0 / 4);
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
@@ -447,6 +477,7 @@ package {
 			addChild(cursorAnim);
 			if(gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
+				centerWorldOnCharacter();
 			}
 		}
 
