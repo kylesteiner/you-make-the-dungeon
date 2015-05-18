@@ -11,50 +11,78 @@ package {
 
 	public class TileHud extends Sprite {
 		private var textures:Dictionary;
-		public var HUD:Image;
+		private var HUD:Image;
 
-		// Used to represent percent chance of drawing tiles.
-		public var tileRates:Array;
-
-		// List of available tiles displayed on HUD
-		public var availableTiles:Array;
-
-		// Array of currently highlighted locations
+		public var tiles:Array;
+		public var tab:int;
 		public var highlightedLocations:Array;
 
-		public function TileHud(tileRatesBytes:ByteArray,
-								textureDict:Dictionary) {
+		/**********************************************************************************
+		 *  Intialization
+		 **********************************************************************************/
+		
+		public function TileHud(textureDict:Dictionary) {
 			super();
 			textures = textureDict;
-			tileRates = new Array(100);
-			availableTiles = new Array(Util.NUM_AVAILABLE_TILES);
-			highlightedLocations = new Array(Util.NUM_AVAILABLE_TILES);
-
+			generateHudTiles();
+			
+			highlightedLocations = new Array(Util.HUD_TAB_SIZE);
+			
 			HUD = new Image(textures[Util.TILE_HUD]);
-			HUD.x = (Util.STAGE_WIDTH - HUD.width) / 2;
+			HUD.x = Util.HUD_OFFSET;
 			HUD.y = 0;
 			addChild(HUD);
 
-			parseTileRates(tileRatesBytes);
-			for (var i:int = 0; i < Util.NUM_AVAILABLE_TILES; i++) {
-				getNextTile(i);
+			tab = 0;
+			loadTab(tab);
+		}
+		
+		public function generateHudTiles():void {
+			tiles = new Array();
+			tiles.push(new Tile(0, 0, true, false, false, false, textures[Util.getTextureString(true, false, false, false)]));
+			tiles.push(new Tile(0, 0, true, true, false, false, textures[Util.getTextureString(true, true, false, false)]));
+			tiles.push(new Tile(0, 0, true, false, false, true, textures[Util.getTextureString(true, false, false, true)]));
+			tiles.push(new Tile(0, 0, true, false, true, true, textures[Util.getTextureString(true, false, true, true)]));
+			tiles.push(new Tile(0, 0, true, true, true, true, textures[Util.getTextureString(true, true, false, true)]));
+			for (var i:int = 0; i < tiles.length; i++) {
+				tiles[i].width = Util.HUD_PIXELS_PER_TILE;
+				tiles[i].height = Util.HUD_PIXELS_PER_TILE;
+				setTilePosition(i % Util.HUD_TAB_SIZE);
+			}
+		}
+		
+		/**********************************************************************************
+		 *  Utility functions
+		 **********************************************************************************/
+		
+		public function loadTab(newTab:int):void {
+			var i:int;
+			
+			if (newTab < 0 || newTab > (tiles.length - 1) / Util.HUD_TAB_SIZE) {
+				return;
+			}
+			
+			for (i = 0; i < Util.HUD_TAB_SIZE; i++) {
+				removeChild(tiles[tab * Util.HUD_TAB_SIZE]);
+			}
+			
+			tab = newTab;
+			
+			for (i = 0; i < Util.HUD_TAB_SIZE; i++) {
+				addChild(tiles[tab * Util.HUD_TAB_SIZE]);
 			}
 		}
 
+		public function setTilePosition(index:int):void {
+			tiles[tab * index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
+				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
+			tiles[tab * index].y = HUD.y + Util.HUD_PAD_TOP;
+		}
+		
+		
+		
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
-		}
-
-		public function lockTiles():void {
-			for (var i:int; i < availableTiles.length; i++) {
-				availableTiles[i].locked = true;
-			}
-		}
-
-		public function unlockTiles():void {
-			for (var i:int; i < availableTiles.length; i++) {
-				availableTiles[i].locked = false;
-			}
 		}
 
 		public function indexOfSelectedTile():int {
@@ -71,6 +99,8 @@ package {
 			var index:int = indexOfSelectedTile()
 			if (index != -1) {
 				availableTiles[index].selected = false;
+				availableTiles[index].width = Util.HUD_PIXELS_PER_TILE;
+				availableTiles[index].height = Util.HUD_PIXELS_PER_TILE;
 				setTileLocation(index);
 			}
 		}
@@ -86,12 +116,19 @@ package {
 			getNextTile(index)
 		}
 
-		public function setTileLocation(index:int):void {
-			availableTiles[index].x = HUD.x + Util.HUD_PAD_LEFT +
-				(Util.PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
-			availableTiles[index].y = HUD.y + Util.HUD_PAD_TOP;
+		/*
+		public function lockTiles():void {
+			for (var i:int; i < availableTiles.length; i++) {
+				availableTiles[i].locked = true;
+			}
 		}
 
+		public function unlockTiles():void {
+			for (var i:int; i < availableTiles.length; i++) {
+				availableTiles[i].locked = false;
+			}
+		}
+		 
 		public function getNextTile(index:int):void {
 			var tile:Tile; var tN:Boolean; var tS:Boolean; var tE:Boolean;
 			var tW:Boolean; var dir:int; var tTexture:Texture; var tType:String;
@@ -126,11 +163,11 @@ package {
 				xpReward = Util.randomRange(1, level);
 				tile = new EnemyTile(0, 0, tN, tS, tE, tW, tTexture,
 					t2Texture, enemyName, level, hp, attack, xpReward);
-				/*eTile.locked = false;
+				eTile.locked = false;
 				availableTiles[index] = eTile;
 				setTileLocation(index);
 				addChild(eTile);
-				return;*/
+				return;
 			} else if (tType == "healing") {
 				t2Texture = textures[Util.HEALING];
 				hp = Util.randomRange(1, 10);
@@ -140,12 +177,14 @@ package {
 				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
 			}
 			tile.locked = false;
+			tile.width = Util.HUD_PIXELS_PER_TILE;
+			tile.height = Util.HUD_PIXELS_PER_TILE;
 			availableTiles[index] = tile;
 			setTileLocation(index);
 			addChild(tile);
-		}
+		}*/
 
-		private function parseTileRates(tileRatesBytes:ByteArray):void {
+		/*private function parseTileRates(tileRatesBytes:ByteArray):void {
 			var i:int; var j:int; var end:int; var pos:int;
 			var lineData:Array; var tType:String; var tPercent:int;
 
@@ -168,6 +207,6 @@ package {
 					pos++;
 				}
 			}
-		}
+		}*/
 	}
 }

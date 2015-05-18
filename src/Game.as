@@ -25,7 +25,7 @@ package {
 		[Embed(source='assets/backgrounds/background.png')] private var grid_background:Class;
 		[Embed(source='assets/backgrounds/char_hud_stretch.png')] private static const char_hud:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] private var static_background:Class;
-		[Embed(source='assets/backgrounds/tile_hud_large.png')] private static const tile_hud:Class;
+		[Embed(source='assets/backgrounds/tile_hud.png')] private static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_shifted.png')] private static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] private static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] private static const tutorial_panning:Class;
@@ -568,7 +568,7 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
-			if (tileHud) {
+			/*if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
 					// There is no selected tile
@@ -676,7 +676,7 @@ package {
 						currentFloor.clearHighlightedLocations();
 					}
 				}
-			}
+			}*/
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {

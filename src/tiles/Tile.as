@@ -114,6 +114,8 @@ package tiles {
 
 		// Moves the tiles to the given touch location (for tile selection)
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
+			width = Util.PIXELS_PER_TILE;
+			height = Util.PIXELS_PER_TILE;
 			x = touch.globalX - Util.PIXELS_PER_TILE / 2;
 			y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
 			checkGameBounds();

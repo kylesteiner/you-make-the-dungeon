@@ -7,10 +7,14 @@ package {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
 
-		public static const HUD_PAD_TOP:int = 4;
-		public static const HUD_PAD_LEFT:int = 8;
+		public static const HUD_OFFSET:int = 8;
+		public static const HUD_OFFSET_TILES:int = 56 + 17;
+		public static const HUD_OFFSET_DEL:int = 366;
+		public static const HUD_PAD_TOP:int = 8;
+		public static const HUD_PAD_LEFT:int = 12;
+		public static const HUD_PIXELS_PER_TILE:int = 40;
+		public static const HUD_TAB_SIZE:int = 5;
 
-		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const REAL_TILE_SIZE:int = 256;
 		public static const PIXELS_PER_TILE:int = 64; // 48
 		public static const BORDER_PIXELS:Number = (1.0 / 16.0);
