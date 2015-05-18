@@ -26,12 +26,19 @@ package {
 		public static const FLOOR_FAIL_TEXT:String = "Nea was defeated!\nClick here to continue building.";
 		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
 
+		private static const STATE_MENU:String = "game_menu";
+		private static const STATE_BUILD:String = "game_build";
+		private static const STATE_RUN:String = "game_run";
+		private static const STATE_COMBAT:String = "game_combat";
+		private static const STATE_POPUP:String = "game_popup";
+
 		private var cursorAnim:MovieClip;
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
 		private var resetButton:Clickable;
 		private var runButton:Clickable;
+		private var endButton:Clickable;
 		private var tileHud:TileHud;
 		private var charHud:CharHud;
 		private var mixer:Mixer;
@@ -63,6 +70,8 @@ package {
 		// for sanity
 		private var currentText:TextField;
 		private var currentTextImage:Image;
+
+		private var gameState:String;
 
 		public function Game() {
 			Mouse.hide();
@@ -137,6 +146,10 @@ package {
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
 			runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+
+			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, endRun, null, textures[Util.ICON_END]);
+			endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -247,6 +260,7 @@ package {
 			prepareSwap();
 
 			isMenu = true;
+			gameState = STATE_MENU;
 			currentMenu = newMenu;
 			addChild(currentMenu);
 			addChild(bgmMuteButton);
@@ -273,13 +287,13 @@ package {
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger, newFloorData[4]);
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], floors, switchToTransition, mixer, logger);
 			if(currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
 
 			// the logger doesn't like 0 based indexing.
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
+			logger.logLevelStart(1, { "characterLevel":currentFloor.char.state.level } );
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -295,7 +309,7 @@ package {
 			addChild(runButton);
 			charHud = new CharHud(currentFloor.char, textures);
 			addChild(charHud);
-			tileHud = new TileHud(newFloorData[1], textures);
+			tileHud = new TileHud(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX], textures);
 			addChild(tileHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
@@ -312,19 +326,20 @@ package {
 
 			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 
+			floors = Embed.setupFloors();
+
 			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			beginGameButton.addParameter(switchToFloor);
 			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
-			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
+			beginGameButton.addParameter(floors[Util.MAIN_FLOOR]);
+			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
+			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
 			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
-			beginGameButton.addParameter(1);
-
-			floors = Embed.setupFloors();
+			//beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startButton, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, beginGameButton, creditsButton)));
 		}
 
 		public function createFloorSelect():void {
@@ -391,8 +406,25 @@ package {
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 								   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 
-			currentFloor.removeTutorial();
-			currentFloor.runFloor();
+
+			removeChild(runButton);
+			addChild(endButton);
+			//currentFloor.removeTutorial();
+			//currentFloor.runFloor();
+			gameState = STATE_RUN;
+			currentFloor.toggleRun();
+		}
+
+		public function endRun():void {
+			//TODO: I AM A STUB
+			// 		call at end of run automatically when stamina <= 0
+			//		reset char, bring up new display which triggers phase change afterwards
+			//		add gold and other items
+			removeChild(endButton);
+			addChild(runButton);
+			gameState = STATE_BUILD;
+			currentFloor.toggleRun();
+			currentFloor.resetFloor();
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {

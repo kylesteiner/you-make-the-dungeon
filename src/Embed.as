@@ -41,6 +41,7 @@ package {
             [Embed(source='assets/icons/medium/mute_sfx.png')] public static const icon_mute_sfx:Class;
             [Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
             [Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
+            [Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
             [Embed(source='assets/icons/attack.png')] public static const icon_atk:Class;
             [Embed(source='assets/icons/health.png')] public static const icon_health:Class;
 
@@ -60,6 +61,8 @@ package {
             [Embed(source='assets/tiles/clean/tile_sew.png')] public static var tile_sew:Class;
             [Embed(source='assets/tiles/clean/tile_sw.png')] public static var tile_sw:Class;
             [Embed(source='assets/tiles/clean/tile_w.png')] public static var tile_w:Class;
+
+            [Embed(source='floordata/main_floor.txt', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
             [Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
             [Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
@@ -203,6 +206,7 @@ package {
     			textures[Util.ICON_MUTE_SFX] = Texture.fromBitmap(new icon_mute_sfx(), true, false, 1);
     			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, 1);
     			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
+                textures[Util.ICON_END] = Texture.fromBitmap(new icon_end(), true, false, 1);
     			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
     			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
 
@@ -308,6 +312,8 @@ package {
     			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitionsFinal));
     			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
     			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));
+
+                tFloors[Util.MAIN_FLOOR] = new mainFloor();
 
     			return tFloors;
     		}

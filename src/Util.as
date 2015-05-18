@@ -79,6 +79,7 @@ package {
 		public static const ICON_MUTE_SFX:String = "icon_mute_sfx";
 		public static const ICON_RESET:String = "icon_reset";
 		public static const ICON_RUN:String = "icon_run";
+		public static const ICON_END:String = "icon_end";
 		public static const ICON_ATK:String = "icon_attack";
 		public static const ICON_HEALTH:String = "icon_health";
 		public static const TILE_HUD:String = "tile_hud";
@@ -106,6 +107,7 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
+		public static const MAIN_FLOOR:String = "main_floor"
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";
