@@ -23,7 +23,7 @@ package {
 	public class Floor extends Sprite {
 		// Number of lines at the beginning of floordata files that are
 		// dedicated to non-tile objects at the start.
-		public static const NON_TILE_LINES:int = 5;
+		public static const NON_TILE_LINES:int = 3;
 
 		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
 
@@ -52,6 +52,7 @@ package {
 		private var initialY:int;
 		private var initialXp:int;
 		private var initialLevel:int;
+		private var initialStamina:int;
 
 		private var agent:SearchAgent;
 
@@ -87,6 +88,7 @@ package {
 							  animationDict:Dictionary,
 							  level:int,
 							  xp:int,
+							  stamina:int,
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
@@ -95,6 +97,7 @@ package {
 			super();
 			initialLevel = level;
 			initialXp = xp;
+			initialStamina = stamina;
 			preplacedTiles = 0;
 			textures = textureDict;
 			animations = animationDict;
@@ -120,7 +123,7 @@ package {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
-			if(showPrompt > 0) {
+			/*if(showPrompt > 0) {
 				if(showPrompt == 1) {
 					tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
 				} else if(showPrompt == 2) {
@@ -136,7 +139,7 @@ package {
 				tutorialImage.x = getToX(0);
 				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
-			}
+			}*/
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
@@ -194,6 +197,10 @@ package {
 			}
 		}
 
+		public function toggleRun():void {
+			char.toggleRun();
+		}
+
 		// Called when the run button is clicked.
 		public function runFloor():void {
 			var foundPath:Boolean = agent.computePath(this);
@@ -230,6 +237,10 @@ package {
 
 		// Resets the character and grid state to their initial values.
 		public function resetFloor():void {
+			// Restore floor to pre-run grid
+			// Put entities back in
+			// Dont adjust fog of war
+
 			var i:int; var j:int;
 			if (grid) {
 				// Remove all tiles from the display tree.
@@ -244,6 +255,8 @@ package {
 				}
 				clearHighlightedLocations()
 			}
+
+			//clearHighlightedLocations();
 
 			// Replace the current grid with a fresh one.
 			grid = Util.initializeGrid(gridWidth, gridHeight);
@@ -277,7 +290,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -287,17 +300,19 @@ package {
 			}
 
 			// move to center
+			/*
 			if (parent) {
 				parent.x = Util.STAGE_WIDTH / 4;
 				parent.y = Util.STAGE_HEIGHT / 4;
-			}
+			}*/
 
+			/*
 			if(tutorialImage && originalTutorialDisplaying) {
 				tutorialDisplaying = true;
 				tutorialImage.x = getToX(0);
 				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
-			}
+			}*/
 
 		}
 
@@ -306,7 +321,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
 			addChild(char);
 		}
 
@@ -489,12 +504,14 @@ package {
 
 			// Parse the name of the next floor.
 			// Remove hidden escape characters
-			nextFloor = Util.stripString(floorData[1]);
+			//nextFloor = Util.stripString(floorData[1]);
+			nextFloor = "LOL PLACEHOLDER";
 
-			nextTransition = Util.stripString(floorData[2]);
+			//nextTransition = Util.stripString(floorData[2]);
+			nextTransition = "LOL ALSO PLACEHOLDER";
 
 			// Parse the floor dimensions and initialize the grid array.
-			var floorSize:Array = floorData[3].split("\t");
+			var floorSize:Array = floorData[1].split("\t");
 			gridWidth = Number(floorSize[0]);
 			gridHeight = Number(floorSize[1]);
 			var mapBoundsBackground:Image = new Image(textures[Util.GRID_BACKGROUND]);
@@ -517,11 +534,11 @@ package {
 			}
 
 			// Parse the character's starting position.
-			var characterData:Array = floorData[4].split("\t");
+			var characterData:Array = floorData[2].split("\t");
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
 
 			// Parse all of the tiles.
 			var lineData:Array;

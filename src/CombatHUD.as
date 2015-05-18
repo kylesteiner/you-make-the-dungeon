@@ -48,6 +48,8 @@ package {
         private var charRetreating:Boolean;
         private var enemyRetreating:Boolean;
 
+        public var skipping:Boolean;
+
         private static const CHAR_X:int = Util.STAGE_WIDTH / 4;
         private static const CHAR_Y:int = 3 * (Util.STAGE_HEIGHT / 4);
         private static const ENEMY_X:int = 3 * (Util.STAGE_WIDTH / 4);
@@ -60,9 +62,12 @@ package {
         private static const XP_TEXT_SHIFT:int = -2;
         private static const RETREAT_SPEED:int = 8;
 
+        public static const ACCEL_TIME:int = 100;
+
         public function CombatHUD(textureDict:Dictionary,
                                animDict:Dictionary,
                                c:Character, e:EnemyTile,
+                               skip:Boolean,
                                soundMixer:Mixer,
                                dataLogger:Logger) {
             super();
@@ -74,6 +79,7 @@ package {
             logger = dataLogger;
 
             touchable = false;
+            skipping = skip;
 
             //e.state.hp = 10;
             //char.state.hp = 10;
@@ -85,6 +91,18 @@ package {
             addEventListener(AnimationEvent.CHAR_ATTACKED, onNextAttack);
 
             dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_ATTACKED, char, enemy));
+        }
+
+        public function toggleSkip():void {
+            skipping = !skipping;
+        }
+
+        public function displayChild(dispChild:DisplayObject):void {
+            // Currently unused, but used to skip combat
+            // Also need to mute sounds.
+            if(!skipping) {
+                addChild(dispChild);
+            }
         }
 
         public function setStage():void {
@@ -158,6 +176,19 @@ package {
             charAnim.advanceTime(e.passedTime);
             enemyAnim.advanceTime(e.passedTime);
 
+            // for speeding up combat (as opposed to outright skipping it)
+
+            if(skipping) {
+                while(!charAnim.loop && !charAnim.isComplete) {
+                    charAnim.advanceTime(ACCEL_TIME);
+                }
+
+                while(!enemyAnim.loop && !enemyAnim.isComplete) {
+                    enemyAnim.advanceTime(ACCEL_TIME);
+                }
+            }
+
+
             if(attackAnimation) {
                 attackAnimation.advanceTime(e.passedTime);
                 addChild(attackAnimation);
@@ -184,13 +215,13 @@ package {
                 xpText.y += XP_TEXT_SHIFT;
             }
 
-            if(charAnim.isComplete && charState == Util.CHAR_COMBAT_ATTACK && attackAnimation.isComplete) {
+            if(charState == Util.CHAR_COMBAT_ATTACK && (skipping || (charAnim.isComplete && attackAnimation.isComplete))) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.CHAR_ATTACKED, char, enemy));
-            } else if(charAnim.isComplete && charState == Util.CHAR_COMBAT_FAINT && charAnim.x <= -charAnim.width) {
+            } else if(charState == Util.CHAR_COMBAT_FAINT && (skipping || (charAnim.isComplete && charAnim.x <= -charAnim.width))) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.CHAR_DIED, char, enemy));
-            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_ATTACK && attackAnimation.isComplete) {
+            } else if(enemyState == Util.ENEMY_COMBAT_ATTACK && (skipping || (enemyAnim.isComplete && attackAnimation.isComplete))) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_ATTACKED, char, enemy));
-            } else if(enemyAnim.isComplete && enemyState == Util.ENEMY_COMBAT_FAINT && enemyAnim.x >= Util.STAGE_WIDTH) {
+            } else if(enemyState == Util.ENEMY_COMBAT_FAINT && (skipping || (enemyAnim.isComplete && enemyAnim.x >= Util.STAGE_WIDTH))) {
                 dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_DIED, char, enemy));
             }
         }
@@ -316,7 +347,9 @@ package {
                 if(enemy.state.hp <= 0) {
                     setEnemyFaint();
 
-                    mixer.play(Util.COMBAT_SUCCESS);
+                    if(!skipping) {
+                        mixer.play(Util.COMBAT_SUCCESS);
+                    }
 
                     xpText = createXpText(enemy.state.xpReward);
                     addChild(xpText);

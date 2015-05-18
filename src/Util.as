@@ -83,12 +83,15 @@ package {
 		public static const ICON_MUTE_SFX:String = "icon_mute_sfx";
 		public static const ICON_RESET:String = "icon_reset";
 		public static const ICON_RUN:String = "icon_run";
+		public static const ICON_END:String = "icon_end";
 		public static const ICON_ATK:String = "icon_attack";
 		public static const ICON_HEALTH:String = "icon_health";
+		public static const ICON_STAMINA:String = "icon_stamina";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
 		public static const MUTE_KEY:String = "m";
+		public static const COMBAT_SKIP_KEY:String = "k";
 		public static const UP_KEY:String = "w";
 		public static const LEFT_KEY:String = "a";
 		public static const RIGHT_KEY:String = "d";
@@ -110,6 +113,7 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
+		public static const MAIN_FLOOR:String = "main_floor"
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";
@@ -149,6 +153,7 @@ package {
 
 		public static const STARTING_LEVEL:int = 1;
 		public static const STARTING_XP:int = 0;
+		public static const STARTING_STAMINA:int = 5;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
