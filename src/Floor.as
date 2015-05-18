@@ -83,6 +83,8 @@ package {
 
 		public var altCallback:Function;
 
+		public var pressedKeys:Array;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
@@ -119,6 +121,8 @@ package {
 			floorFiles = floorDict;
 			onCompleteCallback = nextFloorCallback;
 
+			pressedKeys = new Array();
+
 			parseFloorData(floorData);
 			resetFloor();
 
@@ -153,6 +157,7 @@ package {
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
 
 		private function getToX(x:int):int {
@@ -648,6 +653,59 @@ package {
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
+
+			var keyCode:uint;
+			var cgx:int; var cgy:int;
+			var charTile:Tile; var nextTile:Tile;
+
+			for each (keyCode in pressedKeys) {
+				cgx = Util.real_to_grid(char.x);
+				cgy = Util.real_to_grid(char.y);
+
+				if(!grid[cgx][cgy]) {
+					continue; // empty tile, invalid state
+				}
+
+				charTile = grid[cgx][cgy];
+
+				if (keyCode == Keyboard.UP && cgy > 0) {
+					if(!grid[cgx][cgy-1]) {
+						continue;
+					}
+
+					nextTile = grid[cgx][cgy-1];
+					if(charTile.north && nextTile.south) {
+						char.move(Util.NORTH);
+					}
+				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
+					if(!grid[cgx][cgy+1]) {
+						continue;
+					}
+
+					nextTile = grid[cgx][cgy+1];
+					if(charTile.south && nextTile.north) {
+						char.move(Util.SOUTH);
+					}
+				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
+					if(!grid[cgx-1][cgy]) {
+						continue;
+					}
+
+					nextTile = grid[cgx-1][cgy];
+					if(charTile.west && nextTile.east) {
+						char.move(Util.WEST);
+					}
+				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
+					if(!grid[cgx+1][cgy]) {
+						continue;
+					}
+
+					nextTile = grid[cgx+1][cgy];
+					if(charTile.east && nextTile.west) {
+						char.move(Util.EAST);
+					}
+				}
+			}
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -655,53 +713,22 @@ package {
 				return;
 			}
 
-			var cgx:int = Util.real_to_grid(char.x);
-			var cgy:int = Util.real_to_grid(char.y);
+			if(pressedKeys.indexOf(event.keyCode) == -1) {
+				pressedKeys.push(event.keyCode);
+			}
+		}
 
-			if(!grid[cgx][cgy]) {
-				return; // empty tile, invalid state
+		private function onKeyUp(event:KeyboardEvent):void {
+			if(!char.runState) {
+				return;
 			}
 
-			var charTile:Tile = grid[cgx][cgy];
-			var nextTile:Tile;
-
-			if (event.keyCode == Keyboard.UP && cgy > 0) {
-				if(!grid[cgx][cgy-1]) {
-					return;
-				}
-
-				nextTile = grid[cgx][cgy-1];
-				if(charTile.north && nextTile.south) {
-					char.move(Util.NORTH);
-				}
-			} else if (event.keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
-				if(!grid[cgx][cgy+1]) {
-					return;
-				}
-
-				nextTile = grid[cgx][cgy+1];
-				if(charTile.south && nextTile.north) {
-					char.move(Util.SOUTH);
-				}
-			} else if (event.keyCode == Keyboard.LEFT && cgx > 0) {
-				if(!grid[cgx-1][cgy]) {
-					return;
-				}
-
-				nextTile = grid[cgx-1][cgy];
-				if(charTile.west && nextTile.east) {
-					char.move(Util.WEST);
-				}
-			} else if (event.keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
-				if(!grid[cgx+1][cgy]) {
-					return;
-				}
-
-				nextTile = grid[cgx+1][cgy];
-				if(charTile.east && nextTile.west) {
-					char.move(Util.EAST);
-				}
+			if(pressedKeys.indexOf(event.keyCode) == -1) {
+				return;
 			}
+
+			pressedKeys.splice(pressedKeys.indexOf(event.keyCode), 1);
+			// TODO: test functionality with pressng + releasing many keys
 		}
 
 		// When a character arrives at a tile, it fires an event up to Floor.
