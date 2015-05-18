@@ -87,6 +87,7 @@ package {
 		public static const CHAR_HUD:String = "char_hud";
 
 		public static const MUTE_KEY:String = "m";
+		public static const COMBAT_SKIP_KEY:String = "k";
 		public static const UP_KEY:String = "w";
 		public static const LEFT_KEY:String = "a";
 		public static const RIGHT_KEY:String = "d";

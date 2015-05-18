@@ -67,6 +67,7 @@ package {
         public function CombatHUD(textureDict:Dictionary,
                                animDict:Dictionary,
                                c:Character, e:EnemyTile,
+                               skip:Boolean,
                                soundMixer:Mixer,
                                dataLogger:Logger) {
             super();
@@ -78,7 +79,7 @@ package {
             logger = dataLogger;
 
             touchable = false;
-            skipping = true;
+            skipping = skip;
 
             //e.state.hp = 10;
             //char.state.hp = 10;
@@ -90,6 +91,10 @@ package {
             addEventListener(AnimationEvent.CHAR_ATTACKED, onNextAttack);
 
             dispatchEvent(new AnimationEvent(AnimationEvent.ENEMY_ATTACKED, char, enemy));
+        }
+
+        public function toggleSkip():void {
+            skipping = !skipping;
         }
 
         public function displayChild(dispChild:DisplayObject):void {
@@ -173,10 +178,7 @@ package {
 
             // for speeding up combat (as opposed to outright skipping it)
 
-            charAnim.advanceTime(100);
-            enemyAnim.advanceTime(100);
-
-            /*if(skipping) {
+            if(skipping) {
                 while(!charAnim.loop && !charAnim.isComplete) {
                     charAnim.advanceTime(ACCEL_TIME);
                 }
@@ -184,7 +186,7 @@ package {
                 while(!enemyAnim.loop && !enemyAnim.isComplete) {
                     enemyAnim.advanceTime(ACCEL_TIME);
                 }
-            }*/
+            }
 
 
             if(attackAnimation) {

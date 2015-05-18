@@ -65,6 +65,7 @@ package {
 		private var healingTiles:int;
 
 		private var currentCombat:CombatHUD;
+		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
 
 		private var currentTile:Tile;
@@ -117,6 +118,8 @@ package {
 			isMenu = false;
 			createMainMenu();
 
+			combatSkip = false;
+
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
 
@@ -167,7 +170,7 @@ package {
 		}
 
 		private function startCombat(event:TileEvent):void {
-			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], mixer, logger);
+			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], combatSkip, mixer, logger);
 			addChild(currentCombat);
 		}
 
@@ -582,15 +585,26 @@ package {
 		private function onKeyDown(event:KeyboardEvent):void {
 			// to ensure that they can't move the world around until
 			// a floor is loaded, and not cause flash errors
+			var input:String = String.fromCharCode(event.charCode);
+
+
+			if(input == Util.MUTE_KEY) {
+				mixer.togglePlay();
+			}
+
+			if(input == Util.COMBAT_SKIP_KEY) {
+				combatSkip = !combatSkip;
+				if(currentCombat && gameState == STATE_COMBAT) {
+					if(currentCombat.skipping != combatSkip) {
+						currentCombat.toggleSkip();
+					}
+				}
+			}
+
 			if (currentFloor) {
 				// TODO: set up dictionary of charCode -> callback?
 				if(currentFloor.floorName == Util.TUTORIAL_PAN_FLOOR) {
 					currentFloor.removeTutorial();
-				}
-
-				var input:String = String.fromCharCode(event.charCode);
-				if(input == Util.MUTE_KEY) {
-					mixer.togglePlay();
 				}
 
 				// TODO: add bounds that the camera cannot go beyond,
