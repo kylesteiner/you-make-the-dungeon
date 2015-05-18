@@ -13,8 +13,9 @@ package {
 		private var textures:Dictionary;
 		private var HUD:Image;
 
-		public var tiles:Array;
+		public var availableTiles:Array;
 		public var tab:int;
+		public var selectedTile:Tile;
 		public var highlightedLocations:Array;
 
 		/**********************************************************************************
@@ -24,31 +25,41 @@ package {
 		public function TileHud(textureDict:Dictionary) {
 			super();
 			textures = textureDict;
-			generateHudTiles();
-			
-			highlightedLocations = new Array(Util.HUD_TAB_SIZE);
 			
 			HUD = new Image(textures[Util.TILE_HUD]);
 			HUD.x = Util.HUD_OFFSET;
 			HUD.y = 0;
 			addChild(HUD);
+			
+			generateHudTiles();
 
 			tab = 0;
 			loadTab(tab);
+			selectedTile = null;
+			highlightedLocations = new Array(Util.HUD_TAB_SIZE);
+			
+			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 		
 		public function generateHudTiles():void {
-			tiles = new Array();
-			tiles.push(new Tile(0, 0, true, false, false, false, textures[Util.getTextureString(true, false, false, false)]));
-			tiles.push(new Tile(0, 0, true, true, false, false, textures[Util.getTextureString(true, true, false, false)]));
-			tiles.push(new Tile(0, 0, true, false, false, true, textures[Util.getTextureString(true, false, false, true)]));
-			tiles.push(new Tile(0, 0, true, false, true, true, textures[Util.getTextureString(true, false, true, true)]));
-			tiles.push(new Tile(0, 0, true, true, true, true, textures[Util.getTextureString(true, true, false, true)]));
-			for (var i:int = 0; i < tiles.length; i++) {
-				tiles[i].width = Util.HUD_PIXELS_PER_TILE;
-				tiles[i].height = Util.HUD_PIXELS_PER_TILE;
-				setTilePosition(i % Util.HUD_TAB_SIZE);
+			availableTiles = new Array();
+			availableTiles.push(new Tile(0, 0, true, false, false, false, textures[Util.getTextureString(true, false, false, false)]));
+			availableTiles.push(new Tile(0, 0, true, true, false, false, textures[Util.getTextureString(true, true, false, false)]));
+			availableTiles.push(new Tile(0, 0, true, false, false, true, textures[Util.getTextureString(true, false, false, true)]));
+			availableTiles.push(new Tile(0, 0, true, false, true, true, textures[Util.getTextureString(true, false, true, true)]));
+			availableTiles.push(new Tile(0, 0, true, true, true, true, textures[Util.getTextureString(true, true, true, true)]));
+			for (var i:int = 0; i < availableTiles.length; i++) {
+				availableTiles[i].width = Util.HUD_PIXELS_PER_TILE;
+				availableTiles[i].height = Util.HUD_PIXELS_PER_TILE;
+				availableTiles[i].locked = true;
+				setTilePosition(i);
 			}
+		}
+		
+		public function setTilePosition(index:int):void {
+			availableTiles[index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
+				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * (index % Util.HUD_TAB_SIZE);
+			availableTiles[index].y = HUD.y + Util.HUD_PAD_TOP;
 		}
 		
 		/**********************************************************************************
@@ -58,29 +69,56 @@ package {
 		public function loadTab(newTab:int):void {
 			var i:int;
 			
-			if (newTab < 0 || newTab > (tiles.length - 1) / Util.HUD_TAB_SIZE) {
+			if (newTab < 0 || newTab > (availableTiles.length - 1) / Util.HUD_TAB_SIZE) {
 				return;
 			}
 			
 			for (i = 0; i < Util.HUD_TAB_SIZE; i++) {
-				removeChild(tiles[tab * Util.HUD_TAB_SIZE]);
+				removeChild(availableTiles[tab * Util.HUD_TAB_SIZE + i]);
 			}
 			
 			tab = newTab;
 			
 			for (i = 0; i < Util.HUD_TAB_SIZE; i++) {
-				addChild(tiles[tab * Util.HUD_TAB_SIZE]);
+				addChild(availableTiles[tab * Util.HUD_TAB_SIZE + i]);
+			}
+		}
+		
+		public function resetTileHud():void {
+			loadTab(0);
+		}
+		
+		public function selectTile(index:int):void {
+			selectedTile = availableTiles[tab * Util.HUD_TAB_SIZE + index];
+		}
+		
+		public function unselectTile():void {
+			if (selectedTile != null) {
+				removeChild(selectedTile);
+				selectedTile = null;
 			}
 		}
 
-		public function setTilePosition(index:int):void {
-			tiles[tab * index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
-				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * index;
-			tiles[tab * index].y = HUD.y + Util.HUD_PAD_TOP;
+		/**********************************************************************************
+		 *  Events
+		 **********************************************************************************/
+		
+		private function onMouseEvent(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(this);
+
+			if (!touch) {
+				return
+			}
+			
+			
 		}
 		
 		
-		
+		/*
+		public function removeAndReplaceTile(index:int):void {
+			removeChild(availableTiles[index]);
+			//getNextTile(index)
+		}
 		public function getTileByIndex(index:int):Tile {
 			return availableTiles[index];
 		}
@@ -94,29 +132,7 @@ package {
 			}
 			return -1;
 		}
-
-		public function returnSelectedTile():void {
-			var index:int = indexOfSelectedTile()
-			if (index != -1) {
-				availableTiles[index].selected = false;
-				availableTiles[index].width = Util.HUD_PIXELS_PER_TILE;
-				availableTiles[index].height = Util.HUD_PIXELS_PER_TILE;
-				setTileLocation(index);
-			}
-		}
-
-		public function resetTileHud(): void {
-			for (var i:int = 0; i < availableTiles.length; i++) {
-				removeAndReplaceTile(i);
-			}
-		}
-
-		public function removeAndReplaceTile(index:int):void {
-			removeChild(availableTiles[index]);
-			getNextTile(index)
-		}
-
-		/*
+		
 		public function lockTiles():void {
 			for (var i:int; i < availableTiles.length; i++) {
 				availableTiles[i].locked = true;

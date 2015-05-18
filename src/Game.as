@@ -294,7 +294,7 @@ package {
 			addChild(runButton);
 			charHud = new CharHud(currentFloor.char, textures);
 			addChild(charHud);
-			tileHud = new TileHud(newFloorData[1], textures);
+			tileHud = new TileHud(textures);
 			addChild(tileHud);
 
 			mixer.play(Util.FLOOR_BEGIN);

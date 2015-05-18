@@ -56,7 +56,7 @@ package tiles {
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
 
-			locked = true;
+			locked = false;
 			selected = false;
 
 			displayInformation();
