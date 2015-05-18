@@ -11,8 +11,15 @@ package {
         public var staminaBar:Quad;
         public var healthText:TextField;
         public var staminaText:TextField;
+        public var healthIcon:Image;
+        public var staminaIcon:Image;
 
         private var textures:Dictionary;
+
+        public static const HEALTH_BAR_COLOR:uint = 0xff0000;
+        public static const STAMINA_BAR_COLOR:uint = 0x0000ff;
+        public static const HEALTH_BAR_WIDTH:int = 32;
+        public static const STAMINA_BAR_WIDTH:int = 32;
 
 
         public function RunHUD(textureDict:Dictionary) {
@@ -20,20 +27,31 @@ package {
 
             hud = new Sprite();
 
-            healthBar = new Quad(32, Util.STAGE_HEIGHT, 0xff0000); // (x, y) = (0, 0)
+            healthBar = new Quad(HEALTH_BAR_WIDTH, Util.STAGE_HEIGHT, HEALTH_BAR_COLOR); // (x, y) = (0, 0)
             hud.addChild(healthBar);
 
-            staminaBar = new Quad(32, Util.STAGE_HEIGHT, 0x0000ff);
+            staminaBar = new Quad(STAMINA_BAR_WIDTH, Util.STAGE_HEIGHT, STAMINA_BAR_COLOR);
             staminaBar.x = healthBar.width;
             hud.addChild(staminaBar);
 
-            healthText = new TextField(32, 128, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-            healthText.y = Util.STAGE_HEIGHT - healthText.height;
+            healthIcon = new Image(textures[Util.ICON_HEALTH]);
+            healthIcon.y = Util.STAGE_HEIGHT - healthIcon.height;
+            hud.addChild(healthIcon);
+
+            staminaIcon = new Image(textures[Util.ICON_STAMINA]);
+            staminaIcon.y = Util.STAGE_HEIGHT - staminaIcon.height;
+            staminaIcon.x = healthBar.width;
+            hud.addChild(staminaIcon);
+
+            healthText = new TextField(healthBar.width, Util.MEDIUM_FONT_SIZE, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            healthText.y = healthIcon.y - healthText.height;
+            healthText.autoScale = true;
             hud.addChild(healthText);
 
-            staminaText = new TextField(32, 128, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-            staminaText.y = Util.STAGE_HEIGHT - staminaText.height;
-            staminaText.x = healthText.width;
+            staminaText = new TextField(staminaBar.width, Util.MEDIUM_FONT_SIZE, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            staminaText.y = staminaIcon.y - staminaText.height;
+            staminaText.x = healthBar.width;
+            staminaText.autoScale = true;
             hud.addChild(staminaText);
 
             addChild(hud);
@@ -47,16 +65,18 @@ package {
             staminaText.text = character.currentStamina.toString();
 
             var healthHeight:int = Util.STAGE_HEIGHT * ((character.state.hp * 1.0) / character.state.maxHp);
-            healthBar = new Quad(32, healthHeight, 0xff0000);
+            healthBar = new Quad(HEALTH_BAR_WIDTH, healthHeight, HEALTH_BAR_COLOR);
             healthBar.y = Util.STAGE_HEIGHT - healthHeight;
 
             var staminaHeight:int = Util.STAGE_HEIGHT * ((character.currentStamina * 1.0) / character.maxStamina);
-            staminaBar = new Quad(32, staminaHeight, 0x0000ff);
+            staminaBar = new Quad(STAMINA_BAR_WIDTH, staminaHeight, STAMINA_BAR_COLOR);
             staminaBar.y = Util.STAGE_HEIGHT - staminaHeight;
             staminaBar.x = healthBar.width;
 
             hud.addChild(healthBar);
             hud.addChild(staminaBar);
+            hud.addChild(healthIcon);
+            hud.addChild(staminaIcon);
             hud.addChild(healthText);
             hud.addChild(staminaText);
         }
