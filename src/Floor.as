@@ -290,7 +290,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -321,7 +321,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 			addChild(char);
 		}
 
@@ -538,7 +538,7 @@ package {
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 
 			// Parse all of the tiles.
 			var lineData:Array;

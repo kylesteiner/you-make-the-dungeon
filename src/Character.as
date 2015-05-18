@@ -40,9 +40,13 @@ package {
 		public var maxStamina:int;
 		public var currentStamina:int;
 
+		public var attackImage:Image;
+		public var attackText:TextField;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, stamina:int, animationDict:Dictionary) {
+		public function Character(g_x:int, g_y:int, level:int, xp:int, stamina:int,
+								  animationDict:Dictionary, attackTexture:Texture) {
 			super();
 			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
@@ -64,6 +68,14 @@ package {
 			currentStamina = stamina;
 
 			runState = false;
+
+			attackImage = new Image(attackTexture);
+			attackImage.y = currentAnimation.height - (attackImage.height / 2);
+
+			attackText = new TextField(32, 32, attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			attackText.x = attackImage.width;
+			attackText.y = attackImage.y;
+			attackText.autoScale = true;
 			//dispField = new TextField(128, 128, runState.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			//dispField.x = currentAnimation.x;
 			//dispField.y = currentAnimation.height;
@@ -78,6 +90,13 @@ package {
 
 		public function toggleRun():void {
 			runState = !runState;
+			if(runState) {
+				addChild(attackImage);
+				addChild(attackText);
+			} else {
+				removeChild(attackImage);
+				removeChild(attackText);
+			}
 		}
 
 		// Begins moving the Character from one tile to the next.
@@ -134,6 +153,7 @@ package {
 
 		private function onEnterFrame(e:EnterFrameEvent):void {
 			currentAnimation.advanceTime(e.passedTime);
+			attackText.text = state.attack.toString();
 
 			//dispField.text = runState.toString();
 
