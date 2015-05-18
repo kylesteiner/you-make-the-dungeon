@@ -67,6 +67,7 @@ package {
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
+		private var goldHud:GoldHUD;
 
 		private var currentTile:Tile;
 		// for sanity
@@ -74,6 +75,7 @@ package {
 		private var currentTextImage:Image;
 
 		private var gameState:String;
+		private var gold:int;
 
 		public function Game() {
 			Mouse.hide();
@@ -119,6 +121,7 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
+			gold = Util.STARTING_GOLD;
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -137,11 +140,14 @@ package {
 			world = new Sprite();
 			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
+			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
+			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
+
 			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
 			//sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
-			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
-			sfxMuteButton.y = Util.BORDER_PIXELS;
+			sfxMuteButton.x = goldHud.x - sfxMuteButton.width - Util.UI_PADDING;
+			sfxMuteButton.y = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
 			//bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
@@ -267,6 +273,8 @@ package {
 				removeChild(runButton);
 				//removeChild(charHud);
 				removeChild(tileHud);
+				removeChild(goldHud);
+				removeChild(runHud);
 			}
 		}
 
@@ -329,6 +337,7 @@ package {
 			addChild(sfxMuteButton);
 			//addChild(resetButton);
 			addChild(runButton);
+			addChild(goldHud);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
 			tileHud = new TileHud(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX], textures);
