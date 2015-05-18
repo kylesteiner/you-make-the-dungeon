@@ -82,6 +82,7 @@ package {
 		public static const ICON_END:String = "icon_end";
 		public static const ICON_ATK:String = "icon_attack";
 		public static const ICON_HEALTH:String = "icon_health";
+		public static const ICON_STAMINA:String = "icon_stamina";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
@@ -147,6 +148,7 @@ package {
 
 		public static const STARTING_LEVEL:int = 1;
 		public static const STARTING_XP:int = 0;
+		public static const STARTING_STAMINA:int = 5;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

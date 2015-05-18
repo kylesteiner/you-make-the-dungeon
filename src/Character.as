@@ -37,9 +37,12 @@ package {
 		private var runState:Boolean;
 		//private var dispField:TextField;
 
+		public var maxStamina:int;
+		public var currentStamina:int;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, animationDict:Dictionary) {
+		public function Character(g_x:int, g_y:int, level:int, xp:int, stamina:int, animationDict:Dictionary) {
 			super();
 			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
@@ -56,6 +59,9 @@ package {
 			var hp:int = maxHp;
 			// Setup character game state.
 			state = new CharState(g_x, g_y, xp, level, maxHp, hp, attack);
+
+			maxStamina = stamina;
+			currentStamina = stamina;
 
 			runState = false;
 			//dispField = new TextField(128, 128, runState.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
@@ -154,6 +160,12 @@ package {
 					dispatchEvent(new TileEvent(TileEvent.CHAR_ARRIVED,
 												Util.real_to_grid(x),
 												Util.real_to_grid(y)));
+
+					currentStamina -= 1;
+
+					if(currentStamina <= 0) {
+						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED));
+					}
 				}
 			}
 		}

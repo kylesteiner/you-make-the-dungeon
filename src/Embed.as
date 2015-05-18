@@ -44,6 +44,7 @@ package {
             [Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
             [Embed(source='assets/icons/attack.png')] public static const icon_atk:Class;
             [Embed(source='assets/icons/health.png')] public static const icon_health:Class;
+            [Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
 
             [Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
             [Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -209,6 +210,7 @@ package {
                 textures[Util.ICON_END] = Texture.fromBitmap(new icon_end(), true, false, 1);
     			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
     			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
+                textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
 
     			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
     			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);

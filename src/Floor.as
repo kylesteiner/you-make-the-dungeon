@@ -52,6 +52,7 @@ package {
 		private var initialY:int;
 		private var initialXp:int;
 		private var initialLevel:int;
+		private var initialStamina:int;
 
 		private var agent:SearchAgent;
 
@@ -87,6 +88,7 @@ package {
 							  animationDict:Dictionary,
 							  level:int,
 							  xp:int,
+							  stamina:int,
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
@@ -95,6 +97,7 @@ package {
 			super();
 			initialLevel = level;
 			initialXp = xp;
+			initialStamina = stamina;
 			preplacedTiles = 0;
 			textures = textureDict;
 			animations = animationDict;
@@ -287,7 +290,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -318,7 +321,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
 			addChild(char);
 		}
 
@@ -535,7 +538,7 @@ package {
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
 
 			// Parse all of the tiles.
 			var lineData:Array;

@@ -65,6 +65,7 @@ package {
 		private var healingTiles:int;
 
 		private var currentCombat:CombatHUD;
+		private var runHud:RunHUD;
 
 		private var currentTile:Tile;
 		// for sanity
@@ -125,6 +126,8 @@ package {
 
 			addEventListener(AnimationEvent.CHAR_DIED, onCombatFailure);
 			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
+
+			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 		}
 
 		private function initializeFloorWorld():void {
@@ -150,6 +153,8 @@ package {
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, endRun, null, textures[Util.ICON_END]);
 			endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+
+			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -287,7 +292,7 @@ package {
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], floors, switchToTransition, mixer, logger);
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger);
 			if(currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
@@ -336,6 +341,7 @@ package {
 			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
 			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
+			beginGameButton.addParameter(Util.STARTING_STAMINA);
 			//beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
@@ -409,10 +415,15 @@ package {
 
 			removeChild(runButton);
 			addChild(endButton);
+			addChild(runHud);
 			//currentFloor.removeTutorial();
 			//currentFloor.runFloor();
 			gameState = STATE_RUN;
 			currentFloor.toggleRun();
+		}
+
+		public function onStaminaExpended(event:GameEvent):void {
+			endRun();
 		}
 
 		public function endRun():void {
@@ -421,6 +432,7 @@ package {
 			//		reset char, bring up new display which triggers phase change afterwards
 			//		add gold and other items
 			removeChild(endButton);
+			removeChild(runHud);
 			addChild(runButton);
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
@@ -430,6 +442,9 @@ package {
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
 			addChild(cursorAnim);
+			if(gameState == STATE_RUN && runHud && currentFloor) {
+				runHud.update(currentFloor.char);
+			}
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {

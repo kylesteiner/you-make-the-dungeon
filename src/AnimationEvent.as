@@ -10,6 +10,7 @@ package {
         public static const ENEMY_ATTACKED:String = "enemy_attacked";
         public static const CHAR_DIED:String = "char_died";
         public static const ENEMY_DIED:String = "enemy_died";
+        public static const STAMINA_EXPENDED:String = "stamina_expended";
 
         public var character:Character;
         public var enemy:EnemyTile;
