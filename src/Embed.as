@@ -15,7 +15,7 @@ package {
             [Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
             [Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
 
-            [Embed(source='assets/effects/large/new_fog_2.png')] public static var fog:Class;
+            [Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
             [Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
             [Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
             [Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
