@@ -14,7 +14,6 @@ package {
 	import starling.textures.*;
 
 	import ai.Combat;
-	import ai.SearchAgent;
 	import Character;
 	import tiles.*;
 	import Util;
@@ -52,8 +51,6 @@ package {
 		private var initialY:int;
 		private var initialXp:int;
 		private var initialLevel:int;
-
-		private var agent:SearchAgent;
 
 		private var floorFiles:Dictionary;
 		private var nextFloor:String;
@@ -105,7 +102,6 @@ package {
 
 			objectiveState = new Dictionary();
 
-			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
 
 			this.logger = logger;
 
@@ -196,12 +192,6 @@ package {
 
 		// Called when the run button is clicked.
 		public function runFloor():void {
-			var foundPath:Boolean = agent.computePath(this);
-			if (foundPath) {
-				char.move(agent.getAction());
-			} else {
-				// TODO: Indicate to the player that there is no path.
-			}
 		}
 
 		public function getEntry():Tile {
@@ -683,7 +673,6 @@ package {
 		}
 
 		public function onCharHandled(e:TileEvent):void {
-			char.move(agent.getAction());
 		}
 
 		// Event handler for when a character arrives at an exit tile.
