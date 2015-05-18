@@ -7,6 +7,8 @@ package tiles {
 
     import ai.EnemyState;
 
+    import flash.utils.Dictionary;
+
     public class EnemyTile extends Tile {
         // Gameplay state
         public var state:EnemyState;
@@ -17,6 +19,7 @@ package tiles {
         public var level:int;
 
         private var enemy:Image;
+        private var enemySprite:Sprite;
 
         //private var baseSprite:Sprite;
         //private var textDisplay:TextField;
@@ -44,8 +47,7 @@ package tiles {
 
             super(g_x, g_y, n, s, e, w, background);
 
-            this.enemy = new Image(enemy);
-            addChild(this.enemy);
+
 
             /*baseSprite = new Sprite();
             addChild(baseSprite);
@@ -54,11 +56,45 @@ package tiles {
             textDisplay.x = Util.PIXELS_PER_TILE;
             baseSprite.addChild(textDisplay);*/
 
+            var textures:Dictionary = Embed.setupTextures();
+
+            enemySprite = new Sprite();
+
+            this.enemy = new Image(enemy);
+            enemySprite.addChild(this.enemy);
+
+            var healthIcon:Image = new Image(textures[Util.ICON_HEALTH]);
+            //healthIcon.x = -healthIcon.width;
+            //healthIcon.y = enemy.height;
+            enemySprite.addChild(healthIcon);
+
+            var healthText:TextField = new TextField(32, 32, hp.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            healthText.x = healthIcon.x + healthIcon.width;
+            healthText.autoScale = true;
+            //healthText.y = healthIcon.height / 2;
+            //healthText.y = healthIcon.y;
+            enemySprite.addChild(healthText);
+
+            var attackIcon:Image = new Image(textures[Util.ICON_ATK]);
+            attackIcon.y = enemy.height / 2;
+            enemySprite.addChild(attackIcon);
+
+            var attackText:TextField = new TextField(32, 32, attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            attackText.x = attackIcon.x + attackIcon.width;
+            attackText.y = attackIcon.y;
+            attackText.autoScale = true;
+            enemySprite.addChild(attackText);
+
+            addChild(enemySprite);
+            //this.enemy = new Image(enemy);
+            //addChild(this.enemy);
+
             displayInformation();
         }
 
         public function removeImage():void {
-            removeChild(enemy);
+            //removeChild(enemy);
+            removeChild(enemySprite);
             //removeChild(textDisplay);
             //enemy.alpha = Util.VISITED_ALPHA;
         }
@@ -71,7 +107,8 @@ package tiles {
         }
 
         override public function reset():void {
-            addChild(enemy);
+            //addChild(enemy);
+            addChild(enemySprite);
             //addChild(textDisplay);
             state.hp = initialHp;
         }
