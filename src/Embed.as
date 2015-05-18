@@ -15,7 +15,7 @@ package {
             [Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
             [Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
 
-            [Embed(source='assets/effects/large/new_fog_2.png')] public static var fog:Class;
+            [Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
             [Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
             [Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
             [Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
@@ -45,6 +45,7 @@ package {
             [Embed(source='assets/icons/attack.png')] public static const icon_atk:Class;
             [Embed(source='assets/icons/health.png')] public static const icon_health:Class;
             [Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
+            [Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
 
             [Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
             [Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -211,6 +212,7 @@ package {
     			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
     			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
                 textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
+                textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 
     			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
     			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);

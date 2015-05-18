@@ -4,6 +4,7 @@
 package {
 	import flash.net.*;
 	import flash.utils.*;
+	import flash.ui.Keyboard;
 	import mx.utils.StringUtil;
 
 	import starling.core.Starling;
@@ -53,6 +54,7 @@ package {
 		private var initialXp:int;
 		private var initialLevel:int;
 		private var initialStamina:int;
+		private var initialLos:int;
 
 		private var agent:SearchAgent;
 
@@ -81,6 +83,8 @@ package {
 
 		public var altCallback:Function;
 
+		public var pressedKeys:Array;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorData:ByteArray,
@@ -89,6 +93,7 @@ package {
 							  level:int,
 							  xp:int,
 							  stamina:int,
+							  lineOfSight:int,
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
@@ -98,6 +103,7 @@ package {
 			initialLevel = level;
 			initialXp = xp;
 			initialStamina = stamina;
+			initialLos = lineOfSight;
 			preplacedTiles = 0;
 			textures = textureDict;
 			animations = animationDict;
@@ -114,6 +120,8 @@ package {
 
 			floorFiles = floorDict;
 			onCompleteCallback = nextFloorCallback;
+
+			pressedKeys = new Array();
 
 			parseFloorData(floorData);
 			resetFloor();
@@ -148,6 +156,8 @@ package {
 			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
 			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
 			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
 
 		private function getToX(x:int):int {
@@ -290,7 +300,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -298,13 +308,6 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-
-			// move to center
-			/*
-			if (parent) {
-				parent.x = Util.STAGE_WIDTH / 4;
-				parent.y = Util.STAGE_HEIGHT / 4;
-			}*/
 
 			/*
 			if(tutorialImage && originalTutorialDisplaying) {
@@ -321,7 +324,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 			addChild(char);
 		}
 
@@ -538,7 +541,7 @@ package {
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 
 			// Parse all of the tiles.
 			var lineData:Array;
@@ -624,44 +627,17 @@ package {
 		// and doesn't deal with trying to remove a child that might not exist.
 		private function setUpInitialFoglessSpots(i:int, j:int):void {
 			var x:int; var y:int;
+			var radius:int = char.los;
 
-			// should go two up, down, left, right, and one in each diagonal location, removing
-			// fog when needed
-			for (x = 1; x <= 2; x++) {
-				if (x + i < initialFogGrid.length) {
-					initialFogGrid[x + i][j] = false;
-				}
-			}
-			for (x = -1; x >= -2; x--) {
-				if (x + i >= 0) {
-					initialFogGrid[x + i][j] = false;
-				}
-			}
-			for (y = -1; y >= -2; y--) {
-				if (y + j < initialFogGrid[i].length) {
-					initialFogGrid[i][y + j] = false;
-				}
-			}
-			for (y = 1; y <= 2; y++) {
-				if (y + j >= 0) {
-					initialFogGrid[i][y + j] = false;
-				}
-			}
-			// diagonal cases
-			if (i + 1 < initialFogGrid.length) {
-				if (j + 1 < initialFogGrid[j].length) {
-					initialFogGrid[i + 1][j + 1] = false;
-				}
-				if (j - 1 >= 0) {
-					initialFogGrid[i + 1][j - 1] = false;
-				}
-			}
-			if (i -1 >= 0) {
-				if (j + 1 < initialFogGrid[j].length) {
-					initialFogGrid[i - 1][j + 1] = false;
-				}
-				if (j - 1 >= 0) {
-					initialFogGrid[i - 1][j - 1] = false;
+			for(x = i - radius; x <= i + radius; x++) {
+				if(x >= 0 && x < initialFogGrid.length) {
+					for(y = j - radius; y <= j + radius; y++) {
+						if(y >= 0 && y < initialFogGrid[x].length) {
+							if(Math.abs(x-i) + Math.abs(y-j) <= radius) {
+								initialFogGrid[x][y] = false;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -677,6 +653,82 @@ package {
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
+
+			var keyCode:uint;
+			var cgx:int; var cgy:int;
+			var charTile:Tile; var nextTile:Tile;
+
+			for each (keyCode in pressedKeys) {
+				cgx = Util.real_to_grid(char.x);
+				cgy = Util.real_to_grid(char.y);
+
+				if(!grid[cgx][cgy]) {
+					continue; // empty tile, invalid state
+				}
+
+				charTile = grid[cgx][cgy];
+
+				if (keyCode == Keyboard.UP && cgy > 0) {
+					if(!grid[cgx][cgy-1]) {
+						continue;
+					}
+
+					nextTile = grid[cgx][cgy-1];
+					if(charTile.north && nextTile.south) {
+						char.move(Util.NORTH);
+					}
+				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
+					if(!grid[cgx][cgy+1]) {
+						continue;
+					}
+
+					nextTile = grid[cgx][cgy+1];
+					if(charTile.south && nextTile.north) {
+						char.move(Util.SOUTH);
+					}
+				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
+					if(!grid[cgx-1][cgy]) {
+						continue;
+					}
+
+					nextTile = grid[cgx-1][cgy];
+					if(charTile.west && nextTile.east) {
+						char.move(Util.WEST);
+					}
+				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
+					if(!grid[cgx+1][cgy]) {
+						continue;
+					}
+
+					nextTile = grid[cgx+1][cgy];
+					if(charTile.east && nextTile.west) {
+						char.move(Util.EAST);
+					}
+				}
+			}
+		}
+
+		private function onKeyDown(event:KeyboardEvent):void {
+			if(!char.runState) {
+				return;
+			}
+
+			if(pressedKeys.indexOf(event.keyCode) == -1) {
+				pressedKeys.push(event.keyCode);
+			}
+		}
+
+		private function onKeyUp(event:KeyboardEvent):void {
+			if(!char.runState) {
+				return;
+			}
+
+			if(pressedKeys.indexOf(event.keyCode) == -1) {
+				return;
+			}
+
+			pressedKeys.splice(pressedKeys.indexOf(event.keyCode), 1);
+			// TODO: test functionality with pressng + releasing many keys
 		}
 
 		// When a character arrives at a tile, it fires an event up to Floor.

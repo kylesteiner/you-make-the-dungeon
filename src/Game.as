@@ -35,11 +35,11 @@ package {
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
-		private var resetButton:Clickable;
+		//private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var tileHud:TileHud;
-		private var charHud:CharHud;
+		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
@@ -66,6 +66,7 @@ package {
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
+		private var goldHud:GoldHUD;
 
 		private var currentTile:Tile;
 		// for sanity
@@ -73,6 +74,7 @@ package {
 		private var currentTextImage:Image;
 
 		private var gameState:String;
+		private var gold:int;
 
 		public function Game() {
 			Mouse.hide();
@@ -118,6 +120,7 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
+			gold = Util.STARTING_GOLD;
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -136,24 +139,33 @@ package {
 			world = new Sprite();
 			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
-			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
-			bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
-			bgmMuteButton.y = Util.STAGE_HEIGHT - bgmMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
+			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 
 			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
-			sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			//sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			sfxMuteButton.x = goldHud.x - sfxMuteButton.width - Util.UI_PADDING;
+			sfxMuteButton.y = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
 
-			resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
-			resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
+			//bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
+			//bgmMuteButton.y = Util.STAGE_HEIGHT - bgmMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
+			bgmMuteButton.y = sfxMuteButton.y;
+
+			//resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
+			//resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			//resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
-			runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			//runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			runButton.x = sfxMuteButton.x;
 			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, endRun, null, textures[Util.ICON_END]);
-			endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			//endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
+			endButton.x = runButton.x;
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
@@ -237,10 +249,10 @@ package {
 
 		private function resetFloorCharacter():void {
 			removeChild(messageToPlayer);
-			removeChild(charHud);
+			//removeChild(charHud);
 			currentFloor.resetCharacter();
-			charHud = new CharHud(currentFloor.char, textures);
-			addChild(charHud);
+			//charHud = new CharHud(currentFloor.char, textures);
+			//addChild(charHud);
 		}
 
 		private function prepareSwap():void {
@@ -256,10 +268,12 @@ package {
 				removeChild(messageToPlayer);
 				// mute button should always be present
 				removeChild(currentTransition);
-				removeChild(resetButton);
+				//removeChild(resetButton);
 				removeChild(runButton);
-				removeChild(charHud);
+				//removeChild(charHud);
 				removeChild(tileHud);
+				removeChild(goldHud);
+				removeChild(runHud);
 			}
 		}
 
@@ -294,7 +308,7 @@ package {
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], floors, switchToTransition, mixer, logger);
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], newFloorData[4], floors, switchToTransition, mixer, logger);
 			if(currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
@@ -304,18 +318,27 @@ package {
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
-			world.x = Util.STAGE_WIDTH / 4;
-			world.y = Util.STAGE_HEIGHT / 4;
-			currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
-			currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
+			//world.x = Util.STAGE_WIDTH / 4;
+
+			/*var charWidth:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.width;
+			var charX:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.x;
+			world.x = Util.STAGE_WIDTH / 2 - Util.grid_to_real(Util.real_to_grid(charX));
+
+			var charHeight:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.height;
+			var charY:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.y;
+			world.y = Util.STAGE_HEIGHT / 2 - Util.grid_to_real(Util.real_to_grid(charY)) - (Util.PIXELS_PER_TILE * 3.0 / 4);*/
+			centerWorldOnCharacter();
+			//currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
+			//currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
 			addChild(world);
 			// mute button should always be on top
 			addChild(bgmMuteButton);
 			addChild(sfxMuteButton);
-			addChild(resetButton);
+			//addChild(resetButton);
 			addChild(runButton);
-			charHud = new CharHud(currentFloor.char, textures);
-			addChild(charHud);
+			addChild(goldHud);
+			//charHud = new CharHud(currentFloor.char, textures);
+			//addChild(charHud);
 			tileHud = new TileHud(textures);
 			addChild(tileHud);
 
@@ -344,6 +367,7 @@ package {
 			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
 			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
 			beginGameButton.addParameter(Util.STARTING_STAMINA);
+			beginGameButton.addParameter(Util.STARTING_LOS);
 			//beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
@@ -406,7 +430,7 @@ package {
 			healingTiles = 0;
 			currentFloor.resetFloor();
 			tileHud.resetTileHud();
-			charHud.char = currentFloor.char
+			//charHud.char = currentFloor.char
 			mixer.play(Util.FLOOR_RESET);
 		}
 
@@ -439,6 +463,28 @@ package {
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
 			currentFloor.resetFloor();
+
+			centerWorldOnCharacter();
+		}
+
+		private function centerWorldOnCharacter(exact:Boolean = false):void {
+			// Set exact to simulate camera snapping
+			// Only really useful for ensuring that the top-left is well-centered
+			// Parameter becomes completely useless with sliding instead of snapping pan
+
+			var charWidth:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.width;
+			var charX:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.x;
+			if(exact) {
+				charX = Util.grid_to_real(Util.real_to_grid(charX));
+			}
+			world.x = Util.STAGE_WIDTH / 2 - charX - Util.PIXELS_PER_TILE;
+
+			var charHeight:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.height;
+			var charY:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.y;
+			if(exact) {
+				charY = Util.grid_to_real(Util.real_to_grid(charY));
+			}
+			world.y = Util.STAGE_HEIGHT / 2 - charY - (Util.PIXELS_PER_TILE * 3.0 / 4);
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
@@ -446,6 +492,7 @@ package {
 			addChild(cursorAnim);
 			if(gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
+				centerWorldOnCharacter();
 			}
 		}
 

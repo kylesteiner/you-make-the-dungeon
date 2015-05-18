@@ -20,6 +20,7 @@ package {
 
 		public static const REAL_TILE_SIZE:int = 256;
 		public static const PIXELS_PER_TILE:int = 64; // 48
+		public static const UI_PADDING:int = 8;
 		public static const BORDER_PIXELS:Number = (1.0 / 16.0);
 		public static const BUTTON_SPACING:int = (1.0 / 8.0);
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
@@ -90,6 +91,7 @@ package {
 		public static const ICON_ATK:String = "icon_attack";
 		public static const ICON_HEALTH:String = "icon_health";
 		public static const ICON_STAMINA:String = "icon_stamina";
+		public static const ICON_GOLD:String = "icon_gold";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
@@ -156,7 +158,9 @@ package {
 
 		public static const STARTING_LEVEL:int = 1;
 		public static const STARTING_XP:int = 0;
-		public static const STARTING_STAMINA:int = 5;
+		public static const STARTING_STAMINA:int = 60; // high for debug purposes
+		public static const STARTING_GOLD:int = 20;
+		public static const STARTING_LOS:int = 2;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

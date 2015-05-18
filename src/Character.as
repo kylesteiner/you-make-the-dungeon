@@ -34,15 +34,22 @@ package {
 		private var animations:Dictionary;
 		private var currentAnimation:MovieClip;
 
-		private var runState:Boolean;
+		public var runState:Boolean;
 		//private var dispField:TextField;
 
 		public var maxStamina:int;
 		public var currentStamina:int;
 
+		public var attackImage:Image;
+		public var attackText:TextField;
+
+		public var los:int;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, stamina:int, animationDict:Dictionary) {
+		public function Character(g_x:int, g_y:int, level:int, xp:int,
+								  stamina:int, lineOfSight:int,
+								  animationDict:Dictionary, attackTexture:Texture) {
 			super();
 			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
@@ -62,8 +69,17 @@ package {
 
 			maxStamina = stamina;
 			currentStamina = stamina;
+			los = lineOfSight;
 
 			runState = false;
+
+			attackImage = new Image(attackTexture);
+			attackImage.y = currentAnimation.height - (attackImage.height / 2);
+
+			attackText = new TextField(32, 32, attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			attackText.x = attackImage.width;
+			attackText.y = attackImage.y;
+			attackText.autoScale = true;
 			//dispField = new TextField(128, 128, runState.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			//dispField.x = currentAnimation.x;
 			//dispField.y = currentAnimation.height;
@@ -73,11 +89,17 @@ package {
 			//addChild(dispField);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		public function toggleRun():void {
 			runState = !runState;
+			if(runState) {
+				addChild(attackImage);
+				addChild(attackText);
+			} else {
+				removeChild(attackImage);
+				removeChild(attackText);
+			}
 		}
 
 		// Begins moving the Character from one tile to the next.
@@ -116,24 +138,9 @@ package {
 			}
 		}
 
-		private function onKeyDown(e:KeyboardEvent):void {
-			if(!runState) {
-				return;
-			}
-
-			if (e.keyCode == Keyboard.UP) {
-				move(Util.NORTH)
-			} else if (e.keyCode == Keyboard.DOWN) {
-				move(Util.SOUTH)
-			} else if (e.keyCode == Keyboard.LEFT) {
-				move(Util.WEST)
-			} else if (e.keyCode == Keyboard.RIGHT) {
-				move(Util.EAST)
-			}
-		}
-
 		private function onEnterFrame(e:EnterFrameEvent):void {
 			currentAnimation.advanceTime(e.passedTime);
+			attackText.text = state.attack.toString();
 
 			//dispField.text = runState.toString();
 
