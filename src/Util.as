@@ -13,6 +13,7 @@ package {
 		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const REAL_TILE_SIZE:int = 256;
 		public static const PIXELS_PER_TILE:int = 64; // 48
+		public static const UI_PADDING:int = 16;
 		public static const BORDER_PIXELS:Number = (1.0 / 16.0);
 		public static const BUTTON_SPACING:int = (1.0 / 8.0);
 		public static const CAMERA_SHIFT:int = 1; // in grid spaces
