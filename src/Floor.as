@@ -53,6 +53,7 @@ package {
 		private var initialXp:int;
 		private var initialLevel:int;
 		private var initialStamina:int;
+		private var initialLos:int;
 
 		private var agent:SearchAgent;
 
@@ -89,6 +90,7 @@ package {
 							  level:int,
 							  xp:int,
 							  stamina:int,
+							  lineOfSight:int,
 							  floorDict:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
@@ -98,6 +100,7 @@ package {
 			initialLevel = level;
 			initialXp = xp;
 			initialStamina = stamina;
+			initialLos = lineOfSight;
 			preplacedTiles = 0;
 			textures = textureDict;
 			animations = animationDict;
@@ -290,7 +293,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 			addChild(char);
 
 			// Reset the objective state.
@@ -321,7 +324,7 @@ package {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 			addChild(char);
 		}
 
@@ -538,7 +541,7 @@ package {
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
+					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
 
 			// Parse all of the tiles.
 			var lineData:Array;
@@ -624,10 +627,23 @@ package {
 		// and doesn't deal with trying to remove a child that might not exist.
 		private function setUpInitialFoglessSpots(i:int, j:int):void {
 			var x:int; var y:int;
+			var radius:int = char.los;
+
+			for(x = i - radius; x <= i + radius; x++) {
+				if(x >= 0 && x < initialFogGrid.length) {
+					for(y = j - radius; y <= j + radius; y++) {
+						if(y >= 0 && y < initialFogGrid[x].length) {
+							if(Math.abs(x-i) + Math.abs(y-j) <= radius) {
+								initialFogGrid[x][y] = false;
+							}
+						}
+					}
+				}
+			}
 
 			// should go two up, down, left, right, and one in each diagonal location, removing
 			// fog when needed
-			for (x = 1; x <= 2; x++) {
+			/*for (x = 1; x <= 2; x++) {
 				if (x + i < initialFogGrid.length) {
 					initialFogGrid[x + i][j] = false;
 				}
@@ -663,7 +679,7 @@ package {
 				if (j - 1 >= 0) {
 					initialFogGrid[i - 1][j - 1] = false;
 				}
-			}
+			}*/
 		}
 
 		// Game update loop. Currently handles combat over a series of frames.

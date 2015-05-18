@@ -43,9 +43,12 @@ package {
 		public var attackImage:Image;
 		public var attackText:TextField;
 
+		public var los:int;
+
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, stamina:int,
+		public function Character(g_x:int, g_y:int, level:int, xp:int,
+								  stamina:int, lineOfSight:int,
 								  animationDict:Dictionary, attackTexture:Texture) {
 			super();
 			// Set the real x/y positions.
@@ -66,6 +69,7 @@ package {
 
 			maxStamina = stamina;
 			currentStamina = stamina;
+			los = lineOfSight;
 
 			runState = false;
 
