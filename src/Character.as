@@ -9,18 +9,22 @@ package {
 	import starling.events.*;
 	import starling.textures.Texture
 
-	import ai.CharState;
 	import tiles.*;
 	import Util;
 	import flash.utils.Dictionary;
 
-	// Class representing the Character rendered in game.
+	// Class representing the player character.
 	public class Character extends Sprite {
+		public static const BASE_HP:int = 5;
 		public static const PIXELS_PER_FRAME:int = 4;
 
-		// Character gameplay state. Holds all information about the Character
-		// that isn't relevant to how to render the Sprite.
-		public var state:CharState;
+		// Game mechanic stats
+		public var grid_x:int;
+		public var grid_y:int;
+		public var maxHp:int;
+		public var hp:int;
+		public var stamina:int;
+		public var attack:int;
 
 		// Character movement state (for rendering).
 		public var inCombat:Boolean;
@@ -28,30 +32,26 @@ package {
 		private var destX:int;
 		private var destY:int;
 
-		private var moveQueue:Array;
-
 		private var animations:Dictionary;
 		private var currentAnimation:MovieClip;
 
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int, animationDict:Dictionary) {
+		public function Character(g_x:int, g_y:int, maxHp:int, stamina:int, attack:int, animationDict:Dictionary) {
 			super();
 			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
 
-			moveQueue = new Array();
+			grid_x = x;
+			grid_y = y;
+			this.maxHp = maxHp;
+			this.stamina = stamina;
+			this.attack = attack;
+
 			animations = animationDict;
 			currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
 			currentAnimation.play();
-
-			// Calculate character state from level.
-			var attack:int = level;
-			var maxHp:int = CharState.getMaxHp(level);
-			var hp:int = maxHp;
-			// Setup character game state.
-			state = new CharState(g_x, g_y, xp, level, maxHp, hp, attack);
 
 			addChild(currentAnimation);
 

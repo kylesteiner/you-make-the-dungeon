@@ -76,7 +76,7 @@ package {
             touchable = false;
 
             //e.state.hp = 10;
-            //char.state.hp = 10;
+            //char.hp = 10;
 
             setStage();
 
@@ -109,7 +109,7 @@ package {
             charHealthImage.y = CHAR_Y;
             addChild(charHealthImage);
 
-            charHealthText = new TextField(96, charHealthImage.height, char.state.hp + " / " + char.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            charHealthText = new TextField(96, charHealthImage.height, char.hp + " / " + char.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             charHealthText.x = charHealthImage.x + charHealthImage.width;
             charHealthText.y = charHealthImage.y;
             addChild(charHealthText);
@@ -119,7 +119,7 @@ package {
             charAttackImage.y = CHAR_Y + charHealthImage.height;
             addChild(charAttackImage);
 
-            charAttackText = new TextField(96, charAttackImage.height, char.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            charAttackText = new TextField(96, charAttackImage.height, char.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             charAttackText.x = charAttackImage.x + charAttackImage.width;
             charAttackText.y = charAttackImage.y;
             addChild(charAttackText);
@@ -163,7 +163,7 @@ package {
                 addChild(attackAnimation);
             }
 
-            charHealthText.text = char.state.hp + " / " + char.state.maxHp;
+            charHealthText.text = char.hp + " / " + char.maxHp;
             enemyHealthText.text = enemy.state.hp + " / " + enemy.state.maxHp;
 
             if(charDamagedText) {
@@ -289,7 +289,7 @@ package {
 
                 setEnemyIdle();
 
-                if(char.state.hp <= 0) {
+                if(char.hp <= 0) {
                     setCharFaint();
 
                     mixer.play(Util.COMBAT_FAILURE);
@@ -298,9 +298,9 @@ package {
                     // Character's turn to attack
                     setCharAttack();
                     mixer.play(Util.SFX_ATTACK);
-                    Combat.charAttacksEnemy(char.state, enemy.state, false);
+                    Combat.charAttacksEnemy(char, enemy.state, false);
 
-                    enemyDamagedText = createDamageText(enemyAnim, char.state.attack);
+                    enemyDamagedText = createDamageText(enemyAnim, char.attack);
                     addChild(enemyDamagedText);
 
                     createAttackAnimation(enemyAnim);
@@ -320,15 +320,11 @@ package {
 
                     xpText = createXpText(enemy.state.xpReward);
                     addChild(xpText);
-
-                    if(char.state.xp + enemy.state.xpReward >= char.state.level * 2) {
-                        // If the character levels up
-                    }
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();
                     mixer.play(Util.SFX_ATTACK);
-                    Combat.enemyAttacksChar(char.state, enemy.state, false);
+                    Combat.enemyAttacksChar(char, enemy.state, false);
 
                     charDamagedText = createDamageText(charAnim, enemy.state.attack);
                     addChild(charDamagedText);

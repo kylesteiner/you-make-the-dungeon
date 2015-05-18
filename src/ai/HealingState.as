@@ -10,7 +10,7 @@ package ai {
 		// Attempts to heal the character with the given state. Returns false
 		// if the character doesn't require healing, true if the character
 		// was healed.
-		public function healCharacter(c:CharState):Boolean {
+		public function healCharacter(c:Character):Boolean {
 			if (c.hp == c.maxHp) {
 				return false;
 			}

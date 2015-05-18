@@ -157,33 +157,9 @@ package {
 			removeChild(currentCombat);
 			event.enemy.removeImage();
 
-			var tLevel:int = event.character.state.level;
-
-			event.character.state.xp += event.enemy.state.xpReward;
-			event.character.state.tryLevelUp();
-
-			if(event.character.state.level != tLevel) {
-				// Play any relevant level-up code / sounds / events here
-				logger.logAction(10, {"previousLevel":tLevel, "newLevel":event.character.state.level});
-				mixer.play(Util.LEVEL_UP);
-
-				var alertBox:Sprite = new Sprite();
-				var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
-				alertBox.addChild(alertPopup);
-				alertBox.addChild(new TextField(alertPopup.width, alertPopup.height, StringUtil.substitute(LEVEL_UP_TEXT, event.character.state.level, 1), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-				alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
-				alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
-
-				messageToPlayer = new Clickable(0, 0, fireTileHandled, alertBox);
-				//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width / 2);
-				//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height / 2);
-
-				addChild(messageToPlayer);
-			} else {
-				currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
-											Util.real_to_grid(currentFloor.x),
-											Util.real_to_grid(currentFloor.y)));
-			}
+			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
+										Util.real_to_grid(currentFloor.x),
+										Util.real_to_grid(currentFloor.y)));
 		}
 
 		private function fireTileHandled():void {
@@ -198,8 +174,8 @@ package {
 			removeChild(currentCombat);
 			event.enemy.state.hp = event.enemy.state.maxHp;
 			// Prompt clickable into either floor reset or continue modifying floor
-			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
-								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
+			logger.logAction(4, {"characterAttack":event.character.attack, "enemyName":event.enemy.enemyName,
+								 "enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
 
 			var alertBox:Sprite = new Sprite();
 			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
@@ -279,7 +255,7 @@ package {
 			}
 
 			// the logger doesn't like 0 based indexing.
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { "characterLevel":currentFloor.char.state.level } );
+			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { } );
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);

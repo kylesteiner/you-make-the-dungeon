@@ -261,14 +261,7 @@ package {
 				}
 			}
 
-			// Remove the character from the display tree and create a new one to reset
-			// its state.
-			if (char) {
-				char.removeFromParent();
-			}
-			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
-			addChild(char);
+			resetCharacter();
 
 			// Reset the objective state.
 			for (var k:Object in objectiveState) {
@@ -291,12 +284,16 @@ package {
 
 		}
 
+		// Remove the character from the display tree and create a new one to reset
+		// its state.
+		// TODO: Remove this method or replace temporary values for the
+		// character constructor
 		public function resetCharacter():void {
 			if (char) {
 				char.removeFromParent();
 			}
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, 10, 10, 2, animations[Util.CHARACTER]);
 			addChild(char);
 		}
 
@@ -510,8 +507,9 @@ package {
 			var characterData:Array = floorData[4].split("\t");
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
+			// TODO: replace temporary values for initial hp/atk/stamina
 			char = new Character(
-					initialX, initialY, initialLevel, initialXp, animations[Util.CHARACTER]);
+					initialX, initialY, 10, 10, 2, animations[Util.CHARACTER]);
 
 			// Parse all of the tiles.
 			var lineData:Array;
@@ -659,13 +657,13 @@ package {
 			if (t) {
 				if (t is EnemyTile && logger) {
 					var eTile:EnemyTile = t as EnemyTile;
-					logger.logAction(5, { "characterLevel":char.state.level, "characterHealthLeft":char.state.hp, "characterHealthMax":char.state.maxHp,
-										 "characterAttack":char.state.attack, "enemyName": eTile.enemyName,
+					logger.logAction(5, { "characterHealthLeft":char.hp, "characterHealthMax":char.maxHp,
+										 "characterAttack":char.attack, "enemyName": eTile.enemyName,
 										 "enemyLevel":eTile.level, "enemyAttack":eTile.state.attack, "enemyHealth":eTile.initialHp} );
 				} else if (t is HealingTile && logger) {
 					var hTile:HealingTile = t as HealingTile;
 					if (!hTile.used) {
-						logger.logAction(6, { "characterHealth":char.state.hp, "characterMaxHealth":char.state.maxHp, "healthRestored":hTile.state.health } );
+						logger.logAction(6, { "characterHealth":char.hp, "characterMaxHealth":char.maxHp, "healthRestored":hTile.state.health } );
 					}
 				}
 				t.handleChar(char);
@@ -680,7 +678,7 @@ package {
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
 			if (logger) {
-				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
+				logger.logLevelEnd( { "characterHpRemaining":char.hp, "characterMaxHP":char.maxHp } );
 			}
 			completed = true;
 
@@ -698,8 +696,6 @@ package {
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
-			nextFloorButton.addParameter(char.state.level);
-			nextFloorButton.addParameter(char.state.xp);
 
 			var i:int = 0;
 			if(nextFloor == Util.FLOOR_1) {

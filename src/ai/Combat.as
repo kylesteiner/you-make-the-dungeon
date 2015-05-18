@@ -3,15 +3,11 @@ package ai {
 	// enemy. The class has no state itself - the functions modify CharState
 	// and EnemyState appropriately.
 	public class Combat {
-		public static function charAttacksEnemy(char:CharState, enemy:EnemyState, originIsAI:Boolean=true):void {
+		public static function charAttacksEnemy(char:Character, enemy:EnemyState, originIsAI:Boolean=true):void {
 			enemy.hp -= char.attack;
-			if (enemy.hp <= 0 && originIsAI) {
-				char.xp += enemy.xpReward;
-				char.tryLevelUp();
-			}
 		}
 
-		public static function enemyAttacksChar(char:CharState, enemy:EnemyState, originIsAI:Boolean=true):void {
+		public static function enemyAttacksChar(char:Character, enemy:EnemyState, originIsAI:Boolean=true):void {
 			char.hp -= enemy.attack;
 		}
 	}

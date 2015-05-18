@@ -36,7 +36,7 @@ package tiles {
 
 		override public function handleChar(c:Character):void {
 			if (!used) {
-				var healed:Boolean = state.healCharacter(c.state);
+				var healed:Boolean = state.healCharacter(c);
 				if (healed) {
 					used = true;
 					removeChild(healthImage);
