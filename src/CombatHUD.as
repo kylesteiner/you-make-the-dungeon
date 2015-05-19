@@ -1,8 +1,12 @@
 package {
-    import starling.display.*;
-    import starling.events.*;
     import flash.utils.Dictionary;
-    import starling.text.*;
+
+    import starling.display.DisplayObject;
+    import starling.display.Image;
+    import starling.display.MovieClip;
+    import starling.display.Sprite;
+    import starling.events.*;
+    import starling.text.TextField;
     import starling.utils.*;
 
     import entities.Enemy;
@@ -368,7 +372,5 @@ package {
                 }
             }
         }
-
     }
-
 }

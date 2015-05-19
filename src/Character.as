@@ -1,6 +1,6 @@
 package {
-	import flash.utils.Dictionary;
 	import flash.ui.Keyboard;
+	import flash.utils.Dictionary;
 
 	import starling.display.*;
 	import starling.events.*;

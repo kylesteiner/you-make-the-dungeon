@@ -1,17 +1,13 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
-	import flash.text.TextFormat;
-	import starling.text.TextField;
-	import starling.utils.Color
-	import starling.display.MovieClip;
 	import starling.display.Image;
+	import starling.display.MovieClip;
 	import starling.display.Sprite;
-	import starling.textures.Texture;
 	import starling.events.*;
-
-	import Character;
-	import Util;
+	import starling.text.TextField;
+	import starling.textures.Texture;
+	import starling.utils.Color;
 
 	public class Tile extends Sprite {
 		public var grid_x:int;

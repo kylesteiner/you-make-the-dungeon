@@ -2,7 +2,6 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
-	import flash.display3D.textures.Texture;
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;

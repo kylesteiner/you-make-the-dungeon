@@ -2,24 +2,19 @@
 // Stores the state of a single floor.
 
 package {
-	import flash.net.*;
-	import flash.utils.*;
 	import flash.ui.Keyboard;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import mx.utils.StringUtil;
 
-	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.*;
 	import starling.text.TextField;
-	import starling.textures.*;
+	import starling.textures.Texture;
 
-	import Character;
-	import Combat;
 	import entities.*;
-	import Logger;
 	import tiles.*;
-	import Util;
 
 	public class Floor extends Sprite {
 		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."

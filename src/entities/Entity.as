@@ -13,6 +13,7 @@ package entities {
 		public var img:Image;
 
 		public function Entity(g_x:int, g_y:int, texture:Texture) {
+			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
 			grid_x = g_x;

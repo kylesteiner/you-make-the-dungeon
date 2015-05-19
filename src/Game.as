@@ -1,24 +1,18 @@
 package {
-	import flash.utils.Dictionary;
-
-	import starling.display.*;
-	import starling.events.*;
-	import starling.textures.*;
-	import starling.text.TextField;
-
-	import flash.utils.ByteArray;
 	import flash.media.*;
 	import flash.ui.Mouse;
-
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import mx.utils.StringUtil;
 
-	import Character;
+	import starling.display.Image;
+	import starling.display.MovieClip;
+	import starling.display.Sprite;
+	import starling.events.*;
+	import starling.text.TextField;
+	import starling.textures.Texture;
+
 	import tiles.*;
-	import TileHud;
-	import CharHud;
-	import Util;
-	import Menu;
-	import Logger;
 
 	public class Game extends Sprite {
 
