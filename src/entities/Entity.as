@@ -18,6 +18,7 @@ package entities {
 			grid_x = g_x;
 			grid_y = g_y;
 			img = new Image(texture);
+			addChild(img);
 		}
 	}
 }

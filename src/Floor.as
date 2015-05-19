@@ -39,6 +39,7 @@ package {
 		// Grid metadata.
 		private var initialGrid:Array;
 		private var initialFogGrid:Array;
+		private var initialEntities:Array;
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
@@ -236,15 +237,26 @@ package {
 			// Replace the current grid with a fresh one.
 			grid = Util.initializeGrid(gridWidth, gridHeight);
 			fogGrid = Util.initializeGrid(gridWidth, gridHeight);
+			entityGrid = Util.initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
 				for (j = 0; j < initialGrid[i].length; j++) {
 					grid[i][j] = initialGrid[i][j];
-					if(grid[i][j]) {
+					if (grid[i][j]) {
 						var t:Tile = grid[i][j];
 						t.reset();
 						addChild(t);
+					}
+				}
+			}
+
+			// Add all of the initial entities to the grid and display tree.
+			for (i = 0; i < initialGrid.length; i++) {
+				for (j = 0; j < initialGrid[i].length; j++) {
+					entityGrid[i][j] = initialEntities[i][j];
+					if (entityGrid[i][j]) {
+						addChild(entityGrid[i][j]);
 					}
 				}
 			}
@@ -490,7 +502,7 @@ package {
 
 			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
 			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
-			entityGrid = Util.initializeGrid(gridWidth, gridHeight);
+			initialEntities = Util.initializeGrid(gridWidth, gridHeight);
 
 			// Add a fog image at every grid tile.
 			for (i = 0; i < initialFogGrid.length; i++) {
@@ -563,20 +575,23 @@ package {
 				var textureName:String = StringUtil.trim(lineData[3]);
 
 				if (tType == "enemy") {
+					trace("Parsed enemy");
 					var hp:int = Number(lineData[4]);
 					var attack:int = Number(lineData[5]);
 					var reward:int = Number(lineData[6]);
-					entityGrid[tX][tY] = new Enemy(tX, tY, textures[textureName], hp, attack, reward);
+					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], hp, attack, reward);
 				} else if (tType == "healing") {
+					trace("Parsed health");
 					var health:int = Number(lineData[4]);
-					entityGrid[tX][tY] = new Healing(tX, tY, textures[textureName], health);
+					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
 				} else if (tType == "objective") {
+					trace("Parsed objective");
 					var key:String = lineData[4];
 					var prereqs:Array = new Array();
 					for (j = 5; j < lineData.length; j++) {
 						prereqs.push(StringUtil.trim(lineData[j]));
 					}
-					entityGrid[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
+					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
 					objectiveState[key] = false;
 				} else {
 					trace("Created entity with invalid type " + tType + ": " + floorName + ", line " + line);

@@ -20,4 +20,4 @@ none	3	3	0	0	0	0
 none	3	4	0	0	0	0
 2
 enemy	0	4	monster_1	3	1	1
-enemy	0	4	monster_2	6	2	1
+enemy	2	2	monster_2	6	2	1
