@@ -50,7 +50,7 @@ package {
 		private var isMenu:Boolean; // probably need to change to state;
 		private var messageToPlayer:Clickable;
 
-		private var logger:Logger;
+		public var logger:Logger;
 		private var numberOfTilesPlaced:int;
 		private var emptyTiles:int;
 		private var enemyTiles:int;
@@ -120,7 +120,7 @@ package {
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
-			addEventListener(TileEvent.COMBAT, startCombat);
+			addEventListener(GameEvent.ENTERED_COMBAT, startCombat);
 
 			addEventListener(AnimationEvent.CHAR_DIED, onCombatFailure);
 			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
@@ -176,21 +176,20 @@ package {
 			menuWorld.addChild(new Image(textures[Util.GRID_BACKGROUND]));
 		}
 
-		private function startCombat(event:TileEvent):void {
-			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], combatSkip, mixer, logger);
+		private function startCombat(e:GameEvent):void {
+			currentCombat = new CombatHUD(textures,
+										  animations,
+										  currentFloor.char,
+										  currentFloor.entityGrid[e.x][e.y],
+										  combatSkip,
+										  mixer,
+										  logger);
 			addChild(currentCombat);
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
 			removeChild(currentCombat);
 			currentFloor.onCombatSuccess(event.enemy);
-		}
-
-		private function fireTileHandled():void {
-			removeChild(messageToPlayer);
-			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
-										Util.real_to_grid(currentFloor.x),
-										Util.real_to_grid(currentFloor.y)));
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
