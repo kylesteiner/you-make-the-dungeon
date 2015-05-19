@@ -5,12 +5,11 @@ package {
     import starling.text.*;
     import starling.utils.*;
 
-    import tiles.EnemyTile;
-    import ai.*;
+    import entities.Enemy;
 
     public class CombatHUD extends Sprite {
         private var char:Character;
-        private var enemy:EnemyTile;
+        private var enemy:Enemy;
         private var textures:Dictionary;
         private var animations:Dictionary;
 
@@ -62,7 +61,8 @@ package {
 
         public function CombatHUD(textureDict:Dictionary,
                                animDict:Dictionary,
-                               c:Character, e:EnemyTile,
+                               c:Character,
+                               e:Enemy,
                                soundMixer:Mixer,
                                dataLogger:Logger) {
             super();
@@ -134,12 +134,12 @@ package {
             enemyAttackImage.y = ENEMY_Y + enemyHealthImage.height;
             addChild(enemyAttackImage);
 
-            enemyHealthText = new TextField(128, enemyHealthImage.height, enemy.state.hp + " / " + enemy.state.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyHealthText = new TextField(128, enemyHealthImage.height, String(enemy.hp), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             enemyHealthText.x = enemyHealthImage.x + enemyHealthImage.width;
             enemyHealthText.y = enemyHealthImage.y;
             addChild(enemyHealthText);
 
-            enemyAttackText = new TextField(128, enemyAttackImage.height, enemy.state.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyAttackText = new TextField(128, enemyAttackImage.height, enemy.attack.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             enemyAttackText.x = enemyAttackImage.x + enemyAttackImage.width;
             enemyAttackText.y = enemyAttackImage.y;
             addChild(enemyAttackText);
@@ -164,7 +164,7 @@ package {
             }
 
             charHealthText.text = char.hp + " / " + char.maxHp;
-            enemyHealthText.text = enemy.state.hp + " / " + enemy.state.maxHp;
+            enemyHealthText.text = String(enemy.hp);
 
             if(charDamagedText) {
                 charDamagedText.y += DAMAGE_TEXT_SHIFT;
@@ -239,7 +239,8 @@ package {
 
         public function setEnemyAnim(animationString:String):void {
             removeChild(enemyAnim);
-            var s:String = enemy.enemyName == "boss" ? Util.MONSTER_2 : Util.MONSTER_1;
+            // TODO: fix animations with new entities
+            var s:String = Util.MONSTER_2;
             enemyAnim = new MovieClip(animations[s][animationString], Util.ANIM_FPS);
             enemyAnim.x = ENEMY_X - (enemyAnim.width / 2);
             enemyAnim.y = ENEMY_Y - enemyAnim.height;
@@ -298,7 +299,7 @@ package {
                     // Character's turn to attack
                     setCharAttack();
                     mixer.play(Util.SFX_ATTACK);
-                    Combat.charAttacksEnemy(char, enemy.state, false);
+                    Combat.charAttacksEnemy(char, enemy);
 
                     enemyDamagedText = createDamageText(enemyAnim, char.attack);
                     addChild(enemyDamagedText);
@@ -313,20 +314,20 @@ package {
 
                 setCharIdle();
 
-                if(enemy.state.hp <= 0) {
+                if(enemy.hp <= 0) {
                     setEnemyFaint();
 
                     mixer.play(Util.COMBAT_SUCCESS);
 
-                    xpText = createXpText(enemy.state.xpReward);
+                    xpText = createXpText(enemy.reward);
                     addChild(xpText);
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();
                     mixer.play(Util.SFX_ATTACK);
-                    Combat.enemyAttacksChar(char, enemy.state, false);
+                    Combat.enemyAttacksChar(char, enemy);
 
-                    charDamagedText = createDamageText(charAnim, enemy.state.attack);
+                    charDamagedText = createDamageText(charAnim, enemy.attack);
                     addChild(charDamagedText);
 
                     createAttackAnimation(charAnim, true);

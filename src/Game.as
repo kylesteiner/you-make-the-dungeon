@@ -19,7 +19,6 @@ package {
 	import Util;
 	import Menu;
 	import Logger;
-	import ai.*;
 
 	public class Game extends Sprite {
 
@@ -155,11 +154,7 @@ package {
 
 		private function onCombatSuccess(event:AnimationEvent):void {
 			removeChild(currentCombat);
-			event.enemy.removeImage();
-
-			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
-										Util.real_to_grid(currentFloor.x),
-										Util.real_to_grid(currentFloor.y)));
+			currentFloor.onCombatSuccess(event.enemy);
 		}
 
 		private function fireTileHandled():void {
@@ -172,10 +167,13 @@ package {
 		private function onCombatFailure(event:AnimationEvent):void {
 			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
-			event.enemy.state.hp = event.enemy.state.maxHp;
+			// event.enemy.state.hp = event.enemy.state.maxHp;
 			// Prompt clickable into either floor reset or continue modifying floor
-			logger.logAction(4, {"characterAttack":event.character.attack, "enemyName":event.enemy.enemyName,
-								 "enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
+			logger.logAction(4, {
+				"characterAttack":event.character.attack,
+				"enemyAttack":event.enemy.attack,
+				"enemyHealthLeft":event.enemy.hp
+			});
 
 			var alertBox:Sprite = new Sprite();
 			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
@@ -476,11 +474,8 @@ package {
 
 								if (selectedTile is Tile) {
 									emptyTiles++;
-								} else if (selectedTile is EnemyTile) {
-									enemyTiles++;
-								} else if (selectedTile is HealingTile) {
-									healingTiles++;
 								}
+
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
 							} else {
