@@ -137,6 +137,9 @@ package {
 
 		private function initializeFloorWorld():void {
 			world = new Sprite();
+			//world.height = 2048;
+			//world.width = 2048;
+			//world.addChild(new Quad(world.height, world.width, 0xff000000));
 			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
@@ -287,6 +290,9 @@ package {
 			if(currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
+
+			//world.height = Util.grid_to_real(currentFloor.gridHeight);
+			//world.width = Util.grid_to_real(currentFloor.gridWidth);
 
 			// TODO: Logger is definitely broken here by the changes.
 			// the logger doesn't like 0 based indexing.
