@@ -19,7 +19,6 @@ package {
 	import Util;
 	import Menu;
 	import Logger;
-	import ai.*;
 
 	public class Game extends Sprite {
 
@@ -188,35 +187,7 @@ package {
 
 		private function onCombatSuccess(event:AnimationEvent):void {
 			removeChild(currentCombat);
-			event.enemy.removeImage();
-
-			var tLevel:int = event.character.state.level;
-
-			event.character.state.xp += event.enemy.state.xpReward;
-			event.character.state.tryLevelUp();
-
-			if(event.character.state.level != tLevel) {
-				// Play any relevant level-up code / sounds / events here
-				logger.logAction(10, {"previousLevel":tLevel, "newLevel":event.character.state.level});
-				mixer.play(Util.LEVEL_UP);
-
-				var alertBox:Sprite = new Sprite();
-				var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
-				alertBox.addChild(alertPopup);
-				alertBox.addChild(new TextField(alertPopup.width, alertPopup.height, StringUtil.substitute(LEVEL_UP_TEXT, event.character.state.level, 1), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-				alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
-				alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
-
-				messageToPlayer = new Clickable(0, 0, fireTileHandled, alertBox);
-				//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width / 2);
-				//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height / 2);
-
-				addChild(messageToPlayer);
-			} else {
-				currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
-											Util.real_to_grid(currentFloor.x),
-											Util.real_to_grid(currentFloor.y)));
-			}
+			currentFloor.onCombatSuccess(event.enemy);
 		}
 
 		private function fireTileHandled():void {
@@ -229,10 +200,13 @@ package {
 		private function onCombatFailure(event:AnimationEvent):void {
 			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
-			event.enemy.state.hp = event.enemy.state.maxHp;
+			// event.enemy.state.hp = event.enemy.state.maxHp;
 			// Prompt clickable into either floor reset or continue modifying floor
-			logger.logAction(4, { "characterLevel":event.character.state.level, "characterAttack":event.character.state.attack, "enemyName":event.enemy.enemyName,
-								"enemyLevel":event.enemy.level, "enemyAttack":event.enemy.state.attack, "enemyHealthLeft":event.enemy.state.hp, "initialEnemyHealth":event.enemy.initialHp} );
+			logger.logAction(4, {
+				"characterAttack":event.character.attack,
+				"enemyAttack":event.enemy.attack,
+				"enemyHealthLeft":event.enemy.hp
+			});
 
 			var alertBox:Sprite = new Sprite();
 			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
@@ -314,8 +288,13 @@ package {
 				currentFloor.altCallback = transitionToStart;
 			}
 
+			// TODO: Logger is definitely broken here by the changes.
 			// the logger doesn't like 0 based indexing.
+/*<<<<<<< HEAD
 			logger.logLevelStart(1, { "characterLevel":currentFloor.char.state.level } );
+=======
+			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { } );
+>>>>>>> backend*/
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -597,11 +576,8 @@ package {
 
 								if (selectedTile is Tile) {
 									emptyTiles++;
-								} else if (selectedTile is EnemyTile) {
-									enemyTiles++;
-								} else if (selectedTile is HealingTile) {
-									healingTiles++;
 								}
+
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
 							} else {

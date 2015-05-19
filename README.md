@@ -15,11 +15,15 @@ Floor data text files are tab-delineated, with the following structure:
 ```
 FloorName
 NextFloorName (must also add to Utils constants)
+NextTransition
 FloorXDimension	FloorYDimension
 CharInitialX	CharInitialY
-TileType	x	y	nOpen?	sOpen?	eOpen?	wOpen?	AdditionalParams...
+NumTiles
+TileType	x	y	northOpen?	southOpen?	eastOpen?	westOpen?
 ...
 ...
+NumEntities
+EntityType	x	y	texture	AdditionalParameters...
 ```
 
 Rate of drawing each tile (per floor) is tab-delineated, with the following structure:
@@ -29,11 +33,15 @@ TileType	Rate
 ...
 ```
 
-### Tile Types and Additional Parameters
+### Valid Tile Types
 * entry
 * exit
 * empty
-* health - health restored (int)
-* enemy - name (string), level (int), HP (int), attack (int), XP on kill (int)
-* objective - key (string), texture name (string), keys of prerequsite objectives... (strings)
 * none
+
+### Valid Entity Types and Additional Parameters
+For the texture parameter, look up the string used to identify the texture in
+Util.as.
+* enemy     - hp (int), attack (int), reward (int)
+* healing   - health (int)
+* objective - key (String), prereqs (Strings)...

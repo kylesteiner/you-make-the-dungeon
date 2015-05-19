@@ -116,29 +116,8 @@ package {
 			}
 			tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
-			// Generate tile and add it to the HUD display
-			if (tType == "enemy") {
-				t2Texture = Util.randomRange(1, 2) == 1 ? textures[Util.MONSTER_1] : textures[Util.MONSTER_2];
-				enemyName = "";
-				level = Util.randomRange(1, 4);
-				hp = level * Util.randomRange(2, 3);
-				attack = level;
-				xpReward = Util.randomRange(1, level);
-				tile = new EnemyTile(0, 0, tN, tS, tE, tW, tTexture,
-					t2Texture, enemyName, level, hp, attack, xpReward);
-				/*eTile.locked = false;
-				availableTiles[index] = eTile;
-				setTileLocation(index);
-				addChild(eTile);
-				return;*/
-			} else if (tType == "healing") {
-				t2Texture = textures[Util.HEALING];
-				hp = Util.randomRange(1, 10);
-				tile = new HealingTile(0, 0, tN, tS, tE, tW, tTexture,
-					t2Texture, hp);
-			} else { // empty
-				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
-			}
+			tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
+
 			tile.locked = false;
 			availableTiles[index] = tile;
 			setTileLocation(index);
