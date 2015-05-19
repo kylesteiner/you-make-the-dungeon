@@ -61,14 +61,14 @@ package {
             hud.removeChild(healthBar);
             hud.removeChild(staminaBar);
 
-            healthText.text = character.state.hp.toString();
-            staminaText.text = character.currentStamina.toString();
+            healthText.text = character.hp.toString();
+            staminaText.text = character.stamina.toString();
 
-            var healthHeight:int = Util.STAGE_HEIGHT * ((character.state.hp * 1.0) / character.state.maxHp);
+            var healthHeight:int = Util.STAGE_HEIGHT * ((character.hp * 1.0) / character.maxHp);
             healthBar = new Quad(HEALTH_BAR_WIDTH, healthHeight, HEALTH_BAR_COLOR);
             healthBar.y = Util.STAGE_HEIGHT - healthHeight;
 
-            var staminaHeight:int = Util.STAGE_HEIGHT * ((character.currentStamina * 1.0) / character.maxStamina);
+            var staminaHeight:int = Util.STAGE_HEIGHT * ((character.stamina * 1.0) / character.maxStamina);
             staminaBar = new Quad(STAMINA_BAR_WIDTH, staminaHeight, STAMINA_BAR_COLOR);
             staminaBar.y = Util.STAGE_HEIGHT - staminaHeight;
             staminaBar.x = healthBar.width;

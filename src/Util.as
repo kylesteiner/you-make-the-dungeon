@@ -158,6 +158,7 @@ package {
 
 		public static const STARTING_LEVEL:int = 1;
 		public static const STARTING_XP:int = 0;
+		public static const STARTING_HEALTH:int = 10;
 		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;

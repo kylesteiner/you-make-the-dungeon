@@ -14,23 +14,19 @@ package {
 	import starling.text.TextField;
 	import starling.textures.*;
 
-	import ai.Combat;
-	import ai.SearchAgent;
 	import Character;
+	import Combat;
+	import entities.*;
+	import Logger;
 	import tiles.*;
 	import Util;
-	import Logger;
 
 	public class Floor extends Sprite {
-		// Number of lines at the beginning of floordata files that are
-		// dedicated to non-tile objects at the start.
-		public static const NON_TILE_LINES:int = 3;
-
 		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
 
-		// 2D Array of Tiles. Represents the current state of all tiles.
-		public var grid:Array;
-		public var fogGrid:Array;
+		public var grid:Array;			// 2D Array of Tiles.
+		public var entityGrid:Array;	// 2D Array of Entities.
+		public var fogGrid:Array;		// 2D Array of fog Images.
 		public var char:Character;
 		public var floorName:String;
 		public var highlightedLocations:Array;
@@ -43,6 +39,7 @@ package {
 		// Grid metadata.
 		private var initialGrid:Array;
 		private var initialFogGrid:Array;
+		private var initialEntities:Array;
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
@@ -51,19 +48,16 @@ package {
 		// Character's initial stats.
 		private var initialX:int;
 		private var initialY:int;
-		private var initialXp:int;
-		private var initialLevel:int;
+		private var initialHp:int;
 		private var initialStamina:int;
 		private var initialLos:int;
-
-		private var agent:SearchAgent;
 
 		private var floorFiles:Dictionary;
 		private var nextFloor:String;
 		private var onCompleteCallback:Function;
 
 		// If the character is fighting, the enemy the character is fighting.
-		private var enemy:EnemyTile;
+		private var enemy:Enemy;
 		private var dmgText:TextField;
 
 		private var textures:Dictionary;
@@ -92,6 +86,7 @@ package {
 							  animationDict:Dictionary,
 							  level:int,
 							  xp:int,
+							  health:int,
 							  stamina:int,
 							  lineOfSight:int,
 							  floorDict:Dictionary,
@@ -100,10 +95,10 @@ package {
 							  logger:Logger = null,
 							  showPrompt:int = 0) {
 			super();
-			initialLevel = level;
-			initialXp = xp;
+			initialHp = health;
 			initialStamina = stamina;
 			initialLos = lineOfSight;
+
 			preplacedTiles = 0;
 			textures = textureDict;
 			animations = animationDict;
@@ -113,8 +108,6 @@ package {
 			altCallback = null;
 
 			objectiveState = new Dictionary();
-
-			agent = new SearchAgent(SearchAgent.aStar, SearchAgent.heuristic);
 
 			this.logger = logger;
 
@@ -213,12 +206,6 @@ package {
 
 		// Called when the run button is clicked.
 		public function runFloor():void {
-			var foundPath:Boolean = agent.computePath(this);
-			if (foundPath) {
-				char.move(agent.getAction());
-			} else {
-				// TODO: Indicate to the player that there is no path.
-			}
 		}
 
 		public function getEntry():Tile {
@@ -271,15 +258,26 @@ package {
 			// Replace the current grid with a fresh one.
 			grid = Util.initializeGrid(gridWidth, gridHeight);
 			fogGrid = Util.initializeGrid(gridWidth, gridHeight);
+			entityGrid = Util.initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
 				for (j = 0; j < initialGrid[i].length; j++) {
 					grid[i][j] = initialGrid[i][j];
-					if(grid[i][j]) {
+					if (grid[i][j]) {
 						var t:Tile = grid[i][j];
 						t.reset();
 						addChild(t);
+					}
+				}
+			}
+
+			// Add all of the initial entities to the grid and display tree.
+			for (i = 0; i < initialGrid.length; i++) {
+				for (j = 0; j < initialGrid[i].length; j++) {
+					entityGrid[i][j] = initialEntities[i][j];
+					if (entityGrid[i][j]) {
+						addChild(entityGrid[i][j]);
 					}
 				}
 			}
@@ -294,14 +292,7 @@ package {
 				}
 			}
 
-			// Remove the character from the display tree and create a new one to reset
-			// its state.
-			if (char) {
-				char.removeFromParent();
-			}
-			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
-			addChild(char);
+			resetCharacter();
 
 			// Reset the objective state.
 			for (var k:Object in objectiveState) {
@@ -319,12 +310,19 @@ package {
 
 		}
 
+		// Remove the character from the display tree and create a new one to reset
+		// its state.
 		public function resetCharacter():void {
 			if (char) {
 				char.removeFromParent();
 			}
-			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
+			char = new Character(initialX,
+								 initialY,
+								 10,  // TODO: set an initialHp value
+								 initialStamina,
+								 initialLos,
+								 animations[Util.CHARACTER],
+								 textures[Util.ICON_ATK]);
 			addChild(char);
 		}
 
@@ -526,7 +524,9 @@ package {
 
 			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
 			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
+			initialEntities = Util.initializeGrid(gridWidth, gridHeight);
 
+			// Add a fog image at every grid tile.
 			for (i = 0; i < initialFogGrid.length; i++) {
 				for (j = 0; j < initialFogGrid[i].length; j++) {
 					var fog:Image = new Image(textures[Util.TILE_FOG]);
@@ -540,25 +540,26 @@ package {
 			var characterData:Array = floorData[2].split("\t");
 			initialX = Number(characterData[0]);
 			initialY = Number(characterData[1]);
-			char = new Character(
-					initialX, initialY, initialLevel, initialXp, initialStamina, initialLos, animations[Util.CHARACTER], textures[Util.ICON_ATK]);
+			char = new Character(initialX,
+								 initialY,
+								 initialHp,  // TODO: set an initialHp value
+								 initialStamina,
+								 initialLos,
+								 animations[Util.CHARACTER],
+								 textures[Util.ICON_ATK]);
 
 			// Parse all of the tiles.
+			var numTiles:int = Number(floorData[3]);
+
 			var lineData:Array;
-			var initTile:Tile;
 			var tType:String;
 			var tX:int; var tY:int;
 			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
-			var textureString:String;
 			var tTexture:Texture;
-			var tileData:Array = new Array();
 
-			for (i = NON_TILE_LINES; i < floorData.length; i++) {
-				if (floorData[i].length == 0) {
-					continue;
-				}
+			for (i = 0; i < numTiles; i++) {
 				preplacedTiles++;
-				lineData = floorData[i].split("\t");
+				lineData = floorData[i + 4].split("\t");
 
 				tType = lineData[0];
 				tX = Number(lineData[1]);
@@ -575,50 +576,52 @@ package {
 				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
 				if (tType == "empty") {
-					tileData.push(new Tile(tX, tY, tN, tS, tE, tW, tTexture));
+					initialGrid[tX][tY] = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
 				} else if (tType == "entry") {
-					tileData.push(new EntryTile(tX, tY, tN, tS, tE, tW, tTexture));
+					initialGrid[tX][tY] = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
+					initialFogGrid[tX][tY] = false;
+					setUpInitialFoglessSpots(tX, tY);
 				} else if (tType == "exit") {
-					tileData.push(new ExitTile(tX, tY, tN, tS, tE, tW, tTexture));
-				} else if (tType == "health") {
-					var tHealth:int = Number(lineData[7]);
-					tileData.push(new HealingTile(tX, tY, tN, tS, tE, tW, tTexture, textures[Util.HEALING], tHealth));
-				} else if (tType == "enemy") {
-					var eName:String = lineData[7];
-					var eLvl:int = Number(lineData[8]);
-					var eHp:int = Number(lineData[9]);
-					var eAtk:int = Number(lineData[10]);
-					var eReward:int = Number(lineData[11]);
+					initialGrid[tX][tY] = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
+					initialFogGrid[tX][tY] = false;
+				} else if (tType == "none") {
+					initialGrid[tX][tY] = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
+				} else {
+					trace("Created tile with invalid type " + tType + ": " + floorName + ", line " + i + 6)
+				}
+			}
 
-					var tETexture:Texture = eName == "boss" ? textures[Util.MONSTER_2] : textures[Util.MONSTER_1];
+			var numEntities:int = Number(floorData[4 + numTiles]);
+			for (i = 0; i < numEntities; i++) {
+				lineData = floorData[5 + numTiles].split('\t');
+				tType = StringUtil.trim(lineData[0]);
+				tX = Number(lineData[1]);
+				tY = Number(lineData[2]);
+				var textureName:String = StringUtil.trim(lineData[3]);
 
-					tileData.push(new EnemyTile(tX, tY, tN, tS, tE, tW, tTexture, tETexture, eName, eLvl, eHp, eAtk, eReward));
+				if (tType == "enemy") {
+					trace("Parsed enemy");
+					var hp:int = Number(lineData[4]);
+					var attack:int = Number(lineData[5]);
+					var reward:int = Number(lineData[6]);
+					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], hp, attack, reward);
+				} else if (tType == "healing") {
+					trace("Parsed health");
+					var health:int = Number(lineData[4]);
+					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
 				} else if (tType == "objective") {
-					var key:String = lineData[7];
-					var textureName:String = StringUtil.trim(lineData[8]);
+					trace("Parsed objective");
+					var key:String = lineData[4];
 					var prereqs:Array = new Array();
-					for (j = 9; j < lineData.length; j++) {
+					for (j = 5; j < lineData.length; j++) {
 						prereqs.push(StringUtil.trim(lineData[j]));
 					}
-					tileData.push(new ObjectiveTile(tX, tY, tN, tS, tE, tW, tTexture, textures[textureName], key, prereqs));
+					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
 					objectiveState[key] = false;
-				} else if (tType == "none") {
-					tileData.push(new ImpassableTile(tX, tY, textures[Util.TILE_NONE]));
+				} else {
+					trace("Created entity with invalid type " + tType + ": " + floorName + ", line " + (5 + numTiles));
 				}
 			}
-
-			// put tileData's tiles into a grid
-			for each (var tile:Tile in tileData) {
-				initialGrid[tile.grid_x][tile.grid_y] = tile;
-				tile.onGrid = true;
-				if (tile is EntryTile) {
-					initialFogGrid[tile.grid_x][tile.grid_y] = false;
-					setUpInitialFoglessSpots(tile.grid_x, tile.grid_y);
-				} else if (tile is ExitTile) {
-					initialFogGrid[tile.grid_x][tile.grid_y] = false;
-				}
-			}
-
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -734,25 +737,37 @@ package {
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
 		private function onCharArrived(e:TileEvent):void {
-			var t:Tile = grid[e.grid_x][e.grid_y];
-			if (t) {
-				if (t is EnemyTile && logger) {
-					var eTile:EnemyTile = t as EnemyTile;
-					logger.logAction(5, { "characterLevel":char.state.level, "characterHealthLeft":char.state.hp, "characterHealthMax":char.state.maxHp,
-										 "characterAttack":char.state.attack, "enemyName": eTile.enemyName,
-										 "enemyLevel":eTile.level, "enemyAttack":eTile.state.attack, "enemyHealth":eTile.initialHp} );
-				} else if (t is HealingTile && logger) {
-					var hTile:HealingTile = t as HealingTile;
-					if (!hTile.used) {
-						logger.logAction(6, { "characterHealth":char.state.hp, "characterMaxHealth":char.state.maxHp, "healthRestored":hTile.state.health } );
-					}
-				}
-				t.handleChar(char);
+			var entity:Entity = entityGrid[e.grid_x][e.grid_y];
+			if (!entity) {
+				return;
 			}
+			if (entity is Enemy && logger) {
+				var enemy:Enemy = entity as Enemy;
+				logger.logAction(5, {
+					"characterHealthLeft":char.hp,
+					"characterHealthMax":char.maxHp,
+					"characterAttack":char.attack,
+					"enemyAttack":enemy.attack,
+					"enemyHealth":enemy.hp,
+					"enemyReward":enemy.reward
+				});
+			} else if (entity is Healing && logger) {
+				var healing:Healing = entity as Healing;
+				logger.logAction(6, {
+					"characterHealth":char.hp,
+					"characterMaxHealth":char.maxHp,
+					"healthRestored":healing.health
+				});
+			}
+			// TODO: Handle character-entity interaction
+		}
+
+		public function onCombatSuccess(enemy:Enemy):void {
+			entityGrid[enemy.grid_x][enemy.grid_y] = null;
+			removeChild(enemy);
 		}
 
 		public function onCharHandled(e:TileEvent):void {
-			char.move(agent.getAction());
 		}
 
 		// Event handler for when a character arrives at an exit tile.
@@ -760,7 +775,10 @@ package {
 		private function onCharExited(e:TileEvent):void {
 			// TODO: Do actual win condition handling.
 			if (logger) {
-				logger.logLevelEnd( {"characterLevel":char.state.level, "characterHpRemaining":char.state.hp, "characterMaxHP":char.state.maxHp } );
+				logger.logLevelEnd({
+					"characterHpRemaining":char.hp,
+					"characterMaxHP":char.maxHp
+				});
 			}
 			completed = true;
 
@@ -778,8 +796,6 @@ package {
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
-			nextFloorButton.addParameter(char.state.level);
-			nextFloorButton.addParameter(char.state.xp);
 
 			var i:int = 0;
 			if(nextFloor == Util.FLOOR_1) {
@@ -796,8 +812,8 @@ package {
 		// to mark the tile as visited.
 		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
 		private function onObjCompleted(e:TileEvent):void {
-			var t:ObjectiveTile = grid[e.grid_x][e.grid_y];
-			objectiveState[t.state.key] = true;
+			var obj:Objective = entityGrid[e.grid_x][e.grid_y];
+			objectiveState[obj.key] = true;
 		}
 	}
 }

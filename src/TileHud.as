@@ -228,6 +228,7 @@ package {
 			} else { // empty
 				tile =  new Tile(0, 0, tN, tS, tE, tW, tTexture);
 			}
+			
 			tile.locked = false;
 			tile.width = Util.HUD_PIXELS_PER_TILE;
 			tile.height = Util.HUD_PIXELS_PER_TILE;

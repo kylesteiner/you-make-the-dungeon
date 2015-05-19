@@ -1,27 +1,28 @@
-// Character.as
-// In-game representation of the character.
-
 package {
+	import flash.utils.Dictionary;
 	import flash.ui.Keyboard;
 
-	import starling.core.Starling;
 	import starling.display.*;
 	import starling.events.*;
 	import starling.textures.Texture;
 	import starling.text.TextField;
 
-	import ai.CharState;
 	import tiles.*;
 	import Util;
-	import flash.utils.Dictionary;
 
-	// Class representing the Character rendered in game.
+	// Class representing the player character.
 	public class Character extends Sprite {
+		public static const BASE_HP:int = 5;
 		public static const PIXELS_PER_FRAME:int = 4;
 
-		// Character gameplay state. Holds all information about the Character
-		// that isn't relevant to how to render the Sprite.
-		public var state:CharState;
+		// Game mechanic stats
+		public var grid_x:int;
+		public var grid_y:int;
+		public var maxHp:int;
+		public var hp:int;
+		public var maxStamina:int;
+		public var stamina:int;
+		public var attack:int;
 
 		// Character movement state (for rendering).
 		public var inCombat:Boolean;
@@ -29,46 +30,39 @@ package {
 		private var destX:int;
 		private var destY:int;
 
-		private var moveQueue:Array;
-
 		private var animations:Dictionary;
 		private var currentAnimation:MovieClip;
 
 		public var runState:Boolean;
-		//private var dispField:TextField;
-
-		public var maxStamina:int;
-		public var currentStamina:int;
 
 		public var attackImage:Image;
 		public var attackText:TextField;
 
 		public var los:int;
 
-		// Constructs the character at the provided grid position and with the
-		// correct stats
-		public function Character(g_x:int, g_y:int, level:int, xp:int,
-								  stamina:int, lineOfSight:int,
-								  animationDict:Dictionary, attackTexture:Texture) {
+		public function Character(g_x:int,
+								  g_y:int,
+								  hp:int,
+								  stamina:int,
+								  lineOfSight:int,
+								  animationDict:Dictionary,
+								  attackTexture:Texture) {
 			super();
-			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
+			grid_x = x;
+			grid_y = y;
 
-			moveQueue = new Array();
+			this.maxHp = hp;
+			this.hp = hp;
+			this.maxStamina = stamina;
+			this.stamina = stamina;
+			this.attack = attack;
+
 			animations = animationDict;
 			currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
 			currentAnimation.play();
 
-			// Calculate character state from level.
-			var attack:int = level;
-			var maxHp:int = CharState.getMaxHp(level);
-			var hp:int = maxHp;
-			// Setup character game state.
-			state = new CharState(g_x, g_y, xp, level, maxHp, hp, attack);
-
-			maxStamina = stamina;
-			currentStamina = stamina;
 			los = lineOfSight;
 
 			runState = false;
@@ -80,14 +74,8 @@ package {
 			attackText.x = attackImage.width;
 			attackText.y = attackImage.y;
 			attackText.autoScale = true;
-			//dispField = new TextField(128, 128, runState.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			//dispField.x = currentAnimation.x;
-			//dispField.y = currentAnimation.height;
 
 			addChild(currentAnimation);
-
-			//addChild(dispField);
-
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
@@ -140,9 +128,7 @@ package {
 
 		private function onEnterFrame(e:EnterFrameEvent):void {
 			currentAnimation.advanceTime(e.passedTime);
-			attackText.text = state.attack.toString();
-
-			//dispField.text = runState.toString();
+			attackText.text = attack.toString();
 
 			if (moving) {
 				if (x > destX) {
@@ -168,9 +154,9 @@ package {
 												Util.real_to_grid(x),
 												Util.real_to_grid(y)));
 
-					currentStamina -= 1;
+					stamina -= 1;
 
-					if(currentStamina <= 0) {
+					if(stamina <= 0) {
 						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED));
 					}
 				}

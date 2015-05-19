@@ -1,16 +1,17 @@
-package ai {
+package entities {
+	import starling.textures.Texture;
 
-	public class HealingState extends EntityState {
+	public class Healing extends Entity {
 		public var health:int;
 
-		public function HealingState(health:int) {
-			this.health = health;
+		public function Healing(g_x:int, g_y:int, texture:Texture, health:int) {
+			super(g_x, g_y, texture);
 		}
 
 		// Attempts to heal the character with the given state. Returns false
 		// if the character doesn't require healing, true if the character
 		// was healed.
-		public function healCharacter(c:CharState):Boolean {
+		private function healCharacter(c:Character):Boolean {
 			if (c.hp == c.maxHp) {
 				return false;
 			}
@@ -20,10 +21,6 @@ package ai {
 				c.hp = c.maxHp;
 			}
 			return true;
-		}
-
-		override public function hash():int {
-			return health;
 		}
 	}
 }

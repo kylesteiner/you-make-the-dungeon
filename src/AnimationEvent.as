@@ -1,7 +1,8 @@
 package {
     import starling.events.Event;
+
+    import entities.Enemy;
     import tiles.*;
-    import ai.*;
 
     public class AnimationEvent extends Event {
         public static const COMBAT_BEGIN:String = "combat_begin";
@@ -13,15 +14,15 @@ package {
         public static const STAMINA_EXPENDED:String = "stamina_expended";
 
         public var character:Character;
-        public var enemy:EnemyTile;
+        public var enemy:Enemy;
 
         public function AnimationEvent(type:String,
                                        c:Character,
-                                       enemyTile:EnemyTile,
+                                       e:Enemy,
                                        bubbles:Boolean=true) {
             super(type, bubbles);
             character = c;
-            enemy = enemyTile;
+            enemy = e;
         }
     }
 }
