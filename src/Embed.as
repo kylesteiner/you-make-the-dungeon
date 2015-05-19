@@ -7,7 +7,7 @@ package {
 		[Embed(source='assets/backgrounds/background.png')] public static var grid_background:Class;
 		[Embed(source='assets/backgrounds/char_hud_stretch.png')] public static const char_hud:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] public static var static_background:Class;
-		[Embed(source='assets/backgrounds/tile_hud_large.png')] public static const tile_hud:Class;
+		[Embed(source='assets/backgrounds/tile_hud.png')] public static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_shifted.png')] public static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;

@@ -6,16 +6,7 @@ package {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
 
-		public static const HUD_OFFSET:int = 8;
-		public static const HUD_OFFSET_TILES:int = 56 + 13;
-		public static const HUD_OFFSET_DEL:int = 366;
-		public static const HUD_PAD_TOP:int = 8;
-		public static const HUD_PAD_LEFT:int = 12;
-		public static const HUD_PIXELS_PER_TILE:int = 42;
-		public static const HUD_TAB_SIZE:int = 5;
-		
-		public static const HUD_PAD_TOP2:int = 80;
-		public static const HUD_PIXELS_PER_EDGE:int = 32;
+		public static const BASE_TILE_COST:int = 50;
 
 		public static const REAL_TILE_SIZE:int = 256;
 		public static const PIXELS_PER_TILE:int = 64; // 48

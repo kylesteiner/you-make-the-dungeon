@@ -9,132 +9,130 @@ package {
 	import tiles.*;
 	import Util;
 
-	public class TileHud extends Sprite {
+	public class BuildHud extends Sprite {
 		private var textures:Dictionary;
-		private var HUD:Image;
+		private var highlightedLocations:Array;
+		
+		/***** Overall HUD *****/
+		// sprites that contain the tile and entity selection
+		private var tileBlock:Sprite;
+		private var entityBlock:Sprite;
+		// image to display beneath mouse cursor
+		private var currentImage:Image;
+		// true if entity should be shown, false if tile is shown
+		private var isEntityDisplay:Boolean;
+		// maps strings to arrays
+		// array[0] is the constructor for the entity
+		// array[1] is the image
+		// array[2] is the cost
+		private var entityMap:Dictionary;
+		
+		/***** Tile Block *****/
+		// an array of Booleans, which indicate whether each direction is open or not
+		private var directions:Array;
+		// base tile image
+		private var baseImage:Image;
+		// toggle the corresponding field and change their image
+		private var northClickable:Clickable;
+		private var southClickable:Clickable;
+		private var eastClickable:Clickable;
+		private var westClickable:Clickable;
+		// the resultant image given the base + directions
+		private var currentTile:Image;
 
-		public var tileTypes:Array;
-		public var edgeTiles:Array;
-		public var tab:int;
-		public var selectedTile:Tile;
-		public var highlightedLocations:Array;
+		/***** Entity Block *****/
+		// list of unlocked entities (Array of Arrays, one array per category)
+		// second level of arrays have strings in them which correspond to 
+		// keys in the entity map
+		private var entityList:Array;
+		// list of ints which correspond to indices within the array of arrays
+		private var entityDisplayList:Array;
+		// currently selected entity
+		private var currentEntity:Image;
+		// the array index being used
+		private var currentEntityIndex:int;
+
 
 		/**********************************************************************************
 		 *  Intialization
 		 **********************************************************************************/
 		
-		public function TileHud(textureDict:Dictionary) {
+		public function BuildHud(textureDict:Dictionary, entityMap:Dictionary) {
 			super();
 			textures = textureDict;
+			highlightedLocations = new Array();
 			
-			HUD = new Image(textures[Util.TILE_HUD]);
-			HUD.x = Util.HUD_OFFSET;
-			HUD.y = 0;
-			addChild(HUD);
+			currentImage = null;
+			isEntityDisplay = true;
+			this.entityMap = entityMap;
 			
-			makeTileTypes();
-			makeEdgeTiles();
-
-			tab = 0;
-			loadTab(tab);
-			selectedTile = null;
-			highlightedLocations = new Array(Util.HUD_TAB_SIZE);
+			directions = new Array(4);
+			baseImage = null;
+			northClickable = null;
+			southClickable = null;
+			eastClickable = null;
+			currentTile = null;
 			
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 		
-		public function makeTileTypes():void {
-			tileTypes = new Array();
-			tileTypes.push(new Image(textures[Util.HEALING]));
-			tileTypes.push(new Image(textures[Util.MONSTER_1]));
-			tileTypes.push(new Image(textures[Util.MONSTER_2]));
-			tileTypes.push(new Image(textures[Util.KEY]));
-			tileTypes.push(new Image(textures[Util.DOOR]));
-			for (var i:int = 0; i < tileTypes.length; i++) {
-				tileTypes[i].width = Util.HUD_PIXELS_PER_TILE;
-				tileTypes[i].height = Util.HUD_PIXELS_PER_TILE;
-				setTilePosition(i);
-			}
+		/**********************************************************************************
+		 *  HUD API
+		 **********************************************************************************/
+		
+		// return cost of currently selected item
+		public function getCost():int {
+			return 0;
 		}
 		
-		public function makeEdgeTiles():void {
-			edgeTiles = new Array();
-			edgeTiles.push(new Tile(0, 0, true, false, false, false, textures[Util.getTextureString(true, false, false, false)]));
-			edgeTiles.push(new Tile(0, 0, false, true, false, false, textures[Util.getTextureString(false, true, false, false)]));
-			edgeTiles.push(new Tile(0, 0, false, false, true, false, textures[Util.getTextureString(false, false, true, false)]));
-			edgeTiles.push(new Tile(0, 0, false, false, false, true, textures[Util.getTextureString(false, false, false, true)]));
-			edgeTiles.push(new Tile(0, 0, true, true, false, false, textures[Util.getTextureString(true, true, false, false)]));
-			edgeTiles.push(new Tile(0, 0, false, false, true, true, textures[Util.getTextureString(false, false, true, true)]));
-			edgeTiles.push(new Tile(0, 0, true, false, false, true, textures[Util.getTextureString(true, false, false, true)]));
-			edgeTiles.push(new Tile(0, 0, false, true, true, false, textures[Util.getTextureString(false, true, true, false)]));
-			edgeTiles.push(new Tile(0, 0, false, true, true, true, textures[Util.getTextureString(false, true, true, true)]));
-			edgeTiles.push(new Tile(0, 0, true, false, true, true, textures[Util.getTextureString(true, false, true, true)]));
-			edgeTiles.push(new Tile(0, 0, true, true, false, true, textures[Util.getTextureString(true, true, false, true)]));
-			edgeTiles.push(new Tile(0, 0, true, true, true, false, textures[Util.getTextureString(true, true, true, false)]));
-			edgeTiles.push(new Tile(0, 0, true, true, true, true, textures[Util.getTextureString(true, true, true, true)]));
-			for (var i:int = 0; i < edgeTiles.length; i++) {
-				edgeTiles[i].width = Util.HUD_PIXELS_PER_EDGE;
-				edgeTiles[i].height = Util.HUD_PIXELS_PER_EDGE;
-				setEdgePosition(i);
-			}
+		public function reset():void {
+			
 		}
 		
-		public function setTilePosition(index:int):void {
-			tileTypes[index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
-				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * (index % Util.HUD_TAB_SIZE);
-			tileTypes[index].y = HUD.y + Util.HUD_PAD_TOP;
+		/**********************************************************************************
+		 *  Tile Block API
+		 **********************************************************************************/
+		
+		public function toggleNorth():void {
+			directions[Util.NORTH] = (directions[Util.NORTH] = true) ? false : true;
 		}
 		
-		public function setEdgePosition(index:int):void {
-			edgeTiles[index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
-				(Util.HUD_PIXELS_PER_EDGE + Util.HUD_PAD_LEFT) * (index % edgeTiles.length);
-			edgeTiles[index].y = HUD.y + Util.HUD_PAD_TOP2;
+		public function toggleSouth():void {
+			directions[Util.SOUTH] = (directions[Util.SOUTH] = true) ? false : true;
+		}
+		
+		public function toggleEast():void {
+			directions[Util.EAST] = (directions[Util.EAST] = true) ? false : true;
+		}
+		
+		public function toggleWest():void {
+			directions[Util.WEST] = (directions[Util.WEST] = true) ? false : true;
+		}
+		
+		// return cost of current generated tile
+		public function getTileCost():int {
+			var sum:int = (directions[Util.NORTH] ? 1 : 0) + (directions[Util.SOUTH] ? 1 : 0) + 
+						  (directions[Util.EAST] ? 1 : 0) + (directions[Util.WEST] ? 1 : 0);
+			return Util.BASE_TILE_COST * sum;
+		}
+
+		/**********************************************************************************
+		 *  Entity Block API
+		 **********************************************************************************/
+		
+		public function selectEntity(index:int):void {
+			
+		}
+		
+		public function pageEntity(index:int, change:int):void {
+			
 		}
 		
 		/**********************************************************************************
 		 *  Utility functions
 		 **********************************************************************************/
 		
-		public function loadTab(newTab:int):void {
-			var i:int; var index:int;
-			
-			if (newTab < 0 || newTab > (tileTypes.length - 1) / Util.HUD_TAB_SIZE) {
-				return;
-			}
-			
-			for (i = 0; i < Util.HUD_TAB_SIZE && tab * Util.HUD_TAB_SIZE + i < tileTypes.length; i++) {
-				removeChild(tileTypes[tab * Util.HUD_TAB_SIZE + i]);
-			}
-			
-			tab = newTab;
-			
-			for (i = 0; i < Util.HUD_TAB_SIZE && tab * Util.HUD_TAB_SIZE + i < tileTypes.length; i++) {
-				addChild(tileTypes[tab * Util.HUD_TAB_SIZE + i]);
-			}
-			
-			loadEdges();
-		}
 		
-		public function loadEdges():void {
-			for (var i:int = 0; i < edgeTiles.length; i++) {
-				addChild(edgeTiles[i]);
-			}
-		}
-		
-		public function resetTileHud():void {
-			loadTab(0);
-		}
-		
-		public function selectTile(index:int):void {
-			selectedTile = tileTypes[tab * Util.HUD_TAB_SIZE + index];
-		}
-		
-		public function deselectTile():void {
-			if (selectedTile != null) {
-				removeChild(selectedTile);
-				selectedTile = null;
-			}
-		}
 
 		/**********************************************************************************
 		 *  Events
@@ -151,6 +149,11 @@ package {
 		}
 		
 		/*
+		public function setEntityPosition(index:int):void {
+			availableEntities[index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
+				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * (index % Util.HUD_TAB_SIZE);
+			availableEntities[index].y = HUD.y + Util.HUD_PAD_TOP;
+		}
 		public function removeAndReplaceTile(index:int):void {
 			removeChild(availableTiles[index]);
 			//getNextTile(index)

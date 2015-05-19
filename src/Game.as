@@ -31,7 +31,7 @@ package {
 		//private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
-		private var tileHud:TileHud;
+		private var buildHUD:BuildHud;
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
@@ -242,7 +242,7 @@ package {
 				//removeChild(resetButton);
 				removeChild(runButton);
 				//removeChild(charHud);
-				removeChild(tileHud);
+				removeChild(buildHUD);
 				removeChild(goldHud);
 				removeChild(runHud);
 			}
@@ -327,8 +327,8 @@ package {
 			addChild(goldHud);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
-			tileHud = new TileHud(textures);
-			addChild(tileHud);
+			buildHUD = new BuildHud(textures, new Dictionary()); // TODO: Add entities
+			addChild(buildHUD);
 
 			mixer.play(Util.FLOOR_BEGIN);
 		}
@@ -416,7 +416,7 @@ package {
 			enemyTiles = 0;
 			healingTiles = 0;
 			currentFloor.resetFloor();
-			tileHud.resetTileHud();
+			buildHUD.reset();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.FLOOR_RESET);
 		}
