@@ -1,0 +1,44 @@
+{
+	"floor_name": "main_floor",
+	"floor_dimensions": {
+		"width": 20,
+		"height": 20
+	},
+	"character_start": {
+		"x": 5,
+		"y": 5
+	},
+	"tiles": [
+		{
+			"type": "entry",
+			"x": 5,
+			"y": 5,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "exit",
+			"x": 0,
+			"y": 0,
+			"edges": ["s", "e"]
+		},
+		{
+			"type": "impassable",
+			"x": 15,
+			"y": 15,
+			"edges": []
+		},
+		{
+			"type": "empty",
+			"x": 10,
+			"y": 10,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 1,
+			"y": 1,
+			"edges": ["n", "s", "e", "w"]
+		}
+	],
+	"entities": []
+}
