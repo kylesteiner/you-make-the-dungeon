@@ -36,7 +36,7 @@ package {
 
 		// Constructs the character at the provided grid position and with the
 		// correct stats
-		public function Character(g_x:int, g_y:int, maxHp:int, stamina:int, attack:int, animationDict:Dictionary) {
+		public function Character(g_x:int, g_y:int, hp:int, stamina:int, attack:int, animationDict:Dictionary) {
 			super();
 			// Set the real x/y positions.
 			x = Util.grid_to_real(g_x);
@@ -44,7 +44,7 @@ package {
 
 			grid_x = x;
 			grid_y = y;
-			this.maxHp = maxHp;
+			this.maxHp = hp;
 			this.hp = hp;
 			this.stamina = stamina;
 			this.attack = attack;
