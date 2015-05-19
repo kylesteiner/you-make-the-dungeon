@@ -84,8 +84,6 @@ package {
 		public function Floor(floorData:ByteArray,
 							  textureDict:Dictionary,
 							  animationDict:Dictionary,
-							  level:int,
-							  xp:int,
 							  health:int,
 							  stamina:int,
 							  lineOfSight:int,
@@ -243,8 +241,6 @@ package {
 				// Remove all tiles from the display tree.
 				for (i = 0; i < grid.length; i++) {
 					for (j = 0; j < grid[i].length; j++) {
-						// TODO: figure out it it is necessary to dispose of the
-						// tile here.
 						if (grid[i][j]) {
 							grid[i][j].removeFromParent();
 						}
@@ -253,12 +249,10 @@ package {
 				clearHighlightedLocations()
 			}
 
-			//clearHighlightedLocations();
-
 			// Replace the current grid with a fresh one.
-			grid = Util.initializeGrid(gridWidth, gridHeight);
-			fogGrid = Util.initializeGrid(gridWidth, gridHeight);
-			entityGrid = Util.initializeGrid(gridWidth, gridHeight);
+			grid = initializeGrid(gridWidth, gridHeight);
+			fogGrid = initializeGrid(gridWidth, gridHeight);
+			entityGrid = initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
@@ -307,18 +301,17 @@ package {
 				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}*/
-
 		}
 
-		// Remove the character from the display tree and create a new one to reset
-		// its state.
 		public function resetCharacter():void {
+			// Get rid of the old character (if it exists) and make a new one
+			// with the default values.
 			if (char) {
 				char.removeFromParent();
 			}
 			char = new Character(initialX,
 								 initialY,
-								 10,  // TODO: set an initialHp value
+							 	 initialHp,
 								 initialStamina,
 								 initialLos,
 								 animations[Util.CHARACTER],
@@ -477,11 +470,6 @@ package {
 		// Returns a 2D array with the given dimensions.
 		private function initializeGrid(x:int, y:int):Array {
 			var arr:Array = new Array(x);
-			// Potential bug exists here when appending Tiles to
-			// the end of the outside array (which should never occur)
-			// Code elsewhere will treat an Array of 5 Arrays and a Tile
-			// as 6 Arrays, which then bugs when we set properties of the
-			// 6th "Array".
 			for (var i:int = 0; i < x; i++) {
 				arr[i] = new Array(y);
 			}
@@ -522,9 +510,9 @@ package {
 			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
 			addChild(mapBoundsBackground);
 
-			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
-			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
-			initialEntities = Util.initializeGrid(gridWidth, gridHeight);
+			initialGrid = initializeGrid(gridWidth, gridHeight);
+			initialFogGrid = initializeGrid(gridWidth, gridHeight);
+			initialEntities = initializeGrid(gridWidth, gridHeight);
 
 			// Add a fog image at every grid tile.
 			for (i = 0; i < initialFogGrid.length; i++) {
@@ -542,7 +530,7 @@ package {
 			initialY = Number(characterData[1]);
 			char = new Character(initialX,
 								 initialY,
-								 initialHp,  // TODO: set an initialHp value
+								 initialHp,
 								 initialStamina,
 								 initialLos,
 								 animations[Util.CHARACTER],
