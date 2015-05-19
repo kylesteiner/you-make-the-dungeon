@@ -138,10 +138,9 @@ package {
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
-			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
-			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
-			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
+			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
+			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
@@ -719,8 +718,8 @@ package {
 
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
-		private function onCharArrived(e:TileEvent):void {
-			var entity:Entity = entityGrid[e.grid_x][e.grid_y];
+		private function onCharArrived(e:GameEvent):void {
+			var entity:Entity = entityGrid[e.x][e.y];
 			if (!entity) {
 				return;
 			}
@@ -750,12 +749,9 @@ package {
 			removeChild(enemy);
 		}
 
-		public function onCharHandled(e:TileEvent):void {
-		}
-
 		// Event handler for when a character arrives at an exit tile.
 		// The event chain goes: character -> floor -> tile -> floor.
-		private function onCharExited(e:TileEvent):void {
+		private function onCharExited(e:GameEvent):void {
 			// TODO: Do actual win condition handling.
 			if (logger) {
 				logger.logLevelEnd({
@@ -794,8 +790,8 @@ package {
 		// Called when the character moves into an objective tile. Updates objectiveState
 		// to mark the tile as visited.
 		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
-		private function onObjCompleted(e:TileEvent):void {
-			var obj:Objective = entityGrid[e.grid_x][e.grid_y];
+		private function onObjCompleted(e:GameEvent):void {
+			var obj:Objective = entityGrid[e.x][e.y];
 			objectiveState[obj.key] = true;
 		}
 	}

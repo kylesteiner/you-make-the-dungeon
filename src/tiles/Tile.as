@@ -61,15 +61,11 @@ package tiles {
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
-		public function handleChar(c:Character):void {
-			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
-										Util.real_to_grid(x),
-										Util.real_to_grid(y)));
-		}
+		public function handleChar(c:Character):void {}
 
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
-		public function reset():void { }
+		public function reset():void {}
 
 		// when the user hovers over a tile, a small box will appear with the
 		// information for that tile.

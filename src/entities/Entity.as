@@ -3,9 +3,6 @@ package entities {
 	import starling.display.Image;
 	import starling.textures.Texture;
 
-	import tiles.TileEvent;
-	import Util;
-
 	// Base class for all Entities. Should not be instantiated.
 	public class Entity extends Sprite {
 		public var grid_x:int;
