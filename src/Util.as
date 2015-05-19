@@ -171,20 +171,6 @@ package {
 			return coordinate / PIXELS_PER_TILE;
 		}
 
-		// Returns a 2D array with the given dimensions.
-		public static function initializeGrid(x:int, y:int):Array {
-			var arr:Array = new Array(x);
-			// Potential bug exists here when appending Tiles to
-			// the end of the outside array (which should never occur)
-			// Code elsewhere will treat an Array of 5 Arrays and a Tile
-			// as 6 Arrays, which then bugs when we set properties of the
-			// 6th "Array".
-			for (var i:int = 0; i < x; i++) {
-				arr[i] = new Array(y);
-			}
-			return arr;
-		}
-
 		// Returns a random int between the min and max, including max.
 		public static function randomRange(min:int, max:int):int {
 			return Math.floor(Math.random() * (max - min + 1)) + min;

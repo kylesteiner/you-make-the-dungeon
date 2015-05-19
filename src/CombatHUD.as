@@ -152,7 +152,7 @@ package {
             enemyAttackImage.y = ENEMY_Y + enemyHealthImage.height;
             addChild(enemyAttackImage);
 
-            enemyHealthText = new TextField(128, enemyHealthImage.height, String(enemy.hp), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyHealthText = new TextField(128, enemyHealthImage.height, enemy.hp + " / " + enemy.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             enemyHealthText.x = enemyHealthImage.x + enemyHealthImage.width;
             enemyHealthText.y = enemyHealthImage.y;
             addChild(enemyHealthText);

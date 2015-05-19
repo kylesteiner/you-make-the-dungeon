@@ -87,7 +87,7 @@ package tiles {
 			//snap to function should be better than
 			x = Util.grid_to_real(Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2)); // TODO: Make this calculation better
 			y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
-			checkGameBounds();
+			//checkGameBounds();
 			grid_x = Util.real_to_grid(x + Util.PIXELS_PER_TILE / 2);
 			//grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
 			//grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);

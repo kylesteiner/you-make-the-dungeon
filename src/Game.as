@@ -136,6 +136,9 @@ package {
 
 		private function initializeFloorWorld():void {
 			world = new Sprite();
+			//world.height = 2048;
+			//world.width = 2048;
+			//world.addChild(new Quad(world.height, world.width, 0xff000000));
 			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
@@ -282,10 +285,22 @@ package {
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], newFloorData[4], newFloorData[5], floors, switchToTransition, mixer, logger);
+			currentFloor = new Floor(newFloorData[0],	// Floor data file
+									 textures,
+									 animations,
+									 newFloorData[1],	// Initial health
+									 newFloorData[2],	// Initial stamina
+									 newFloorData[3],	// Initial line of sight
+									 floors,
+									 switchToTransition,
+									 mixer,
+									 logger);
 			if(currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
+
+			//world.height = Util.grid_to_real(currentFloor.gridHeight);
+			//world.width = Util.grid_to_real(currentFloor.gridWidth);
 
 			// TODO: Logger is definitely broken here by the changes.
 			// the logger doesn't like 0 based indexing.
@@ -343,8 +358,6 @@ package {
 			beginGameButton.addParameter(floors[Util.MAIN_FLOOR]);
 			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
 			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
-			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
-			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
 			beginGameButton.addParameter(Util.STARTING_HEALTH);
 			beginGameButton.addParameter(Util.STARTING_STAMINA);
 			beginGameButton.addParameter(Util.STARTING_LOS);
@@ -417,8 +430,6 @@ package {
 		public function runFloor():void {
 			//logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 			//					   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
-
-
 			removeChild(runButton);
 			addChild(endButton);
 			addChild(runHud);
