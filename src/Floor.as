@@ -303,9 +303,9 @@ package {
 			}*/
 		}
 
+		// Get rid of the old character (if it exists) and make a new one
+		// with the default values.
 		public function resetCharacter():void {
-			// Get rid of the old character (if it exists) and make a new one
-			// with the default values.
 			if (char) {
 				char.removeFromParent();
 			}
