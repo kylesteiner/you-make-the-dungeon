@@ -51,7 +51,7 @@ package {
 		private var isMenu:Boolean; // probably need to change to state;
 		private var messageToPlayer:Clickable;
 
-		private var logger:Logger;
+		public var logger:Logger;
 		private var numberOfTilesPlaced:int;
 		private var emptyTiles:int;
 		private var enemyTiles:int;
@@ -177,8 +177,14 @@ package {
 			menuWorld.addChild(new Image(textures[Util.GRID_BACKGROUND]));
 		}
 
-		private function startCombat(event:GameEvent):void {
-			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.x][event.y], combatSkip, mixer, logger);
+		private function startCombat(e:GameEvent):void {
+			currentCombat = new CombatHUD(textures,
+										  animations,
+										  currentFloor.char,
+										  currentFloor.entityGrid[e.x][e.y],
+										  combatSkip,
+										  mixer,
+										  logger);
 			addChild(currentCombat);
 		}
 

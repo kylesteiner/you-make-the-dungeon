@@ -51,10 +51,6 @@ package {
 		private var nextFloor:String;
 		private var onCompleteCallback:Function;
 
-		// If the character is fighting, the enemy the character is fighting.
-		private var enemy:Enemy;
-		private var dmgText:TextField;
-
 		private var textures:Dictionary;
 		private var animations:Dictionary;
 
@@ -586,11 +582,11 @@ package {
 					var hp:int = Number(lineData[4]);
 					var attack:int = Number(lineData[5]);
 					var reward:int = Number(lineData[6]);
-					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], hp, attack, reward);
+					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], logger, hp, attack, reward);
 				} else if (tType == "healing") {
 					trace("Parsed health");
 					var health:int = Number(lineData[4]);
-					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
+					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], logger, health);
 				} else if (tType == "objective") {
 					trace("Parsed objective");
 					var key:String = lineData[4];
@@ -598,7 +594,7 @@ package {
 					for (j = 5; j < lineData.length; j++) {
 						prereqs.push(StringUtil.trim(lineData[j]));
 					}
-					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
+					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], logger, key, prereqs);
 					objectiveState[key] = false;
 				} else {
 					trace("Created entity with invalid type " + tType + ": " + floorName + ", line " + (5 + numTiles));
@@ -723,25 +719,7 @@ package {
 			if (!entity) {
 				return;
 			}
-			if (entity is Enemy && logger) {
-				var enemy:Enemy = entity as Enemy;
-				logger.logAction(5, {
-					"characterHealthLeft":char.hp,
-					"characterHealthMax":char.maxHp,
-					"characterAttack":char.attack,
-					"enemyAttack":enemy.attack,
-					"enemyHealth":enemy.hp,
-					"enemyReward":enemy.reward
-				});
-			} else if (entity is Healing && logger) {
-				var healing:Healing = entity as Healing;
-				logger.logAction(6, {
-					"characterHealth":char.hp,
-					"characterMaxHealth":char.maxHp,
-					"healthRestored":healing.health
-				});
-			}
-			// TODO: Handle character-entity interaction
+			entity.handleChar(char);
 		}
 
 		public function onCombatSuccess(enemy:Enemy):void {
