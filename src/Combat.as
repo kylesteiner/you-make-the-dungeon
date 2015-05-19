@@ -1,5 +1,4 @@
 package {
-	import Character;
 	import entities.Enemy;
 
 	// This class encodes the rules for combat between the character and an

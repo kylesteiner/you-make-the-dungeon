@@ -1,14 +1,13 @@
 package {
-	import starling.core.Starling;
-	import starling.display.*;
-	import flash.net.*;
-	import flash.utils.*;
+	import flash.utils.Dictionary;
+
+	import starling.display.Image;
+	import starling.display.Sprite;
 	import starling.events.*;
-	import starling.textures.*;
+	import starling.textures.Texture;
 	import starling.text.TextField;
 
 	import tiles.*;
-	import Util;
 
 	public class CharHud extends Sprite {
 		private var textures:Dictionary;

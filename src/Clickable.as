@@ -1,7 +1,9 @@
 package {
-    import starling.display.*;
+    import starling.display.DisplayObject;
+    import starling.display.Image;
+    import starling.display.Sprite;
     import starling.events.*;
-    import starling.textures.*;
+    import starling.textures.Texture;
 
     public class Clickable extends Sprite {
 
@@ -11,28 +13,32 @@ package {
         public var callback:Function;
         public var parameters:Array;
 
-        public function Clickable(xPos:int, yPos:int, action:Function, baseDisplay:DisplayObject = null, baseTexture:Texture = null) {
-                super();
-                x = xPos;
-                y = yPos;
-                height = Util.STAGE_HEIGHT;
-                width = Util.STAGE_WIDTH;
-                parameters = new Array();
+        public function Clickable(xPos:int,
+                                  yPos:int,
+                                  action:Function,
+                                  baseDisplay:DisplayObject = null,
+                                  baseTexture:Texture = null) {
+            super();
+            x = xPos;
+            y = yPos;
+            height = Util.STAGE_HEIGHT;
+            width = Util.STAGE_WIDTH;
+            parameters = new Array();
 
-                if(baseDisplay) {
-                    baseImage = baseDisplay;
-                    addChild(baseImage);
-                }
+            if(baseDisplay) {
+                baseImage = baseDisplay;
+                addChild(baseImage);
+            }
 
-                if(baseTexture) {
-                    texture = baseTexture;
-                    textureImage = new Image(texture);
-                    addChild(textureImage);
-                }
+            if(baseTexture) {
+                texture = baseTexture;
+                textureImage = new Image(texture);
+                addChild(textureImage);
+            }
 
-                callback = action;
+            callback = action;
 
-                addEventListener(TouchEvent.TOUCH, onMouseEvent);
+            addEventListener(TouchEvent.TOUCH, onMouseEvent);
         }
 
         private function onMouseEvent(event:TouchEvent):void {

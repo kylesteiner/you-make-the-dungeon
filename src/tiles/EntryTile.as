@@ -4,10 +4,6 @@ package tiles {
 	import starling.utils.Color;
 	import starling.text.TextField;
 
-
-
-    import Util;
-
     public class EntryTile extends Tile {
         public var label:TextField;
 
@@ -26,7 +22,7 @@ package tiles {
                                   Util.SMALL_FONT_SIZE);
             addChild(label);
         }
-		
+
 		override public function displayInformation():void {
 			setUpInfo("Starting Tile");
 		}
