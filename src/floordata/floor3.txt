@@ -3,6 +3,7 @@ floor4
 floor4
 5	5
 0	2
+5
 entry	0	2	1	1	1	0
 none	2	2	0	0	0	0
 none	2	1	0	0	0	0

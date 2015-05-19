@@ -3,17 +3,25 @@ floor8
 floor9
 7	5
 0	2
+14
 entry	0	2	1	1	1	0
 none	2	0	0	0	0	0
-enemy	2	1	0	1	0	1	e1a	2	8	1	1
-enemy	2	2	1	1	1	0	e2	2	8	1	1
-enemy	2	3	1	0	0	1	e1b	2	8	1	1
+empty	2	1	0	1	0	1
+empty	2	2	1	1	1	0
+empty	2	3	1	0	0	1
 none	2	4	0	0	0	0
-health	4	0	0	1	1	1	3
-health	4	4	1	0	1	1	3
-enemy	5	2	1	1	1	1	e3	2	8	1	1
+empty	4	0	0	1	1	1
+empty	4	4	1	0	1	1
+empty	5	2	1	1	1	1
 none	6	0	0	0	0	0
 none	6	1	0	0	0	0
 exit	6	2	0	0	0	1
 none	6	3	0	0	0	0
 none	6	4	0	0	0	0
+6
+enemy	2	1	monster_1	8	1	1
+enemy	2	2	monster_1	8	1	1
+enemy	2	3	monster_1	8	1	1
+health	4	0	3
+health	4	4	3
+enemy	5	2	monster_1	8	1	1

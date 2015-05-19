@@ -3,12 +3,16 @@ floor7
 floor8
 5	4
 0	0
+9
 entry	0	0	0	1	1	0
 exit	4	1	0	0	0	1
-objective	3	1	0	0	1	1	door	door	key
-objective	0	3	1	0	1	0	key	key
+empty	3	1	0	0	1	1
+empty	0	3	1	0	1	0
 none	3	0	0	0	0	0
 none	4	0	0	0	0	0
 none	3	2	0	0	0	0
 none	4	2	0	0	0	0
 none	3	3	0	0	0	0
+2
+objective	3	1	door	door	key
+objective	0	3	key	key
