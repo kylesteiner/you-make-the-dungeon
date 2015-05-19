@@ -14,8 +14,6 @@ w/a/s/d - move camera
 Floor data text files are tab-delineated, with the following structure:
 ```
 FloorName
-NextFloorName (must also add to Utils constants)
-NextTransition
 FloorXDimension	FloorYDimension
 CharInitialX	CharInitialY
 NumTiles

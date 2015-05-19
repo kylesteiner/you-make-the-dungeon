@@ -48,9 +48,7 @@ package {
 		// Character's initial stats.
 		private var initialX:int;
 		private var initialY:int;
-		private var initialXp:int;
 		private var initialHp:int;
-		private var initialLevel:int;
 		private var initialStamina:int;
 		private var initialLos:int;
 
@@ -97,11 +95,10 @@ package {
 							  logger:Logger = null,
 							  showPrompt:int = 0) {
 			super();
-			initialLevel = level;
-			initialXp = xp;
 			initialHp = health;
 			initialStamina = stamina;
 			initialLos = lineOfSight;
+
 			preplacedTiles = 0;
 			textures = textureDict;
 			animations = animationDict;
@@ -111,7 +108,6 @@ package {
 			altCallback = null;
 
 			objectiveState = new Dictionary();
-
 
 			this.logger = logger;
 
@@ -553,7 +549,7 @@ package {
 								 textures[Util.ICON_ATK]);
 
 			// Parse all of the tiles.
-			var numTiles:int = Number(floorData[5]);
+			var numTiles:int = Number(floorData[3]);
 
 			var lineData:Array;
 			var tType:String;
@@ -563,7 +559,7 @@ package {
 
 			for (i = 0; i < numTiles; i++) {
 				preplacedTiles++;
-				lineData = floorData[i + 6].split("\t");
+				lineData = floorData[i + 4].split("\t");
 
 				tType = lineData[0];
 				tX = Number(lineData[1]);
@@ -595,10 +591,9 @@ package {
 				}
 			}
 
-			var numEntities:int = Number(floorData[6 + numTiles]);
+			var numEntities:int = Number(floorData[4 + numTiles]);
 			for (i = 0; i < numEntities; i++) {
-				var line:int = 7 + numTiles + i;
-				lineData = floorData[line].split('\t');
+				lineData = floorData[5 + numTiles].split('\t');
 				tType = StringUtil.trim(lineData[0]);
 				tX = Number(lineData[1]);
 				tY = Number(lineData[2]);
@@ -624,7 +619,7 @@ package {
 					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
 					objectiveState[key] = false;
 				} else {
-					trace("Created entity with invalid type " + tType + ": " + floorName + ", line " + line);
+					trace("Created entity with invalid type " + tType + ": " + floorName + ", line " + (5 + numTiles));
 				}
 			}
 		}
