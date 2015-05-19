@@ -49,6 +49,7 @@ package {
 		private var initialX:int;
 		private var initialY:int;
 		private var initialXp:int;
+		private var initialHp:int;
 		private var initialLevel:int;
 		private var initialStamina:int;
 		private var initialLos:int;
@@ -87,6 +88,7 @@ package {
 							  animationDict:Dictionary,
 							  level:int,
 							  xp:int,
+							  health:int,
 							  stamina:int,
 							  lineOfSight:int,
 							  floorDict:Dictionary,
@@ -97,6 +99,7 @@ package {
 			super();
 			initialLevel = level;
 			initialXp = xp;
+			initialHp = health;
 			initialStamina = stamina;
 			initialLos = lineOfSight;
 			preplacedTiles = 0;
@@ -543,7 +546,7 @@ package {
 			initialY = Number(characterData[1]);
 			char = new Character(initialX,
 								 initialY,
-								 10,  // TODO: set an initialHp value
+								 initialHp,  // TODO: set an initialHp value
 								 initialStamina,
 								 initialLos,
 								 animations[Util.CHARACTER],

@@ -283,7 +283,7 @@ package {
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], newFloorData[4], floors, switchToTransition, mixer, logger);
+			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], newFloorData[4], newFloorData[5], floors, switchToTransition, mixer, logger);
 			if(currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
@@ -346,6 +346,7 @@ package {
 			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
 			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
+			beginGameButton.addParameter(Util.STARTING_HEALTH);
 			beginGameButton.addParameter(Util.STARTING_STAMINA);
 			beginGameButton.addParameter(Util.STARTING_LOS);
 			//beginGameButton.addParameter(1);
