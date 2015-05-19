@@ -548,30 +548,30 @@ package {
 						if (touch.globalX >= world.x && touch.globalX < world.x + currentFloor.width &&
 							touch.globalY >= world.y && touch.globalY < world.y + currentFloor.height) {
 							// Player clicked inside grid
-							if (selectedTile.x >= 0 && selectedTile.x < currentFloor.gridWidth &&
-								selectedTile.y >= 0 && selectedTile.y < currentFloor.gridHeight &&
-								!currentFloor.grid[selectedTile.x][selectedTile.y] &&
-								currentFloor.highlightedLocations[selectedTile.x][selectedTile.y]) {
+							if (selectedTile.grid_x >= 0 && selectedTile.grid_x < currentFloor.gridWidth &&
+								selectedTile.grid_y >= 0 && selectedTile.grid_y < currentFloor.gridHeight &&
+								!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
+								currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
 								// Player correctly placed one of the available tiles
 								// Move tile from HUD to grid. Add new tile to HUD.
 								tileHud.removeAndReplaceTile(selectedTileIndex);
-								currentFloor.grid[selectedTile.x][selectedTile.y] = selectedTile;
+								currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
 								currentFloor.addChild(selectedTile);
-								currentFloor.fogGrid[selectedTile.x][selectedTile.y] = false;
-								currentFloor.removeFoggedLocations(selectedTile.x, selectedTile.y);
+								currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
+								currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
 								// check if we placed the tile next to any preplaced tiles, and if we did, remove
 								// the fogs for those as well. (it's so ugly D:)
-								if (selectedTile.x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.x + 1][selectedTile.y]) {
-									currentFloor.removeFoggedLocations(selectedTile.x + 1, selectedTile.y);
+								if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
 								}
-								if (selectedTile.x - 1 >= 0 && currentFloor.grid[selectedTile.x - 1][selectedTile.y]) {
-									currentFloor.removeFoggedLocations(selectedTile.x - 1, selectedTile.y);
+								if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
 								}
-								if (selectedTile.y + 1 < currentFloor.grid[selectedTile.x].length && currentFloor.grid[selectedTile.x][selectedTile.y + 1]) {
-									currentFloor.removeFoggedLocations(selectedTile.x, selectedTile.y + 1);
+								if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
 								}
-								if (selectedTile.y - 1 >= 0 && currentFloor.grid[selectedTile.x][selectedTile.y - 1]) {
-									currentFloor.removeFoggedLocations(selectedTile.x, selectedTile.y - 1);
+								if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
+									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
 								}
 								selectedTile.positionTileOnGrid(world.x, world.y);
 								numberOfTilesPlaced++;
