@@ -271,6 +271,7 @@ package {
 		public function switchToTransition(transition:Texture,
 										   floor:String,
 										   initialHealth:int,
+										   initialAttack:int,
 										   initialStamina:int,
 										   initialLoS:int):void {
 			prepareSwap();
@@ -283,6 +284,7 @@ package {
 											   transition,
 											   floor,
 											   initialHealth,
+											   initialAttack,
 											   initialStamina,
 											   initialLoS);
 			addChild(currentTransition);
@@ -290,6 +292,7 @@ package {
 
 		public function switchToFloor(floorData:String,
 									  initialHealth:int,
+									  initialAtk:int,
 									  initialStamina:int,
 									  initialLoS:int):void {
 			prepareSwap();
@@ -302,6 +305,7 @@ package {
 									 textures,
 									 animations,
 									 initialHealth,
+									 initialAtk,
 									 initialStamina,
 									 initialLoS,
 									 floors,
@@ -376,6 +380,7 @@ package {
 					transitions[Util.MAIN_FLOOR],
 					floors[Util.MAIN_FLOOR],
 					Util.STARTING_HEALTH,
+					Util.STARTING_ATTACK,
 					Util.STARTING_STAMINA,
 					Util.STARTING_LOS);
 

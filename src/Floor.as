@@ -47,6 +47,7 @@ package {
 		private var initialX:int;
 		private var initialY:int;
 		private var initialHp:int;
+		private var initialAtk:int;
 		private var initialStamina:int;
 		private var initialLoS:int;
 
@@ -81,6 +82,7 @@ package {
 							  textures:Dictionary,
 							  animations:Dictionary,
 							  initialHp:int,
+							  initialAtk:int,
 							  initialStamina:int,
 							  initialLineOfSight:int,
 							  floorFiles:Dictionary,
@@ -92,6 +94,7 @@ package {
 			this.textures = textures;
 			this.animations = animations;
 			this.initialHp = initialHp;
+			this.initialAtk = initialAtk;
 			this.initialStamina = initialStamina;
 			initialLoS = initialLineOfSight;
 
@@ -315,6 +318,7 @@ package {
 			char = new Character(initialX,
 								 initialY,
 							 	 initialHp,
+								 initialAtk,
 								 initialStamina,
 								 initialLoS,
 								 animations[Util.CHARACTER],
@@ -472,6 +476,7 @@ package {
 			char = new Character(initialX,
 								 initialY,
 								 initialHp,
+								 initialAtk,
 								 initialStamina,
 								 initialLoS,
 								 animations[Util.CHARACTER],
