@@ -67,16 +67,22 @@ package {
             staminaText.text = character.stamina.toString();
 
             var healthHeight:int = Util.STAGE_HEIGHT * ((character.hp * 1.0) / character.maxHp);
-            healthBar = new Quad(HEALTH_BAR_WIDTH, healthHeight, HEALTH_BAR_COLOR);
+            healthBar = new Quad(HEALTH_BAR_WIDTH, healthHeight == 0 ? 1 : healthHeight, HEALTH_BAR_COLOR);
             healthBar.y = Util.STAGE_HEIGHT - healthHeight;
 
             var staminaHeight:int = Util.STAGE_HEIGHT * ((character.stamina * 1.0) / character.maxStamina);
-            staminaBar = new Quad(STAMINA_BAR_WIDTH, staminaHeight, STAMINA_BAR_COLOR);
+            staminaBar = new Quad(STAMINA_BAR_WIDTH, staminaHeight == 0 ? 1 : staminaHeight, STAMINA_BAR_COLOR);
             staminaBar.y = Util.STAGE_HEIGHT - staminaHeight;
             staminaBar.x = healthBar.width;
 
-            hud.addChild(healthBar);
-            hud.addChild(staminaBar);
+            if(healthHeight > 0) {
+                hud.addChild(healthBar);
+            }
+
+            if(staminaHeight > 0) {
+                hud.addChild(staminaBar);
+            }
+
             hud.addChild(healthIcon);
             hud.addChild(staminaIcon);
             hud.addChild(healthText);
