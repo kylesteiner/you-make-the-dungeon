@@ -11,6 +11,10 @@ package {
 	
 	public class ShopHUD extends Sprite {
 		public var gold:int;
+		// 2-D array of shop items
+		// array[n][0] is the name
+		// array[n][1] is the cost
+		public var shop:Array;
 		
 		private var char:Character;
 		private var textures:Dictionary;
@@ -20,8 +24,9 @@ package {
 		private var atkVal:TextField;
 		private var staminaVal:TextField;
 		
-		public function ShopHUD(char:Character, gold:int, textureDict:Dictionary) {
+		public function ShopHUD(shop:Array, char:Character, gold:int, textureDict:Dictionary) {
 			super();
+			this.shop = shop;
 			this.char = char;
 			this.gold = gold;
 			textures = textureDict;
@@ -35,6 +40,11 @@ package {
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			addChild(goldHud);
 			
+			displayCharStats();
+			displayShopItems();
+		}
+		
+		private function displayCharStats():void {
 			var hpImg:Image = new Image(textures[Util.ICON_HEALTH]);
 			hpImg.x = 100;
 			addChild(hpImg);
@@ -55,6 +65,12 @@ package {
 			staminaVal = new TextField(100, 50, String(char.maxStamina), Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
 			staminaVal.x = 420;
 			addChild(staminaVal);
+		}
+		
+		private function displayShopItems():void {
+			for (var i:int = 0; i < shop.length; i++) {
+				// TODO: Build out
+			}
 		}
 	}
 }

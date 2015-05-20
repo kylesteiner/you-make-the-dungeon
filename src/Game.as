@@ -388,7 +388,7 @@ package {
 		}
 
 		public function openShopHUD():void {
-			shopHud = new ShopHUD(currentFloor.char, gold, textures);
+			shopHud = new ShopHUD(new Array(), currentFloor.char, gold, textures);
 			var closeShopButton:Clickable = new Clickable(0, 0, closeShopHUD, new TextField(250, 40, "CLOSE SHOP", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			closeShopButton.x = (Util.STAGE_WIDTH - closeShopButton.width) / 2;
 			closeShopButton.y = Util.STAGE_HEIGHT - closeShopButton.height;
