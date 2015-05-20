@@ -61,11 +61,6 @@ package {
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
 
-		private var currentTile:Tile;
-		// for sanity
-		private var currentText:TextField;
-		private var currentTextImage:Image;
-
 		private var gameState:String;
 		private var gold:int;
 
@@ -477,29 +472,6 @@ package {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
 					// There is no selected tile
-					if (currentFloor && !currentFloor.completed) {
-						var tempX:int = touch.globalX - world.x;
-						var tempY:int = touch.globalY - world.y;
-						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
-						    && tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
-							var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
-							if (currentTile != temp) {
-								if (currentTile)
-									currentTile.removeInfo();
-								currentTile = temp;
-								if (currentTile) {
-									currentText = currentTile.text;
-									currentTextImage = currentTile.textImage;
-								}
-								if (currentTile && !currentFloor.fogGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)]) {
-									currentTile.updateInfoPosition();
-								}
-							}
-						} else if (currentTile) {
-							currentTile.removeInfo();
-							currentTile = null;
-						}
-					}
 					return;
 				}
 
@@ -647,10 +619,6 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
-				}
-				if (currentTile) {
-					currentTile.updateInfoPosition();
-					currentTile.removeInfo();
 				}
 			}
 		}

@@ -22,9 +22,5 @@ package tiles {
                                   Util.SMALL_FONT_SIZE);
             addChild(label);
         }
-
-		override public function displayInformation():void {
-			setUpInfo("Starting Tile");
-		}
     }
 }
