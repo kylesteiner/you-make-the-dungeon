@@ -309,17 +309,8 @@ package {
 			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
-
-			//world.height = Util.grid_to_real(currentFloor.gridHeight);
-			//world.width = Util.grid_to_real(currentFloor.gridWidth);
-
-			// TODO: Logger is definitely broken here by the changes.
-			// the logger doesn't like 0 based indexing.
-/*<<<<<<< HEAD
-			logger.logLevelStart(1, { "characterLevel":currentFloor.char.state.level } );
-=======
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { } );
->>>>>>> backend*/
+			
+			logger.logLevelStart(1, { "characterHP":currentFloor.char.maxHp, "characterStamina":currentFloor.char.maxStamina, "characterAttack":currentFloor.char.attack } );
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -414,8 +405,7 @@ package {
 		}
 
 		public function runFloor():void {
-			//logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-			//					   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			removeChild(runButton);
 			addChild(endButton);
 			addChild(runHud);
@@ -434,6 +424,11 @@ package {
 			// 		call at end of run automatically when stamina <= 0
 			//		reset char, bring up new display which triggers phase change afterwards
 			//		add gold and other items
+			// will log gold gained here, stamina left, health left,
+			// and other keys as seen needed
+			//TODO: figure out how to log gold earned
+			logger.logAction(8, { "goldEarned":0, "staminaLeft": currentFloor.char.stamina,
+							 "healthLeft": currentFloor.char.hp } );
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
@@ -551,6 +546,7 @@ package {
 								if (selectedTile is Tile) {
 									emptyTiles++;
 								}
+								logger.logAction(1, { } );
 
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
@@ -615,6 +611,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"down"} );
 				}
 
 				if (input == Util.UP_KEY) {
@@ -625,6 +622,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"up"} );
 				}
 
 				if (input == Util.RIGHT_KEY) {
@@ -635,6 +633,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"right"} );
 				}
 
 				if (input == Util.LEFT_KEY) {
@@ -645,6 +644,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"left"} );
 				}
 			}
 		}

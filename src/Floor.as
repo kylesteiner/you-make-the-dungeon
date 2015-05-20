@@ -586,6 +586,9 @@ package {
 					nextTile = grid[cgx][cgy-1];
 					if(charTile.north && nextTile.south) {
 						char.move(Util.NORTH);
+						if (logger) {
+							logger.logAction(11, { "directionMoved":"North"});
+						}
 					}
 				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
 					if(!grid[cgx][cgy+1]) {
@@ -595,6 +598,9 @@ package {
 					nextTile = grid[cgx][cgy+1];
 					if(charTile.south && nextTile.north) {
 						char.move(Util.SOUTH);
+						if (logger) {
+							logger.logAction(11, { "directionMoved":"South"});
+						}
 					}
 				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
 					if(!grid[cgx-1][cgy]) {
@@ -604,6 +610,9 @@ package {
 					nextTile = grid[cgx-1][cgy];
 					if(charTile.west && nextTile.east) {
 						char.move(Util.WEST);
+						if (logger) {
+							logger.logAction(11, { "directionMoved":"West"});
+						}
 					}
 				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
 					if(!grid[cgx+1][cgy]) {
@@ -613,6 +622,9 @@ package {
 					nextTile = grid[cgx+1][cgy];
 					if(charTile.east && nextTile.west) {
 						char.move(Util.EAST);
+						if (logger) {
+							logger.logAction(11, { "directionMoved":"East"});
+						}
 					}
 				}
 			}
