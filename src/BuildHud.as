@@ -8,6 +8,7 @@ package {
 
 	import tiles.*;
 	import entities.*;
+	import clickable.*;
 	import Util;
 
 	public class BuildHud extends Sprite {
@@ -111,6 +112,11 @@ package {
 		 *  Tile Block API
 		 **********************************************************************************/
 		
+		public function selectTile():void {
+			currentImage = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
+			isEntityDisplay = false;
+		}
+		
 		public function toggleNorth():void {
 			directions[Util.NORTH] = (directions[Util.NORTH] = true) ? false : true;
 		}
@@ -144,7 +150,7 @@ package {
 			var entityKey:String = entityList[index][catIndex];
 			currentEntity = entityMap[entityKey][1];
 			currentEntityIndex = index;
-			// Update HUD cursor
+			// Update cursor
 			currentImage = currentEntity;
 			isEntityDisplay = true;
 		}
@@ -187,71 +193,12 @@ package {
 				(selected as Tile).grid_y = Util.real_to_grid(selected.y + Util.PIXELS_PER_TILE / 2);
 			}
 		}*/
-
-		/**********************************************************************************
-		 *  Events
-		 **********************************************************************************/
-		
-		/*private function tileOnMouseEvent(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(this);
-
-			if (!touch) {
-				return
-			}
-			
-			if (touch.phase == TouchPhase.ENDED) {
-				//selected = true;
-				//this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
-			}
-		}
-		
-		private function entityOnMouseEvent(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(this);
-
-			if (!touch) {
-				return
-			}
-			
-			if (touch.phase == TouchPhase.ENDED) {
-				//selected = true;
-				//this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
-			}
-		}*/
 		
 		/*
 		public function setEntityPosition(index:int):void {
 			availableEntities[index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
 				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * (index % Util.HUD_TAB_SIZE);
 			availableEntities[index].y = HUD.y + Util.HUD_PAD_TOP;
-		}
-		public function removeAndReplaceTile(index:int):void {
-			removeChild(availableTiles[index]);
-			//getNextTile(index)
-		}
-		public function getTileByIndex(index:int):Tile {
-			return availableTiles[index];
-		}
-
-		public function indexOfSelectedTile():int {
-			for (var i:int; i < availableTiles.length; i++) {
-				var tile:Tile = availableTiles[i];
-				if (tile.selected) {
-					return availableTiles.indexOf(tile);
-				}
-			}
-			return -1;
-		}
-		
-		public function lockTiles():void {
-			for (var i:int; i < availableTiles.length; i++) {
-				availableTiles[i].locked = true;
-			}
-		}
-
-		public function unlockTiles():void {
-			for (var i:int; i < availableTiles.length; i++) {
-				availableTiles[i].locked = false;
-			}
 		}
 		 
 		public function getNextTile(index:int):void {

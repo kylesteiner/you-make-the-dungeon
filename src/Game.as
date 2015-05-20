@@ -490,26 +490,13 @@ package {
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
 			if (buildHUD && buildHUD.hasSelected()) {
-				
-			}
-			
-			
-			/*if (tileHud) {
-			if (tileHud) {
-				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
-				if (selectedTileIndex == -1) {
-					// There is no selected tile
-					return;
-				}
-
-				if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
+				/*if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
 					currentFloor.removeTutorial();
-				}
-
-				// A tile is selected. Adjust its position to follow the cursor and allow player to place it.
-				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
-				tileHud.lockTiles();
-				selectedTile.moveToTouch(touch, world.x, world.y, cursorAnim);
+				}*/
+				buildHUD.moveToTouch(touch, world.x, world.y, cursorAnim);
+			}
+				
+			/*
 				currentFloor.highlightAllowedLocations(selectedTile);
 				if (touch.phase == TouchPhase.ENDED) {
 					if (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||

@@ -56,27 +56,5 @@ package tiles {
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
 		public function reset():void {}
-
-		// helps get the x offset for the tile info set to display
-		// in the upper right corner
-		public function getToPointX(goal:int):int {
-			var temp:int = 0;
-			var shift:int = goal > 0 ? 1 : -1;
-			while (temp != goal) {
-				temp += shift;
-			}
-			return temp;
-		}
-
-		// helps get the y offset for the tile info set to display
-		// in the upper right corner
-		public function getToPointY(goal:int):int {
-			var temp:int = 0;
-			var shift:int = goal > 0 ? 1 : -1;
-			while (temp != goal) {
-				temp += shift;
-			}
-			return temp;
-		}
 	}
 }
