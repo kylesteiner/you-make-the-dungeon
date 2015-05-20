@@ -7,6 +7,7 @@ package {
 	import starling.textures.*;
 
 	import tiles.*;
+	import entities.*;
 	import Util;
 
 	public class BuildHud extends Sprite {
@@ -62,6 +63,10 @@ package {
 			textures = textureDict;
 			highlightedLocations = new Array();
 			
+			tileBlock = new Sprite();
+			entityBlock = new Sprite();
+			addChild(tileBlock);
+			addChild(entityBlock);
 			currentImage = null;
 			isEntityDisplay = true;
 			this.entityMap = entityMap;
@@ -73,16 +78,32 @@ package {
 			eastClickable = null;
 			currentTile = null;
 			
-			addEventListener(TouchEvent.TOUCH, onMouseEvent);
+			entityList = new Array();
+			entityDisplayList = new Array();
+			currentEntity = null;
+			currentEntityIndex = 0;
+			
+			tileBlock.addEventListener(TouchEvent.TOUCH, tileOnMouseEvent);
+			entityBlock.addEventListener(TouchEvent.TOUCH, entityOnMouseEvent);
 		}
 		
 		/**********************************************************************************
 		 *  HUD API
 		 **********************************************************************************/
 		
+		public function hasSelected():Boolean {
+			return currentImage != null;
+		}
+		
 		// return cost of currently selected item
 		public function getCost():int {
-			return 0;
+			if (isEntityDisplay) {
+				var catIndex:int = entityDisplayList[currentEntityIndex]
+				var entityKey:String = entityList[currentEntityIndex][catIndex];
+				return entityMap[entityKey][1];
+			} else  {
+				return getTileCost();
+			}
 		}
 		
 		public function reset():void {
@@ -121,31 +142,87 @@ package {
 		 **********************************************************************************/
 		
 		public function selectEntity(index:int):void {
-			
+			// Update entity block
+			var catIndex:int = entityDisplayList[index]
+			var entityKey:String = entityList[index][catIndex];
+			currentEntity = entityMap[entityKey][1];
+			currentEntityIndex = index;
+			// Update HUD cursor
+			currentImage = currentEntity;
+			isEntityDisplay = true;
 		}
 		
 		public function pageEntity(index:int, change:int):void {
-			
+			entityDisplayList[index] = change;
 		}
 		
 		/**********************************************************************************
 		 *  Utility functions
 		 **********************************************************************************/
 		
+		 // Moves the selected to the given touch location
+		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
+			selected.x = touch.globalX - Util.PIXELS_PER_TILE / 2;
+			selected.y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
+			checkGameBounds();
+		}
 		
+		private function checkGameBounds():void {
+			if(selected.x < 0) {
+				selected.x = 0;
+			}
+
+			if(selected.x > Util.STAGE_WIDTH - Util.PIXELS_PER_TILE) {
+				selected.x = Util.STAGE_WIDTH - Util.PIXELS_PER_TILE;
+			}
+
+			if(selected.y < 0) {
+				selected.y = 0;
+			}
+
+			if(selected.y > Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE) {
+				selected.y = Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE;
+			}
+		}
+		
+		// Realigns the selected tile from the tile HUD on the Floor.
+		public function positionTileOnGrid(worldX:int, worldY:int):void {
+			if (selected is Tile) {
+				selected.x = Util.grid_to_real(Util.real_to_grid(selected.x - worldX + Util.PIXELS_PER_TILE / 2));
+				selected.y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
+				(selected as Tile).grid_x = Util.real_to_grid(selected.x + Util.PIXELS_PER_TILE / 2);
+				(selected as Tile).grid_y = Util.real_to_grid(selected.y + Util.PIXELS_PER_TILE / 2);
+			}
+		}
 
 		/**********************************************************************************
 		 *  Events
 		 **********************************************************************************/
 		
-		private function onMouseEvent(event:TouchEvent):void {
+		private function tileOnMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
 
 			if (!touch) {
 				return
 			}
 			
+			if (touch.phase == TouchPhase.ENDED) {
+				//selected = true;
+				//this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
+			}
+		}
+		
+		private function entityOnMouseEvent(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(this);
+
+			if (!touch) {
+				return
+			}
 			
+			if (touch.phase == TouchPhase.ENDED) {
+				//selected = true;
+				//this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
+			}
 		}
 		
 		/*
