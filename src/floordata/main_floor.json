@@ -22,7 +22,7 @@
 			"edges": ["s", "e"]
 		},
 		{
-			"type": "impassable",
+			"type": "none",
 			"x": 15,
 			"y": 15,
 			"edges": []
