@@ -110,7 +110,11 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
-		public static const MAIN_FLOOR:String = "main_floor"
+		public static const MAIN_FLOOR:String = "main_floor";
+		public static const MAIN_ROOMS:String = "main_rooms"; // Unused
+
+		// Room callbacks
+		public static const ROOMCB_NONE:String = "roomcb_none";
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";

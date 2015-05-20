@@ -5,6 +5,9 @@ package {
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+
+	import flash.geom.Point;
+
 	import mx.utils.StringUtil;
 
 	import starling.display.Image;
@@ -69,6 +72,8 @@ package {
 		public var altCallback:Function;
 
 		public var pressedKeys:Array;
+
+		public var rooms:RoomSet;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -146,6 +151,7 @@ package {
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 		}
 
 		private function getToX(x:int):int {
@@ -324,9 +330,9 @@ package {
 			var radius:int = char.los;
 
 			for(x = i - radius; x <= i + radius; x++) {
-				if(x >= 0 && x < initialFogGrid.length) {
+				if(x >= 0 && x < fogGrid.length) {
 					for(y = j - radius; y <= j + radius; y++) {
-						if(y >= 0 && y < initialFogGrid[x].length) {
+						if(y >= 0 && y < fogGrid[x].length) {
 							if(Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
 								fogGrid[x][y] = false;
@@ -437,6 +443,7 @@ package {
 			var floorData:Object = JSON.parse(floorDataString);
 
 			floorName = floorData["floor_name"];
+
 			nextFloor = "LOL PLACEHOLDER";
 			nextTransition = "LOL ALSO PLACEHOLDER";
 
@@ -492,6 +499,7 @@ package {
 				tS = (tile["edges"].indexOf("s") != -1) ? true : false;
 				tE = (tile["edges"].indexOf("e") != -1) ? true : false;
 				tW = (tile["edges"].indexOf("w") != -1) ? true : false;
+
 				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
 				if (tile["type"] == "empty") {
@@ -530,6 +538,13 @@ package {
 					objectiveState[key] = false;
 				}
 			}
+
+			var tempFloorEntities:Array = floorData["temporary_entities"];
+			for(i = 0; i < tempFloorEntities.length; i++) {
+				// do something
+			}
+
+			rooms = new RoomSet(floorData["rooms"]);
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -660,12 +675,12 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:GameEvent):void {
 			// TODO: Do actual win condition handling.
-			if (logger) {
+			/*if (logger) {
 				logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
 					"characterMaxHP":char.maxHp
 				});
-			}
+			}*/
 			completed = true;
 
 			mixer.play(Util.FLOOR_COMPLETE);
@@ -703,6 +718,23 @@ package {
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
 			objectiveState[obj.key] = true;
+		}
+
+		private function onRoomReveal(event:GameEvent):void {
+			mixer.play(Util.FLOOR_RESET);
+
+			if(!event.hasData) {
+				return;
+			}
+
+			var coords:Array = event.gameData[0];
+			var point:Point;
+			for each(point in coords) {
+				if(fogGrid[point.x][point.y]) {
+					removeChild(fogGrid[point.x][point.y]);
+					fogGrid[point.x][point.y] = false;
+				}
+			}
 		}
 	}
 }

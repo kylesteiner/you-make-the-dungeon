@@ -9,11 +9,11 @@ package entities {
 		}
 
 		override public function handleChar(c:Character):void {
-			logger.logAction(6, {
+			/*logger.logAction(6, {
 				"characterHealth": c.hp,
 				"characterMaxHealth": c.maxHp,
 				"healthRestored": health
-			});
+			});*/
 
 			if (c.hp == c.maxHp) {
 				return;

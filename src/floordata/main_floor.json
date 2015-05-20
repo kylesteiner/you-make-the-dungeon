@@ -50,5 +50,11 @@
 			"attack": 2,
 			"reward": 5
 		}
+	],
+	"temporary_entities": [
+
+	],
+	"rooms": [
+		
 	]
 }

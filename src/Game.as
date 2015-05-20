@@ -122,6 +122,7 @@ package {
 			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
 
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
+			addEventListener(GameEvent.COMPLETE_ROOM, onRoomComplete);
 		}
 
 		private function initializeFloorWorld():void {
@@ -206,11 +207,11 @@ package {
 			removeChild(currentCombat);
 			// event.enemy.state.hp = event.enemy.state.maxHp;
 			// Prompt clickable into either floor reset or continue modifying floor
-			logger.logAction(4, {
+			/*logger.logAction(4, {
 				"characterAttack":event.character.attack,
 				"enemyAttack":event.enemy.attack,
 				"enemyHealthLeft":event.enemy.hp
-			});
+			});*/
 
 			var alertBox:Sprite = new Sprite();
 			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
@@ -296,6 +297,7 @@ package {
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
+
 			currentFloor = new Floor(floorData,
 									 textures,
 									 animations,
@@ -429,6 +431,14 @@ package {
 			endRun();
 		}
 
+		private function onRoomComplete(event:GameEvent):void {
+			mixer.play(Util.COMBAT_FAILURE);
+
+			if(!event.hasData) {
+				return;
+			}
+		}
+
 		public function endRun():void {
 			//TODO: I AM A STUB
 			// 		call at end of run automatically when stamina <= 0
@@ -543,6 +553,7 @@ package {
 									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
 								}
 								selectedTile.positionTileOnGrid(world.x, world.y);
+								currentFloor.rooms.tileAdd(selectedTile);
 								numberOfTilesPlaced++;
 								selectedTile.onGrid = true;
 

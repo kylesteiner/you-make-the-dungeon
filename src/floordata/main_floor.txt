@@ -1,10 +1,17 @@
 main_floor
 20	20
-5	5
-5
-entry	5	5	1	1	1	1
-exit	0	0	0	1	1	0
-none	15	15	0	0	0	0
-empty	10	10	1	1	1	1
-empty	1	1	1	1	1	1
+2	3
+12
+entry	2	3	1	1	1	1
+exit	11	2	0	1	1	1
+none	5	1	0	0	0	0
+none	6	1	0	0	0	0
+none	7	1	0	0	0	0
+none	8	1	0	0	0	0
+none	5	2	0	0	0	0
+none	8	3	0	0	0	0
+none	5	4	0	0	0	0
+none	6	4	0	0	0	0
+none	7	4	0	0	0	0
+none	8	4	0	0	0	0
 0

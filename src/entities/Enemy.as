@@ -16,14 +16,14 @@ package entities {
 		}
 
 		override public function handleChar(c:Character):void {
-			logger.logAction(5, {
+			/*logger.logAction(5, {
 				"characterHealthLeft": c.hp,
 				"characterHealthMax": c.maxHp,
 				"characterAttack": c.attack,
 				"enemyAttack": attack,
 				"enemyHealth": hp,
 				"enemyReward": reward
-			});
+			});*/
 			dispatchEvent(new GameEvent(GameEvent.ENTERED_COMBAT, grid_x, grid_y));
 		}
 	}
