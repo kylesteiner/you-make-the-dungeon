@@ -12,6 +12,7 @@ package {
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
+		[Embed(source='assets/backgrounds/shop_bg.png')] public static const shop_background:Class;
 
 		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
@@ -167,6 +168,7 @@ package {
 			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 			textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
 			textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
+			textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
 
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);

@@ -46,6 +46,8 @@ package {
 		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
 		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
 		public static const POPUP_BACKGROUND:String = "popup_background";
+		public static const SHOP_BACKGROUND:String = "shop_background";
+		
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -84,7 +86,7 @@ package {
 		public static const ICON_HEALTH:String = "icon_health";
 		public static const ICON_STAMINA:String = "icon_stamina";
 		public static const ICON_GOLD:String = "icon_gold";
-		public static const ICON_SHOP:String = "icon_gold";
+		public static const ICON_SHOP:String = "icon_shop";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
