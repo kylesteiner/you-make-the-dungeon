@@ -2,24 +2,19 @@
 // Stores the state of a single floor.
 
 package {
-	import flash.net.*;
-	import flash.utils.*;
 	import flash.ui.Keyboard;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import mx.utils.StringUtil;
 
-	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.*;
 	import starling.text.TextField;
-	import starling.textures.*;
+	import starling.textures.Texture;
 
-	import Character;
-	import Combat;
 	import entities.*;
-	import Logger;
 	import tiles.*;
-	import Util;
 
 	public class Floor extends Sprite {
 		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
@@ -50,15 +45,11 @@ package {
 		private var initialY:int;
 		private var initialHp:int;
 		private var initialStamina:int;
-		private var initialLos:int;
+		private var initialLoS:int;
 
 		private var floorFiles:Dictionary;
 		private var nextFloor:String;
 		private var onCompleteCallback:Function;
-
-		// If the character is fighting, the enemy the character is fighting.
-		private var enemy:Enemy;
-		private var dmgText:TextField;
 
 		private var textures:Dictionary;
 		private var animations:Dictionary;
@@ -71,7 +62,7 @@ package {
 
 		public var tutorialImage:Image;
 
-		private var nextFloorButton:Clickable;
+		// private var nextFloorButton:Clickable;
 		private var tutorialDisplaying:Boolean;
 		private var originalTutorialDisplaying:Boolean;
 
@@ -81,42 +72,47 @@ package {
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
-		public function Floor(floorData:ByteArray,
-							  textureDict:Dictionary,
-							  animationDict:Dictionary,
-							  level:int,
-							  xp:int,
-							  health:int,
-							  stamina:int,
-							  lineOfSight:int,
-							  floorDict:Dictionary,
+		public function Floor(floorData:String,
+							  textures:Dictionary,
+							  animations:Dictionary,
+							  initialHp:int,
+							  initialStamina:int,
+							  initialLineOfSight:int,
+							  floorFiles:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
 							  logger:Logger = null,
 							  showPrompt:int = 0) {
 			super();
-			initialHp = health;
-			initialStamina = stamina;
-			initialLos = lineOfSight;
+			this.textures = textures;
+			this.animations = animations;
+			this.initialHp = initialHp;
+			this.initialStamina = initialStamina;
+			initialLoS = initialLineOfSight;
 
-			preplacedTiles = 0;
-			textures = textureDict;
-			animations = animationDict;
-
+			this.floorFiles = floorFiles;
+			onCompleteCallback = nextFloorCallback;
+			altCallback = null;
 			mixer = soundMixer;
 
-			altCallback = null;
-
-			objectiveState = new Dictionary();
-
 			this.logger = logger;
-
-			floorFiles = floorDict;
-			onCompleteCallback = nextFloorCallback;
+			preplacedTiles = 0;
 
 			pressedKeys = new Array();
+			objectiveState = new Dictionary();
 
+			// Get floor layout information from the JSON file.
 			parseFloorData(floorData);
+
+			// Set up the background.
+			var mapBoundsBackground:Image = new Image(textures[Util.GRID_BACKGROUND]);
+			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
+			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
+			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
+			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
+			addChild(mapBoundsBackground);
+
+			// Initialize floor using the initial state.
 			resetFloor();
 
 			highlightedLocations = new Array(gridWidth);
@@ -124,7 +120,7 @@ package {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
-			/*if(showPrompt > 0) {
+			/* if(showPrompt > 0) {
 				if(showPrompt == 1) {
 					tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
 				} else if(showPrompt == 2) {
@@ -140,15 +136,14 @@ package {
 				tutorialImage.x = getToX(0);
 				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
-			}*/
+			} */
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-			addEventListener(TileEvent.CHAR_ARRIVED, onCharArrived);
-			addEventListener(TileEvent.CHAR_EXITED, onCharExited);
-			addEventListener(TileEvent.CHAR_HANDLED, onCharHandled);
-			addEventListener(TileEvent.OBJ_COMPLETED, onObjCompleted);
+			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
+			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
+			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
@@ -186,18 +181,18 @@ package {
 			if (tutorialImage) {
 				tutorialImage.x += value;
 			}
-			if (nextFloorButton) {
+			/*if (nextFloorButton) {
 				nextFloorButton.x += value;
-			}
+			}*/
 		}
 
 		public function shiftTutorialY(value:int):void {
 			if (tutorialImage) {
 				tutorialImage.y += value;
 			}
-			if (nextFloorButton) {
+			/*if (nextFloorButton) {
 				nextFloorButton.y += value;
-			}
+			}*/
 		}
 
 		public function toggleRun():void {
@@ -243,8 +238,6 @@ package {
 				// Remove all tiles from the display tree.
 				for (i = 0; i < grid.length; i++) {
 					for (j = 0; j < grid[i].length; j++) {
-						// TODO: figure out it it is necessary to dispose of the
-						// tile here.
 						if (grid[i][j]) {
 							grid[i][j].removeFromParent();
 						}
@@ -253,12 +246,10 @@ package {
 				clearHighlightedLocations()
 			}
 
-			//clearHighlightedLocations();
-
 			// Replace the current grid with a fresh one.
-			grid = Util.initializeGrid(gridWidth, gridHeight);
-			fogGrid = Util.initializeGrid(gridWidth, gridHeight);
-			entityGrid = Util.initializeGrid(gridWidth, gridHeight);
+			grid = initializeGrid(gridWidth, gridHeight);
+			fogGrid = initializeGrid(gridWidth, gridHeight);
+			entityGrid = initializeGrid(gridWidth, gridHeight);
 
 			// Add all of the initial tiles to the grid and display tree.
 			for (i = 0; i < initialGrid.length; i++) {
@@ -307,20 +298,19 @@ package {
 				tutorialImage.y = getToY(0);
 				addChild(tutorialImage);
 			}*/
-
 		}
 
-		// Remove the character from the display tree and create a new one to reset
-		// its state.
+		// Get rid of the old character (if it exists) and make a new one
+		// with the default values.
 		public function resetCharacter():void {
 			if (char) {
 				char.removeFromParent();
 			}
 			char = new Character(initialX,
 								 initialY,
-								 10,  // TODO: set an initialHp value
+							 	 initialHp,
 								 initialStamina,
-								 initialLos,
+								 initialLoS,
 								 animations[Util.CHARACTER],
 								 textures[Util.ICON_ATK]);
 			addChild(char);
@@ -436,56 +426,30 @@ package {
 		// Returns a 2D array with the given dimensions.
 		private function initializeGrid(x:int, y:int):Array {
 			var arr:Array = new Array(x);
-			// Potential bug exists here when appending Tiles to
-			// the end of the outside array (which should never occur)
-			// Code elsewhere will treat an Array of 5 Arrays and a Tile
-			// as 6 Arrays, which then bugs when we set properties of the
-			// 6th "Array".
 			for (var i:int = 0; i < x; i++) {
 				arr[i] = new Array(y);
 			}
 			return arr;
 		}
 
-		private function parseFloorData(floorDataBytes:ByteArray):void {
-			// TODO: ensure loaded file always has correct number of lines
-			//		 as well as all necessary data (char, entry, exit).
-			// TODO: ensure that each line in loaded file has correct number
-			//		 of arguments.
-			var i:int; var j:int;
+		private function parseFloorData(floorDataString:String):void {
+			trace(floorDataString);
+			var floorData:Object = JSON.parse(floorDataString);
 
-			var floorDataString:String =
-				floorDataBytes.readUTFBytes(floorDataBytes.length);
-
-			// Parse the floor name.
-			// Remove hidden escape characters from floor name.
-			var floorData:Array = floorDataString.split("\n");
-			floorName = Util.stripString(floorData[0]);
-
-			// Parse the name of the next floor.
-			// Remove hidden escape characters
-			//nextFloor = Util.stripString(floorData[1]);
+			floorName = floorData["floor_name"];
 			nextFloor = "LOL PLACEHOLDER";
-
-			//nextTransition = Util.stripString(floorData[2]);
 			nextTransition = "LOL ALSO PLACEHOLDER";
 
-			// Parse the floor dimensions and initialize the grid array.
-			var floorSize:Array = floorData[1].split("\t");
-			gridWidth = Number(floorSize[0]);
-			gridHeight = Number(floorSize[1]);
-			var mapBoundsBackground:Image = new Image(textures[Util.GRID_BACKGROUND]);
-			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
-			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
-			addChild(mapBoundsBackground);
+			gridWidth = floorData["floor_dimensions"]["width"];
+			gridHeight = floorData["floor_dimensions"]["height"];
 
-			initialGrid = Util.initializeGrid(gridWidth, gridHeight);
-			initialFogGrid = Util.initializeGrid(gridWidth, gridHeight);
-			initialEntities = Util.initializeGrid(gridWidth, gridHeight);
+			initialGrid = initializeGrid(gridWidth, gridHeight);
+			initialFogGrid = initializeGrid(gridWidth, gridHeight);
+			initialEntities = initializeGrid(gridWidth, gridHeight);
 
 			// Add a fog image at every grid tile.
+			var i:int;
+			var j:int;
 			for (i = 0; i < initialFogGrid.length; i++) {
 				for (j = 0; j < initialFogGrid[i].length; j++) {
 					var fog:Image = new Image(textures[Util.TILE_FOG]);
@@ -496,89 +460,74 @@ package {
 			}
 
 			// Parse the character's starting position.
-			var characterData:Array = floorData[2].split("\t");
-			initialX = Number(characterData[0]);
-			initialY = Number(characterData[1]);
+			initialX = floorData["character_start"]["x"];
+			initialY = floorData["character_start"]["y"];
 			char = new Character(initialX,
 								 initialY,
-								 initialHp,  // TODO: set an initialHp value
+								 initialHp,
 								 initialStamina,
-								 initialLos,
+								 initialLoS,
 								 animations[Util.CHARACTER],
 								 textures[Util.ICON_ATK]);
 
-			// Parse all of the tiles.
-			var numTiles:int = Number(floorData[3]);
-
-			var lineData:Array;
 			var tType:String;
 			var tX:int; var tY:int;
 			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
 			var tTexture:Texture;
 
-			for (i = 0; i < numTiles; i++) {
-				preplacedTiles++;
-				lineData = floorData[i + 4].split("\t");
+			var floorTiles:Array = floorData["tiles"];
+			preplacedTiles = floorTiles.length;
+			for (i = 0; i < floorTiles.length; i++) {
+				var tile:Object = floorTiles[i];
 
-				tType = lineData[0];
-				tX = Number(lineData[1]);
-				tY = Number(lineData[2]);
+				tType = tile["type"];
+				tX = tile["x"];
+				tY = tile["y"];
 
 				// Build the String referring to the texture.
 				// Final portion of each string needs to have
 				// escape characters stripped off. This will cause
 				// bugs with preplaced tiles otherwise.
-				tN = (lineData[3] == "1") ? true : false;
-				tS = (lineData[4] == "1") ? true : false;
-				tE = (lineData[5] == "1") ? true : false;
-				tW = (Util.stripString(lineData[6]) == "1") ? true : false;
+				tN = (tile["edges"].indexOf("n") != -1) ? true : false;
+				tS = (tile["edges"].indexOf("s") != -1) ? true : false;
+				tE = (tile["edges"].indexOf("e") != -1) ? true : false;
+				tW = (tile["edges"].indexOf("w") != -1) ? true : false;
 				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
-				if (tType == "empty") {
+				if (tile["type"] == "empty") {
 					initialGrid[tX][tY] = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
-				} else if (tType == "entry") {
+				} else if (tile["type"] == "entry") {
 					initialGrid[tX][tY] = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
 					initialFogGrid[tX][tY] = false;
 					setUpInitialFoglessSpots(tX, tY);
-				} else if (tType == "exit") {
+				} else if (tile["type"] == "exit") {
 					initialGrid[tX][tY] = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
 					initialFogGrid[tX][tY] = false;
-				} else if (tType == "none") {
+				} else if (tile["type"] == "none") {
 					initialGrid[tX][tY] = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
-				} else {
-					trace("Created tile with invalid type " + tType + ": " + floorName + ", line " + i + 6)
 				}
 			}
 
-			var numEntities:int = Number(floorData[4 + numTiles]);
-			for (i = 0; i < numEntities; i++) {
-				lineData = floorData[5 + numTiles].split('\t');
-				tType = StringUtil.trim(lineData[0]);
-				tX = Number(lineData[1]);
-				tY = Number(lineData[2]);
-				var textureName:String = StringUtil.trim(lineData[3]);
+			var floorEntities:Array = floorData["entities"];
+			for (i = 0; i < floorEntities.length; i++) {
+				var entity:Object = floorEntities[i];
+				tX = entity["x"];
+				tY = entity["y"];
+				var textureName:String = entity["texture"];
 
-				if (tType == "enemy") {
-					trace("Parsed enemy");
-					var hp:int = Number(lineData[4]);
-					var attack:int = Number(lineData[5]);
-					var reward:int = Number(lineData[6]);
-					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], hp, attack, reward);
-				} else if (tType == "healing") {
-					trace("Parsed health");
-					var health:int = Number(lineData[4]);
-					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
-				} else if (tType == "objective") {
-					trace("Parsed objective");
-					var key:String = lineData[4];
-					var prereqs:Array = new Array();
-					for (j = 5; j < lineData.length; j++) {
-						prereqs.push(StringUtil.trim(lineData[j]));
-					}
-					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
+				if (entity["type"] == "enemy") {
+					var hp:int = entity["hp"];
+					var attack:int = entity["attack"];
+					var reward:int = entity["reward"];
+					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], logger, hp, attack, reward);
+				} else if (entity["type"] == "healing") {
+					var health:int = entity["health"];
+					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], logger, health);
+				} else if (entity["type"] == "objective") {
+					var key:String = entity["key"];
+					var prereqs:Array = entity["prereqs"];
+					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], logger, key, prereqs);
 					objectiveState[key] = false;
-				} else {
-					trace("Created entity with invalid type " + tType + ": " + floorName + ", line " + (5 + numTiles));
 				}
 			}
 		}
@@ -604,13 +553,12 @@ package {
 			}
 		}
 
-		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
 
-			if (nextFloorButton) {
+			/*if (nextFloorButton) {
 				addChild(nextFloorButton);
-			}
+			}*/
 
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
@@ -695,30 +643,12 @@ package {
 
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
-		private function onCharArrived(e:TileEvent):void {
-			var entity:Entity = entityGrid[e.grid_x][e.grid_y];
+		private function onCharArrived(e:GameEvent):void {
+			var entity:Entity = entityGrid[e.x][e.y];
 			if (!entity) {
 				return;
 			}
-			if (entity is Enemy && logger) {
-				var enemy:Enemy = entity as Enemy;
-				logger.logAction(5, {
-					"characterHealthLeft":char.hp,
-					"characterHealthMax":char.maxHp,
-					"characterAttack":char.attack,
-					"enemyAttack":enemy.attack,
-					"enemyHealth":enemy.hp,
-					"enemyReward":enemy.reward
-				});
-			} else if (entity is Healing && logger) {
-				var healing:Healing = entity as Healing;
-				logger.logAction(6, {
-					"characterHealth":char.hp,
-					"characterMaxHealth":char.maxHp,
-					"healthRestored":healing.health
-				});
-			}
-			// TODO: Handle character-entity interaction
+			entity.handleChar(char);
 		}
 
 		public function onCombatSuccess(enemy:Enemy):void {
@@ -726,12 +656,9 @@ package {
 			removeChild(enemy);
 		}
 
-		public function onCharHandled(e:TileEvent):void {
-		}
-
 		// Event handler for when a character arrives at an exit tile.
 		// The event chain goes: character -> floor -> tile -> floor.
-		private function onCharExited(e:TileEvent):void {
+		private function onCharExited(e:GameEvent):void {
 			// TODO: Do actual win condition handling.
 			if (logger) {
 				logger.logLevelEnd({
@@ -750,7 +677,10 @@ package {
 			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
 
-			nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
+			// We don't have any other floors yet, so no need for the button at
+			// the moment.
+			// TODO: remove if we only have one floor.
+			/*nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
 			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
@@ -764,14 +694,14 @@ package {
 			} else if(nextFloor == Util.FLOOR_8) {
 				i = 3;
 			}
-			nextFloorButton.addParameter(i);
+			nextFloorButton.addParameter(i);*/
 		}
 
 		// Called when the character moves into an objective tile. Updates objectiveState
 		// to mark the tile as visited.
 		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
-		private function onObjCompleted(e:TileEvent):void {
-			var obj:Objective = entityGrid[e.grid_x][e.grid_y];
+		private function onObjCompleted(e:GameEvent):void {
+			var obj:Objective = entityGrid[e.x][e.y];
 			objectiveState[obj.key] = true;
 		}
 	}

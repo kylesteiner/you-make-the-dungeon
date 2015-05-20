@@ -1,6 +1,6 @@
 package {
-	import flash.utils.Dictionary;
 	import flash.ui.Keyboard;
+	import flash.utils.Dictionary;
 
 	import starling.display.*;
 	import starling.events.*;
@@ -146,19 +146,24 @@ package {
 
 				if (x == destX && y == destY && moving) {
 					moving = false;
+					grid_x = Util.real_to_grid(x);
+					grid_y = Util.real_to_grid(y);
+
 					removeChild(currentAnimation);
 					currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
 					currentAnimation.play();
 					addChild(currentAnimation);
-					dispatchEvent(new TileEvent(TileEvent.CHAR_ARRIVED,
-												Util.real_to_grid(x),
-												Util.real_to_grid(y)));
 
 					stamina -= 1;
-
-					if(stamina <= 0) {
-						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED));
+					if (stamina <= 0) {
+						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED,
+													grid_x,
+													grid_y));
 					}
+
+					dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_TILE,
+												grid_x,
+												grid_y));
 				}
 			}
 		}

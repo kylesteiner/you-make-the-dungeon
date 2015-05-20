@@ -1,8 +1,10 @@
 package {
-    import starling.display.*;
-    import starling.text.TextField;
-
     import flash.utils.Dictionary;
+
+    import starling.display.Image;
+    import starling.display.Quad;
+    import starling.display.Sprite;
+    import starling.text.TextField;
 
     public class RunHUD extends Sprite {
 

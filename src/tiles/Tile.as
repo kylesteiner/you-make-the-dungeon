@@ -1,17 +1,13 @@
 // Tile.as
 // Base class for empty tiles. Special tiles will extend this class.
 package tiles {
-	import flash.text.TextFormat;
-	import starling.text.TextField;
-	import starling.utils.Color
-	import starling.display.MovieClip;
 	import starling.display.Image;
+	import starling.display.MovieClip;
 	import starling.display.Sprite;
-	import starling.textures.Texture;
 	import starling.events.*;
-
-	import Character;
-	import Util;
+	import starling.text.TextField;
+	import starling.textures.Texture;
+	import starling.utils.Color;
 
 	public class Tile extends Sprite {
 		public var grid_x:int;
@@ -24,8 +20,6 @@ package tiles {
 		public var image:Image;
 		public var locked:Boolean;
 		public var selected:Boolean;
-		public var text:TextField;
-		public var textImage:Image;
 		public var onGrid:Boolean; // for determining if it is on the grid itself or not
 		public var infoWidth:int;
 		public var infoHeight:int;
@@ -59,27 +53,16 @@ package tiles {
 			locked = true;
 			selected = false;
 
-			displayInformation();
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
 		// Called when the player moves into this tile. Override this function
 		// to define interactions between tiles and characters.
-		public function handleChar(c:Character):void {
-			dispatchEvent(new TileEvent(TileEvent.CHAR_HANDLED,
-										Util.real_to_grid(x),
-										Util.real_to_grid(y)));
-		}
+		public function handleChar(c:Character):void {}
 
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
-		public function reset():void { }
-
-		// when the user hovers over a tile, a small box will appear with the
-		// information for that tile.
-		public function displayInformation():void {
-			setUpInfo("Empty Tile\nNothing Dangerous Here");
-		}
+		public function reset():void {}
 
 		// Realigns the selected tile from the tile HUD on the Floor.
 		public function positionTileOnGrid(worldX:int, worldY:int):void {
@@ -95,23 +78,6 @@ package tiles {
 			locked = true;
 		}
 
-		public function updateInfoPosition():void {
-			if (text && textImage) {
-				if (!onGrid) {
-					text.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
-					text.y = getToPointY(0);
-					textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth);
-					textImage.y = getToPointY(0);
-				} else if (parent && parent.parent) {
-					text.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
-					text.y = getToPointY(0 - parent.parent.y);
-					textImage.x = getToPointX(Util.STAGE_WIDTH - infoWidth - parent.parent.x);
-					textImage.y = getToPointY(0 - parent.parent.y);
-				}
-			}
-		}
-
-
 		// Moves the tiles to the given touch location (for tile selection)
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
 			x = touch.globalX - Util.PIXELS_PER_TILE / 2;
@@ -121,61 +87,17 @@ package tiles {
 			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
 		}
 
-		public function showInfo():void {
-			if (parent && parent.parent) {
-				parent.parent.addChild(textImage);
-				parent.parent.addChild(text);
-			}
-		}
-
-		public function removeInfo():void {
-			if (parent && parent.parent) {
-				parent.parent.removeChild(text);
-				parent.parent.removeChild(textImage);
-			}
-		}
-
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
 
 			if (!touch || locked) {
-				if (touch && onGrid) {
-					updateInfoPosition();
-					showInfo();
-				} else {
-					removeInfo();
-				}
 				return;
-			}
-
-			if (!selected) {
-				updateInfoPosition();
-			} else {
-				removeInfo();
-			}
-
-			if (touch.phase == TouchPhase.HOVER) {
-				// display text here;
-				text.visible = true;
-				updateInfoPosition();
-				showInfo();
 			}
 
 			if (touch.phase == TouchPhase.BEGAN) {
 				selected = true;
 				this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
 			}
-		}
-
-		// function to be inhereted that sets up the text field information
-		// with the given string.
-		protected function setUpInfo(info:String):void {
-			textImage = new Image(Texture.fromColor(infoWidth, infoHeight, 0xffffffff));
-			text = new TextField(infoWidth, infoHeight, info, "Bebas", 18, Color.BLACK);
-			text.name = "infoText";
-			textImage.name = "infoImage";
-			text.border = true;
-			updateInfoPosition();
 		}
 
 		private function checkGameBounds():void {

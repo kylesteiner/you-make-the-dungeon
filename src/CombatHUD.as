@@ -1,8 +1,12 @@
 package {
-    import starling.display.*;
-    import starling.events.*;
     import flash.utils.Dictionary;
-    import starling.text.*;
+
+    import starling.display.DisplayObject;
+    import starling.display.Image;
+    import starling.display.MovieClip;
+    import starling.display.Sprite;
+    import starling.events.*;
+    import starling.text.TextField;
     import starling.utils.*;
 
     import entities.Enemy;
@@ -152,7 +156,7 @@ package {
             enemyAttackImage.y = ENEMY_Y + enemyHealthImage.height;
             addChild(enemyAttackImage);
 
-            enemyHealthText = new TextField(128, enemyHealthImage.height, String(enemy.hp), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+            enemyHealthText = new TextField(128, enemyHealthImage.height, enemy.hp + " / " + enemy.maxHp, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             enemyHealthText.x = enemyHealthImage.x + enemyHealthImage.width;
             enemyHealthText.y = enemyHealthImage.y;
             addChild(enemyHealthText);
@@ -368,7 +372,5 @@ package {
                 }
             }
         }
-
     }
-
 }

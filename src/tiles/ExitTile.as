@@ -25,13 +25,9 @@ package tiles {
         }
 
         override public function handleChar(c:Character):void {
-            dispatchEvent(new TileEvent(TileEvent.CHAR_EXITED,
+            dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT,
                                         grid_x,
                                         grid_y));
         }
-
-		override public function displayInformation():void {
-			setUpInfo("Exit Tile \n get here to complete floor");
-		}
     }
 }

@@ -1,24 +1,18 @@
 package {
-	import flash.utils.Dictionary;
-
-	import starling.display.*;
-	import starling.events.*;
-	import starling.textures.*;
-	import starling.text.TextField;
-
-	import flash.utils.ByteArray;
 	import flash.media.*;
 	import flash.ui.Mouse;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
-	import mx.utils.StringUtil;
+	import starling.display.Image;
+	import starling.display.MovieClip;
+	import starling.display.Sprite;
+	import starling.events.*;
+	import starling.text.TextField;
+	import starling.textures.Texture;
 
-	import Character;
+	import clickable.*;
 	import tiles.*;
-	import TileHud;
-	import CharHud;
-	import Util;
-	import Menu;
-	import Logger;
 
 	public class Game extends Sprite {
 
@@ -35,14 +29,14 @@ package {
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
-		//private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var tileHud:TileHud;
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
-		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
+		private var floors:Dictionary; // Map String -> String
+		private var transitions:Dictionary; // Map String -> Texture
 		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 
 		private var sfx:Dictionary; // Map String -> SFX
@@ -57,7 +51,7 @@ package {
 		private var isMenu:Boolean; // probably need to change to state;
 		private var messageToPlayer:Clickable;
 
-		private var logger:Logger;
+		public var logger:Logger;
 		private var numberOfTilesPlaced:int;
 		private var emptyTiles:int;
 		private var enemyTiles:int;
@@ -67,11 +61,6 @@ package {
 		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
-
-		private var currentTile:Tile;
-		// for sanity
-		private var currentText:TextField;
-		private var currentTextImage:Image;
 
 		private var gameState:String;
 		private var gold:int;
@@ -95,6 +84,7 @@ package {
 
 			textures = Embed.setupTextures();
 			floors = Embed.setupFloors();
+			transitions = Embed.setupTransitions();
 			animations = Embed.setupAnimations();
 
 			sfx = Embed.setupSFX();
@@ -103,7 +93,6 @@ package {
 			mixer = new Mixer(bgm, sfx);
 			addChild(mixer);
 
-			//var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
 			addChild(staticBackgroundImage);
 
@@ -127,7 +116,7 @@ package {
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
-			addEventListener(TileEvent.COMBAT, startCombat);
+			addEventListener(GameEvent.ENTERED_COMBAT, startCombat);
 
 			addEventListener(AnimationEvent.CHAR_DIED, onCombatFailure);
 			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
@@ -145,7 +134,12 @@ package {
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 
-			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			sfxMuteButton = new Clickable(
+					Util.PIXELS_PER_TILE,
+					Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
+					toggleSFXMute,
+					null,
+					textures[Util.ICON_MUTE_SFX]);
 			//sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 			sfxMuteButton.x = goldHud.x - sfxMuteButton.width - Util.UI_PADDING;
@@ -161,12 +155,20 @@ package {
 			//resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			//resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
-			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
+			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
+									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
+									  runFloor,
+									  null,
+									  textures[Util.ICON_RUN]);
 			//runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			runButton.x = sfxMuteButton.x;
 			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
-			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, endRun, null, textures[Util.ICON_END]);
+			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
+									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
+									  endRun,
+									  null,
+									  textures[Util.ICON_END]);
 			//endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			endButton.x = runButton.x;
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
@@ -183,21 +185,20 @@ package {
 			menuWorld.addChild(new Image(textures[Util.GRID_BACKGROUND]));
 		}
 
-		private function startCombat(event:TileEvent):void {
-			currentCombat = new CombatHUD(textures, animations, currentFloor.char, currentFloor.grid[event.grid_x][event.grid_y], combatSkip, mixer, logger);
+		private function startCombat(e:GameEvent):void {
+			currentCombat = new CombatHUD(textures,
+										  animations,
+										  currentFloor.char,
+										  currentFloor.entityGrid[e.x][e.y],
+										  combatSkip,
+										  mixer,
+										  logger);
 			addChild(currentCombat);
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
 			removeChild(currentCombat);
 			currentFloor.onCombatSuccess(event.enemy);
-		}
-
-		private function fireTileHandled():void {
-			removeChild(messageToPlayer);
-			currentFloor.onCharHandled(new TileEvent(TileEvent.CHAR_HANDLED,
-										Util.real_to_grid(currentFloor.x),
-										Util.real_to_grid(currentFloor.y)));
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
@@ -266,28 +267,46 @@ package {
 			addChild(sfxMuteButton);
 		}
 
-		public function switchToTransition(newTransitionData:Array):void {
+		public function switchToTransition(transition:Texture,
+										   floor:String,
+										   initialHealth:int,
+										   initialStamina:int,
+										   initialLoS:int):void {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(0, 0, newTransitionData[0] == null ? switchToFloor : newTransitionData[0], null, newTransitionData[1]);
-
-			var i:int;
-			for(i = 2; i < newTransitionData.length; i++) {
-				currentTransition.addParameter(newTransitionData[i]);
-			}
-
+			currentTransition = new Transition(0,
+											   0,
+											   switchToFloor,
+											   null,
+											   transition,
+											   floor,
+											   initialHealth,
+											   initialStamina,
+											   initialLoS);
 			addChild(currentTransition);
 		}
 
-		public function switchToFloor(newFloorData:Array):void {
+		public function switchToFloor(floorData:String,
+									  initialHealth:int,
+									  initialStamina:int,
+									  initialLoS:int):void {
 			prepareSwap();
 
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0], textures, animations, newFloorData[1], newFloorData[2], newFloorData[3], newFloorData[4], newFloorData[5], floors, switchToTransition, mixer, logger);
-			if(currentFloor.floorName == Util.FLOOR_8) {
+			currentFloor = new Floor(floorData,
+									 textures,
+									 animations,
+									 initialHealth,
+									 initialStamina,
+									 initialLoS,
+									 floors,
+									 switchToTransition,
+									 mixer,
+									 logger);
+			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
 
@@ -325,7 +344,11 @@ package {
 			addChild(goldHud);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
-			tileHud = new TileHud(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX], textures);
+
+			// TODO: This is a hack because we are getting rid of tile rates
+			// but I need this to compile for now. Remove when tilehud is
+			// updated.
+			tileHud = new TileHud(new Embed.tiles1 as ByteArray, textures);
 			addChild(tileHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
@@ -340,57 +363,26 @@ package {
 			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
 			titleField.y = 32 + titleField.height / 2;
 
-			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-
 			floors = Embed.setupFloors();
 
-			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			beginGameButton.addParameter(switchToFloor);
-			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
-			beginGameButton.addParameter(floors[Util.MAIN_FLOOR]);
-			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
-			beginGameButton.addParameter(Util.STARTING_LEVEL);  // Char level
-			beginGameButton.addParameter(Util.STARTING_XP);  // Char xp
-			beginGameButton.addParameter(Util.STARTING_HEALTH);
-			beginGameButton.addParameter(Util.STARTING_STAMINA);
-			beginGameButton.addParameter(Util.STARTING_LOS);
-			//beginGameButton.addParameter(1);
+			var startGameButton:StartGame = new StartGame(
+					256,
+					192,
+					switchToTransition,
+					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
+					null,
+					transitions[Util.MAIN_FLOOR],
+					floors[Util.MAIN_FLOOR],
+					Util.STARTING_HEALTH,
+					Util.STARTING_STAMINA,
+					Util.STARTING_LOS);
 
-			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, beginGameButton, creditsButton)));
-		}
-
-		public function createFloorSelect():void {
-			// TODO: eliminate or relegate to debug code
-			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor1Button.addParameter(switchToFloor);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
-			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			floor1Button.addParameter(1); // Tutorial to display
-
-			var floor5button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 5", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor5button.addParameter(switchToFloor);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TRANSITION_INDEX]);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_FLOOR_INDEX]);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
-			floor5button.addParameter(1);  // Char level
-			floor5button.addParameter(1);  // Char xp
-			floor5button.addParameter(0); // Tutorial to display
-
-			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor8button.addParameter(switchToFloor);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TRANSITION_INDEX]);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_FLOOR_INDEX]);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
-			floor8button.addParameter(3);  // Char level
-			floor8button.addParameter(0);  // Char xp
-			floor8button.addParameter(3); // Tutorial to display
-
-			switchToMenu(new Menu(new Array(floor1Button, floor5button, floor8button)));
+			var creditsButton:Clickable = new Clickable(
+					256,
+					256,
+					createCredits,
+					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			switchToMenu(new Menu(new Array(titleField, startGameButton, creditsButton)));
 		}
 
 		public function createCredits():void {
@@ -424,8 +416,6 @@ package {
 		public function runFloor():void {
 			//logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 			//					   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
-
-
 			removeChild(runButton);
 			addChild(endButton);
 			addChild(runHud);
@@ -508,29 +498,6 @@ package {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
 					// There is no selected tile
-					if (currentFloor && !currentFloor.completed) {
-						var tempX:int = touch.globalX - world.x;
-						var tempY:int = touch.globalY - world.y;
-						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
-						    && tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
-							var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
-							if (currentTile != temp) {
-								if (currentTile)
-									currentTile.removeInfo();
-								currentTile = temp;
-								if (currentTile) {
-									currentText = currentTile.text;
-									currentTextImage = currentTile.textImage;
-								}
-								if (currentTile && !currentFloor.fogGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)]) {
-									currentTile.updateInfoPosition();
-								}
-							}
-						} else if (currentTile) {
-							currentTile.removeInfo();
-							currentTile = null;
-						}
-					}
 					return;
 				}
 
@@ -678,10 +645,6 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
-				}
-				if (currentTile) {
-					currentTile.updateInfoPosition();
-					currentTile.removeInfo();
 				}
 			}
 		}

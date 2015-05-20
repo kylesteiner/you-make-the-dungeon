@@ -2,7 +2,6 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
-	import flash.display3D.textures.Texture;
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
@@ -162,20 +161,6 @@ package {
 
 		public static function real_to_grid(coordinate:int):int {
 			return coordinate / PIXELS_PER_TILE;
-		}
-
-		// Returns a 2D array with the given dimensions.
-		public static function initializeGrid(x:int, y:int):Array {
-			var arr:Array = new Array(x);
-			// Potential bug exists here when appending Tiles to
-			// the end of the outside array (which should never occur)
-			// Code elsewhere will treat an Array of 5 Arrays and a Tile
-			// as 6 Arrays, which then bugs when we set properties of the
-			// 6th "Array".
-			for (var i:int = 0; i < x; i++) {
-				arr[i] = new Array(y);
-			}
-			return arr;
 		}
 
 		// Returns a random int between the min and max, including max.
