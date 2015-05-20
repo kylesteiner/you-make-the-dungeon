@@ -1,8 +1,10 @@
-package {
+package clickable {
     import starling.display.DisplayObject;
     import starling.display.Image;
     import starling.display.Sprite;
-    import starling.events.*;
+    import starling.events.Touch;
+    import starling.events.TouchPhase;
+    import starling.events.TouchEvent;
     import starling.textures.Texture;
 
     public class Clickable extends Sprite {
@@ -10,12 +12,11 @@ package {
         public var texture:Texture;
         public var textureImage:Image;
         public var baseImage:DisplayObject;
-        public var callback:Function;
-        public var parameters:Array;
+        public var onClick:Function;
 
         public function Clickable(xPos:int,
                                   yPos:int,
-                                  action:Function,
+                                  onClick:Function,
                                   baseDisplay:DisplayObject = null,
                                   baseTexture:Texture = null) {
             super();
@@ -23,41 +24,33 @@ package {
             y = yPos;
             height = Util.STAGE_HEIGHT;
             width = Util.STAGE_WIDTH;
-            parameters = new Array();
 
-            if(baseDisplay) {
+            if (baseDisplay) {
                 baseImage = baseDisplay;
                 addChild(baseImage);
             }
 
-            if(baseTexture) {
+            if (baseTexture) {
                 texture = baseTexture;
                 textureImage = new Image(texture);
                 addChild(textureImage);
             }
 
-            callback = action;
-
+            this.onClick = onClick;
             addEventListener(TouchEvent.TOUCH, onMouseEvent);
+        }
+
+        // Override if you need to pass parameters with onClick.
+        public function callCallback():void {
+            onClick();
         }
 
         private function onMouseEvent(event:TouchEvent):void {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
-
             if(!touch) {
                 return;
             }
-
-            if(parameters.length > 0) {
-                callback(parameters);
-            } else {
-                callback();
-            }
+            callCallback();
 		}
-
-        public function addParameter(param:Object):void {
-            parameters.push(param);
-        }
-
     }
 }

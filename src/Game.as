@@ -11,6 +11,7 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 
+	import clickable.*;
 	import tiles.*;
 
 	public class Game extends Sprite {
@@ -132,7 +133,12 @@ package {
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 
-			sfxMuteButton = new Clickable(Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			sfxMuteButton = new Clickable(
+					Util.PIXELS_PER_TILE,
+					Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
+					toggleSFXMute,
+					null,
+					textures[Util.ICON_MUTE_SFX]);
 			//sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 			sfxMuteButton.x = goldHud.x - sfxMuteButton.width - Util.UI_PADDING;
@@ -148,12 +154,20 @@ package {
 			//resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			//resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
-			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, runFloor, null, textures[Util.ICON_RUN]);
+			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
+									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
+									  runFloor,
+									  null,
+									  textures[Util.ICON_RUN]);
 			//runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			runButton.x = sfxMuteButton.x;
 			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
-			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, endRun, null, textures[Util.ICON_END]);
+			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
+									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
+									  endRun,
+									  null,
+									  textures[Util.ICON_END]);
 			//endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			endButton.x = runButton.x;
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
@@ -252,42 +266,46 @@ package {
 			addChild(sfxMuteButton);
 		}
 
-		public function switchToTransition(newTransitionData:Array):void {
+		public function switchToTransition(transition:Texture,
+										   floor:String,
+										   initialHealth:int,
+										   initialStamina:int,
+										   initialLoS:int):void {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(
-					0,
-					0,
-					newTransitionData[0] == null ? switchToFloor : newTransitionData[0],
-					null,
-					newTransitionData[1]);
-
-			var i:int;
-			for(i = 2; i < newTransitionData.length; i++) {
-				currentTransition.addParameter(newTransitionData[i]);
-			}
-
+			currentTransition = new Transition(0,
+											   0,
+											   switchToFloor,
+											   null,
+											   transition,
+											   floor,
+											   initialHealth,
+											   initialStamina,
+											   initialLoS);
 			addChild(currentTransition);
 		}
 
-		public function switchToFloor(newFloorData:Array):void {
+		public function switchToFloor(floorData:String,
+									  initialHealth:int,
+									  initialStamina:int,
+									  initialLoS:int):void {
 			prepareSwap();
 
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(newFloorData[0],	// Floor data file
+			currentFloor = new Floor(floorData,
 									 textures,
 									 animations,
-									 newFloorData[1],	// Initial health
-									 newFloorData[2],	// Initial stamina
-									 newFloorData[3],	// Initial line of sight
+									 initialHealth,
+									 initialStamina,
+									 initialLoS,
 									 floors,
 									 switchToTransition,
 									 mixer,
 									 logger);
-			if(currentFloor.floorName == Util.FLOOR_8) {
+			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
 
@@ -342,16 +360,24 @@ package {
 
 			floors = Embed.setupFloors();
 
-			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			beginGameButton.addParameter(switchToFloor);
-			beginGameButton.addParameter(transitions[Util.MAIN_FLOOR]);
-			beginGameButton.addParameter(floors[Util.MAIN_FLOOR]);
-			beginGameButton.addParameter(Util.STARTING_HEALTH);
-			beginGameButton.addParameter(Util.STARTING_STAMINA);
-			beginGameButton.addParameter(Util.STARTING_LOS);
+			var startGameButton:StartGame = new StartGame(
+					256,
+					192,
+					switchToTransition,
+					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
+					null,
+					transitions[Util.MAIN_FLOOR],
+					floors[Util.MAIN_FLOOR],
+					Util.STARTING_HEALTH,
+					Util.STARTING_STAMINA,
+					Util.STARTING_LOS);
 
-			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, beginGameButton, creditsButton)));
+			var creditsButton:Clickable = new Clickable(
+					256,
+					256,
+					createCredits,
+					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			switchToMenu(new Menu(new Array(titleField, startGameButton, creditsButton)));
 		}
 
 		public function createCredits():void {
