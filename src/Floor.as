@@ -319,61 +319,20 @@ package {
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
-			var x:int; var y:int; var h1:Image;
+			var x:int; var y:int;
 
-			// should go two up, down, left, right, and one in each diagonal location, removing
-			// fog when needed
-			for (x = 1; x <= 2; x++) {
-				if (x + i < fogGrid.length && fogGrid[x + i][j]) {
-					h1 = fogGrid[x + i][j];
-					fogGrid[x + i][j] = false;
-					removeChild(h1);
-				}
-			}
-			for (x = -1; x >= -2; x--) {
-				if (x + i >= 0 && fogGrid[x + i][j]) {
-					h1 = fogGrid[i + x][j];
-					fogGrid[x + i][j] = false;
-					removeChild(h1);
-				}
-			}
-			for (y = -1; y >= -2; y--) {
-				if (y + j < fogGrid[i].length && fogGrid[i][y + j]) {
-					h1 = fogGrid[i][y + j];
-					fogGrid[i][y + j] = false;
-					removeChild(h1);
-				}
-			}
-			for (y = 1; y <= 2; y++) {
-				if (y + j >= 0 && fogGrid[i][y + j]) {
-					h1 = fogGrid[i][y + j];
-					fogGrid[i][y + j] = false;
-					removeChild(h1);
-				}
-			}
-			// diagonal cases
-			if (i + 1 < fogGrid.length) {
-				if (j + 1 < fogGrid[i].length && fogGrid[i + 1][j + 1]) {
-					h1 = fogGrid[i + 1][j + 1];
-					fogGrid[i + 1][j + 1] = false;
-					removeChild(h1);
-				}
-				if (j - 1 >= 0  && fogGrid[i + 1][j - 1]) {
-					h1 = fogGrid[i + 1][j - 1];
-					fogGrid[i + 1][j - 1] = false;
-					removeChild(h1);
-				}
-			}
-			if (i -1 >= 0) {
-				if (j + 1 < fogGrid[i].length  && fogGrid[i - 1][j + 1]) {
-					h1 = fogGrid[i - 1][j + 1];
-					fogGrid[i - 1][j + 1] = false;
-					removeChild(h1);
-				}
-				if (j - 1 >= 0  && fogGrid[i - 1][j - 1]) {
-					h1 = fogGrid[i - 1][j - 1];
-					fogGrid[i - 1][j - 1] = false;
-					removeChild(h1);
+			var radius:int = char.los;
+
+			for(x = i - radius; x <= i + radius; x++) {
+				if(x >= 0 && x < initialFogGrid.length) {
+					for(y = j - radius; y <= j + radius; y++) {
+						if(y >= 0 && y < initialFogGrid[x].length) {
+							if(Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
+								removeChild(fogGrid[x][y]);
+								fogGrid[x][y] = false;
+							}
+						}
+					}
 				}
 			}
 		}
