@@ -3,7 +3,6 @@ package {
 	import flash.ui.Mouse;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import mx.utils.StringUtil;
 
 	import starling.display.Image;
 	import starling.display.MovieClip;
@@ -28,14 +27,14 @@ package {
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
-		//private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var buildHUD:BuildHud;
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
-		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
+		private var floors:Dictionary; // Map String -> String
+		private var transitions:Dictionary; // Map String -> Texture
 		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 
 		private var sfx:Dictionary; // Map String -> SFX
@@ -61,11 +60,6 @@ package {
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
 
-		private var currentTile:Tile;
-		// for sanity
-		private var currentText:TextField;
-		private var currentTextImage:Image;
-
 		private var gameState:String;
 		private var gold:int;
 
@@ -88,6 +82,7 @@ package {
 
 			textures = Embed.setupTextures();
 			floors = Embed.setupFloors();
+			transitions = Embed.setupTransitions();
 			animations = Embed.setupAnimations();
 
 			sfx = Embed.setupSFX();
@@ -96,7 +91,6 @@ package {
 			mixer = new Mixer(bgm, sfx);
 			addChild(mixer);
 
-			//var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
 			addChild(staticBackgroundImage);
 
@@ -262,7 +256,12 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(0, 0, newTransitionData[0] == null ? switchToFloor : newTransitionData[0], null, newTransitionData[1]);
+			currentTransition = new Clickable(
+					0,
+					0,
+					newTransitionData[0] == null ? switchToFloor : newTransitionData[0],
+					null,
+					newTransitionData[1]);
 
 			var i:int;
 			for(i = 2; i < newTransitionData.length; i++) {
@@ -328,7 +327,7 @@ package {
 			//addChild(charHud);
 			buildHUD = new BuildHud(textures, new Dictionary()); // TODO: Add entities
 			addChild(buildHUD);
-
+			
 			mixer.play(Util.FLOOR_BEGIN);
 		}
 
@@ -341,55 +340,18 @@ package {
 			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
 			titleField.y = 32 + titleField.height / 2;
 
-			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-
 			floors = Embed.setupFloors();
 
 			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			beginGameButton.addParameter(switchToFloor);
-			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
+			beginGameButton.addParameter(transitions[Util.MAIN_FLOOR]);
 			beginGameButton.addParameter(floors[Util.MAIN_FLOOR]);
-			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			beginGameButton.addParameter(Util.STARTING_HEALTH);
 			beginGameButton.addParameter(Util.STARTING_STAMINA);
 			beginGameButton.addParameter(Util.STARTING_LOS);
-			//beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			switchToMenu(new Menu(new Array(titleField, beginGameButton, creditsButton)));
-		}
-
-		public function createFloorSelect():void {
-			// TODO: eliminate or relegate to debug code
-			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor1Button.addParameter(switchToFloor);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
-			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			floor1Button.addParameter(1); // Tutorial to display
-
-			var floor5button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 5", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor5button.addParameter(switchToFloor);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TRANSITION_INDEX]);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_FLOOR_INDEX]);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
-			floor5button.addParameter(1);  // Char level
-			floor5button.addParameter(1);  // Char xp
-			floor5button.addParameter(0); // Tutorial to display
-
-			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor8button.addParameter(switchToFloor);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TRANSITION_INDEX]);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_FLOOR_INDEX]);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
-			floor8button.addParameter(3);  // Char level
-			floor8button.addParameter(0);  // Char xp
-			floor8button.addParameter(3); // Tutorial to display
-
-			switchToMenu(new Menu(new Array(floor1Button, floor5button, floor8button)));
 		}
 
 		public function createCredits():void {
@@ -501,12 +463,18 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
-			if (buildHUD && buildHUD.hasSelected) {
+			if (buildHUD && buildHUD.hasSelected()) {
 				
 			}
 			
 			
 			/*if (tileHud) {
+			if (tileHud) {
+				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
+				if (selectedTileIndex == -1) {
+					// There is no selected tile
+					return;
+				}
 
 				if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
 					currentFloor.removeTutorial();
@@ -652,10 +620,6 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
-				}
-				if (currentTile) {
-					currentTile.updateInfoPosition();
-					currentTile.removeInfo();
 				}
 			}
 		}

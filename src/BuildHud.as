@@ -82,9 +82,6 @@ package {
 			entityDisplayList = new Array();
 			currentEntity = null;
 			currentEntityIndex = 0;
-			
-			tileBlock.addEventListener(TouchEvent.TOUCH, tileOnMouseEvent);
-			entityBlock.addEventListener(TouchEvent.TOUCH, entityOnMouseEvent);
 		}
 		
 		/**********************************************************************************
@@ -162,44 +159,40 @@ package {
 		
 		 // Moves the selected to the given touch location
 		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
-			selected.x = touch.globalX - Util.PIXELS_PER_TILE / 2;
-			selected.y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
-			checkGameBounds();
-		}
-		
-		private function checkGameBounds():void {
-			if(selected.x < 0) {
-				selected.x = 0;
+			currentImage.x = touch.globalX - Util.PIXELS_PER_TILE / 2;
+			currentImage.y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
+			if(currentImage.x < 0) {
+				currentImage.x = 0;
 			}
 
-			if(selected.x > Util.STAGE_WIDTH - Util.PIXELS_PER_TILE) {
-				selected.x = Util.STAGE_WIDTH - Util.PIXELS_PER_TILE;
+			if(currentImage.x > Util.STAGE_WIDTH - currentImage.width) {
+				currentImage.x = Util.STAGE_WIDTH - currentImage.width;
 			}
 
-			if(selected.y < 0) {
-				selected.y = 0;
+			if(currentImage.y < 0) {
+				currentImage.y = 0;
 			}
 
-			if(selected.y > Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE) {
-				selected.y = Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE;
+			if(currentImage.y > Util.STAGE_HEIGHT - currentImage.height) {
+				currentImage.y = Util.STAGE_HEIGHT - currentImage.height;
 			}
 		}
 		
 		// Realigns the selected tile from the tile HUD on the Floor.
-		public function positionTileOnGrid(worldX:int, worldY:int):void {
+		/*public function positionTileOnGrid(worldX:int, worldY:int):void {
 			if (selected is Tile) {
 				selected.x = Util.grid_to_real(Util.real_to_grid(selected.x - worldX + Util.PIXELS_PER_TILE / 2));
 				selected.y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
 				(selected as Tile).grid_x = Util.real_to_grid(selected.x + Util.PIXELS_PER_TILE / 2);
 				(selected as Tile).grid_y = Util.real_to_grid(selected.y + Util.PIXELS_PER_TILE / 2);
 			}
-		}
+		}*/
 
 		/**********************************************************************************
 		 *  Events
 		 **********************************************************************************/
 		
-		private function tileOnMouseEvent(event:TouchEvent):void {
+		/*private function tileOnMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
 
 			if (!touch) {
@@ -223,7 +216,7 @@ package {
 				//selected = true;
 				//this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
 			}
-		}
+		}*/
 		
 		/*
 		public function setEntityPosition(index:int):void {

@@ -29,9 +29,5 @@ package tiles {
                                         grid_x,
                                         grid_y));
         }
-
-		override public function displayInformation():void {
-			setUpInfo("Exit Tile \n get here to complete floor");
-		}
     }
 }
