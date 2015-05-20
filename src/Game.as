@@ -493,7 +493,7 @@ package {
 				/*if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
 					currentFloor.removeTutorial();
 				}*/
-				buildHUD.moveToTouch(touch, world.x, world.y, cursorAnim);
+				buildHUD.moveSelectedToTouch(touch, world.x, world.y);
 			}
 				
 			/*

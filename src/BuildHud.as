@@ -163,23 +163,28 @@ package {
 		 *  Utility functions
 		 **********************************************************************************/
 		
-		 // Moves the selected to the given touch location
-		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
-			currentImage.x = touch.globalX - Util.PIXELS_PER_TILE / 2;
-			currentImage.y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
-			if(currentImage.x < 0) {
+		// Moves the selected to the given touch location
+		public function moveSelectedToTouch(touch:Touch, worldX:int, worldY:int):void {
+			if (!currentImage || !touch) {
+				return;
+			}
+			
+			currentImage.x = touch.globalX - currentImage.width / 2;
+			currentImage.y = touch.globalY - currentImage.height / 2  - textures[Util.ICON_CURSOR].width / 2;
+			
+			if (currentImage.x < 0) {
 				currentImage.x = 0;
 			}
 
-			if(currentImage.x > Util.STAGE_WIDTH - currentImage.width) {
+			if (currentImage.x > Util.STAGE_WIDTH - currentImage.width) {
 				currentImage.x = Util.STAGE_WIDTH - currentImage.width;
 			}
 
-			if(currentImage.y < 0) {
+			if (currentImage.y < 0) {
 				currentImage.y = 0;
 			}
 
-			if(currentImage.y > Util.STAGE_HEIGHT - currentImage.height) {
+			if (currentImage.y > Util.STAGE_HEIGHT - currentImage.height) {
 				currentImage.y = Util.STAGE_HEIGHT - currentImage.height;
 			}
 		}
