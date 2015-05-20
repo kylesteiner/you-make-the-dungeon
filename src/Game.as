@@ -3,7 +3,6 @@ package {
 	import flash.ui.Mouse;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import mx.utils.StringUtil;
 
 	import starling.display.Image;
 	import starling.display.MovieClip;
@@ -29,14 +28,13 @@ package {
 		private var cursorHighlight:Image;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
-		//private var resetButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var tileHud:TileHud;
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
-		private var floors:Dictionary; // Map String -> ByteArray
+		private var floors:Dictionary; // Map String -> String
 		private var transitions:Dictionary; // Map String -> Texture
 		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 
