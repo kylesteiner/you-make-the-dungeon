@@ -62,7 +62,7 @@ package {
 
 		public var tutorialImage:Image;
 
-		private var nextFloorButton:Clickable;
+		// private var nextFloorButton:Clickable;
 		private var tutorialDisplaying:Boolean;
 		private var originalTutorialDisplaying:Boolean;
 
@@ -181,18 +181,18 @@ package {
 			if (tutorialImage) {
 				tutorialImage.x += value;
 			}
-			if (nextFloorButton) {
+			/*if (nextFloorButton) {
 				nextFloorButton.x += value;
-			}
+			}*/
 		}
 
 		public function shiftTutorialY(value:int):void {
 			if (tutorialImage) {
 				tutorialImage.y += value;
 			}
-			if (nextFloorButton) {
+			/*if (nextFloorButton) {
 				nextFloorButton.y += value;
-			}
+			}*/
 		}
 
 		public function toggleRun():void {
@@ -594,13 +594,12 @@ package {
 			}
 		}
 
-		// Game update loop. Currently handles combat over a series of frames.
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
 
-			if (nextFloorButton) {
+			/*if (nextFloorButton) {
 				addChild(nextFloorButton);
-			}
+			}*/
 
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
@@ -719,7 +718,10 @@ package {
 			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
 
-			nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
+			// We don't have any other floors yet, so no need for the button at
+			// the moment.
+			// TODO: remove if we only have one floor.
+			/*nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
 			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
 			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
@@ -733,7 +735,7 @@ package {
 			} else if(nextFloor == Util.FLOOR_8) {
 				i = 3;
 			}
-			nextFloorButton.addParameter(i);
+			nextFloorButton.addParameter(i);*/
 		}
 
 		// Called when the character moves into an objective tile. Updates objectiveState
