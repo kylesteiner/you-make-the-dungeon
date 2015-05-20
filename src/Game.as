@@ -36,7 +36,8 @@ package {
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
-		private var floors:Dictionary; // Map String -> [ByteArray, ByteArray]
+		private var floors:Dictionary; // Map String -> ByteArray
+		private var transitions:Dictionary; // Map String -> Texture
 		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 
 		private var sfx:Dictionary; // Map String -> SFX
@@ -89,6 +90,7 @@ package {
 
 			textures = Embed.setupTextures();
 			floors = Embed.setupFloors();
+			transitions = Embed.setupTransitions();
 			animations = Embed.setupAnimations();
 
 			sfx = Embed.setupSFX();
@@ -97,7 +99,6 @@ package {
 			mixer = new Mixer(bgm, sfx);
 			addChild(mixer);
 
-			//var staticBg:Texture = Texture.fromBitmap(new static_background());
 			staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
 			addChild(staticBackgroundImage);
 
@@ -263,7 +264,12 @@ package {
 			prepareSwap();
 
 			isMenu = false;
-			currentTransition = new Clickable(0, 0, newTransitionData[0] == null ? switchToFloor : newTransitionData[0], null, newTransitionData[1]);
+			currentTransition = new Clickable(
+					0,
+					0,
+					newTransitionData[0] == null ? switchToFloor : newTransitionData[0],
+					null,
+					newTransitionData[1]);
 
 			var i:int;
 			for(i = 2; i < newTransitionData.length; i++) {
@@ -327,7 +333,11 @@ package {
 			addChild(goldHud);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
-			tileHud = new TileHud(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX], textures);
+
+			// TODO: This is a hack because we are getting rid of tile rates
+			// but I need this to compile for now. Remove when tilehud is
+			// updated.
+			tileHud = new TileHud(new Embed.tiles1 as ByteArray, textures);
 			addChild(tileHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
@@ -342,55 +352,18 @@ package {
 			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
 			titleField.y = 32 + titleField.height / 2;
 
-			var startButton:Clickable = new Clickable(256, 192, createFloorSelect, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-
 			floors = Embed.setupFloors();
 
 			var beginGameButton:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			beginGameButton.addParameter(switchToFloor);
-			beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
+			beginGameButton.addParameter(transitions[Util.MAIN_FLOOR]);
 			beginGameButton.addParameter(floors[Util.MAIN_FLOOR]);
-			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			//beginGameButton.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
 			beginGameButton.addParameter(Util.STARTING_HEALTH);
 			beginGameButton.addParameter(Util.STARTING_STAMINA);
 			beginGameButton.addParameter(Util.STARTING_LOS);
-			//beginGameButton.addParameter(1);
 
 			var creditsButton:Clickable = new Clickable(256, 256, createCredits, new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			switchToMenu(new Menu(new Array(titleField, beginGameButton, creditsButton)));
-		}
-
-		public function createFloorSelect():void {
-			// TODO: eliminate or relegate to debug code
-			var floor1Button:Clickable = new Clickable(256, 192, switchToTransition, new TextField(128, 40, "Floor 1", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor1Button.addParameter(switchToFloor);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TRANSITION_INDEX]);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_FLOOR_INDEX]);
-			floor1Button.addParameter(floors[Util.FLOOR_1][Util.DICT_TILES_INDEX]);
-			floor1Button.addParameter(Util.STARTING_LEVEL);  // Char level
-			floor1Button.addParameter(Util.STARTING_XP);  // Char xp
-			floor1Button.addParameter(1); // Tutorial to display
-
-			var floor5button:Clickable = new Clickable(256, 256, switchToTransition, new TextField(128, 40, "Floor 5", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor5button.addParameter(switchToFloor);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TRANSITION_INDEX]);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_FLOOR_INDEX]);
-			floor5button.addParameter(floors[Util.FLOOR_5][Util.DICT_TILES_INDEX]);
-			floor5button.addParameter(1);  // Char level
-			floor5button.addParameter(1);  // Char xp
-			floor5button.addParameter(0); // Tutorial to display
-
-			var floor8button:Clickable = new Clickable(256, 320, switchToTransition, new TextField(128, 40, "Floor 8", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			floor8button.addParameter(switchToFloor);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TRANSITION_INDEX]);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_FLOOR_INDEX]);
-			floor8button.addParameter(floors[Util.FLOOR_8][Util.DICT_TILES_INDEX]);
-			floor8button.addParameter(3);  // Char level
-			floor8button.addParameter(0);  // Char xp
-			floor8button.addParameter(3); // Tutorial to display
-
-			switchToMenu(new Menu(new Array(floor1Button, floor5button, floor8button)));
 		}
 
 		public function createCredits():void {

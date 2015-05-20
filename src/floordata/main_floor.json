@@ -40,5 +40,15 @@
 			"edges": ["n", "s", "e", "w"]
 		}
 	],
-	"entities": []
+	"entities": [
+		{
+			"type": "enemy",
+			"x": 10,
+			"y": 10,
+			"texture": "monster_1",
+			"hp": 5,
+			"attack": 2,
+			"reward": 5
+		}
+	]
 }

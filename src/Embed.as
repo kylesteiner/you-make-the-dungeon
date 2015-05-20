@@ -1,5 +1,5 @@
 package {
-
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import starling.textures.Texture;
 
@@ -62,7 +62,7 @@ package {
 		[Embed(source='assets/tiles/clean/tile_sw.png')] public static var tile_sw:Class;
 		[Embed(source='assets/tiles/clean/tile_w.png')] public static var tile_w:Class;
 
-		[Embed(source='floordata/main_floor.txt', mimeType="application/octet-stream")] public static const mainFloor:Class;
+		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
 		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
 		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
@@ -297,27 +297,14 @@ package {
 
 		public static function setupFloors():Dictionary {
 			var tFloors:Dictionary = new Dictionary();
-
-			// TODO: pass in unintialized vars
-			//		 currently can only read a level once
-			//		 and then crash if you try to reuse the dictionary
-			//		 need to read in the text files each level load :(
-			tFloors[Util.FLOOR_0] = new Array(new floor0(), new tiles0(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_1] = new Array(new floor1(), new tiles1(), Texture.fromEmbeddedAsset(transitions1));
-			tFloors[Util.FLOOR_2] = new Array(new floor2(), new tiles2(), Texture.fromEmbeddedAsset(transitions2));
-			tFloors[Util.FLOOR_3] = new Array(new floor3(), new tiles3(), Texture.fromEmbeddedAsset(transitions4));
-			tFloors[Util.FLOOR_4] = new Array(new floor4(), new tiles4(), Texture.fromEmbeddedAsset(transitions5));
-			tFloors[Util.FLOOR_5] = new Array(new floor5(), new tiles5(), Texture.fromEmbeddedAsset(transitions7));
-			tFloors[Util.FLOOR_6] = new Array(new floor6(), new tiles6(), Texture.fromEmbeddedAsset(transitions8));
-			tFloors[Util.FLOOR_7] = new Array(new floor7(), new tiles7(), Texture.fromEmbeddedAsset(transitions9));
-			tFloors[Util.FLOOR_8] = new Array(new floor8(), new tiles8(), Texture.fromEmbeddedAsset(transitionsFinalExp));
-			tFloors[Util.FLOOR_9] = new Array(new floor9(), new tiles9(), Texture.fromEmbeddedAsset(transitionsFinal));
-			tFloors[Util.FLOOR_10] = new Array(new floor10(), new tiles10(), Texture.fromEmbeddedAsset(transitions0));
-			tFloors[Util.FLOOR_11] = new Array(new floor11(), new tiles11(), Texture.fromEmbeddedAsset(transitions0));
-
-			tFloors[Util.MAIN_FLOOR] = new mainFloor();
-
+			tFloors[Util.MAIN_FLOOR] = (new mainFloor() as ByteArray).toString();
 			return tFloors;
+		}
+
+		public static function setupTransitions():Dictionary {
+			var transitions:Dictionary = new Dictionary();
+			transitions[Util.MAIN_FLOOR] = Texture.fromEmbeddedAsset(transitions1);
+			return transitions;
 		}
 
 		public static function setupBGM():Array {
