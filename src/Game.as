@@ -136,8 +136,7 @@ package {
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			
-			shopHud = new ShopHUD(textures);
-			shopButton = new Clickable(goldHud.x, goldHud.height, toggleShopHUD, null, textures[Util.ICON_SHOP]);
+			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
 					Util.PIXELS_PER_TILE,
@@ -397,12 +396,19 @@ package {
 			switchToMenu(new Menu(new Array(startButton)));
 		}
 
-		public function toggleShopHUD():void {
-			if (getChildIndex(shopHud) == -1) {
-				addChild(shopHud);
-			} else {
-				removeChild(shopHud);
-			}
+		public function openShopHUD():void {
+			shopHud = new ShopHUD(currentFloor.char, gold, textures);
+			var closeShopButton:Clickable = new Clickable(0, 0, closeShopHUD, new TextField(250, 40, "CLOSE SHOP", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			closeShopButton.x = (Util.STAGE_WIDTH - closeShopButton.width) / 2;
+			closeShopButton.y = Util.STAGE_HEIGHT - closeShopButton.height;
+			shopHud.addChild(closeShopButton);
+			addChild(shopHud);
+		}
+		
+		public function closeShopHUD():void {
+			gold = shopHud.gold;
+			goldHud.update(gold);
+			removeChild(shopHud);
 		}
 		
 		public function toggleBgmMute():void {
