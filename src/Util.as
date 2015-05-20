@@ -84,6 +84,7 @@ package {
 		public static const ICON_HEALTH:String = "icon_health";
 		public static const ICON_STAMINA:String = "icon_stamina";
 		public static const ICON_GOLD:String = "icon_gold";
+		public static const ICON_SHOP:String = "icon_gold";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 

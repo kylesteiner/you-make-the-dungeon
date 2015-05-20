@@ -40,6 +40,7 @@ package {
 		[Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
 		[Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
+		[Embed(source='assets/icons/medium/shop.png')] public static const icon_shop:Class;
 		[Embed(source='assets/icons/attack.png')] public static const icon_atk:Class;
 		[Embed(source='assets/icons/health.png')] public static const icon_health:Class;
 		[Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
@@ -211,6 +212,7 @@ package {
 			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
 			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
+			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);

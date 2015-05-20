@@ -27,6 +27,7 @@ package {
 
 		private var cursorAnim:MovieClip;
 		private var cursorHighlight:Image;
+		private var shopButton:Clickable;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
 		private var runButton:Clickable;
@@ -61,6 +62,7 @@ package {
 		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
+		private var shopHud:ShopHUD;
 
 		private var gameState:String;
 		private var gold:int;
@@ -133,6 +135,9 @@ package {
 
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
+			
+			shopHud = new ShopHUD(textures);
+			shopButton = new Clickable(goldHud.x, goldHud.height, toggleShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
 					Util.PIXELS_PER_TILE,
@@ -342,6 +347,7 @@ package {
 			//addChild(resetButton);
 			addChild(runButton);
 			addChild(goldHud);
+			addChild(shopButton);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
 
@@ -391,6 +397,14 @@ package {
 			switchToMenu(new Menu(new Array(startButton)));
 		}
 
+		public function toggleShopHUD():void {
+			if (getChildIndex(shopHud) == -1) {
+				addChild(shopHud);
+			} else {
+				removeChild(shopHud);
+			}
+		}
+		
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
 		}
