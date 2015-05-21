@@ -13,6 +13,7 @@ package clickable {
         public var textureImage:Image;
         public var baseImage:DisplayObject;
         public var onClick:Function;
+        public var parameters:Dictionary;
 
         public function Clickable(xPos:int,
                                   yPos:int,
@@ -36,13 +37,23 @@ package clickable {
                 addChild(textureImage);
             }
 
+            parameters = new Array();
+
             this.onClick = onClick;
             addEventListener(TouchEvent.TOUCH, onMouseEvent);
         }
 
         // Override if you need to pass parameters with onClick.
         public function callCallback():void {
-            onClick();
+            if(parameters.length == 0) {
+                onClick();
+            } else {
+                onClick(parameters);
+            }
+        }
+
+        public function addParameter(key:String, data:Object) {
+            parameters[key] = data;
         }
 
         private function onMouseEvent(event:TouchEvent):void {
