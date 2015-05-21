@@ -394,16 +394,19 @@ package {
 		}
 
 		public function openShopHUD():void {
-			logger.logAction(13, { } );
-			shopHud.update(currentFloor.char, gold);
-			addChild(shopHud);
-			removeChild(shopButton);
+			if (getChildIndex(shopHud) == -1) {
+				logger.logAction(13, { } );
+				shopHud.update(currentFloor.char, gold);
+				addChild(shopHud);
+			}
 		}
 		
 		public function closeShopHUD():void {
-			gold = shopHud.gold;
-			removeChild(shopHud);
-			addChild(shopButton);
+			if (getChildIndex(shopHud) != -1) {
+				gold = shopHud.gold;
+				removeChild(shopHud);
+				addChild(shopButton);
+			}
 		}
 		
 		public function toggleBgmMute():void {
@@ -523,6 +526,11 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
+			// Click outside of shop (onblur)
+			if (shopHud && getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
+				removeChild(shopHud);
+			}
+			
 			if (tileHud) {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
