@@ -47,7 +47,6 @@ package {
 		public static const POPUP_BACKGROUND:String = "popup_background";
 		public static const SHOP_BACKGROUND:String = "shop_background";
 
-
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
 		public static const TILE_N:String = "tile_n";

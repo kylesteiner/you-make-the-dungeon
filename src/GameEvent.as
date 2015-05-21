@@ -7,6 +7,7 @@ package {
 		public static const ENTERED_COMBAT:String = "entered_combat";
         public static const OBJ_COMPLETED:String = "obj_completed";
 		public static const STAMINA_EXPENDED:String = "stamina_expended";
+		public static const BUILD_HUD_IMAGE_CHANGE:String = "build_hud_image_change";
 
 		public var x:int;
 		public var y:int;

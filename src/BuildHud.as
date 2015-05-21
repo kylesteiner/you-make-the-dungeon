@@ -1,36 +1,37 @@
 package {
-	import starling.core.Starling;
 	import starling.display.*;
-	import flash.net.*;
-	import flash.utils.*;
-	import starling.events.*;
+	import flash.utils.Dictionary;
 	import starling.textures.*;
-
-	import mx.controls.Alert;
+	import starling.events.*;
 
 	import tiles.*;
 	import entities.*;
 	import clickable.*;
-	import Util;
 
-	public class BuildHud extends Sprite {
+	public class BuildHUD extends Sprite {
 		public static const QUAD_BORDER_PIXELS:int = 2;
 		public static const HUD_MARGIN:int = 8;
 		public static const TOP:int = HUD_MARGIN;
 		public static const LEFT:int = HUD_MARGIN;
 		public static const COLOR_TRUE:uint = 0x00ff00;
 		public static const COLOR_FALSE:uint = 0xff0000;
+		public static const COLOR_SELECTED:uint = 0x00ff00;
+		public static const COLOR_DESELECTED:uint = 0x666666;
 		public static const ENTITIES_PER_LINE:int = 4;
+		public static const SELECT_BUTTON_WIDTH:int = 48;
+		public static const SELECT_BUTTON_HEIGHT:int = 16;
+		public static const SELECT_BUTTON_MARGIN:int = 4;
 
 		private var textures:Dictionary;
-		private var highlightedLocations:Array;
+		private var highlightedLocations:Array; // Why is this being managed in BuildHUD?
 
 		/***** Overall HUD *****/
 		// sprites that contain the tile and entity selection
+		// will be used when we have real textures
 		private var tileBlock:Sprite;
 		private var entityBlock:Sprite;
 		// image to display beneath mouse cursor
-		private var currentImage:Image;
+		public var currentImage:Image;
 		// true if entity should be shown, false if tile is shown
 		private var isEntityDisplay:Boolean;
 		// maps strings to arrays
@@ -44,6 +45,7 @@ package {
 		// an array of Booleans, which indicate whether each direction is open or not
 		private var directions:Array;
 		// base tile image
+		// will be used when we have real textures
 		private var baseImage:Image;
 		// the resultant image given the base + directions
 		private var currentTile:Image;
@@ -71,24 +73,26 @@ package {
 		private var sButton:Quad;
 		private var wButton:Quad;
 		private var eButton:Quad;
+		private var tileSelectButton:Clickable;
+
 		private var entityQuad:Quad; // Rect drawn for background of entity select
 		private var popup:Sprite;
 		private var entityClickables:Array;
+		private var entitySelectButtons:Array;
 
 		private var logger:Logger;
 		private var entityFactory:EntityFactory;
-
 
 		/**********************************************************************************
 		 *  Intialization
 		 **********************************************************************************/
 
-		public function BuildHud(textureDict:Dictionary, logger:Logger) {
+		public function BuildHUD(textureDict:Dictionary, logger:Logger) {
 			super();
 			this.logger = logger;
 			this.entityFactory = new EntityFactory(textureDict, logger);
+			this.textures = textureDict;
 
-			textures = textureDict;
 			highlightedLocations = new Array();
 
 			tileBlock = new Sprite();
@@ -107,8 +111,6 @@ package {
 
 
 			entityList = buildEntityList();
-			//entityList.push(new Array());
-			//entityList[0].push(0); entityList[0].push(0); entityList[0].push(0); entityList[0].push(0); entityList[0].push(0);
 			entityDisplayList = new Array();
 			for(var i:int; i < entityList.length; i++) {
 				entityDisplayList.push(0);
@@ -149,12 +151,12 @@ package {
 		}
 
 		public function createUI():void {
-			tileQuad = new Quad(Util.PIXELS_PER_TILE, Util.PIXELS_PER_TILE, 0x000000);
+			tileQuad = new Quad(Util.PIXELS_PER_TILE, Util.PIXELS_PER_TILE + SELECT_BUTTON_HEIGHT + SELECT_BUTTON_MARGIN, 0x000000);
 			tileQuad.x = LEFT;
 			tileQuad.y = TOP;
 
-			var interiorTQ:Quad = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS,
-									  	   Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS);
+			var interiorTQ:Quad = new Quad(tileQuad.width - 2*QUAD_BORDER_PIXELS,
+									  	   tileQuad.height - 2*QUAD_BORDER_PIXELS);
 			interiorTQ.x = tileQuad.x + QUAD_BORDER_PIXELS;
 			interiorTQ.y = tileQuad.y + QUAD_BORDER_PIXELS;
 
@@ -168,10 +170,17 @@ package {
 			tileNECorner.y = tileNWCorner.y;
 			var tileSWCorner:Quad = new Quad(tileCornerSize, tileCornerSize, tileCornerColor);
 			tileSWCorner.x = tileNWCorner.x;
-			tileSWCorner.y = tileQuad.y + tileQuad.height - tileSWCorner.height - QUAD_BORDER_PIXELS;
+			tileSWCorner.y = tileQuad.y + tileQuad.height - tileSWCorner.height - QUAD_BORDER_PIXELS - SELECT_BUTTON_HEIGHT - SELECT_BUTTON_MARGIN;
 			var tileSECorner:Quad = new Quad(tileCornerSize, tileCornerSize, tileCornerColor);
 			tileSECorner.x = tileNECorner.x;
 			tileSECorner.y = tileSWCorner.y;
+
+			var tileSelectQuad:Quad = new Quad(SELECT_BUTTON_WIDTH,
+											   SELECT_BUTTON_HEIGHT,
+											   COLOR_DESELECTED);
+			tileSelectButton = new Clickable(tileQuad.x + (tileQuad.width - tileSelectQuad.width) / 2,
+											 tileQuad.y + tileQuad.height - SELECT_BUTTON_HEIGHT - 2*QUAD_BORDER_PIXELS,
+											 selectTile, tileSelectQuad);
 
 			toggleButtons = new Array();
 			nButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
@@ -188,7 +197,7 @@ package {
 			westToggle = new Clickable(tileNWCorner.x, tileNWCorner.y + tileNWCorner.height, toggleWest, wButton);
 
 			entityQuad = new Quad(Util.PIXELS_PER_TILE * (entityList.length > 0 ? entityList.length : 1),
-								  Util.PIXELS_PER_TILE, 0x000000);
+								  Util.PIXELS_PER_TILE + SELECT_BUTTON_MARGIN + SELECT_BUTTON_HEIGHT, 0x000000);
 			entityQuad.x = tileQuad.x + tileQuad.width + HUD_MARGIN;
 			entityQuad.y = tileQuad.y;
 			var interiorEQ:Quad = new Quad(entityQuad.width - 2*QUAD_BORDER_PIXELS,
@@ -197,11 +206,26 @@ package {
 			interiorEQ.y = entityQuad.y + QUAD_BORDER_PIXELS;
 
 			entityClickables = new Array();
-			var i:int;
+			entitySelectButtons = new Array();
+			var i:int; var entityX:int; var entityY:int;
+			var entityTexture:Texture;
+			var entityPopupButton:Clickable;
 			var selectEntityButton:Clickable;
+			var selectEntityQuad:Quad;
 			for(i = 0; i < entityList.length; i++) {
-				selectEntityButton = new EntityPopup(x, y, createPopup, null, null)
-				entityClickables.push();
+				entityX = QUAD_BORDER_PIXELS + Util.PIXELS_PER_TILE * i + entityQuad.x;
+				entityY = QUAD_BORDER_PIXELS * 2;
+				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
+				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, null, entityTexture);
+				entityPopupButton.addParameter("index", i);
+				entityClickables.push(entityPopupButton);
+
+				selectEntityQuad = new Quad(SELECT_BUTTON_WIDTH, SELECT_BUTTON_HEIGHT, COLOR_DESELECTED);
+				selectEntityButton = new Clickable(entityX + (entityPopupButton.width - selectEntityQuad.width) / 2,
+				 								   entityY + entityPopupButton.height + SELECT_BUTTON_MARGIN,
+												   selectEntityClickable, selectEntityQuad);
+				selectEntityButton.addParameter("index", i);
+				entitySelectButtons.push(selectEntityButton);
 			}
 
 			addChild(tileQuad);
@@ -211,6 +235,7 @@ package {
 			addChild(tileNECorner);
 			addChild(tileSWCorner);
 			addChild(tileSECorner);
+			addChild(tileSelectButton);
 
 			addChild(northToggle);
 			addChild(southToggle);
@@ -220,7 +245,23 @@ package {
 			addChild(entityQuad);
 			addChild(interiorEQ);
 
-			createPopup(0);
+			for(i = 0; i < entityClickables.length; i++) {
+				addChild(entityClickables[i]);
+				addChild(entitySelectButtons[i]);
+			}
+		}
+
+		public function updateUI():void {
+			for(var i:int = 0; i < entityClickables.length; i++) {
+				var selectEB:Clickable = entityClickables[i];
+				selectEB.removeChild(selectEB.textureImage);
+				selectEB.textureImage = new Image(entityMap[entityList[i][entityDisplayList[i]]][1]);
+				selectEB.addChild(selectEB.textureImage);
+			}
+		}
+
+		public function createPopupClickable(values:Dictionary):void {
+			createPopup(values["index"]);
 		}
 
 		public function createPopup(index:int):void {
@@ -243,15 +284,19 @@ package {
 			interiorQuad.x = QUAD_BORDER_PIXELS;
 			interiorQuad.y = QUAD_BORDER_PIXELS;
 
-			for(var i:int = 0; i < dispEntities.length; i++) {
+			var i:int;
+			var popupEntities:Array = new Array();
+			for(i = 0; i < dispEntities.length; i++) {
 				var key:String = dispEntities[i];
 				var entityColumn:int = i % ENTITIES_PER_LINE;
 				var entityRow:int = i / ENTITIES_PER_LINE;
 				var entityX:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityColumn + 1) + entityWidth * entityColumn;
 				var entityY:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityRow + 1) + entityHeight * entityRow;
 				var entityTexture:Texture = entityMap[key][1];
-				var renderEntity:Clickable = new EntityCategory(entityX, entityY, pageEntity, null, entityTexture, index, i);
-				popup.addChild(renderEntity);
+				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, null, entityTexture);
+				renderEntity.addParameter("index", index);
+				renderEntity.addParameter("change", i);
+				popupEntities.push(renderEntity);
 			}
 
 			var exitQuad:Quad = new Quad(16, 16, 0xff0000);
@@ -262,12 +307,40 @@ package {
 			popup.addChild(interiorQuad);
 			popup.addChild(exitButton);
 
+			for(i = 0; i < popupEntities.length; i++) {
+				popup.addChild(popupEntities[i]);
+			}
+
 			addChild(popup);
 		}
 
 		public function closePopup():void {
 			removeChild(popup);
 			popup = null;
+		}
+
+		public function updateSelectButtons():void {
+			tileSelectButton.removeChild(tileSelectButton.baseImage);
+			tileSelectButton.baseImage = new Quad(tileSelectButton.baseImage.width,
+												tileSelectButton.baseImage.height,
+												isEntityDisplay ? COLOR_DESELECTED : COLOR_SELECTED);
+			tileSelectButton.addChild(tileSelectButton.baseImage);
+
+			var i:int; var color:uint;
+			var currentButton:Clickable;
+			for(i = 0; i < entitySelectButtons.length; i++) {
+				currentButton = entitySelectButtons[i];
+				currentButton.removeChild(currentButton.baseImage);
+
+				color = COLOR_DESELECTED;
+				if(isEntityDisplay && i == currentEntityIndex) {
+					color = COLOR_SELECTED;
+				}
+				currentButton.baseImage = new Quad(currentButton.baseImage.width,
+												   currentButton.baseImage.height,
+												   color);
+				currentButton.addChild(currentButton.baseImage);
+			}
 		}
 
 		/**********************************************************************************
@@ -298,13 +371,20 @@ package {
 		 **********************************************************************************/
 
 		public function selectTile():void {
-			currentImage = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
+			var tileTexture:Texture = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
+			currentTile = new Image(tileTexture);
+			currentImage = new Image(tileTexture);
+			currentImage.touchable = false;
 			isEntityDisplay = false;
+
+			updateSelectButtons();
 		}
 
 		public function toggleDirection(direction:int):void {
 			directions[direction] = !directions[direction];
 			toggleButtons[direction].color = directions[direction] ? COLOR_TRUE : COLOR_FALSE;
+			selectTile();
 		}
 
 		public function toggleNorth():void {
@@ -346,11 +426,21 @@ package {
 			// Update entity block
 			var catIndex:int = entityDisplayList[index]
 			var entityKey:String = entityList[index][catIndex];
-			currentEntity = entityMap[entityKey][1];
 			currentEntityIndex = index;
-			// Update cursor
-			currentImage = currentEntity;
+		}
+
+		public function selectEntityClickable(values:Dictionary):void {
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
+
+			selectEntity(values["index"]);
+			closePopup();
+			updateUI();
+
+			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
+			currentImage = new Image(currentEntity.texture);
+			currentImage.touchable = false;
 			isEntityDisplay = true;
+			updateSelectButtons();
 		}
 
 		public function pageEntity(index:int, change:int):void {
@@ -359,6 +449,20 @@ package {
 			}
 
 			entityDisplayList[index] = change;
+		}
+
+		public function pageEntityClickable(values:Dictionary):void {
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
+
+			pageEntity(values["index"], values["change"]);
+			closePopup();
+			updateUI();
+			currentEntityIndex = values["index"];
+			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
+			currentImage = new Image(currentEntity.texture);
+			currentImage.touchable = false;
+			isEntityDisplay = true;
+			updateSelectButtons();
 		}
 
 		/**********************************************************************************

@@ -31,7 +31,7 @@ package {
 		private var sfxMuteButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
-		private var buildHUD:BuildHud;
+
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
@@ -62,6 +62,8 @@ package {
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
 		private var shopHud:ShopHUD;
+		private var buildHud:BuildHUD;
+		private var showBuildHudImage:Boolean;
 
 		private var gameState:String;
 		private var gold:int;
@@ -123,6 +125,7 @@ package {
 			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
 
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
+			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
 		}
 
 		private function initializeFloorWorld():void {
@@ -134,7 +137,7 @@ package {
 
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
-			
+
 			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
@@ -177,7 +180,7 @@ package {
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
-			buildHUD = new BuildHud(textures, logger); // TODO: Add entities
+			buildHud = new BuildHUD(textures, logger); // TODO: Add entities
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -254,7 +257,7 @@ package {
 				//removeChild(resetButton);
 				removeChild(runButton);
 				//removeChild(charHud);
-				removeChild(buildHUD);
+				removeChild(buildHud);
 				removeChild(goldHud);
 				removeChild(runHud);
 			}
@@ -313,7 +316,7 @@ package {
 			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
-			
+
 			logger.logLevelStart(1, { "characterHP":currentFloor.char.maxHp, "characterStamina":currentFloor.char.maxStamina, "characterAttack":currentFloor.char.attack } );
 
 			world.addChild(currentFloor);
@@ -341,9 +344,10 @@ package {
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
 
-			addChild(buildHUD);
+			addChild(buildHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
+			gameState = STATE_BUILD;
 		}
 
 		public function transitionToStart(a:Array):void {
@@ -388,13 +392,13 @@ package {
 			addChild(shopHud);
 			removeChild(shopButton);
 		}
-		
+
 		public function closeShopHUD():void {
 			gold = shopHud.gold;
 			removeChild(shopHud);
 			addChild(shopButton);
 		}
-		
+
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
 		}
@@ -412,7 +416,7 @@ package {
 			enemyTiles = 0;
 			healingTiles = 0;
 			currentFloor.resetFloor();
-			buildHUD.reset();
+			buildHud.reset();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.FLOOR_RESET);
 		}
@@ -420,10 +424,9 @@ package {
 		public function runFloor():void {
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			removeChild(runButton);
+			removeChild(buildHud);
 			addChild(endButton);
 			addChild(runHud);
-			//currentFloor.removeTutorial();
-			//currentFloor.runFloor();
 			gameState = STATE_RUN;
 			currentFloor.toggleRun();
 		}
@@ -445,6 +448,9 @@ package {
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
+
+			buildHud.updateUI();
+			addChild(buildHud);
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
 			currentFloor.resetFloor();
@@ -474,7 +480,14 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
+
+			removeChild(buildHud.currentImage);
+			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
+				addChild(buildHud.currentImage);
+			}
+
 			addChild(cursorAnim);
+
 			if(gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
@@ -488,11 +501,6 @@ package {
 				return;
 			}
 
-
-			/*if(currentFloor && currentFloor.tutorialImage && touch.phase == TouchPhase.BEGAN && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
-				currentFloor.removeTutorial();
-			}*/
-
 			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
@@ -502,11 +510,21 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
-			if (buildHUD && buildHUD.hasSelected()) {
-				/*if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
-					currentFloor.removeTutorial();
-				}*/
-				buildHUD.moveSelectedToTouch(touch, world.x, world.y);
+			if(buildHud) {
+				showBuildHudImage = !touch.isTouching(buildHud);
+
+				if(buildHud.hasSelected()) {
+					// To Kyle: I commented this out since you get the same effect with the computations below.
+					// No need to do redundant work.
+					//buildHud.moveSelectedToTouch(touch, world.x, world.y);
+					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
+					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
+				}
+
+				if(gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+					// User clicked so do something
+					mixer.play(Util.FLOOR_RESET);
+				}
 			}
 
 			/*
@@ -653,6 +671,12 @@ package {
 					logger.logAction(2, { "pannedDirection":"left"} );
 				}
 			}
+		}
+
+		public function clearBuildHUDImage(event:GameEvent):void {
+			// Possible race condition which will leave phantom images
+			// on the floor from discarded old buildHud images
+			removeChild(buildHud.currentImage);
 		}
 	}
 }
