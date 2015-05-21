@@ -15,9 +15,10 @@ package {
 	import tiles.*;
 
 	public class Game extends Sprite {
-
 		public static const FLOOR_FAIL_TEXT:String = "Nea was defeated!\nClick here to continue building.";
 		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
+		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
+		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
 
 		private static const STATE_MENU:String = "game_menu";
 		private static const STATE_BUILD:String = "game_build";
@@ -27,11 +28,12 @@ package {
 
 		private var cursorAnim:MovieClip;
 		private var cursorHighlight:Image;
+		private var shopButton:Clickable;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
-		private var tileHud:TileHud;
+
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
@@ -61,9 +63,15 @@ package {
 		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
+		private var shopHud:ShopHUD;
+		private var buildHud:BuildHUD;
+		private var showBuildHudImage:Boolean;
 
 		private var gameState:String;
 		private var gold:int;
+
+		private var phaseBanner:Image;
+		private var phaseBannerTimer:Number;
 
 		public function Game() {
 			Mouse.hide();
@@ -78,6 +86,7 @@ package {
 			var cid:int = 0;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null);
+			Util.logger = logger;
 
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
@@ -109,7 +118,7 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-			gold = Util.STARTING_GOLD;
+			gold = Util.STARTING_GOLD + 300;
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -123,6 +132,7 @@ package {
 
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.COMPLETE_ROOM, onRoomComplete);
+			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
 		}
 
 		private function initializeFloorWorld():void {
@@ -134,6 +144,9 @@ package {
 
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
+
+			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
+			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
 					Util.PIXELS_PER_TILE,
@@ -175,6 +188,7 @@ package {
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
+			buildHud = new BuildHUD(textures, logger); // TODO: Add entities
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -251,7 +265,7 @@ package {
 				//removeChild(resetButton);
 				removeChild(runButton);
 				//removeChild(charHud);
-				removeChild(tileHud);
+				removeChild(buildHud);
 				removeChild(goldHud);
 				removeChild(runHud);
 			}
@@ -316,16 +330,11 @@ package {
 				currentFloor.altCallback = transitionToStart;
 			}
 
-			//world.height = Util.grid_to_real(currentFloor.gridHeight);
-			//world.width = Util.grid_to_real(currentFloor.gridWidth);
-
-			// TODO: Logger is definitely broken here by the changes.
-			// the logger doesn't like 0 based indexing.
-/*<<<<<<< HEAD
-			logger.logLevelStart(1, { "characterLevel":currentFloor.char.state.level } );
-=======
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { } );
->>>>>>> backend*/
+			logger.logLevelStart(1, {
+				"characterHP":currentFloor.char.maxHp,
+				"characterStamina":currentFloor.char.maxStamina,
+				"characterAttack":currentFloor.char.attack
+			});
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -348,16 +357,14 @@ package {
 			//addChild(resetButton);
 			addChild(runButton);
 			addChild(goldHud);
+			addChild(shopButton);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
 
-			// TODO: This is a hack because we are getting rid of tile rates
-			// but I need this to compile for now. Remove when tilehud is
-			// updated.
-			tileHud = new TileHud(new Embed.tiles1 as ByteArray, textures);
-			addChild(tileHud);
+			addChild(buildHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
+			gameState = STATE_BUILD;
 		}
 
 		public function transitionToStart(a:Array):void {
@@ -398,6 +405,30 @@ package {
 			switchToMenu(new Menu(new Array(startButton)));
 		}
 
+		public function openShopHUD():void {
+			if (getChildIndex(shopHud) == -1) {
+				logger.logAction(13, { } );
+				shopHud.update(currentFloor.char, gold);
+				addChild(shopHud);
+				buildHud.deselect();
+			}
+		}
+
+		public function closeShopHUD():void {
+			if (getChildIndex(shopHud) != -1) {
+				gold = shopHud.gold;
+				removeChild(shopHud);
+			}
+		}
+
+		public function constructPhaseBanner(run:Boolean = true):void {
+			removeChild(phaseBanner);
+			phaseBanner = new Image(textures[run ? Util.RUN_BANNER : Util.BUILD_BANNER]);
+			phaseBanner.y = (Util.STAGE_HEIGHT - phaseBanner.height) / 2;
+			phaseBannerTimer = 0;
+			addChild(phaseBanner);
+		}
+
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
 		}
@@ -415,21 +446,28 @@ package {
 			enemyTiles = 0;
 			healingTiles = 0;
 			currentFloor.resetFloor();
-			tileHud.resetTileHud();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.FLOOR_RESET);
 		}
 
 		public function runFloor():void {
-			//logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-			//					   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+			logger.logAction(3, {
+				"numberOfTiles":numberOfTilesPlaced,
+				"EmptyTilesPlaced":emptyTiles,
+				"MonsterTilesPlaced":enemyTiles,
+				"HealthTilesPlaced":healingTiles
+			});
 			removeChild(runButton);
+			buildHud.deselect();
+			removeChild(buildHud);
+			removeChild(shopButton);
+
 			addChild(endButton);
 			addChild(runHud);
-			//currentFloor.removeTutorial();
-			//currentFloor.runFloor();
 			gameState = STATE_RUN;
 			currentFloor.toggleRun();
+
+			constructPhaseBanner();
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
@@ -449,14 +487,29 @@ package {
 			// 		call at end of run automatically when stamina <= 0
 			//		reset char, bring up new display which triggers phase change afterwards
 			//		add gold and other items
+			// will log gold gained here, stamina left, health left,
+			// and other keys as seen needed
+			//TODO: figure out how to log gold earned
+			logger.logAction(8, {
+				"goldEarned":0,
+				"staminaLeft": currentFloor.char.stamina,
+				"healthLeft": currentFloor.char.hp
+			});
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
+
+			buildHud.updateUI();
+			addChild(buildHud);
+			addChild(shopButton);
+
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
 			currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
+
+			constructPhaseBanner(false); // happens after the summary dialog box
 		}
 
 		private function centerWorldOnCharacter(exact:Boolean = false):void {
@@ -481,7 +534,23 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
+
+			if(phaseBanner) {
+				phaseBannerTimer += event.passedTime;
+				addChild(phaseBanner);
+				if(phaseBannerTimer > PHASE_BANNER_DURATION) {
+					removeChild(phaseBanner);
+					phaseBanner = null;
+				}
+			}
+
+			removeChild(buildHud.currentImage);
+			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
+				addChild(buildHud.currentImage);
+			}
+
 			addChild(cursorAnim);
+
 			if(gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
@@ -495,11 +564,6 @@ package {
 				return;
 			}
 
-
-			/*if(currentFloor && currentFloor.tutorialImage && touch.phase == TouchPhase.BEGAN && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
-				currentFloor.removeTutorial();
-			}*/
-
 			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
@@ -509,89 +573,84 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
-			if (tileHud) {
-				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
-				if (selectedTileIndex == -1) {
-					// There is no selected tile
-					return;
-				}
+			if (buildHud) {
+				showBuildHudImage = !touch.isTouching(buildHud);
 
-				if(currentFloor && currentFloor.tutorialImage != null && currentFloor.floorName == Util.TUTORIAL_TILE_FLOOR) {
-					currentFloor.removeTutorial();
-				}
-
-				// A tile is selected. Adjust its position to follow the cursor and allow player to place it.
-				var selectedTile:Tile = tileHud.getTileByIndex(selectedTileIndex);
-				tileHud.lockTiles();
-				selectedTile.moveToTouch(touch, world.x, world.y, cursorAnim);
-				currentFloor.highlightAllowedLocations(selectedTile);
-				if (touch.phase == TouchPhase.ENDED) {
-					if (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
-						touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height) {
-						// Player clicked outside the tile HUD bounds
-						if (touch.globalX >= world.x && touch.globalX < world.x + currentFloor.width &&
-							touch.globalY >= world.y && touch.globalY < world.y + currentFloor.height) {
-							// Player clicked inside grid
-							if (selectedTile.grid_x >= 0 && selectedTile.grid_x < currentFloor.gridWidth &&
-								selectedTile.grid_y >= 0 && selectedTile.grid_y < currentFloor.gridHeight &&
-								!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
-								currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
-								// Player correctly placed one of the available tiles
-								// Move tile from HUD to grid. Add new tile to HUD.
-								tileHud.removeAndReplaceTile(selectedTileIndex);
-								currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
-								currentFloor.addChild(selectedTile);
-								currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
-								currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
-								// check if we placed the tile next to any preplaced tiles, and if we did, remove
-								// the fogs for those as well. (it's so ugly D:)
-								if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
-								}
-								if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
-								}
-								if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
-								}
-								if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
-								}
-								selectedTile.positionTileOnGrid(world.x, world.y);
-								currentFloor.rooms.tileAdd(selectedTile);
-								numberOfTilesPlaced++;
-								selectedTile.onGrid = true;
-
-								mixer.play(Util.TILE_MOVE);
-
-								if (selectedTile is Tile) {
-									emptyTiles++;
-								}
-
-								tileHud.unlockTiles();
-								currentFloor.clearHighlightedLocations();
-							} else {
-								// Tile wasn't placed correctly on grid
-								mixer.play(Util.TILE_FAILURE);
-								tileHud.returnSelectedTile();
-								tileHud.unlockTiles();
-								currentFloor.clearHighlightedLocations();
-							}
-						} else {
-							// Player clicked outside grid
-							mixer.play(Util.TILE_FAILURE);
-							tileHud.returnSelectedTile();
-							tileHud.unlockTiles();
-							currentFloor.clearHighlightedLocations();
-						}
-					} else {
-						// Player clicked inside tile HUD
-						mixer.play(Util.TILE_FAILURE);
-						tileHud.returnSelectedTile();
-						tileHud.unlockTiles();
-						currentFloor.clearHighlightedLocations();
+				if (buildHud.hasSelected()) {
+					// Move buildHud image to cursor
+					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
+					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
+					//currentFloor.clearHighlightedLocations();
+					//currentFloor.highlightAllowedLocations(selectedTile);
+					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
+						// Player clicked inside grid
+						putImageOnFloor(touch);
 					}
 				}
+
+				if (gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+					// User clicked so do something
+					buildHud.closePopup();
+
+					// Replicated conditionals are no fun, but it's necessary here
+					if (buildHud.hasSelected()) {
+						mixer.play(Util.FLOOR_RESET);
+					}
+				}
+			}
+
+			// Click outside of shop (onblur)
+			if (shopHud && getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
+				removeChild(shopHud);
+			}
+
+			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {
+				removeChild(phaseBanner);
+				phaseBanner = null;
+			}
+		}
+
+		private function putImageOnFloor(touch:Touch):void {
+			if (!buildHud.isEntityDisplay) {
+				var newTile:Tile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
+												  buildHud.directions[Util.EAST], buildHud.directions[Util.WEST],
+												  buildHud.currentImage.texture);
+				// Realigns the new tile on the Floor.
+				newTile.x = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.x - world.x + Util.PIXELS_PER_TILE / 2));
+				newTile.y = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.y - world.y + Util.PIXELS_PER_TILE / 2));
+				newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
+				newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
+				if (!currentFloor.grid[newTile.grid_x][newTile.grid_y]/* &&
+					currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]*/) {
+					// Player correctly placed the tile. Add it to the grid.
+					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
+					currentFloor.addChild(newTile);
+					currentFloor.rooms.tileAdd(newTile);
+					currentFloor.fogGrid[newTile.grid_x][newTile.grid_y] = false;
+					currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y);
+					// check if we placed the tile next to any preplaced tiles, and if we did, remove
+					// the fogs for those as well. (it's so ugly D:)
+					if (newTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[newTile.grid_x + 1][newTile.grid_y]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x + 1, newTile.grid_y);
+					}
+					if (newTile.grid_x - 1 >= 0 && currentFloor.grid[newTile.grid_x - 1][newTile.grid_y]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x - 1, newTile.grid_y);
+					}
+					if (newTile.grid_y + 1 < currentFloor.grid[newTile.grid_x].length && currentFloor.grid[newTile.grid_x][newTile.grid_y + 1]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y + 1);
+					}
+					if (newTile.grid_y - 1 >= 0 && currentFloor.grid[newTile.grid_x][newTile.grid_y - 1]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y - 1);
+					}
+					numberOfTilesPlaced++;
+					emptyTiles++;
+					logger.logAction(1, { } );
+					mixer.play(Util.TILE_MOVE);
+				} else {
+					mixer.play(Util.TILE_FAILURE);
+				}
+			} else {
+				// Handle entities
 			}
 		}
 
@@ -631,6 +690,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"down"} );
 				}
 
 				if (input == Util.UP_KEY) {
@@ -641,6 +701,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"up"} );
 				}
 
 				if (input == Util.RIGHT_KEY) {
@@ -651,6 +712,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"right"} );
 				}
 
 				if (input == Util.LEFT_KEY) {
@@ -661,8 +723,15 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"left"} );
 				}
 			}
+		}
+
+		public function clearBuildHUDImage(event:GameEvent):void {
+			// Possible race condition which will leave phantom images
+			// on the floor from discarded old buildHud images
+			removeChild(buildHud.currentImage);
 		}
 	}
 }

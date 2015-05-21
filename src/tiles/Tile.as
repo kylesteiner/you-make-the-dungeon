@@ -18,9 +18,6 @@ package tiles {
 		public var west:Boolean;
 
 		public var image:Image;
-		public var locked:Boolean;
-		public var selected:Boolean;
-		public var onGrid:Boolean; // for determining if it is on the grid itself or not
 		public var infoWidth:int;
 		public var infoHeight:int;
 
@@ -49,11 +46,6 @@ package tiles {
 
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-
-			locked = true;
-			selected = false;
-
-			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 		}
 
 		// Called when the player moves into this tile. Override this function
@@ -63,81 +55,5 @@ package tiles {
 		// When the floor is reset, this function will be called on every tile.
 		// Override this function if the tile's state changes during gameplay.
 		public function reset():void {}
-
-		// Realigns the selected tile from the tile HUD on the Floor.
-		public function positionTileOnGrid(worldX:int, worldY:int):void {
-			//need to test that it is a legal position
-			//snap to function should be better than
-			x = Util.grid_to_real(Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2)); // TODO: Make this calculation better
-			y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
-			//checkGameBounds();
-			grid_x = Util.real_to_grid(x + Util.PIXELS_PER_TILE / 2);
-			//grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2);
-			//grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
-			grid_y = Util.real_to_grid(y + Util.PIXELS_PER_TILE / 2);
-			locked = true;
-		}
-
-		// Moves the tiles to the given touch location (for tile selection)
-		public function moveToTouch(touch:Touch, worldX:int, worldY:int, cursor:MovieClip):void {
-			x = touch.globalX - Util.PIXELS_PER_TILE / 2;
-			y = touch.globalY - Util.PIXELS_PER_TILE / 2  - cursor.width / 2;
-			checkGameBounds();
-			grid_x = Util.real_to_grid(x - worldX + Util.PIXELS_PER_TILE / 2); // TODO: Make this calculation better
-			grid_y = Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2);
-		}
-
-		private function onMouseEvent(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(this);
-
-			if (!touch || locked) {
-				return;
-			}
-
-			if (touch.phase == TouchPhase.BEGAN) {
-				selected = true;
-				this.parent.setChildIndex(this, this.parent.numChildren - 1); // Move tile image to front
-			}
-		}
-
-		private function checkGameBounds():void {
-			if(x < 0) {
-				x = 0;
-			}
-
-			if(x > Util.STAGE_WIDTH - Util.PIXELS_PER_TILE) {
-				x = Util.STAGE_WIDTH - Util.PIXELS_PER_TILE;
-			}
-
-			if(y < 0) {
-				y = 0;
-			}
-
-			if(y > Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE) {
-				y = Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE;
-			}
-		}
-
-		// helps get the x offset for the tile info set to display
-		// in the upper right corner
-		public function getToPointX(goal:int):int {
-			var temp:int = 0;
-			var shift:int = goal > 0 ? 1 : -1;
-			while (temp != goal) {
-				temp += shift;
-			}
-			return temp;
-		}
-
-		// helps get the y offset for the tile info set to display
-		// in the upper right corner
-		public function getToPointY(goal:int):int {
-			var temp:int = 0;
-			var shift:int = goal > 0 ? 1 : -1;
-			while (temp != goal) {
-				temp += shift;
-			}
-			return temp;
-		}
 	}
 }

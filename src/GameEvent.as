@@ -9,6 +9,7 @@ package {
 		public static const STAMINA_EXPENDED:String = "stamina_expended";
         public static const REVEAL_ROOM:String = "reveal_room";
         public static const COMPLETE_ROOM:String = "complete_room";
+		public static const BUILD_HUD_IMAGE_CHANGE:String = "build_hud_image_change";
 
 		public var x:int;
 		public var y:int;

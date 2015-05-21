@@ -2,14 +2,15 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
+	import Logger;
+
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
-
+		public static const BASE_TILE_COST:int = 50;
 		public static const HUD_PAD_TOP:int = 4;
 		public static const HUD_PAD_LEFT:int = 8;
 
-		public static const NUM_AVAILABLE_TILES:int = 5;
 		public static const REAL_TILE_SIZE:int = 256;
 		public static const PIXELS_PER_TILE:int = 64; // 48
 		public static const UI_PADDING:int = 8;
@@ -46,6 +47,10 @@ package {
 		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
 		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
 		public static const POPUP_BACKGROUND:String = "popup_background";
+		public static const SHOP_BACKGROUND:String = "shop_background";
+		public static const SHOP_ITEM:String = "shop_item";
+		public static const RUN_BANNER:String = "run_banner";
+		public static const BUILD_BANNER:String = "build_banner";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -83,7 +88,9 @@ package {
 		public static const ICON_ATK:String = "icon_attack";
 		public static const ICON_HEALTH:String = "icon_health";
 		public static const ICON_STAMINA:String = "icon_stamina";
+		public static const ICON_LOS:String = "icon_los";
 		public static const ICON_GOLD:String = "icon_gold";
+		public static const ICON_SHOP:String = "icon_shop";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
@@ -159,6 +166,8 @@ package {
 		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
+
+		public static var logger:Logger;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
