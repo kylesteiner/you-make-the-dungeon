@@ -384,7 +384,12 @@ package {
 		public function buildEntityFromImage(currentTile:Tile):Entity {
 			var catIndex:int = entityDisplayList[currentEntityIndex];
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
-			return entityMap[entityKey][0]();
+			var entity:Entity = entityMap[entityKey][0]();
+			entity.x = currentTile.x;
+			entity.y = currentTile.y;
+			entity.grid_x = currentTile.grid_x;
+			entity.grid_y = currentTile.grid_y;
+			return entity;
 		}
 
 		/**********************************************************************************
