@@ -81,6 +81,7 @@ package {
 			var cid:int = 0;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null);
+			Util.logger = logger;
 
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
@@ -112,7 +113,7 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-			gold = Util.STARTING_GOLD;
+			gold = Util.STARTING_GOLD + 300;
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -138,6 +139,7 @@ package {
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 
+			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
 			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
@@ -317,7 +319,11 @@ package {
 				currentFloor.altCallback = transitionToStart;
 			}
 
-			logger.logLevelStart(1, { "characterHP":currentFloor.char.maxHp, "characterStamina":currentFloor.char.maxStamina, "characterAttack":currentFloor.char.attack } );
+			logger.logLevelStart(1, {
+				"characterHP":currentFloor.char.maxHp,
+				"characterStamina":currentFloor.char.maxStamina,
+				"characterAttack":currentFloor.char.attack
+			});
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -388,15 +394,19 @@ package {
 		}
 
 		public function openShopHUD():void {
-			shopHud = new ShopHUD(new Array(), currentFloor.char, goldHud, gold, closeShopHUD, textures);
-			addChild(shopHud);
-			removeChild(shopButton);
+			if (getChildIndex(shopHud) == -1) {
+				logger.logAction(13, { } );
+				shopHud.update(currentFloor.char, gold);
+				addChild(shopHud);
+			}
 		}
 
 		public function closeShopHUD():void {
-			gold = shopHud.gold;
-			removeChild(shopHud);
-			addChild(shopButton);
+			if (getChildIndex(shopHud) != -1) {
+				gold = shopHud.gold;
+				removeChild(shopHud);
+				addChild(shopButton);
+			}
 		}
 
 		public function toggleBgmMute():void {
@@ -422,9 +432,16 @@ package {
 		}
 
 		public function runFloor():void {
-			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+			logger.logAction(3, {
+				"numberOfTiles":numberOfTilesPlaced,
+				"EmptyTilesPlaced":emptyTiles,
+				"MonsterTilesPlaced":enemyTiles,
+				"HealthTilesPlaced":healingTiles
+			});
 			removeChild(runButton);
 			removeChild(buildHud);
+			removeChild(shopButton);
+
 			addChild(endButton);
 			addChild(runHud);
 			gameState = STATE_RUN;
@@ -443,14 +460,19 @@ package {
 			// will log gold gained here, stamina left, health left,
 			// and other keys as seen needed
 			//TODO: figure out how to log gold earned
-			logger.logAction(8, { "goldEarned":0, "staminaLeft": currentFloor.char.stamina,
-							 "healthLeft": currentFloor.char.hp } );
+			logger.logAction(8, {
+				"goldEarned":0,
+				"staminaLeft": currentFloor.char.stamina,
+				"healthLeft": currentFloor.char.hp
+			});
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
 
 			buildHud.updateUI();
 			addChild(buildHud);
+			addChild(shopButton);
+
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
 			currentFloor.resetFloor();
@@ -519,13 +541,27 @@ package {
 					//buildHud.moveSelectedToTouch(touch, world.x, world.y);
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
 					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
-				}
 
-				if(gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
-					// User clicked so do something
-					mixer.play(Util.FLOOR_RESET);
+					if(gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+						// User clicked so do something
+						mixer.play(Util.FLOOR_RESET);
+					}
 				}
 			}
+
+			// Click outside of shop (onblur)
+			if (shopHud && getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
+				removeChild(shopHud);
+			}
+
+			/*if (tileHud) {
+				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
+				if (selectedTileIndex == -1) {
+					// There is no selected tile
+					return;
+				}
+			}*/
+
 
 			/*
 				currentFloor.highlightAllowedLocations(selectedTile);

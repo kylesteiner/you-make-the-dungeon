@@ -108,8 +108,6 @@ package {
 			baseImage = null;
 			currentTile = null;
 
-
-
 			entityList = buildEntityList();
 			entityDisplayList = new Array();
 			for(var i:int; i < entityList.length; i++) {
@@ -117,7 +115,7 @@ package {
 			}
 
 			currentEntity = null;
-			currentEntityIndex = 0;
+			currentEntityIndex = -1;
 
 			createUI();
 		}
@@ -370,13 +368,20 @@ package {
 		 *  Tile Block API
 		 **********************************************************************************/
 
-		public function selectTile():void {
+		public function selectTile(toggle:Boolean = false):void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-			var tileTexture:Texture = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
-			currentTile = new Image(tileTexture);
-			currentImage = new Image(tileTexture);
-			currentImage.touchable = false;
-			isEntityDisplay = false;
+
+			if(isEntityDisplay || toggle) {
+				var tileTexture:Texture = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
+				currentTile = new Image(tileTexture);
+				currentImage = new Image(tileTexture);
+				currentImage.touchable = false;
+				isEntityDisplay = false;
+			} else {
+				currentTile = null;
+				currentImage = null;
+				isEntityDisplay = true;
+			}
 
 			updateSelectButtons();
 		}
@@ -384,7 +389,7 @@ package {
 		public function toggleDirection(direction:int):void {
 			directions[direction] = !directions[direction];
 			toggleButtons[direction].color = directions[direction] ? COLOR_TRUE : COLOR_FALSE;
-			selectTile();
+			selectTile(true);
 		}
 
 		public function toggleNorth():void {
@@ -432,14 +437,21 @@ package {
 		public function selectEntityClickable(values:Dictionary):void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 
-			selectEntity(values["index"]);
+			if(currentEntityIndex == values["index"]) {
+				// Toggle off
+				currentEntity = null
+				currentImage = null;
+				currentEntityIndex = -1;
+			} else {
+				selectEntity(values["index"]);
+				currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
+				currentImage = new Image(currentEntity.texture);
+				currentImage.touchable = false;
+				isEntityDisplay = true;
+			}
+
 			closePopup();
 			updateUI();
-
-			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
-			currentImage = new Image(currentEntity.texture);
-			currentImage.touchable = false;
-			isEntityDisplay = true;
 			updateSelectButtons();
 		}
 
