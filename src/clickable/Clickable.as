@@ -7,12 +7,16 @@ package clickable {
     import starling.events.TouchEvent;
     import starling.textures.Texture;
 
+    import flash.utils.Dictionary;
+
     public class Clickable extends Sprite {
 
         public var texture:Texture;
         public var textureImage:Image;
         public var baseImage:DisplayObject;
         public var onClick:Function;
+        public var parameters:Dictionary;
+        public var hasParameters:Boolean;
 
         public function Clickable(xPos:int,
                                   yPos:int,
@@ -36,13 +40,24 @@ package clickable {
                 addChild(textureImage);
             }
 
+            parameters = new Dictionary();
+
             this.onClick = onClick;
             addEventListener(TouchEvent.TOUCH, onMouseEvent);
         }
 
         // Override if you need to pass parameters with onClick.
         public function callCallback():void {
-            onClick();
+            if(!hasParameters) {
+                onClick();
+            } else {
+                onClick(parameters);
+            }
+        }
+
+        public function addParameter(key:String, data:Object):void {
+            hasParameters = true;
+            parameters[key] = data;
         }
 
         private function onMouseEvent(event:TouchEvent):void {
