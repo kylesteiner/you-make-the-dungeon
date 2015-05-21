@@ -377,6 +377,7 @@ package {
 				currentImage = new Image(tileTexture);
 				currentImage.touchable = false;
 				isEntityDisplay = false;
+				currentEntityIndex = -1;
 			} else {
 				currentTile = null;
 				currentImage = null;
@@ -384,6 +385,7 @@ package {
 			}
 
 			updateSelectButtons();
+			closePopup();
 		}
 
 		public function toggleDirection(direction:int):void {

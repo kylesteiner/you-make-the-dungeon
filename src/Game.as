@@ -542,8 +542,15 @@ package {
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
 					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
 
-					if(gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
-						// User clicked so do something
+
+				}
+
+				if(gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+					// User clicked so do something
+					buildHud.closePopup();
+
+					// Replicated conditionals are no fun, but it's necessary here
+					if(buildHud.hasSelected()) {
 						mixer.play(Util.FLOOR_RESET);
 					}
 				}
