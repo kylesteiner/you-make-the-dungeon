@@ -595,7 +595,7 @@ package {
 		}
 		
 		private function putImageOnFloor(touch:Touch):void {
-			var currentTile:Tile; var newTile:Tile;
+			var currentTile:Tile; var newTile:Tile; var newEntity:Entity;
 			
 			var tempX:int = touch.globalX - world.x;
 			var tempY:int = touch.globalY - world.y;
@@ -608,14 +608,7 @@ package {
 			}
 			
 			if (!buildHud.isEntityDisplay) {
-				newTile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
-												  buildHud.directions[Util.EAST], buildHud.directions[Util.WEST],
-												  buildHud.currentImage.texture);
-				// Realigns the new tile on the Floor.
-				newTile.x = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.x - world.x + Util.PIXELS_PER_TILE / 2));
-				newTile.y = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.y - world.y + Util.PIXELS_PER_TILE / 2));
-				newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
-				newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
+				newTile = buildHud.buildTileFromImage(world.x, world.y);
 				if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Player correctly placed the tile. Add it to the grid.
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
@@ -645,7 +638,10 @@ package {
 				}
 			} else {
 				if (currentTile && currentFloor.isEmptyTile(currentTile.grid_x, currentTile.grid_y)) {
-					//currentFloor.entityGrid[currentTile.grid_x][currentTile.grid_y] = new Enemy(currentTile.grid_x, currentTile.grid_y, textures[Util.MONSTER_1], null, 100, 5, 100);
+					// Player correctly placed the entity. Add it to the grid.
+					newEntity = buildHud.buildEntityFromImage(currentTile);
+					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;
+					currentFloor.addChild(newEntity);
 					mixer.play(Util.TILE_MOVE);
 				} else {
 					mixer.play(Util.TILE_FAILURE);

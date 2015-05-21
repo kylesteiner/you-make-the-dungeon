@@ -359,7 +359,8 @@ package {
 		
 		public function isEmptyTile(x:int, y:int):Boolean {
 			return grid[x][y] is Tile && !(grid[x][y] is EntryTile) &&
-				   !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile);
+				   !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile) &&
+				   !entityGrid[x][y];
 		}
 		
 		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {

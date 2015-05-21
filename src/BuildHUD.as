@@ -368,6 +368,24 @@ package {
             isEntityDisplay = true;
             updateSelectButtons();
         }
+		
+		public function buildTileFromImage(worldX:int, worldY:int):Tile {
+			var newTile:Tile = new Tile(0, 0, directions[Util.NORTH], directions[Util.SOUTH],
+											  directions[Util.EAST], directions[Util.WEST],
+											  currentImage.texture);
+			// Realigns the new tile on the Floor.
+			newTile.x = Util.grid_to_real(Util.real_to_grid(currentImage.x - worldX + Util.PIXELS_PER_TILE / 2));
+			newTile.y = Util.grid_to_real(Util.real_to_grid(currentImage.y - worldY + Util.PIXELS_PER_TILE / 2));
+			newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
+			newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
+			return newTile;
+		}
+		
+		public function buildEntityFromImage(currentTile:Tile):Entity {
+			var catIndex:int = entityDisplayList[currentEntityIndex];
+			var entityKey:String = entityList[currentEntityIndex][catIndex];
+			return entityMap[entityKey][0]();
+		}
 
 		/**********************************************************************************
 		 *  Tile Block API
