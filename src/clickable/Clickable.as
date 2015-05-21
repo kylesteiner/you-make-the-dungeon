@@ -14,6 +14,7 @@ package clickable {
         public var baseImage:DisplayObject;
         public var onClick:Function;
         public var parameters:Dictionary;
+        public var hasParameters:Boolean;
 
         public function Clickable(xPos:int,
                                   yPos:int,
@@ -45,7 +46,7 @@ package clickable {
 
         // Override if you need to pass parameters with onClick.
         public function callCallback():void {
-            if(parameters.length == 0) {
+            if(hasParameters) {
                 onClick();
             } else {
                 onClick(parameters);
@@ -53,6 +54,7 @@ package clickable {
         }
 
         public function addParameter(key:String, data:Object) {
+            hasParameters = true;
             parameters[key] = data;
         }
 
