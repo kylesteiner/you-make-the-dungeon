@@ -27,6 +27,7 @@ package {
 
 		private var cursorAnim:MovieClip;
 		private var cursorHighlight:Image;
+		private var shopButton:Clickable;
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
 		private var runButton:Clickable;
@@ -61,11 +62,7 @@ package {
 		private var combatSkip:Boolean;
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
-
-		private var currentTile:Tile;
-		// for sanity
-		private var currentText:TextField;
-		private var currentTextImage:Image;
+		private var shopHud:ShopHUD;
 
 		private var gameState:String;
 		private var gold:int;
@@ -138,6 +135,8 @@ package {
 
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
+			
+			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
 					Util.PIXELS_PER_TILE,
@@ -314,17 +313,8 @@ package {
 			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
-
-			//world.height = Util.grid_to_real(currentFloor.gridHeight);
-			//world.width = Util.grid_to_real(currentFloor.gridWidth);
-
-			// TODO: Logger is definitely broken here by the changes.
-			// the logger doesn't like 0 based indexing.
-/*<<<<<<< HEAD
-			logger.logLevelStart(1, { "characterLevel":currentFloor.char.state.level } );
-=======
-			logger.logLevelStart(parseInt(currentFloor.floorName.substring(5)) + 1, { } );
->>>>>>> backend*/
+			
+			logger.logLevelStart(1, { "characterHP":currentFloor.char.maxHp, "characterStamina":currentFloor.char.maxStamina, "characterAttack":currentFloor.char.attack } );
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -347,6 +337,7 @@ package {
 			//addChild(resetButton);
 			addChild(runButton);
 			addChild(goldHud);
+			addChild(shopButton);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
 
@@ -396,6 +387,18 @@ package {
 			switchToMenu(new Menu(new Array(startButton)));
 		}
 
+		public function openShopHUD():void {
+			shopHud = new ShopHUD(new Array(), currentFloor.char, goldHud, gold, closeShopHUD, textures);
+			addChild(shopHud);
+			removeChild(shopButton);
+		}
+		
+		public function closeShopHUD():void {
+			gold = shopHud.gold;
+			removeChild(shopHud);
+			addChild(shopButton);
+		}
+		
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
 		}
@@ -419,8 +422,7 @@ package {
 		}
 
 		public function runFloor():void {
-			//logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-			//					   "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			removeChild(runButton);
 			addChild(endButton);
 			addChild(runHud);
@@ -439,6 +441,11 @@ package {
 			// 		call at end of run automatically when stamina <= 0
 			//		reset char, bring up new display which triggers phase change afterwards
 			//		add gold and other items
+			// will log gold gained here, stamina left, health left,
+			// and other keys as seen needed
+			//TODO: figure out how to log gold earned
+			logger.logAction(8, { "goldEarned":0, "staminaLeft": currentFloor.char.stamina,
+							 "healthLeft": currentFloor.char.hp } );
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
@@ -503,29 +510,6 @@ package {
 				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
 				if (selectedTileIndex == -1) {
 					// There is no selected tile
-					if (currentFloor && !currentFloor.completed) {
-						var tempX:int = touch.globalX - world.x;
-						var tempY:int = touch.globalY - world.y;
-						if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
-						    && tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
-							var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
-							if (currentTile != temp) {
-								if (currentTile)
-									currentTile.removeInfo();
-								currentTile = temp;
-								if (currentTile) {
-									currentText = currentTile.text;
-									currentTextImage = currentTile.textImage;
-								}
-								if (currentTile && !currentFloor.fogGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)]) {
-									currentTile.updateInfoPosition();
-								}
-							}
-						} else if (currentTile) {
-							currentTile.removeInfo();
-							currentTile = null;
-						}
-					}
 					return;
 				}
 
@@ -579,6 +563,7 @@ package {
 								if (selectedTile is Tile) {
 									emptyTiles++;
 								}
+								logger.logAction(1, { } );
 
 								tileHud.unlockTiles();
 								currentFloor.clearHighlightedLocations();
@@ -643,6 +628,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"down"} );
 				}
 
 				if (input == Util.UP_KEY) {
@@ -653,6 +639,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"up"} );
 				}
 
 				if (input == Util.RIGHT_KEY) {
@@ -663,6 +650,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
+					logger.logAction(2, { "pannedDirection":"right"} );
 				}
 
 				if (input == Util.LEFT_KEY) {
@@ -673,10 +661,7 @@ package {
 					} else {
 						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
 					}
-				}
-				if (currentTile) {
-					currentTile.updateInfoPosition();
-					currentTile.removeInfo();
+					logger.logAction(2, { "pannedDirection":"left"} );
 				}
 			}
 		}
