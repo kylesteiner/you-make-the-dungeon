@@ -7,6 +7,8 @@ package clickable {
     import starling.events.TouchEvent;
     import starling.textures.Texture;
 
+    import flash.utils.Dictionary;
+
     public class Clickable extends Sprite {
 
         public var texture:Texture;
@@ -38,7 +40,7 @@ package clickable {
                 addChild(textureImage);
             }
 
-            parameters = new Array();
+            parameters = new Dictionary();
 
             this.onClick = onClick;
             addEventListener(TouchEvent.TOUCH, onMouseEvent);
@@ -53,7 +55,7 @@ package clickable {
             }
         }
 
-        public function addParameter(key:String, data:Object) {
+        public function addParameter(key:String, data:Object):void {
             hasParameters = true;
             parameters[key] = data;
         }
