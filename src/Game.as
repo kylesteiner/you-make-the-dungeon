@@ -388,6 +388,7 @@ package {
 		}
 
 		public function openShopHUD():void {
+			logger.logAction(13, { } );
 			shopHud = new ShopHUD(new Array(), currentFloor.char, goldHud, gold, closeShopHUD, textures);
 			addChild(shopHud);
 			removeChild(shopButton);
