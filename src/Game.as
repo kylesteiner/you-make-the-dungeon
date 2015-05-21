@@ -136,6 +136,7 @@ package {
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			
+			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
 			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 
 			sfxMuteButton = new Clickable(
@@ -388,7 +389,7 @@ package {
 		}
 
 		public function openShopHUD():void {
-			shopHud = new ShopHUD(new Array(), currentFloor.char, goldHud, gold, closeShopHUD, textures);
+			shopHud.update(currentFloor.char, gold);
 			addChild(shopHud);
 			removeChild(shopButton);
 		}
@@ -424,6 +425,7 @@ package {
 		public function runFloor():void {
 			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			removeChild(runButton);
+			removeChild(shopButton);
 			addChild(endButton);
 			addChild(runHud);
 			//currentFloor.removeTutorial();
@@ -449,6 +451,7 @@ package {
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
+			addChild(shopButton);
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
 			currentFloor.resetFloor();
