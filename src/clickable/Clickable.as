@@ -48,7 +48,7 @@ package clickable {
 
         // Override if you need to pass parameters with onClick.
         public function callCallback():void {
-            if(hasParameters) {
+            if(!hasParameters) {
                 onClick();
             } else {
                 onClick(parameters);
