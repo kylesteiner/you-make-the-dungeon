@@ -173,6 +173,7 @@ package {
 			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
+			buildHUD = new BuildHud(textures, logger); // TODO: Add entities
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -343,9 +344,9 @@ package {
 			addChild(goldHud);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
-			buildHUD = new BuildHud(textures, new Dictionary()); // TODO: Add entities
+
 			addChild(buildHUD);
-			
+
 			mixer.play(Util.FLOOR_BEGIN);
 		}
 
@@ -495,7 +496,7 @@ package {
 				}*/
 				buildHUD.moveSelectedToTouch(touch, world.x, world.y);
 			}
-				
+
 			/*
 				currentFloor.highlightAllowedLocations(selectedTile);
 				if (touch.phase == TouchPhase.ENDED) {
