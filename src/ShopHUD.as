@@ -91,10 +91,21 @@ package {
 		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):void {
 			var item:Clickable = new Clickable(300, 300, callback, null, textures[Util.SHOP_ITEM]);
 			item.addParameter("cost", cost);
-			item.x = x + 100 * position;
+			item.x = x + 110 * position;
 			item.y = y + 100 + 100 * (position / 3);
-			item.addChild(image);
 			addChild(item);
+			
+			image.x = (item.width - image.width) / 2;
+			image.y = 20;
+			item.addChild(image);
+			
+			var coin:Image = new Image(textures[Util.ICON_GOLD]);
+			coin.y = item.height - coin.height - 2;
+			item.addChild(coin);
+			
+			var itemCost:TextField = new TextField(item.width, coin.height, String(cost), Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
+			itemCost.y = coin.y;
+			item.addChild(itemCost);
 		}
 		
 		/**********************************************************************************
@@ -102,23 +113,27 @@ package {
 		 **********************************************************************************/
 		
 		public function incHP(params:Dictionary):void {
-			spend(params["cost"]);
-			setHP(char.maxHp + 5);
+			if (spend(params["cost"])) {
+				setHP(char.maxHp + 5);
+			}
 		}
 		
 		public function incAtk(params:Dictionary):void {
-			spend(params["cost"]);
-			setAtk(char.atk + 5);
+			if (spend(params["cost"])) {
+				setAtk(char.attack + 5);
+			}
 		}
 		
 		public function incStamina(params:Dictionary):void {
-			spend(params["cost"]);
-			setStamina(char.maxStamina + 5);
+			if (spend(params["cost"])) {
+				setStamina(char.maxStamina + 5);
+			}
 		}
 		
 		public function incLos(params:Dictionary):void {
-			spend(params["cost"]);
-			setLos(char.los + 1);
+			if (spend(params["cost"])) {
+				setLos(char.los + 1);
+			}
 		}
 		
 		/**********************************************************************************
@@ -157,7 +172,7 @@ package {
 		
 		private function setStamina(val:int):void {
 			char.maxStamina = val;
-			char.stamina = char.stamina;
+			char.stamina = char.maxStamina;
 			staminaVal.text = String(char.maxStamina);
 		}
 		
