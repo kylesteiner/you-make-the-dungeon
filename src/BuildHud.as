@@ -509,6 +509,13 @@ package {
 			}
 		}
 
+        public function deselect():void {
+            currentImage = null;
+            currentEntityIndex = -1;
+            isEntityDisplay = true;
+            updateSelectButtons();
+        }
+
 		// Realigns the selected tile from the tile HUD on the Floor.
 		/*public function positionTileOnGrid(worldX:int, worldY:int):void {
 			if (selected is Tile) {
