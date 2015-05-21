@@ -115,24 +115,44 @@ package {
 		public function incHP(params:Dictionary):void {
 			if (spend(params["cost"])) {
 				setHP(char.maxHp + 5);
+				Util.logger.logAction(10, {
+					"itemBought":"hpIncrease",
+					"newCharacterHP":char.maxHp,
+					"upgradeAmount":5
+				})
 			}
 		}
 		
 		public function incAtk(params:Dictionary):void {
 			if (spend(params["cost"])) {
 				setAtk(char.attack + 5);
+				Util.logger.logAction(10, {
+					"itemBought":"hpIncrease",
+					"newCharacterAttack":char.attack,
+					"upgradeAmount":5
+				})
 			}
 		}
 		
 		public function incStamina(params:Dictionary):void {
 			if (spend(params["cost"])) {
 				setStamina(char.maxStamina + 5);
+				Util.logger.logAction(10, {
+					"itemBought":"hpIncrease",
+					"newCharacterStamina":char.maxStamina,
+					"upgradeAmount":5
+				})
 			}
 		}
 		
 		public function incLos(params:Dictionary):void {
 			if (spend(params["cost"])) {
 				setLos(char.los + 1);
+				Util.logger.logAction(10, {
+					"itemBought":"hpIncrease",
+					"newCharacterLOS":char.los,
+					"upgradeAmount":5
+				})
 			}
 		}
 		

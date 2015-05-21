@@ -2,6 +2,7 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
+	import Logger;
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
@@ -158,6 +159,8 @@ package {
 		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
+		
+		public static var logger:Logger;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

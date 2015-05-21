@@ -80,6 +80,7 @@ package {
 			var cid:int = 0;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null);
+			Util.logger = logger;
 
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
@@ -111,7 +112,7 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-			gold = Util.STARTING_GOLD;
+			gold = Util.STARTING_GOLD + 300;
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -315,7 +316,11 @@ package {
 				currentFloor.altCallback = transitionToStart;
 			}
 			
-			logger.logLevelStart(1, { "characterHP":currentFloor.char.maxHp, "characterStamina":currentFloor.char.maxStamina, "characterAttack":currentFloor.char.attack } );
+			logger.logLevelStart(1, { 
+				"characterHP":currentFloor.char.maxHp, 
+				"characterStamina":currentFloor.char.maxStamina, 
+				"characterAttack":currentFloor.char.attack 
+			});
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
@@ -424,7 +429,12 @@ package {
 		}
 
 		public function runFloor():void {
-			logger.logAction(3, { "numberOfTiles":numberOfTilesPlaced, "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
+			logger.logAction(3, { 
+				"numberOfTiles":numberOfTilesPlaced, 
+				"EmptyTilesPlaced":emptyTiles, 
+				"MonsterTilesPlaced":enemyTiles, 
+				"HealthTilesPlaced":healingTiles
+			});
 			removeChild(runButton);
 			removeChild(shopButton);
 			addChild(endButton);
@@ -447,8 +457,11 @@ package {
 			// will log gold gained here, stamina left, health left,
 			// and other keys as seen needed
 			//TODO: figure out how to log gold earned
-			logger.logAction(8, { "goldEarned":0, "staminaLeft": currentFloor.char.stamina,
-							 "healthLeft": currentFloor.char.hp } );
+			logger.logAction(8, { 
+				"goldEarned":0, 
+				"staminaLeft": currentFloor.char.stamina,
+				"healthLeft": currentFloor.char.hp
+			});
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
