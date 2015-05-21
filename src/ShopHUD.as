@@ -50,22 +50,22 @@ package {
 		}
 		
 		private function displayCharStats():void {
-			hpVal = new TextField(200, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			hpVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			hpVal.x = Util.STAGE_WIDTH / 5;
 			var hpImg:Image = new Image(textures[Util.ICON_HEALTH]);
 			setupStat(hpVal, hpImg);
 			
-			atkVal = new TextField(200, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			atkVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			atkVal.x = Util.STAGE_WIDTH / 5 * 2;
 			var atkImg:Image = new Image(textures[Util.ICON_ATK]);
 			setupStat(atkVal, atkImg);
 			
-			staminaVal = new TextField(200, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			staminaVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			staminaVal.x = Util.STAGE_WIDTH / 5 * 3;
 			var staminaImg:Image = new Image(textures[Util.ICON_STAMINA]);
 			setupStat(staminaVal, staminaImg);
 			
-			losVal = new TextField(200, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			losVal = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			losVal.x = Util.STAGE_WIDTH / 5 * 4;
 			var losImg:Image = new Image(textures[Util.ICON_LOS]);
 			setupStat(losVal, losImg);

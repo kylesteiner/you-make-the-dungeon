@@ -18,7 +18,6 @@ package tiles {
 		public var west:Boolean;
 
 		public var image:Image;
-		public var onGrid:Boolean; // for determining if it is on the grid itself or not
 		public var infoWidth:int;
 		public var infoHeight:int;
 

@@ -403,6 +403,7 @@ package {
 				logger.logAction(13, { } );
 				shopHud.update(currentFloor.char, gold);
 				addChild(shopHud);
+				buildHud.deselect();
 			}
 		}
 
@@ -410,7 +411,6 @@ package {
 			if (getChildIndex(shopHud) != -1) {
 				gold = shopHud.gold;
 				removeChild(shopHud);
-				addChild(shopButton);
 			}
 		}
 
@@ -439,7 +439,6 @@ package {
 			enemyTiles = 0;
 			healingTiles = 0;
 			currentFloor.resetFloor();
-			buildHud.reset();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.FLOOR_RESET);
 		}
@@ -452,6 +451,7 @@ package {
 				"HealthTilesPlaced":healingTiles
 			});
 			removeChild(runButton);
+			buildHud.deselect();
 			removeChild(buildHud);
 			removeChild(shopButton);
 
@@ -557,26 +557,28 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-
-			if(buildHud) {
+			
+			if (buildHud) {
 				showBuildHudImage = !touch.isTouching(buildHud);
 
-				if(buildHud.hasSelected()) {
-					// To Kyle: I commented this out since you get the same effect with the computations below.
-					// No need to do redundant work.
-					//buildHud.moveSelectedToTouch(touch, world.x, world.y);
+				if (buildHud.hasSelected()) {
+					// Move buildHud image to cursor
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
 					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
-
-
+					//currentFloor.clearHighlightedLocations();
+					//currentFloor.highlightAllowedLocations(selectedTile);
+					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
+						// Player clicked inside grid
+						putImageOnFloor(touch);
+					}
 				}
 
-				if(gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+				if (gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
 					// User clicked so do something
 					buildHud.closePopup();
 
 					// Replicated conditionals are no fun, but it's necessary here
-					if(buildHud.hasSelected()) {
+					if (buildHud.hasSelected()) {
 						mixer.play(Util.FLOOR_RESET);
 					}
 				}
@@ -591,86 +593,49 @@ package {
 				removeChild(phaseBanner);
 				phaseBanner = null;
 			}
-
-			/*if (tileHud) {
-				var selectedTileIndex:int = tileHud.indexOfSelectedTile();
-				if (selectedTileIndex == -1) {
-					// There is no selected tile
-					return;
-				}
-			}*/
-
-
-			/*
-				currentFloor.highlightAllowedLocations(selectedTile);
-				if (touch.phase == TouchPhase.ENDED) {
-					if (touch.globalX < tileHud.HUD.x || touch.globalX > tileHud.HUD.x + tileHud.width ||
-						touch.globalY < tileHud.HUD.y || touch.globalY > tileHud.HUD.y + tileHud.HUD.height) {
-						// Player clicked outside the tile HUD bounds
-						if (touch.globalX >= world.x && touch.globalX < world.x + currentFloor.width &&
-							touch.globalY >= world.y && touch.globalY < world.y + currentFloor.height) {
-							// Player clicked inside grid
-							if (selectedTile.grid_x >= 0 && selectedTile.grid_x < currentFloor.gridWidth &&
-								selectedTile.grid_y >= 0 && selectedTile.grid_y < currentFloor.gridHeight &&
-								!currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] &&
-								currentFloor.highlightedLocations[selectedTile.grid_x][selectedTile.grid_y]) {
-								// Player correctly placed one of the available tiles
-								// Move tile from HUD to grid. Add new tile to HUD.
-								tileHud.removeAndReplaceTile(selectedTileIndex);
-								currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y] = selectedTile;
-								currentFloor.addChild(selectedTile);
-								currentFloor.fogGrid[selectedTile.grid_x][selectedTile.grid_y] = false;
-								currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y);
-								// check if we placed the tile next to any preplaced tiles, and if we did, remove
-								// the fogs for those as well. (it's so ugly D:)
-								if (selectedTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[selectedTile.grid_x + 1][selectedTile.grid_y]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x + 1, selectedTile.grid_y);
-								}
-								if (selectedTile.grid_x - 1 >= 0 && currentFloor.grid[selectedTile.grid_x - 1][selectedTile.grid_y]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x - 1, selectedTile.grid_y);
-								}
-								if (selectedTile.grid_y + 1 < currentFloor.grid[selectedTile.grid_x].length && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y + 1]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y + 1);
-								}
-								if (selectedTile.grid_y - 1 >= 0 && currentFloor.grid[selectedTile.grid_x][selectedTile.grid_y - 1]) {
-									currentFloor.removeFoggedLocations(selectedTile.grid_x, selectedTile.grid_y - 1);
-								}
-								selectedTile.positionTileOnGrid(world.x, world.y);
-								numberOfTilesPlaced++;
-								selectedTile.onGrid = true;
-
-								mixer.play(Util.TILE_MOVE);
-
-								if (selectedTile is Tile) {
-									emptyTiles++;
-								}
-								logger.logAction(1, { } );
-
-								tileHud.unlockTiles();
-								currentFloor.clearHighlightedLocations();
-							} else {
-								// Tile wasn't placed correctly on grid
-								mixer.play(Util.TILE_FAILURE);
-								tileHud.returnSelectedTile();
-								tileHud.unlockTiles();
-								currentFloor.clearHighlightedLocations();
-							}
-						} else {
-							// Player clicked outside grid
-							mixer.play(Util.TILE_FAILURE);
-							tileHud.returnSelectedTile();
-							tileHud.unlockTiles();
-							currentFloor.clearHighlightedLocations();
-						}
-					} else {
-						// Player clicked inside tile HUD
-						mixer.play(Util.TILE_FAILURE);
-						tileHud.returnSelectedTile();
-						tileHud.unlockTiles();
-						currentFloor.clearHighlightedLocations();
+		}
+		
+		private function putImageOnFloor(touch:Touch):void {
+			if (!buildHud.isEntityDisplay) {
+				var newTile:Tile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
+												  buildHud.directions[Util.EAST], buildHud.directions[Util.WEST],
+												  buildHud.currentImage.texture);
+				// Realigns the new tile on the Floor.
+				newTile.x = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.x - world.x + Util.PIXELS_PER_TILE / 2));
+				newTile.y = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.y - world.y + Util.PIXELS_PER_TILE / 2));
+				newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
+				newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
+				if (!currentFloor.grid[newTile.grid_x][newTile.grid_y]/* &&
+					currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]*/) {
+					// Player correctly placed the tile. Add it to the grid.
+					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
+					currentFloor.addChild(newTile);
+					currentFloor.fogGrid[newTile.grid_x][newTile.grid_y] = false;
+					currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y);
+					// check if we placed the tile next to any preplaced tiles, and if we did, remove
+					// the fogs for those as well. (it's so ugly D:)
+					if (newTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[newTile.grid_x + 1][newTile.grid_y]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x + 1, newTile.grid_y);
 					}
+					if (newTile.grid_x - 1 >= 0 && currentFloor.grid[newTile.grid_x - 1][newTile.grid_y]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x - 1, newTile.grid_y);
+					}
+					if (newTile.grid_y + 1 < currentFloor.grid[newTile.grid_x].length && currentFloor.grid[newTile.grid_x][newTile.grid_y + 1]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y + 1);
+					}
+					if (newTile.grid_y - 1 >= 0 && currentFloor.grid[newTile.grid_x][newTile.grid_y - 1]) {
+						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y - 1);
+					}
+					numberOfTilesPlaced++;
+					emptyTiles++;
+					logger.logAction(1, { } );
+					mixer.play(Util.TILE_MOVE);
+				} else {
+					mixer.play(Util.TILE_FAILURE);
 				}
-			}*/
+			} else {
+				// Handle entities
+			}
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
