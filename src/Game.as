@@ -558,19 +558,20 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 			
-			if (buildHud) {
+			if (currentFloor) {
 				showBuildHudImage = !touch.isTouching(buildHud);
 
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
 					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
-					//currentFloor.clearHighlightedLocations();
-					//currentFloor.highlightAllowedLocations(selectedTile);
+					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.isEntityDisplay);
 					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
 						// Player clicked inside grid
 						putImageOnFloor(touch);
 					}
+				} else {
+					currentFloor.clearHighlightedLocations();
 				}
 
 				if (gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
@@ -585,7 +586,7 @@ package {
 			}
 
 			// Click outside of shop (onblur)
-			if (shopHud && getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
+			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
 				removeChild(shopHud);
 			}
 
@@ -596,6 +597,12 @@ package {
 		}
 		
 		private function putImageOnFloor(touch:Touch):void {
+			/*var tempX:int = touch.globalX - world.x;
+			var tempY:int = touch.globalY - world.y;
+			if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
+				&& tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
+			var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util real_to_grid(tempY)];*/
+			
 			if (!buildHud.isEntityDisplay) {
 				var newTile:Tile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
 												  buildHud.directions[Util.EAST], buildHud.directions[Util.WEST],
@@ -605,8 +612,7 @@ package {
 				newTile.y = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.y - world.y + Util.PIXELS_PER_TILE / 2));
 				newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
 				newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
-				if (!currentFloor.grid[newTile.grid_x][newTile.grid_y]/* &&
-					currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]*/) {
+				if (!currentFloor.grid[newTile.grid_x][newTile.grid_y] && currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Player correctly placed the tile. Add it to the grid.
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);

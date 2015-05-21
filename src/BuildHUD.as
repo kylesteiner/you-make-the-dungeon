@@ -475,22 +475,5 @@ package {
 			isEntityDisplay = true;
 			updateSelectButtons();
 		}
-
-		// Realigns the selected tile from the tile HUD on the Floor.
-		/*public function positionTileOnGrid(worldX:int, worldY:int):void {
-			if (selected is Tile) {
-				selected.x = Util.grid_to_real(Util.real_to_grid(selected.x - worldX + Util.PIXELS_PER_TILE / 2));
-				selected.y = Util.grid_to_real(Util.real_to_grid(y - worldY + Util.PIXELS_PER_TILE / 2));
-				(selected as Tile).grid_x = Util.real_to_grid(selected.x + Util.PIXELS_PER_TILE / 2);
-				(selected as Tile).grid_y = Util.real_to_grid(selected.y + Util.PIXELS_PER_TILE / 2);
-			}
-		}*/
-
-		/*
-		public function setEntityPosition(index:int):void {
-			availableEntities[index].x = HUD.x + Util.HUD_OFFSET_TILES + Util.HUD_PAD_LEFT +
-				(Util.HUD_PIXELS_PER_TILE + Util.HUD_PAD_LEFT) * (index % Util.HUD_TAB_SIZE);
-			availableEntities[index].y = HUD.y + Util.HUD_PAD_TOP;
-		}*/
 	}
 }

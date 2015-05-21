@@ -338,87 +338,107 @@ package {
 		}
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
-		public function highlightAllowedLocations(selectedTile:Tile):void {
-			var coords:Array = getAllowedLocations(selectedTile);
-			for (var i:int = 0; i < coords.length; i++) {
-				var coord:Object = coords[i];
-				var hl:Image = new Image(textures[Util.TILE_HL_G_NEW]);
-				hl.x = coord.x * Util.PIXELS_PER_TILE;
-				hl.y = coord.y * Util.PIXELS_PER_TILE;
-				highlightedLocations[coord.x][coord.y] = hl;
-				addChild(highlightedLocations[coord.x][coord.y]);
+		public function highlightAllowedLocations(directions:Array, isEntityDisplay:Boolean):void {
+			var x:int; var y:int; var isEmptyTile:Boolean;
+			
+			if (!isEntityDisplay) {
+				var allowed:Array = getAllowedLocations(directions);
+				for (x = 0; x < gridWidth; x++) {
+					for (y = 0; y < gridHeight; y++) {
+						addRemoveHighlight(x, y, allowed[x][y]);
+					}
+				}
+			} else {
+				for (x = 0; x < gridWidth; x++) {
+					for (y = 0; y < gridHeight; y++) {
+						isEmptyTile = grid[x][y] is Tile && !(grid[x][y] is EntryTile) &&
+									  !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile);
+						addRemoveHighlight(x, y, isEmptyTile && !entityGrid[x][y]);
+					}
+				}
+			}
+		}
+		
+		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {
+			if (add) {
+				// Highlight available location on grid
+				if (!highlightedLocations[x][y]) {
+					var hl:Image = new Image(textures[Util.TILE_HL_G_NEW]);
+					hl.x = x * Util.PIXELS_PER_TILE;
+					hl.y = y * Util.PIXELS_PER_TILE;
+					highlightedLocations[x][y] = hl;
+				}
+				addChild(highlightedLocations[x][y]);
+			} else {
+				// Remove old highlighted location
+				removeChild(highlightedLocations[x][y]);
+				highlightedLocations[x][y] = null;
+			}
+		}
+		
+		// Removes all highlighted tiles on the grid.
+		public function clearHighlightedLocations():void {
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					removeChild(highlightedLocations[x][y]);
+				}
 			}
 		}
 
 		// Returned an array of tiles on the grid that the player can move the selected tile to.
-		public function getAllowedLocations(selectedTile:Tile):Array {
-			var i:int; var j:int; var start_i:int; var start_j:int; var visited:Array;
+		private function getAllowedLocations(directions:Array):Array {
+			var x:int; var y:int; var start_x:int; var start_y:int; var visited:Array; var available:Array;
 
 			// Find entry tile
-			OuterLoop: for (i = 0; i < grid.length; i++) {
-				for (j = 0; j < grid[i].length; j++) {
-					if (grid[i][j] is EntryTile) {
-						start_i = i;
-						start_j = j;
+			OuterLoop: for (x = 0; x < grid.length; x++) {
+				for (y = 0; y < grid[x].length; y++) {
+					if (grid[x][y] is EntryTile) {
+						start_x = x;
+						start_y = y;
 						break OuterLoop;
 					}
 				}
 			}
 
-			// Build visited grid
+			// Build visited & available grids
+			available = new Array(gridWidth);
 			visited = new Array(gridWidth);
-			for (i = 0; i < gridWidth; i++) {
-				visited[i] = new Array(gridHeight);
-				for (j = 0; j < gridHeight; j++) {
-					visited[i][j] = false;
+			for (x = 0; x < gridWidth; x++) {
+				available[x] = new Array(gridHeight);
+				visited[x] = new Array(gridHeight);
+				for (y = 0; y < gridHeight; y++) {
+					available[x][y] = false;;
+					visited[x][y] = false;
 				}
 			}
-			return getAllowedLocationsHelper(start_i, start_j, selectedTile, visited, -1);
+			getAllowedLocationsHelper(start_x, start_y, directions, visited, available, -1);
+			return available;
 		}
 
 		// Recursively iterates over the map from the start and finds allowed locations
-		public function getAllowedLocationsHelper(i:int, j:int, selectedTile:Tile, visited:Array, direction:int):Array {
-			if (visited[i][j] || highlightedLocations[i][j]) {
-				return new Array();
+		private function getAllowedLocationsHelper(x:int, y:int, directions:Array, visited:Array, available:Array, direction:int):void {
+			if (visited[x][y]) {
+				return;
 			}
 
-			if (!grid[i][j] && ((direction == Util.NORTH && selectedTile.north) || (direction == Util.SOUTH && selectedTile.south) ||
-					(direction == Util.WEST && selectedTile.west) || (direction == Util.EAST && selectedTile.east))) {
+			if (!grid[x][y] && ((direction == Util.NORTH && directions[Util.NORTH]) || (direction == Util.SOUTH && directions[Util.SOUTH]) ||
+					(direction == Util.WEST && directions[Util.WEST]) || (direction == Util.EAST && directions[Util.EAST]))) {
 				// Open spot on grid that the selected tile can be placed
-				var coordinate:Object = {x:int, y:int};
-				coordinate.x = i;
-				coordinate.y = j;
-				return new Array(coordinate);
-			} else if (grid[i][j] || direction == -1) {
+				available[x][y] = true;
+			} else if (grid[x][y] || direction == -1) {
 				// Currently traversing path (-1 direction indicates the start tile)
-				visited[i][j] = true;
-				var ret:Array = new Array();
-				if (i + 1 < gridWidth && grid[i][j].east) {
-					ret = ret.concat(getAllowedLocationsHelper(i + 1, j, selectedTile, visited, Util.WEST));
+				visited[x][y] = true;
+				if (x + 1 < gridWidth && grid[x][y].east) {
+					getAllowedLocationsHelper(x + 1, y, directions, visited, available, Util.WEST);
 				}
-				if (i - 1 >= 0 && grid[i][j].west) {
-					ret = ret.concat(getAllowedLocationsHelper(i - 1, j, selectedTile, visited, Util.EAST));
+				if (x - 1 >= 0 && grid[x][y].west) {
+					getAllowedLocationsHelper(x - 1, y, directions, visited, available, Util.EAST);
 				}
-				if (j + 1 < gridHeight && grid[i][j].south) {
-					ret = ret.concat(getAllowedLocationsHelper(i, j + 1, selectedTile, visited, Util.NORTH));
+				if (y + 1 < gridHeight && grid[x][y].south) {
+					getAllowedLocationsHelper(x, y + 1, directions, visited, available, Util.NORTH);
 				}
-				if (j - 1 >= 0 && grid[i][j].north) {
-					ret = ret.concat(getAllowedLocationsHelper(i, j - 1, selectedTile, visited, Util.SOUTH));
-				}
-				return ret;
-			} else {
-				return new Array()
-			}
-		}
-
-		// Removes all highlighted tiles on the grid.
-		public function clearHighlightedLocations():void {
-			for (var i:int = 0; i < gridWidth; i++) {
-				for (var j:int = 0; j < gridHeight; j++) {
-					if (highlightedLocations[i][j]) {
-						removeChild(highlightedLocations[i][j]);
-						highlightedLocations[i][j] = null;
-					}
+				if (y - 1 >= 0 && grid[x][y].north) {
+					getAllowedLocationsHelper(x, y - 1, directions, visited, available, Util.SOUTH);
 				}
 			}
 		}
