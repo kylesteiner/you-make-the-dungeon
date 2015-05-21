@@ -5,7 +5,7 @@ package {
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
-
+		
 		public static const HUD_PAD_TOP:int = 4;
 		public static const HUD_PAD_LEFT:int = 8;
 

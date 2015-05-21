@@ -388,18 +388,15 @@ package {
 		}
 
 		public function openShopHUD():void {
-			shopHud = new ShopHUD(new Array(), currentFloor.char, gold, textures);
-			var closeShopButton:Clickable = new Clickable(0, 0, closeShopHUD, new TextField(250, 40, "CLOSE SHOP", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			closeShopButton.x = (Util.STAGE_WIDTH - closeShopButton.width) / 2;
-			closeShopButton.y = Util.STAGE_HEIGHT - closeShopButton.height;
-			shopHud.addChild(closeShopButton);
+			shopHud = new ShopHUD(new Array(), currentFloor.char, goldHud, gold, closeShopHUD, textures);
 			addChild(shopHud);
+			removeChild(shopButton);
 		}
 		
 		public function closeShopHUD():void {
 			gold = shopHud.gold;
-			goldHud.update(gold);
 			removeChild(shopHud);
+			addChild(shopButton);
 		}
 		
 		public function toggleBgmMute():void {
