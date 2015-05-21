@@ -339,7 +339,7 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, isEntityDisplay:Boolean):void {
-			var x:int; var y:int; var isEmptyTile:Boolean;
+			var x:int; var y:int;
 			
 			if (!isEntityDisplay) {
 				var allowed:Array = getAllowedLocations(directions);
@@ -351,12 +351,15 @@ package {
 			} else {
 				for (x = 0; x < gridWidth; x++) {
 					for (y = 0; y < gridHeight; y++) {
-						isEmptyTile = grid[x][y] is Tile && !(grid[x][y] is EntryTile) &&
-									  !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile);
-						addRemoveHighlight(x, y, isEmptyTile && !entityGrid[x][y]);
+						addRemoveHighlight(x, y, isEmptyTile(x, y) && !entityGrid[x][y]);
 					}
 				}
 			}
+		}
+		
+		public function isEmptyTile(x:int, y:int):Boolean {
+			return grid[x][y] is Tile && !(grid[x][y] is EntryTile) &&
+				   !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile);
 		}
 		
 		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {

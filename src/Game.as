@@ -1,4 +1,6 @@
 package {
+	import entities.Enemy;
+	import entities.Entity;
 	import flash.media.*;
 	import flash.ui.Mouse;
 	import flash.utils.ByteArray;
@@ -452,6 +454,7 @@ package {
 			});
 			removeChild(runButton);
 			buildHud.deselect();
+			currentFloor.clearHighlightedLocations();
 			removeChild(buildHud);
 			removeChild(shopButton);
 
@@ -557,10 +560,14 @@ package {
 			// TODO: make it so cursorAnim can move outside of the world
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
-			
-			if (currentFloor) {
-				showBuildHudImage = !touch.isTouching(buildHud);
 
+			// Manage build hud display and current image
+			showBuildHudImage = touch.isTouching(currentFloor);
+			if (gameState == STATE_BUILD) {
+				if (touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+					buildHud.closePopup();
+				}
+				
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
@@ -573,18 +580,9 @@ package {
 				} else {
 					currentFloor.clearHighlightedLocations();
 				}
-
-				if (gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
-					// User clicked so do something
-					buildHud.closePopup();
-
-					// Replicated conditionals are no fun, but it's necessary here
-					if (buildHud.hasSelected()) {
-						mixer.play(Util.FLOOR_RESET);
-					}
-				}
 			}
-
+			
+			
 			// Click outside of shop (onblur)
 			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
 				removeChild(shopHud);
@@ -597,14 +595,20 @@ package {
 		}
 		
 		private function putImageOnFloor(touch:Touch):void {
-			/*var tempX:int = touch.globalX - world.x;
+			var currentTile:Tile; var newTile:Tile;
+			
+			var tempX:int = touch.globalX - world.x;
 			var tempY:int = touch.globalY - world.y;
 			if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
 				&& tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
-			var temp:Tile = currentFloor.grid[Util.real_to_grid(tempX)][Util real_to_grid(tempY)];*/
+				currentTile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
+			} else {
+				// Did not click a valid tile location
+				return;
+			}
 			
 			if (!buildHud.isEntityDisplay) {
-				var newTile:Tile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
+				newTile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
 												  buildHud.directions[Util.EAST], buildHud.directions[Util.WEST],
 												  buildHud.currentImage.texture);
 				// Realigns the new tile on the Floor.
@@ -612,7 +616,7 @@ package {
 				newTile.y = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.y - world.y + Util.PIXELS_PER_TILE / 2));
 				newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
 				newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
-				if (!currentFloor.grid[newTile.grid_x][newTile.grid_y] && currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
+				if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Player correctly placed the tile. Add it to the grid.
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
@@ -640,7 +644,12 @@ package {
 					mixer.play(Util.TILE_FAILURE);
 				}
 			} else {
-				// Handle entities
+				if (currentTile && currentFloor.isEmptyTile(currentTile.grid_x, currentTile.grid_y)) {
+					//currentFloor.entityGrid[currentTile.grid_x][currentTile.grid_y] = new Enemy(currentTile.grid_x, currentTile.grid_y, textures[Util.MONSTER_1], null, 100, 5, 100);
+					mixer.play(Util.TILE_MOVE);
+				} else {
+					mixer.play(Util.TILE_FAILURE);
+				}
 			}
 		}
 
