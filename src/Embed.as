@@ -12,6 +12,7 @@ package {
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
+		[Embed(source='assets/backgrounds/shop_bg.png')] public static const shop_background:Class;
 
 		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
@@ -40,6 +41,7 @@ package {
 		[Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
 		[Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
+		[Embed(source='assets/icons/medium/shop.png')] public static const icon_shop:Class;
 		[Embed(source='assets/icons/attack.png')] public static const icon_atk:Class;
 		[Embed(source='assets/icons/health.png')] public static const icon_health:Class;
 		[Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
@@ -166,6 +168,7 @@ package {
 			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 			textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
 			textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
+			textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
 
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
@@ -211,6 +214,7 @@ package {
 			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
 			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
+			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
