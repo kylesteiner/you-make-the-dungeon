@@ -17,6 +17,8 @@ package {
 	public class Game extends Sprite {
 		public static const FLOOR_FAIL_TEXT:String = "Nea was defeated!\nClick here to continue building.";
 		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
+		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
+		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
 
 		private static const STATE_MENU:String = "game_menu";
 		private static const STATE_BUILD:String = "game_build";
@@ -67,6 +69,9 @@ package {
 
 		private var gameState:String;
 		private var gold:int;
+
+		private var phaseBanner:Image;
+		private var phaseBannerTimer:Number;
 
 		public function Game() {
 			Mouse.hide();
@@ -409,6 +414,14 @@ package {
 			}
 		}
 
+		public function constructPhaseBanner(run:Boolean = true):void {
+			removeChild(phaseBanner);
+			phaseBanner = new Image(textures[run ? Util.RUN_BANNER : Util.BUILD_BANNER]);
+			phaseBanner.y = (Util.STAGE_HEIGHT - phaseBanner.height) / 2;
+			phaseBannerTimer = 0;
+			addChild(phaseBanner);
+		}
+
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
 		}
@@ -446,6 +459,8 @@ package {
 			addChild(runHud);
 			gameState = STATE_RUN;
 			currentFloor.toggleRun();
+
+			constructPhaseBanner();
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
@@ -478,6 +493,8 @@ package {
 			currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
+
+			constructPhaseBanner(false); // happens after the summary dialog box
 		}
 
 		private function centerWorldOnCharacter(exact:Boolean = false):void {
@@ -502,6 +519,15 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
+
+			if(phaseBanner) {
+				phaseBannerTimer += event.passedTime;
+				addChild(phaseBanner);
+				if(phaseBannerTimer > PHASE_BANNER_DURATION) {
+					removeChild(phaseBanner);
+					phaseBanner = null;
+				}
+			}
 
 			removeChild(buildHud.currentImage);
 			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
@@ -559,6 +585,11 @@ package {
 			// Click outside of shop (onblur)
 			if (shopHud && getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
 				removeChild(shopHud);
+			}
+
+			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {
+				removeChild(phaseBanner);
+				phaseBanner = null;
 			}
 
 			/*if (tileHud) {

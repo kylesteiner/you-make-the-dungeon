@@ -15,6 +15,9 @@ package {
 		[Embed(source='assets/backgrounds/shop_bg.png')] public static const shop_background:Class;
 		[Embed(source='assets/backgrounds/shop_item.png')] public static const shop_item:Class;
 
+		[Embed(source='assets/backgrounds/run_phase.png')] public static const run_phase_banner:Class;
+		[Embed(source='assets/backgrounds/build_phase.png')] public static const build_phase_banner:Class;
+
 		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
 		[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
@@ -172,7 +175,9 @@ package {
 			textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
 			textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
 			textures[Util.SHOP_ITEM] = Texture.fromEmbeddedAsset(shop_item);
-			
+			textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
+			textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
+
 			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
