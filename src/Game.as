@@ -173,7 +173,7 @@ package {
 			endButton.y = runButton.y;
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
-			buildHud = new BuildHUD(textures, logger);
+			buildHud = new BuildHUD(textures);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -302,8 +302,7 @@ package {
 									 initialLoS,
 									 floors,
 									 switchToTransition,
-									 mixer,
-									 logger);
+									 mixer);
 			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
@@ -456,7 +455,7 @@ package {
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp
 			});
-			
+
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);

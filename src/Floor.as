@@ -56,8 +56,6 @@ package {
 
 		private var mixer:Mixer;
 
-		// logger
-		private var logger:Logger;
 		private var nextTransition:String;
 
 		public var tutorialImage:Image;
@@ -81,7 +79,6 @@ package {
 							  floorFiles:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
-							  logger:Logger = null,
 							  showPrompt:int = 0) {
 			super();
 			this.textures = textures;
@@ -95,7 +92,6 @@ package {
 			altCallback = null;
 			mixer = soundMixer;
 
-			this.logger = logger;
 			preplacedTiles = 0;
 
 			pressedKeys = new Array();
@@ -556,14 +552,14 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					initialEntities[tX][tY] = new Enemy(tX, tY, textureName, textures[textureName], logger, hp, attack, reward);
+					initialEntities[tX][tY] = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
 				} else if (entity["type"] == "healing") {
 					var health:int = entity["health"];
-					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], logger, health);
+					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
 				} else if (entity["type"] == "objective") {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
-					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], logger, key, prereqs);
+					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
 					objectiveState[key] = false;
 				}
 			}
@@ -623,8 +619,8 @@ package {
 					nextTile = grid[cgx][cgy-1];
 					if(charTile.north && nextTile.south) {
 						char.move(Util.NORTH);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"North"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"North"});
 						}
 					}
 				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
@@ -635,8 +631,8 @@ package {
 					nextTile = grid[cgx][cgy+1];
 					if(charTile.south && nextTile.north) {
 						char.move(Util.SOUTH);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"South"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"South"});
 						}
 					}
 				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
@@ -647,8 +643,8 @@ package {
 					nextTile = grid[cgx-1][cgy];
 					if(charTile.west && nextTile.east) {
 						char.move(Util.WEST);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"West"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"West"});
 						}
 					}
 				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
@@ -659,8 +655,8 @@ package {
 					nextTile = grid[cgx+1][cgy];
 					if(charTile.east && nextTile.west) {
 						char.move(Util.EAST);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"East"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"East"});
 						}
 					}
 				}
@@ -709,8 +705,8 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:GameEvent):void {
 			// TODO: Do actual win condition handling.
-			if (logger) {
-				logger.logLevelEnd({
+			if (Util.logger) {
+				Util.logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
 					"characterMaxHP":char.maxHp
 				});

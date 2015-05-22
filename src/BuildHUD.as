@@ -89,17 +89,15 @@ package {
 		private var deleteQuad:Quad;
 		private var deleteButton:Clickable;
 
-		private var logger:Logger;
 		private var entityFactory:EntityFactory;
 
 		/**********************************************************************************
 		 *  Intialization
 		 **********************************************************************************/
 
-		public function BuildHUD(textureDict:Dictionary, logger:Logger) {
+		public function BuildHUD(textureDict:Dictionary) {
 			super();
-			this.logger = logger;
-			this.entityFactory = new EntityFactory(textureDict, logger);
+			this.entityFactory = new EntityFactory(textureDict);
 			this.textures = textureDict;
 
 			tileBlock = new Sprite();

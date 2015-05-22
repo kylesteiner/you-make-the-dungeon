@@ -8,9 +8,8 @@ package entities {
 		public var grid_x:int;
 		public var grid_y:int;
 		public var img:Image;
-		public var logger:Logger;
 
-		public function Entity(g_x:int, g_y:int, texture:Texture, logger:Logger) {
+		public function Entity(g_x:int, g_y:int, texture:Texture) {
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
@@ -19,8 +18,6 @@ package entities {
 
 			img = new Image(texture);
 			addChild(img);
-
-			this.logger = logger;
 		}
 
 		public function handleChar(c:Character):void {}
