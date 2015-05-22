@@ -143,21 +143,18 @@ package {
 			//world.addChild(new Quad(world.height, world.width, 0xff000000));
 			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
-			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
-			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
-
-			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
-			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
-			shopButton.x = goldHud.x - shopButton.width - Util.UI_PADDING
-			shopButton.y = Util.UI_PADDING;
-			
 			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
 			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
-			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
+			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
+			sfxMuteButton.y = Util.UI_PADDING;
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
+
+			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
+			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
+			goldHud.y = sfxMuteButton.y + sfxMuteButton.height + Util.UI_PADDING;
 
 			//resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
 			//resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
@@ -168,8 +165,13 @@ package {
 									  runFloor,
 									  null,
 									  textures[Util.ICON_RUN]);
-			runButton.x = shopButton.x - runButton.width - Util.UI_PADDING;
-			runButton.y = Util.UI_PADDING;
+			runButton.x = Util.STAGE_WIDTH - runButton.width - Util.UI_PADDING;
+			runButton.y = Util.STAGE_HEIGHT - runButton.height - Util.UI_PADDING;
+
+			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
+			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
+			shopButton.x = runButton.x - shopButton.width - Util.UI_PADDING
+			shopButton.y = Util.STAGE_HEIGHT - shopButton.height - Util.UI_PADDING;
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
@@ -433,7 +435,7 @@ package {
 			healingTiles = 0;
 			currentFloor.resetFloor();
 			//charHud.char = currentFloor.char
-			mixer.play(Util.FLOOR_RESET);
+			mixer.play(Util.TILE_REMOVE);
 		}
 
 		public function runFloor():void {
@@ -558,12 +560,12 @@ package {
 				if (touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
 					buildHud.closePopup();
 				}
-				
+
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
 					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
-					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.isEntityDisplay);
+					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.hudState);
 					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
 						// Player clicked inside grid
 						buildHandleClick(touch);
@@ -572,8 +574,8 @@ package {
 					currentFloor.clearHighlightedLocations();
 				}
 			}
-			
-			
+
+
 			// Click outside of shop (onblur)
 			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
 				removeChild(shopHud);
@@ -584,10 +586,10 @@ package {
 				phaseBanner = null;
 			}
 		}
-		
+
 		private function buildHandleClick(touch:Touch):void {
 			var currentTile:Tile; var currentEntity:Entity; var newTile:Tile; var newEntity:Entity;
-			
+
 			var tempX:int = touch.globalX - world.x;
 			var tempY:int = touch.globalY - world.y;
 			if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
@@ -598,14 +600,11 @@ package {
 				// Did not click a valid tile location
 				return;
 			}
-			
-			if (buildHud.currentImage.texture == textures[Util.ICON_DELETE]) {
+
+			if (buildHud.hudState == BuildHUD.STATE_DELETE) {
 				// Deleting position on grid
 				currentFloor.deleteSelected(currentTile, currentEntity);
-				return;
-			}
-			
-			if (!buildHud.isEntityDisplay) {
+			} else if (buildHud.hudState == BuildHUD.STATE_TILE) {
 				newTile = buildHud.buildTileFromImage(world.x, world.y);
 				if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Player correctly placed the tile. Add it to the grid.
@@ -634,7 +633,7 @@ package {
 				} else {
 					mixer.play(Util.TILE_FAILURE);
 				}
-			} else {
+			} else if(buildHud.hudState == BuildHUD.STATE_ENTITY) {
 				if (currentFloor.isEmptyTile(currentTile)) {
 					// Player correctly placed the entity. Add it to the grid.
 					newEntity = buildHud.buildEntityFromImage(currentTile);
@@ -725,6 +724,10 @@ package {
 			// Possible race condition which will leave phantom images
 			// on the floor from discarded old buildHud images
 			removeChild(buildHud.currentImage);
+
+			if(currentFloor) {
+				currentFloor.clearHighlightedLocations();
+			}
 		}
 	}
 }

@@ -338,17 +338,17 @@ package {
 		}
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
-		public function highlightAllowedLocations(directions:Array, isEntityDisplay:Boolean):void {
+		public function highlightAllowedLocations(directions:Array, hudState:String):void {
 			var x:int; var y:int;
-			
-			if (!isEntityDisplay) {
+
+			if (hudState == BuildHUD.STATE_TILE) {
 				var allowed:Array = getAllowedLocations(directions);
 				for (x = 0; x < gridWidth; x++) {
 					for (y = 0; y < gridHeight; y++) {
 						addRemoveHighlight(x, y, allowed[x][y]);
 					}
 				}
-			} else {
+			} else if (hudState == BuildHUD.STATE_ENTITY) {
 				for (x = 0; x < gridWidth; x++) {
 					for (y = 0; y < gridHeight; y++) {
 						addRemoveHighlight(x, y, isEmptyTile(grid[x][y]) && !entityGrid[x][y]);
@@ -356,13 +356,13 @@ package {
 				}
 			}
 		}
-		
+
 		public function isEmptyTile(tile:Tile):Boolean {
 			return tile is Tile && !(tile is EntryTile) &&
 				   !(tile is ExitTile) && !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
 		}
-		
+
 		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {
 			if (add) {
 				// Highlight available location on grid
@@ -379,7 +379,7 @@ package {
 				highlightedLocations[x][y] = null;
 			}
 		}
-		
+
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
 			for (var x:int = 0; x < gridWidth; x++) {
@@ -446,7 +446,7 @@ package {
 				}
 			}
 		}
-		
+
 		public function deleteSelected(tile:Tile, entity:Entity):void {
 			if (entity) {
 				removeChild(entity);
@@ -454,6 +454,7 @@ package {
 			} else if (isEmptyTile(tile)) {
 				removeChild(tile);
 				grid[tile.grid_x][tile.grid_y] = null;
+				mixer.play(Util.TILE_REMOVE);
 			} else {
 				mixer.play(Util.TILE_FAILURE);
 			}

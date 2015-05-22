@@ -150,7 +150,7 @@ package {
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] public static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] public static const sfxButtonPress:Class;
-		[Embed(source='assets/sfx/floor_reset.mp3')] public static const sfxFloorReset:Class;
+		[Embed(source='assets/sfx/tile_remove.mp3')] public static const sfxTileRemove:Class;
 		[Embed(source='assets/sfx/combat_failure_new.mp3')] public static const sfxCombatFailure:Class;
 		[Embed(source='assets/sfx/combat_success_long.mp3')] public static const sfxCombatSuccess:Class;
 		[Embed(source='assets/sfx/level_up.mp3')] public static const sfxLevelUp:Class;
@@ -342,11 +342,11 @@ package {
 			tSfx[Util.TILE_FAILURE] = new sfxTileFailure();
 			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
 			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
-			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
 			tSfx[Util.COMBAT_FAILURE] = new sfxCombatFailure();
 			tSfx[Util.COMBAT_SUCCESS] = new sfxCombatSuccess();
 			tSfx[Util.LEVEL_UP] = new sfxLevelUp();
 			tSfx[Util.SFX_ATTACK] = new sfxAttack();
+			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
 
 			return tSfx;
 		}

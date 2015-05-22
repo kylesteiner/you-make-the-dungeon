@@ -146,11 +146,11 @@ package {
 		public static const TILE_FAILURE:String = "tile_failure";
 		public static const FLOOR_BEGIN:String = "floor_begin";
 		public static const BUTTON_PRESS:String = "button_press";
-		public static const FLOOR_RESET:String = "floor_reset";
 		public static const COMBAT_FAILURE:String = "combat_failure";
 		public static const COMBAT_SUCCESS:String = "combat_success";
 		public static const LEVEL_UP:String = "level_up";
 		public static const SFX_ATTACK:String = "sfx_attack";
+		public static const TILE_REMOVE:String = "tile_remove";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -162,6 +162,9 @@ package {
 		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
+
+		// Costs go here
+		public static const TILE_DELETE_COST:int = 0;
 
 		public static var logger:Logger;
 

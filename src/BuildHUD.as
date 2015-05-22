@@ -23,6 +23,11 @@ package {
 		public static const SELECT_BUTTON_MARGIN:int = 4;
 		public static const DELETE_BUTTON_SIZE:int = 52;
 
+		public static const STATE_TILE:String = "state_tile";
+		public static const STATE_ENTITY:String = "state_entity";
+		public static const STATE_DELETE:String = "state_delete";
+		public static const STATE_NONE:String = "state_none";
+
 		private var textures:Dictionary;
 		private var highlightedLocations:Array; // Why is this being managed in BuildHUD?
 
@@ -34,7 +39,8 @@ package {
 		// image to display beneath mouse cursor
 		public var currentImage:Image;
 		// true if entity should be shown, false if tile is shown
-		public var isEntityDisplay:Boolean;
+		//public var isEntityDisplay:Boolean;
+		public var hudState:String;
 		// maps strings to arrays
 		// array[0] is the constructor for the entity
 		// array[1] is the texture
@@ -83,7 +89,7 @@ package {
 
 		private var deleteQuad:Quad;
 		private var deleteButton:Clickable;
-		
+
 		private var logger:Logger;
 		private var entityFactory:EntityFactory;
 
@@ -105,7 +111,7 @@ package {
 			addChild(entityBlock);
 			currentImage = null;
 
-			isEntityDisplay = true;
+			//isEntityDisplay = true;
 			this.entityMap = entityFactory.entitySet;
 
 			directions = new Array(Util.DIRECTIONS.length);
@@ -120,6 +126,8 @@ package {
 
 			currentEntity = null;
 			currentEntityIndex = -1;
+
+			hudState = STATE_NONE;
 
 			createUI();
 		}
@@ -229,7 +237,7 @@ package {
 				selectEntityButton.addParameter("index", i);
 				entitySelectButtons.push(selectEntityButton);
 			}
-			
+
 			deleteQuad = new Quad(DELETE_BUTTON_SIZE, DELETE_BUTTON_SIZE, 0x000000);
 			deleteQuad.x = entityQuad.x + entityQuad.width + HUD_MARGIN;
 			deleteQuad.y = TOP;
@@ -240,7 +248,7 @@ package {
 			deleteButton = new Clickable(deleteQuad.x + QUAD_BORDER_PIXELS,
 										 deleteQuad.y + QUAD_BORDER_PIXELS,
 										 deleteClickable, null, textures[Util.ICON_DELETE]);
-	
+
 			addChild(tileQuad);
 			addChild(interiorTQ);
 
@@ -262,7 +270,7 @@ package {
 				addChild(entityClickables[i]);
 				addChild(entitySelectButtons[i]);
 			}
-			
+
 			addChild(deleteQuad);
 			addChild(interiorDQ);
 			addChild(deleteButton);
@@ -340,7 +348,7 @@ package {
 			tileSelectButton.removeChild(tileSelectButton.baseImage);
 			tileSelectButton.baseImage = new Quad(tileSelectButton.baseImage.width,
 												tileSelectButton.baseImage.height,
-												isEntityDisplay ? COLOR_DESELECTED : COLOR_SELECTED);
+												hudState == STATE_TILE ? COLOR_SELECTED : COLOR_DESELECTED);
 			tileSelectButton.addChild(tileSelectButton.baseImage);
 
 			var i:int; var color:uint;
@@ -350,7 +358,7 @@ package {
 				currentButton.removeChild(currentButton.baseImage);
 
 				color = COLOR_DESELECTED;
-				if(isEntityDisplay && i == currentEntityIndex) {
+				if(hudState == STATE_ENTITY && i == currentEntityIndex) {
 					color = COLOR_SELECTED;
 				}
 				currentButton.baseImage = new Quad(currentButton.baseImage.width,
@@ -370,24 +378,29 @@ package {
 
 		// return cost of currently selected item
 		public function getCost():int {
-			if (isEntityDisplay) {
+			if (hudState == STATE_ENTITY) {
 				var catIndex:int = entityDisplayList[currentEntityIndex];
 				var entityKey:String = entityList[currentEntityIndex][catIndex];
 				return entityMap[entityKey][1];
-			} else  {
+			} else if(hudState == STATE_TILE) {
 				return getTileCost();
+			} else if(hudState == STATE_DELETE) {
+				return getDeleteCost();
+			} else {
+				// What do we do here?
+				return 0;
 			}
 		}
-		
+
 		public function deselect():void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-			
+
             currentImage = null;
             currentEntityIndex = -1;
-            isEntityDisplay = true;
+			hudState = STATE_NONE;
             updateSelectButtons();
         }
-		
+
 		public function buildTileFromImage(worldX:int, worldY:int):Tile {
 			var newTile:Tile = new Tile(0, 0, directions[Util.NORTH], directions[Util.SOUTH],
 											  directions[Util.EAST], directions[Util.WEST],
@@ -399,7 +412,7 @@ package {
 			newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
 			return newTile;
 		}
-		
+
 		public function buildEntityFromImage(currentTile:Tile):Entity {
 			var catIndex:int = entityDisplayList[currentEntityIndex];
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
@@ -410,14 +423,13 @@ package {
 			entity.grid_y = currentTile.grid_y;
 			return entity;
 		}
-		
+
 		public function deleteClickable():void {
-			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-			
-			currentTile = null;
+			deselect();
 			currentImage = new Image(textures[Util.ICON_DELETE]);
 			currentImage.touchable = false;
-			isEntityDisplay = true;
+			hudState = STATE_DELETE;
+			closePopup();
 		}
 
 		/**********************************************************************************
@@ -427,17 +439,17 @@ package {
 		public function selectTile(toggle:Boolean = false):void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 
-			if(isEntityDisplay || toggle) {
+			if(hudState != STATE_TILE || toggle) {
 				var tileTexture:Texture = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
 				currentTile = new Image(tileTexture);
 				currentImage = new Image(tileTexture);
 				currentImage.touchable = false;
-				isEntityDisplay = false;
+				hudState = STATE_TILE;
 				currentEntityIndex = -1;
 			} else {
 				currentTile = null;
 				currentImage = null;
-				isEntityDisplay = true;
+				hudState = STATE_NONE; // might need to be STATE_ENTITY?
 			}
 
 			updateSelectButtons();
@@ -466,11 +478,14 @@ package {
 			toggleDirection(Util.WEST);
 		}
 
-		// return cost of current generated tile
 		public function getTileCost():int {
 			var sum:int = (directions[Util.NORTH] ? 1 : 0) + (directions[Util.SOUTH] ? 1 : 0) +
 						  (directions[Util.EAST] ? 1 : 0) + (directions[Util.WEST] ? 1 : 0);
 			return Util.BASE_TILE_COST * sum;
+		}
+
+		public function getDeleteCost():int {
+			return Util.TILE_DELETE_COST;
 		}
 
 		/**********************************************************************************
@@ -497,7 +512,8 @@ package {
 				currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
 				currentImage = new Image(currentEntity.texture);
 				currentImage.touchable = false;
-				isEntityDisplay = true;
+				hudState = STATE_ENTITY;
+				//isEntityDisplay = true;
 			}
 
 			closePopup();
@@ -523,7 +539,8 @@ package {
 			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
 			currentImage = new Image(currentEntity.texture);
 			currentImage.touchable = false;
-			isEntityDisplay = true;
+			//isEntityDisplay = true;
+			hudState = STATE_ENTITY;
 			updateSelectButtons();
 		}
 	}
