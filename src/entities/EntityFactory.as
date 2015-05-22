@@ -59,14 +59,14 @@ package entities {
             var fighter:Array = new Array();
             fighter.push(constructFighter);
             fighter.push(textures[Util.ENEMY_FIGHTER]);
-            fighter.push(5);
+            fighter.push(Util.ENEMY_FIGHTER_COST);
             fighter.push(ENEMY_CATEGORY);
             enemyDict[FIGHTER] = fighter;
 
             var mage:Array = new Array();
             mage.push(constructMage);
             mage.push(textures[Util.ENEMY_MAGE]);
-            mage.push(8);
+            mage.push(Util.ENEMY_MAGE_COST);
             mage.push(ENEMY_CATEGORY);
             enemyDict[MAGE] = mage;
 
@@ -79,7 +79,7 @@ package entities {
             var lightHealing:Array = new Array();
             lightHealing.push(constructLightHealing);
             lightHealing.push(textures[Util.HEALING]);
-            lightHealing.push(10);
+            lightHealing.push(Util.HEALING_COST);
             lightHealing.push(HEALING_CATEGORY);
             healingDict[LIGHT_HEALING] = lightHealing;
 
