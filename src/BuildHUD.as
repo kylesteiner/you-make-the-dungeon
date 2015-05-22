@@ -89,17 +89,15 @@ package {
 		private var deleteQuad:Quad;
 		private var deleteButton:Clickable;
 
-		private var logger:Logger;
 		private var entityFactory:EntityFactory;
 
 		/**********************************************************************************
 		 *  Intialization
 		 **********************************************************************************/
 
-		public function BuildHUD(textureDict:Dictionary, logger:Logger) {
+		public function BuildHUD(textureDict:Dictionary) {
 			super();
-			this.logger = logger;
-			this.entityFactory = new EntityFactory(textureDict, logger);
+			this.entityFactory = new EntityFactory(textureDict);
 			this.textures = textureDict;
 
 			tileBlock = new Sprite();
@@ -377,11 +375,9 @@ package {
 			if (hudState == STATE_ENTITY) {
 				var catIndex:int = entityDisplayList[currentEntityIndex];
 				var entityKey:String = entityList[currentEntityIndex][catIndex];
-				return entityMap[entityKey][1];
+				return entityMap[entityKey][2];
 			} else if(hudState == STATE_TILE) {
 				return getTileCost();
-			} else if(hudState == STATE_DELETE) {
-				return getDeleteCost();
 			} else {
 				// What do we do here?
 				return 0;
@@ -406,6 +402,7 @@ package {
 			newTile.y = Util.grid_to_real(Util.real_to_grid(currentImage.y - worldY + Util.PIXELS_PER_TILE / 2));
 			newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
 			newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
+			newTile.cost = getCost();
 			return newTile;
 		}
 
@@ -417,6 +414,7 @@ package {
 			entity.y = currentTile.y;
 			entity.grid_x = currentTile.grid_x;
 			entity.grid_y = currentTile.grid_y;
+			entity.cost = getCost();
 			return entity;
 		}
 
@@ -426,6 +424,16 @@ package {
 			currentImage.touchable = false;
 			hudState = STATE_DELETE;
 			closePopup();
+		}
+		
+		public function getRefundForDelete(tile:Tile, entity:Entity):int {
+			if (entity) {
+				return entity.cost * Util.REFUND_PERCENT / 100
+			} else if (tile) {
+				return tile.cost * Util.REFUND_PERCENT / 100;
+			} else {
+				return 0;
+			}
 		}
 
 		/**********************************************************************************
@@ -478,10 +486,6 @@ package {
 			var sum:int = (directions[Util.NORTH] ? 1 : 0) + (directions[Util.SOUTH] ? 1 : 0) +
 						  (directions[Util.EAST] ? 1 : 0) + (directions[Util.WEST] ? 1 : 0);
 			return Util.BASE_TILE_COST * sum;
-		}
-
-		public function getDeleteCost():int {
-			return Util.TILE_DELETE_COST;
 		}
 
 		/**********************************************************************************

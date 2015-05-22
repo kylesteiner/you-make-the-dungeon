@@ -12,13 +12,11 @@ package entities {
         public static const MAGE:String = "entity_mage";
 
         private var textures:Dictionary;
-        private var logger:Logger;
 
         public var entitySet:Dictionary;
 
-        public function EntityFactory(textures:Dictionary, logger:Logger) {
+        public function EntityFactory(textures:Dictionary) {
             this.textures = textures;
-            this.logger = logger;
             this.entitySet = constructEntitySet();
         }
 
@@ -61,14 +59,14 @@ package entities {
             var fighter:Array = new Array();
             fighter.push(constructFighter);
             fighter.push(textures[Util.ENEMY_FIGHTER]);
-            fighter.push(5);
+            fighter.push(Util.ENEMY_FIGHTER_COST);
             fighter.push(ENEMY_CATEGORY);
             enemyDict[FIGHTER] = fighter;
 
             var mage:Array = new Array();
             mage.push(constructMage);
             mage.push(textures[Util.ENEMY_MAGE]);
-            mage.push(8);
+            mage.push(Util.ENEMY_MAGE_COST);
             mage.push(ENEMY_CATEGORY);
             enemyDict[MAGE] = mage;
 
@@ -81,7 +79,7 @@ package entities {
             var lightHealing:Array = new Array();
             lightHealing.push(constructLightHealing);
             lightHealing.push(textures[Util.HEALING]);
-            lightHealing.push(10);
+            lightHealing.push(Util.HEALING_COST);
             lightHealing.push(HEALING_CATEGORY);
             healingDict[LIGHT_HEALING] = lightHealing;
 
@@ -97,7 +95,7 @@ package entities {
         public function constructLightHealing():Healing {
             var healing:int = 3;
 
-            return new Healing(0, 0, textures[Util.HEALING], logger, healing);
+            return new Healing(0, 0, textures[Util.HEALING], healing);
         }
 
         public function constructFighter():Enemy {
@@ -105,7 +103,7 @@ package entities {
             var atk:int = 1;
             var reward:int = 3;
 
-            return new Enemy(0, 0, Util.ENEMY_FIGHTER, textures[Util.ENEMY_FIGHTER], logger, hp, atk, reward);
+            return new Enemy(0, 0, Util.ENEMY_FIGHTER, textures[Util.ENEMY_FIGHTER], hp, atk, reward);
         }
 
         public function constructMage():Enemy {
@@ -113,7 +111,7 @@ package entities {
             var atk:int = 2;
             var reward:int = 7;
 
-            return new Enemy(0, 0, Util.ENEMY_MAGE, textures[Util.ENEMY_MAGE], logger, hp, atk, reward);
+            return new Enemy(0, 0, Util.ENEMY_MAGE, textures[Util.ENEMY_MAGE], hp, atk, reward);
         }
     }
 }
