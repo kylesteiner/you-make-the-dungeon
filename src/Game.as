@@ -120,7 +120,7 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-			gold = Util.STARTING_GOLD + 300;
+			gold = Util.STARTING_GOLD;
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -568,7 +568,7 @@ package {
 		}
 
 		private function buildHandleClick(touch:Touch):void {
-			var currentTile:Tile; var currentEntity:Entity; var newTile:Tile; var newEntity:Entity;
+			var currentTile:Tile; var currentEntity:Entity; var newTile:Tile; var newEntity:Entity; var cost:int;
 
 			var tempX:int = touch.globalX - world.x;
 			var tempY:int = touch.globalY - world.y;
@@ -582,11 +582,19 @@ package {
 			}
 
 			if (buildHud.hudState == BuildHUD.STATE_DELETE) {
-				// Deleting position on grid
-				currentFloor.deleteSelected(currentTile, currentEntity);
+				if (currentFloor.deleteSelected(currentTile, currentEntity)) {
+					gold += buildHud.getRefundForDelete(currentTile, currentEntity);
+					goldHud.update(gold);
+					mixer.play(Util.TILE_REMOVE);
+				} else {
+					mixer.play(Util.TILE_FAILURE);
+				}
 			} else if (buildHud.hudState == BuildHUD.STATE_TILE) {
 				newTile = buildHud.buildTileFromImage(world.x, world.y);
-				if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
+				cost = buildHud.getCost();
+				if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y] && gold - cost >= 0) {
+					gold -= cost;
+					goldHud.update(gold);
 					// Player correctly placed the tile. Add it to the grid.
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
@@ -613,8 +621,11 @@ package {
 				} else {
 					mixer.play(Util.TILE_FAILURE);
 				}
-			} else if(buildHud.hudState == BuildHUD.STATE_ENTITY) {
-				if (currentFloor.isEmptyTile(currentTile)) {
+			} else if (buildHud.hudState == BuildHUD.STATE_ENTITY) {
+				cost = buildHud.getCost();
+				if (currentFloor.isEmptyTile(currentTile) && gold - cost >= 0) {
+					gold -= cost;
+					goldHud.update(gold);
 					// Player correctly placed the entity. Add it to the grid.
 					newEntity = buildHud.buildEntityFromImage(currentTile);
 					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;

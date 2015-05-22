@@ -7,7 +7,6 @@ package {
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
 		public static const STAGE_HEIGHT:int = 480;
-		public static const BASE_TILE_COST:int = 50;
 		public static const HUD_PAD_TOP:int = 4;
 		public static const HUD_PAD_LEFT:int = 8;
 
@@ -164,7 +163,8 @@ package {
 		public static const STARTING_LOS:int = 2;
 
 		// Costs go here
-		public static const TILE_DELETE_COST:int = 0;
+		public static const BASE_TILE_COST:int = 5;
+		public static const REFUND_PERCENT:int = 50;
 
 		public static var logger:Logger;
 
