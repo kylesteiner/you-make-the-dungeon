@@ -6,13 +6,15 @@ package entities {
 		public var hp:int;
 		public var attack:int;
 		public var reward:int;
+		public var enemyName:String;
 
-		public function Enemy(g_x:int, g_y:int, texture:Texture, logger:Logger, maxHp:int, attack:int, reward:int) {
+		public function Enemy(g_x:int, g_y:int, enemyName:String, texture:Texture, logger:Logger, maxHp:int, attack:int, reward:int) {
 			super(g_x, g_y, texture, logger);
 			this.maxHp = maxHp;
 			this.hp = maxHp;
 			this.attack = attack;
 			this.reward = reward;
+			this.enemyName = enemyName;
 		}
 
 		override public function handleChar(c:Character):void {

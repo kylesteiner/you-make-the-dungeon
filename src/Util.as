@@ -135,8 +135,8 @@ package {
 		public static const ENEMY_COMBAT_IDLE:String = "enemy_combat_idle";
 		public static const ENEMY_COMBAT_ATTACK:String = "enemy_combat_attack";
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
-		public static const MONSTER_1:String = "monster_1";
-		public static const MONSTER_2:String = "monster_2";
+		public static const ENEMY_FIGHTER:String = "enemy_fighter";
+		public static const ENEMY_MAGE:String = "enemy_mage";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
 

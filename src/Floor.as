@@ -556,7 +556,7 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], logger, hp, attack, reward);
+					initialEntities[tX][tY] = new Enemy(tX, tY, textureName, textures[textureName], logger, hp, attack, reward);
 				} else if (entity["type"] == "healing") {
 					var health:int = entity["health"];
 					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], logger, health);

@@ -183,8 +183,8 @@ package {
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
-			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
-			textures[Util.MONSTER_2] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
+			textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
 
 			textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
 			textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
@@ -293,7 +293,7 @@ package {
 			var fighterFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			fighterFaintVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
 			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
-			tAnimations[Util.MONSTER_1] = fighterDict;
+			tAnimations[Util.ENEMY_FIGHTER] = fighterDict;
 
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
@@ -305,7 +305,7 @@ package {
 			var mageFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
-			tAnimations[Util.MONSTER_2] = mageDict;
+			tAnimations[Util.ENEMY_MAGE] = mageDict;
 
 			return tAnimations;
 		}

@@ -275,8 +275,7 @@ package {
         public function setEnemyAnim(animationString:String):void {
             removeChild(enemyAnim);
             // TODO: fix animations with new entities
-            var s:String = Util.MONSTER_2;
-            enemyAnim = new MovieClip(animations[s][animationString], Util.ANIM_FPS);
+            enemyAnim = new MovieClip(animations[enemy.enemyName][animationString], Util.ANIM_FPS);
             enemyAnim.x = ENEMY_X - (enemyAnim.width / 2);
             enemyAnim.y = ENEMY_Y - enemyAnim.height;
             enemyAnim.loop = false;

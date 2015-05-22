@@ -138,14 +138,9 @@ package {
 
 		private function initializeFloorWorld():void {
 			world = new Sprite();
-			//world.height = 2048;
-			//world.width = 2048;
-			//world.addChild(new Quad(world.height, world.width, 0xff000000));
-			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
 			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
 			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
-			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
 			sfxMuteButton.y = Util.UI_PADDING;
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
@@ -155,10 +150,6 @@ package {
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			goldHud.y = sfxMuteButton.y + sfxMuteButton.height + Util.UI_PADDING;
-
-			//resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
-			//resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			//resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
@@ -211,10 +202,8 @@ package {
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
-			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
-			// event.enemy.state.hp = event.enemy.state.maxHp;
-			// Prompt clickable into either floor reset or continue modifying floor
+
 			logger.logAction(4, {
 				"characterAttack":event.character.attack,
 				"enemyAttack":event.enemy.attack,
@@ -327,18 +316,9 @@ package {
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
-			//world.x = Util.STAGE_WIDTH / 4;
 
-			/*var charWidth:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.width;
-			var charX:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.x;
-			world.x = Util.STAGE_WIDTH / 2 - Util.grid_to_real(Util.real_to_grid(charX));
-
-			var charHeight:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.height;
-			var charY:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.y;
-			world.y = Util.STAGE_HEIGHT / 2 - Util.grid_to_real(Util.real_to_grid(charY)) - (Util.PIXELS_PER_TILE * 3.0 / 4);*/
 			centerWorldOnCharacter();
-			//currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
-			//currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
+
 			addChild(world);
 			// mute button should always be on top
 			addChild(bgmMuteButton);
@@ -476,6 +456,7 @@ package {
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp
 			});
+			
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
