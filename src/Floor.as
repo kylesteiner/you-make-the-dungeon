@@ -116,24 +116,6 @@ package {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
-			/* if(showPrompt > 0) {
-				if(showPrompt == 1) {
-					tutorialImage = new Image(textures[Util.TUTORIAL_BACKGROUND]);
-				} else if(showPrompt == 2) {
-					tutorialImage = new Image(textures[Util.TUTORIAL_TILE]);
-				} else if(showPrompt > 2) {
-					tutorialImage = new Image(textures[Util.TUTORIAL_PAN]);
-				}
-
-				tutorialImage.touchable = false;
-				tutorialImage.alpha = 0.7;
-				originalTutorialDisplaying = true;
-				tutorialDisplaying = true;
-				tutorialImage.x = getToX(0);
-				tutorialImage.y = getToY(0);
-				addChild(tutorialImage);
-			} */
-
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -142,28 +124,6 @@ package {
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-		}
-
-		private function getToX(x:int):int {
-			var temp:int = 0;
-			if (parent) {
-				var shift:int = parent.x > 0 ? -1 : 1;
-				while (temp + parent.x != x) {
-					temp += shift;
-				}
-			}
-			return temp;
-		}
-
-		private function getToY(y:int):int {
-			var temp:int = 0;
-			if (parent) {
-				var shift:int = parent.y > 0 ? -1 : 1;
-				while (temp + parent.y != y) {
-					temp += shift;
-				}
-			}
-			return temp;
 		}
 
 		public function removeTutorial():void {
@@ -177,26 +137,16 @@ package {
 			if (tutorialImage) {
 				tutorialImage.x += value;
 			}
-			/*if (nextFloorButton) {
-				nextFloorButton.x += value;
-			}*/
 		}
 
 		public function shiftTutorialY(value:int):void {
 			if (tutorialImage) {
 				tutorialImage.y += value;
 			}
-			/*if (nextFloorButton) {
-				nextFloorButton.y += value;
-			}*/
 		}
 
 		public function toggleRun():void {
 			char.toggleRun();
-		}
-
-		// Called when the run button is clicked.
-		public function runFloor():void {
 		}
 
 		public function getEntry():Tile {
@@ -280,7 +230,7 @@ package {
 			for (i = 0; i < initialFogGrid.length; i++) {
 				for (j = 0; j < initialFogGrid[i].length; j++) {
 					fogGrid[i][j] = initialFogGrid[i][j];
-					if(fogGrid[i][j]) {
+					if (fogGrid[i][j]) {
 						addChild(fogGrid[i][j]);
 					}
 				}
@@ -293,14 +243,6 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-
-			/*
-			if(tutorialImage && originalTutorialDisplaying) {
-				tutorialDisplaying = true;
-				tutorialImage.x = getToX(0);
-				tutorialImage.y = getToY(0);
-				addChild(tutorialImage);
-			}*/
 		}
 
 		// Get rid of the old character (if it exists) and make a new one
@@ -326,11 +268,11 @@ package {
 
 			var radius:int = char.los;
 
-			for(x = i - radius; x <= i + radius; x++) {
-				if(x >= 0 && x < initialFogGrid.length) {
-					for(y = j - radius; y <= j + radius; y++) {
-						if(y >= 0 && y < initialFogGrid[x].length) {
-							if(Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
+			for (x = i - radius; x <= i + radius; x++) {
+				if (x >= 0 && x < initialFogGrid.length) {
+					for (y = j - radius; y <= j + radius; y++) {
+						if (y >= 0 && y < initialFogGrid[x].length) {
+							if (Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
 								fogGrid[x][y] = false;
 							}
@@ -361,8 +303,10 @@ package {
 		}
 
 		public function isEmptyTile(tile:Tile):Boolean {
-			return tile is Tile && !(tile is EntryTile) &&
-				   !(tile is ExitTile) && !(tile is ImpassableTile) &&
+			return tile is Tile &&
+				   !(tile is EntryTile) &&
+				   !(tile is ExitTile) &&
+				   !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
 		}
 
@@ -423,13 +367,21 @@ package {
 		}
 
 		// Recursively iterates over the map from the start and finds allowed locations
-		private function getAllowedLocationsHelper(x:int, y:int, directions:Array, visited:Array, available:Array, direction:int):void {
+		private function getAllowedLocationsHelper(x:int,
+			 									   y:int,
+												   directions:Array,
+												   visited:Array,
+												   available:Array,
+												   direction:int):void {
 			if (visited[x][y]) {
 				return;
 			}
 
-			if (!grid[x][y] && ((direction == Util.NORTH && directions[Util.NORTH]) || (direction == Util.SOUTH && directions[Util.SOUTH]) ||
-					(direction == Util.WEST && directions[Util.WEST]) || (direction == Util.EAST && directions[Util.EAST]))) {
+			if (!grid[x][y] &&
+				((direction == Util.NORTH && directions[Util.NORTH])
+				|| (direction == Util.SOUTH && directions[Util.SOUTH])
+				|| (direction == Util.WEST && directions[Util.WEST])
+				|| (direction == Util.EAST && directions[Util.EAST]))) {
 				// Open spot on grid that the selected tile can be placed
 				available[x][y] = true;
 			} else if (grid[x][y] || direction == -1) {
@@ -596,10 +548,6 @@ package {
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
 
-			/*if (nextFloorButton) {
-				addChild(nextFloorButton);
-			}*/
-
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
@@ -627,7 +575,9 @@ package {
 					if(charTile.north && nextTile.south) {
 						char.move(Util.NORTH);
 						if (Util.logger) {
-							Util.logger.logAction(11, { "directionMoved":"North"});
+							Util.logger.logAction(11, {
+								"directionMoved": "North"
+							});
 						}
 					}
 				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
@@ -639,7 +589,9 @@ package {
 					if(charTile.south && nextTile.north) {
 						char.move(Util.SOUTH);
 						if (Util.logger) {
-							Util.logger.logAction(11, { "directionMoved":"South"});
+							Util.logger.logAction(11, {
+								"directionMoved": "South"
+							});
 						}
 					}
 				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
@@ -651,7 +603,9 @@ package {
 					if(charTile.west && nextTile.east) {
 						char.move(Util.WEST);
 						if (Util.logger) {
-							Util.logger.logAction(11, { "directionMoved":"West"});
+							Util.logger.logAction(11, {
+								"directionMoved": "West"
+							});
 						}
 					}
 				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
@@ -663,7 +617,9 @@ package {
 					if(charTile.east && nextTile.west) {
 						char.move(Util.EAST);
 						if (Util.logger) {
-							Util.logger.logAction(11, { "directionMoved":"East"});
+							Util.logger.logAction(11, {
+								"directionMoved": "East"
+							});
 						}
 					}
 				}
@@ -725,33 +681,17 @@ package {
 			var winBox:Sprite = new Sprite();
 			var popup:Image = new Image(textures[Util.POPUP_BACKGROUND])
 			winBox.addChild(popup);
-			winBox.addChild(new TextField(popup.width, popup.height, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			winBox.addChild(new TextField(popup.width,
+										  popup.height,
+										  NEXT_LEVEL_MESSAGE,
+										  Util.DEFAULT_FONT,
+										  Util.MEDIUM_FONT_SIZE));
 			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
-
-			// We don't have any other floors yet, so no need for the button at
-			// the moment.
-			// TODO: remove if we only have one floor.
-			/*nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
-			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
-			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
-			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
-			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
-
-			var i:int = 0;
-			if(nextFloor == Util.FLOOR_1) {
-				i = 1;
-			} else if(nextFloor == Util.FLOOR_2) {
-				i = 2;
-			} else if(nextFloor == Util.FLOOR_8) {
-				i = 3;
-			}
-			nextFloorButton.addParameter(i);*/
 		}
 
-		// Called when the character moves into an objective tile. Updates objectiveState
-		// to mark the tile as visited.
-		// Event chain: Character -> Floor -> ObjectiveTile -> Floor
+		// Called when the character moves into an objective tile. Updates
+		// objectiveState to mark the tile as visited.
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
 			objectiveState[obj.key] = true;
