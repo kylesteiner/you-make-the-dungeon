@@ -412,7 +412,7 @@ package {
 			emptyTiles = 0;
 			enemyTiles = 0;
 			healingTiles = 0;
-			currentFloor.resetFloor();
+			currentFloor.initializeFloorState();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.TILE_REMOVE);
 		}
@@ -466,7 +466,8 @@ package {
 
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
-			currentFloor.resetFloor();
+			// TODO: soft reset
+			// currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
 

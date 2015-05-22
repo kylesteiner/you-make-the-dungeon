@@ -109,7 +109,7 @@ package {
 			addChild(mapBoundsBackground);
 
 			// Initialize floor using the initial state.
-			resetFloor();
+			initializeFloorState();
 
 			highlightedLocations = new Array(gridWidth);
 			for (var i:int = 0; i < gridWidth; i++) {
@@ -223,12 +223,9 @@ package {
 			return null;
 		}
 
-		// Resets the character and grid state to their initial values.
-		public function resetFloor():void {
-			// Restore floor to pre-run grid
-			// Put entities back in
-			// Dont adjust fog of war
-
+		// Initializes or resets the state of the floor based on the initial
+		// floor state parsed from the floor file.
+		public function initializeFloorState():void {
 			var i:int; var j:int;
 			if (grid) {
 				// Remove all tiles from the display tree.
@@ -239,7 +236,17 @@ package {
 						}
 					}
 				}
-				clearHighlightedLocations()
+				clearHighlightedLocations();
+			}
+
+			if (entityGrid) {
+				for (i = 0; i < entityGrid.length; i++) {
+					for (j = 0; j < entityGrid[i].length; j++) {
+						if (entityGrid[i][j]) {
+							entityGrid[i][j].removeFromParent();
+						}
+					}
+				}
 			}
 
 			// Replace the current grid with a fresh one.
