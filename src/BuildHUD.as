@@ -29,7 +29,6 @@ package {
 		public static const STATE_NONE:String = "state_none";
 
 		private var textures:Dictionary;
-		private var highlightedLocations:Array; // Why is this being managed in BuildHUD?
 
 		/***** Overall HUD *****/
 		// sprites that contain the tile and entity selection
@@ -103,15 +102,12 @@ package {
 			this.entityFactory = new EntityFactory(textureDict, logger);
 			this.textures = textureDict;
 
-			highlightedLocations = new Array();
-
 			tileBlock = new Sprite();
 			entityBlock = new Sprite();
 			addChild(tileBlock);
 			addChild(entityBlock);
 			currentImage = null;
 
-			//isEntityDisplay = true;
 			this.entityMap = entityFactory.entitySet;
 
 			directions = new Array(Util.DIRECTIONS.length);
@@ -513,7 +509,6 @@ package {
 				currentImage = new Image(currentEntity.texture);
 				currentImage.touchable = false;
 				hudState = STATE_ENTITY;
-				//isEntityDisplay = true;
 			}
 
 			closePopup();
@@ -539,7 +534,6 @@ package {
 			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
 			currentImage = new Image(currentEntity.texture);
 			currentImage.touchable = false;
-			//isEntityDisplay = true;
 			hudState = STATE_ENTITY;
 			updateSelectButtons();
 		}
