@@ -148,21 +148,14 @@ package {
 
 			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
 			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
-
-			sfxMuteButton = new Clickable(
-					Util.PIXELS_PER_TILE,
-					Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
-					toggleSFXMute,
-					null,
-					textures[Util.ICON_MUTE_SFX]);
-			//sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
-			sfxMuteButton.x = goldHud.x - sfxMuteButton.width - Util.UI_PADDING;
-			sfxMuteButton.y = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
+			shopButton.x = goldHud.x - shopButton.width - Util.UI_PADDING
+			shopButton.y = Util.UI_PADDING;
+			
+			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
+			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
-			//bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
-			//bgmMuteButton.y = Util.STAGE_HEIGHT - bgmMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
@@ -175,21 +168,19 @@ package {
 									  runFloor,
 									  null,
 									  textures[Util.ICON_RUN]);
-			//runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			runButton.x = sfxMuteButton.x;
-			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			runButton.x = shopButton.x - runButton.width - Util.UI_PADDING;
+			runButton.y = Util.UI_PADDING;
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
 									  endRun,
 									  null,
 									  textures[Util.ICON_END]);
-			//endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			endButton.x = runButton.x;
-			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			endButton.y = runButton.y;
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
-			buildHud = new BuildHUD(textures, logger); // TODO: Add entities
+			buildHud = new BuildHUD(textures, logger);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
