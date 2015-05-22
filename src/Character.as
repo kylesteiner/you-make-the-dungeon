@@ -26,7 +26,7 @@ package {
 
 		// Character movement state (for rendering).
 		public var inCombat:Boolean;
-		private var moving:Boolean;
+		public var moving:Boolean;
 		private var destX:int;
 		private var destY:int;
 

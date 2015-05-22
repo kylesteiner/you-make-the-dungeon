@@ -69,6 +69,9 @@ package {
 		public var altCallback:Function;
 
 		public var pressedKeys:Array;
+		
+		public var enemies:Array;
+		public var initialEnemies:Array;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -100,6 +103,9 @@ package {
 
 			pressedKeys = new Array();
 			objectiveState = new Dictionary();
+			
+			enemies = new Array();
+			initialEnemies = new Array();
 
 			// Get floor layout information from the JSON file.
 			parseFloorData(floorData);
@@ -290,6 +296,14 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
+			
+			for (var index:int = 0; index < enemies.length; index++) {
+				enemies.pop();
+			}
+			// move initialEnemies into enemies
+			for each (var enem:Enemy in initialEnemies) {
+				enemies.push(enem);
+			}
 
 			/*
 			if(tutorialImage && originalTutorialDisplaying) {
@@ -330,6 +344,9 @@ package {
 							if(Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
 								fogGrid[x][y] = false;
+								if (entityGrid[x][y] is Enemy) {
+									enemies.push(entityGrid[x][y]);
+								}
 							}
 						}
 					}
@@ -544,6 +561,7 @@ package {
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
 					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], logger, hp, attack, reward);
+					initialEnemies.push(initialEntities[tX][tY]);
 				} else if (entity["type"] == "healing") {
 					var health:int = entity["health"];
 					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], logger, health);
@@ -570,6 +588,9 @@ package {
 						if(y >= 0 && y < initialFogGrid[x].length) {
 							if(Math.abs(x-i) + Math.abs(y-j) <= radius) {
 								initialFogGrid[x][y] = false;
+								if (initialEntities[x][y] is Enemy) {
+									enemies.push(initialEntities[x][y]);
+								}
 							}
 						}
 					}
@@ -608,7 +629,10 @@ package {
 					}
 
 					nextTile = grid[cgx][cgy-1];
-					if(charTile.north && nextTile.south) {
+					if (charTile.north && nextTile.south) {
+						if (!char.inCombat && !char.moving) {
+							moveAllEnemies(1);
+						}
 						char.move(Util.NORTH);
 						if (logger) {
 							logger.logAction(11, { "directionMoved":"North"});
@@ -620,7 +644,10 @@ package {
 					}
 
 					nextTile = grid[cgx][cgy+1];
-					if(charTile.south && nextTile.north) {
+					if (charTile.south && nextTile.north) {
+						if (!char.inCombat && !char.moving) {
+							moveAllEnemies(3);
+						}
 						char.move(Util.SOUTH);
 						if (logger) {
 							logger.logAction(11, { "directionMoved":"South"});
@@ -632,7 +659,10 @@ package {
 					}
 
 					nextTile = grid[cgx-1][cgy];
-					if(charTile.west && nextTile.east) {
+					if (charTile.west && nextTile.east) {
+						if (!char.inCombat && !char.moving) {
+							moveAllEnemies(2);
+						}
 						char.move(Util.WEST);
 						if (logger) {
 							logger.logAction(11, { "directionMoved":"West"});
@@ -644,13 +674,168 @@ package {
 					}
 
 					nextTile = grid[cgx+1][cgy];
-					if(charTile.east && nextTile.west) {
+					if (charTile.east && nextTile.west) {
+						if (!char.inCombat && !char.moving) {
+							moveAllEnemies(0);
+						}
 						char.move(Util.EAST);
 						if (logger) {
 							logger.logAction(11, { "directionMoved":"East"});
 						}
 					}
 				}
+			}
+		}
+		
+		private function moveAllEnemies(charDirection:int):void {
+			var monster:Enemy; var x:int; var y:int;
+			var tile:Tile;
+			for each (monster in enemies) {
+				if (monster.setInStone) {
+					continue;
+				}
+				var notMoved:Boolean = true;
+				var movement:Array = new Array();
+				movement[0] = false;
+				movement[1] = false;
+				movement[2] = false;
+				movement[3] = false;
+				while (notMoved) {
+					var direction:int = monster.currentDirection;
+					tile = grid[monster.grid_x][monster.grid_y];
+					if (movement[0] && movement[1] && movement[2] && movement[3]) {
+						break;
+					}
+					// 0 means keep direction, 1 means pick the first
+					// direction in if, 2 means the othe
+					var randomPick:int = Math.random() * 100 % 3;
+					if (direction == 0) { // east
+						if (tile.north && randomPick == 1) {
+							monster.currentDirection = 1;
+							direction = 1;
+						} else if (tile.south && randomPick == 2) {
+							monster.currentDirection = 3;
+							direction = 3;
+						}
+					} else if (direction == 1) { // north
+						if (tile.east && randomPick == 1) {
+							monster.currentDirection = 0;
+							direction = 0;
+						} else if (tile.west && randomPick == 2) {
+							monster.currentDirection = 2;
+							direction = 2;
+						}
+					} else if (direction == 2) { // west
+						if (tile.north && randomPick == 1) {
+							monster.currentDirection = 1;
+							direction = 1;
+						} else if (tile.south && randomPick == 2) {
+							monster.currentDirection = 3;
+							direction = 3;
+						}
+					} else { // south
+						if (tile.east && randomPick == 1) {
+							monster.currentDirection = 0;
+							direction = 0;
+						} else if (tile.west && randomPick == 2) {
+							monster.currentDirection = 2;
+							direction = 2;
+						}
+					}
+					if (direction == 0) { // east
+						if (tile.east && tile.grid_x != gridWidth - 1
+								&& grid[tile.grid_x + 1][tile.grid_y]
+								&& grid[tile.grid_x + 1][tile.grid_y].west) {
+							// move monster east
+							if (charDirection == 2 && char.grid_x == tile.grid_x + 1
+									&& char.grid_y == tile.grid_y
+									|| entityGrid[tile.grid_x + 1][tile.grid_y]) {
+								notMoved = false;	
+							} else if (!entityGrid[tile.grid_x + 1][tile.grid_y]) {
+								x = monster.grid_x;
+								y = monster.grid_y;
+								monster.move(monster.grid_x + 1, monster.grid_y);
+								notMoved = false;
+								entityGrid[x + 1][y] = entityGrid[x][y];
+								entityGrid[x][y] = null;
+							} else {
+								monster.currentDirection = Math.random() * 100 % 4;
+							}
+						} else {
+							// pick new random direction
+							monster.currentDirection = Math.random() * 100 % 4;
+						}
+					} else if (direction == 1) { // north
+						if (tile.north && tile.grid_y > 0
+								&& grid[tile.grid_x][tile.grid_y - 1]
+								&& grid[tile.grid_x][tile.grid_y - 1].south) {
+							// move monster north
+							if (charDirection == 3 && char.grid_x == tile.grid_x
+									&& char.grid_y == tile.grid_y - 1
+									|| entityGrid[tile.grid_x][tile.grid_y -1]) {
+								notMoved = false;
+							} else if (!entityGrid[tile.grid_x][tile.grid_y - 1]) {
+								x = monster.grid_x;
+								y = monster.grid_y;
+								monster.move(monster.grid_x, monster.grid_y - 1);
+								notMoved = false;
+								entityGrid[x][y - 1] = entityGrid[x][y];
+								entityGrid[x][y] = null;
+							} else {
+								monster.currentDirection = Math.random() * 100 % 4;
+							}
+						} else {
+							// pick new random direction
+							monster.currentDirection = Math.random() * 100 % 4;
+						}
+					} else if (direction == 2) { // west
+						if (tile.west && tile.grid_x > 0
+								&& grid[tile.grid_x - 1][tile.grid_y]
+								&& grid[tile.grid_x - 1][tile.grid_y].east) {
+							// move monster west
+							if (charDirection == 0 && char.grid_x == tile.grid_x - 1
+									&& char.grid_y == tile.grid_y) {
+								notMoved = false;
+							} else if (!entityGrid[tile.grid_x - 1][tile.grid_y]){
+								x = monster.grid_x;
+								y = monster.grid_y;
+								monster.move(monster.grid_x - 1, monster.grid_y);
+								notMoved = false;
+								entityGrid[x - 1][y] = entityGrid[x][y];
+								entityGrid[x][y] = null;
+							} else {
+								monster.currentDirection = Math.random() * 100 % 4;
+							}
+						} else {
+							// pick new random direction
+							monster.currentDirection = Math.random() * 100 % 4;
+						}
+					} else { // direction equals 3, south
+						if (tile.south && tile.grid_y != gridHeight - 1
+								&& grid[tile.grid_x][tile.grid_y + 1]
+								&& grid[tile.grid_x][tile.grid_y + 1].north) {
+							// move monster south
+							if (charDirection == 1 && char.grid_x == tile.grid_x
+									&& char.grid_y == tile.grid_y + 1) {
+								notMoved = false;
+							} else if (!entityGrid[tile.grid_x][tile.grid_y + 1]) {
+								x = monster.grid_x;
+								y = monster.grid_y;
+								monster.move(monster.grid_x, monster.grid_y + 1);
+								notMoved = false;
+								entityGrid[x][y + 1] = entityGrid[x][y];
+								entityGrid[x][y] = null;
+							} else {
+								monster.currentDirection = Math.random() * 100 % 4;
+							}
+						} else {
+							// pick new random direction
+							monster.currentDirection = Math.random() * 100 % 4;
+						}
+					}
+					movement[direction] = true;
+				}
+				trace("moved");
 			}
 		}
 

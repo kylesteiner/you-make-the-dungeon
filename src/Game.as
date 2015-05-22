@@ -641,7 +641,12 @@ package {
 					// Player correctly placed the entity. Add it to the grid.
 					newEntity = buildHud.buildEntityFromImage(currentTile);
 					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;
+					trace(newEntity.grid_x);
+					trace(newEntity.grid_y);
 					currentFloor.addChild(newEntity);
+					if (newEntity is Enemy) {
+						currentFloor.enemies.push(newEntity);
+					}
 					mixer.play(Util.TILE_MOVE);
 				} else {
 					mixer.play(Util.TILE_FAILURE);
