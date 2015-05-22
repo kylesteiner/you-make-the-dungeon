@@ -6,6 +6,7 @@ package entities {
 		public var hp:int;
 		public var attack:int;
 		public var reward:int;
+
 		public var currentDirection:int; // 0 is east, 1 is north, 2 is west, 3 is south
 		public var setInStone:Boolean; // for boss monsters
 		public var moving:Boolean; // because apparently its clicked multiple times.
@@ -17,12 +18,16 @@ package entities {
 		public var initialX:int;
 		public var initialY:int;
 
-		public function Enemy(g_x:int, g_y:int, texture:Texture, logger:Logger, maxHp:int, attack:int, reward:int, immobile:Boolean = false) {
-			super(g_x, g_y, texture, logger);
+		public var enemyName:String;
+
+		public function Enemy(g_x:int, g_y:int, enemyName:String, texture:Texture, maxHp:int, attack:int, reward:int, immobile:Boolean = false) {
+			super(g_x, g_y, texture);
 			this.maxHp = maxHp;
 			this.hp = maxHp;
 			this.attack = attack;
 			this.reward = reward;
+			this.enemyName = enemyName;
+			this.enemyName = enemyName;
 			initialGrid_x = g_x;
 			initialGrid_y = g_y;
 			initialX = x;
@@ -53,7 +58,7 @@ package entities {
 		}
 
 		override public function handleChar(c:Character):void {
-			logger.logAction(5, {
+			Util.logger.logAction(5, {
 				"characterHealthLeft": c.hp,
 				"characterHealthMax": c.maxHp,
 				"characterAttack": c.attack,

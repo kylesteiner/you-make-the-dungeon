@@ -56,8 +56,6 @@ package {
 
 		private var mixer:Mixer;
 
-		// logger
-		private var logger:Logger;
 		private var nextTransition:String;
 
 		public var tutorialImage:Image;
@@ -84,7 +82,6 @@ package {
 							  floorFiles:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
-							  logger:Logger = null,
 							  showPrompt:int = 0) {
 			super();
 			this.textures = textures;
@@ -98,7 +95,6 @@ package {
 			altCallback = null;
 			mixer = soundMixer;
 
-			this.logger = logger;
 			preplacedTiles = 0;
 
 			pressedKeys = new Array();
@@ -355,31 +351,31 @@ package {
 		}
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
-		public function highlightAllowedLocations(directions:Array, isEntityDisplay:Boolean):void {
+		public function highlightAllowedLocations(directions:Array, hudState:String):void {
 			var x:int; var y:int;
-			
-			if (!isEntityDisplay) {
+
+			if (hudState == BuildHUD.STATE_TILE) {
 				var allowed:Array = getAllowedLocations(directions);
 				for (x = 0; x < gridWidth; x++) {
 					for (y = 0; y < gridHeight; y++) {
 						addRemoveHighlight(x, y, allowed[x][y]);
 					}
 				}
-			} else {
+			} else if (hudState == BuildHUD.STATE_ENTITY) {
 				for (x = 0; x < gridWidth; x++) {
 					for (y = 0; y < gridHeight; y++) {
-						addRemoveHighlight(x, y, isEmptyTile(x, y) && !entityGrid[x][y]);
+						addRemoveHighlight(x, y, isEmptyTile(grid[x][y]) && !entityGrid[x][y]);
 					}
 				}
 			}
 		}
-		
-		public function isEmptyTile(x:int, y:int):Boolean {
-			return grid[x][y] is Tile && !(grid[x][y] is EntryTile) &&
-				   !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile) &&
-				   !entityGrid[x][y];
+
+		public function isEmptyTile(tile:Tile):Boolean {
+			return tile is Tile && !(tile is EntryTile) &&
+				   !(tile is ExitTile) && !(tile is ImpassableTile) &&
+				   !entityGrid[tile.grid_x][tile.grid_y];
 		}
-		
+
 		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {
 			if (add) {
 				// Highlight available location on grid
@@ -396,7 +392,7 @@ package {
 				highlightedLocations[x][y] = null;
 			}
 		}
-		
+
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
 			for (var x:int = 0; x < gridWidth; x++) {
@@ -460,6 +456,32 @@ package {
 				}
 				if (y - 1 >= 0 && grid[x][y].north) {
 					getAllowedLocationsHelper(x, y - 1, directions, visited, available, Util.SOUTH);
+				}
+			}
+		}
+
+		public function deleteSelected(tile:Tile, entity:Entity):void {
+			if (entity) {
+				removeChild(entity);
+				entityGrid[entity.grid_x][entity.grid_y] = null;
+				removeMonsterFromArray(entity);
+			} else if (isEmptyTile(tile)) {
+				removeChild(tile);
+				grid[tile.grid_x][tile.grid_y] = null;
+				mixer.play(Util.TILE_REMOVE);
+			} else {
+				mixer.play(Util.TILE_FAILURE);
+			}
+		}
+		
+		// removes the monster from the array of mosnters
+		// because there isn't a basic remove from array function
+		private function removeMonsterFromArray(entity:Entity):void {
+			trace(enemies);
+			for (var index:int = 0; index < enemies.length; index++) {
+				if (enemies[index] == entity) {
+					enemies.splice(index, 1);
+					trace(enemies);
 				}
 			}
 		}
@@ -560,15 +582,16 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					initialEntities[tX][tY] = new Enemy(tX, tY, textures[textureName], logger, hp, attack, reward);
+
+					initialEntities[tX][tY] = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
 					initialEnemies.push(initialEntities[tX][tY]);
 				} else if (entity["type"] == "healing") {
 					var health:int = entity["health"];
-					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], logger, health);
+					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
 				} else if (entity["type"] == "objective") {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
-					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], logger, key, prereqs);
+					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
 					objectiveState[key] = false;
 				}
 			}
@@ -634,8 +657,8 @@ package {
 							moveAllEnemies(1);
 						}
 						char.move(Util.NORTH);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"North"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"North"});
 						}
 					}
 				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
@@ -649,8 +672,8 @@ package {
 							moveAllEnemies(3);
 						}
 						char.move(Util.SOUTH);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"South"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"South"});
 						}
 					}
 				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
@@ -664,8 +687,8 @@ package {
 							moveAllEnemies(2);
 						}
 						char.move(Util.WEST);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"West"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"West"});
 						}
 					}
 				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
@@ -679,8 +702,8 @@ package {
 							moveAllEnemies(0);
 						}
 						char.move(Util.EAST);
-						if (logger) {
-							logger.logAction(11, { "directionMoved":"East"});
+						if (Util.logger) {
+							Util.logger.logAction(11, { "directionMoved":"East"});
 						}
 					}
 				}
@@ -881,8 +904,8 @@ package {
 		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:GameEvent):void {
 			// TODO: Do actual win condition handling.
-			if (logger) {
-				logger.logLevelEnd({
+			if (Util.logger) {
+				Util.logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
 					"characterMaxHP":char.maxHp
 				});

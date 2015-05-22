@@ -1,7 +1,0 @@
-floor9
-floor10
-floor9
-5	2
-0	1
-entry	0	1	1	0	1	0
-exit	4	1	1	0	0	1

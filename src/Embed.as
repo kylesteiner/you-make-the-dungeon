@@ -51,6 +51,7 @@ package {
 		[Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
 		[Embed(source='assets/icons/los.png')] public static const icon_los:Class;
 		[Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
+		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
 
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -71,30 +72,6 @@ package {
 
 		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
-		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
-		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
-		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public static const floor2:Class;
-		[Embed(source='floordata/floor3.txt', mimeType="application/octet-stream")] public static const floor3:Class;
-		[Embed(source='floordata/floor4.txt', mimeType="application/octet-stream")] public static const floor4:Class;
-		[Embed(source='floordata/floor5.txt', mimeType="application/octet-stream")] public static const floor5:Class;
-		[Embed(source='floordata/floor6.txt', mimeType="application/octet-stream")] public static const floor6:Class;
-		[Embed(source='floordata/floor7.txt', mimeType="application/octet-stream")] public static const floor7:Class;
-		[Embed(source='floordata/floor8.txt', mimeType="application/octet-stream")] public static const floor8:Class;
-		[Embed(source='floordata/floor9.txt', mimeType="application/octet-stream")] public static const floor9:Class;
-		[Embed(source='floordata/floor10.txt', mimeType="application/octet-stream")] public static const floor10:Class;
-		[Embed(source='floordata/floor11.txt', mimeType="application/octet-stream")] public static const floor11:Class;
-		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public static const tiles0:Class;
-		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public static const tiles1:Class;
-		[Embed(source='tilerates/floor2.txt', mimeType="application/octet-stream")] public static const tiles2:Class;
-		[Embed(source='tilerates/floor3.txt', mimeType="application/octet-stream")] public static const tiles3:Class;
-		[Embed(source='tilerates/floor4.txt', mimeType="application/octet-stream")] public static const tiles4:Class;
-		[Embed(source='tilerates/floor5.txt', mimeType="application/octet-stream")] public static const tiles5:Class;
-		[Embed(source='tilerates/floor6.txt', mimeType="application/octet-stream")] public static const tiles6:Class;
-		[Embed(source='tilerates/floor7.txt', mimeType="application/octet-stream")] public static const tiles7:Class;
-		[Embed(source='tilerates/floor8.txt', mimeType="application/octet-stream")] public static const tiles8:Class;
-		[Embed(source='tilerates/floor9.txt', mimeType="application/octet-stream")] public static const tiles9:Class;
-		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public static const tiles10:Class;
-		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public static const tiles11:Class;
 		[Embed(source='assets/transitions/floor0.png')] public static const transitions0:Class;
 		[Embed(source='assets/transitions/floor1.png')] public static const transitions1:Class;
 		[Embed(source='assets/transitions/floor2.png')] public static const transitions2:Class;
@@ -111,7 +88,6 @@ package {
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
 		[Embed(source='assets/animations/character/idle/character_2.png')] public static const characterIdleAnim2:Class;
-		//[Embed(source='assets/animations/character/idle/character_3.png')] public static const characterIdleAnim3:Class;
 
 		[Embed(source='assets/animations/character/move/character_move_0.png')] public static const characterMoveAnim0:Class;
 		[Embed(source='assets/animations/character/move/character_move_1.png')] public static const characterMoveAnim1:Class;
@@ -125,8 +101,6 @@ package {
 
 		[Embed(source='assets/animations/character/combat_attack/char_ca_0.png')] public static const charCombatAtkAnim0:Class;
 		[Embed(source='assets/animations/character/combat_attack/char_ca_1.png')] public static const charCombatAtkAnim1:Class;
-		//[Embed(source='assets/animations/character/combat_attack/char_ca_2.png')] public static const charCombatAtkAnim2:Class;
-		//[Embed(source='assets/animations/character/combat_attack/char_ca_3.png')] public static const charCombatAtkAnim3:Class;
 
 		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] public static const charCombatFaintAnim0:Class;
 		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] public static const charCombatFaintAnim1:Class;
@@ -149,7 +123,7 @@ package {
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] public static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] public static const sfxButtonPress:Class;
-		[Embed(source='assets/sfx/floor_reset.mp3')] public static const sfxFloorReset:Class;
+		[Embed(source='assets/sfx/tile_remove.mp3')] public static const sfxTileRemove:Class;
 		[Embed(source='assets/sfx/combat_failure_new.mp3')] public static const sfxCombatFailure:Class;
 		[Embed(source='assets/sfx/combat_success_long.mp3')] public static const sfxCombatSuccess:Class;
 		[Embed(source='assets/sfx/level_up.mp3')] public static const sfxLevelUp:Class;
@@ -182,8 +156,8 @@ package {
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
-			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
-			textures[Util.MONSTER_2] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
+			textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
 
 			textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
 			textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
@@ -223,6 +197,7 @@ package {
 			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
 			textures[Util.ICON_LOS] = Texture.fromBitmap(new icon_los(), true, false, 1);
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
+			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
@@ -291,7 +266,7 @@ package {
 			var fighterFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			fighterFaintVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
 			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
-			tAnimations[Util.MONSTER_1] = fighterDict;
+			tAnimations[Util.ENEMY_FIGHTER] = fighterDict;
 
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
@@ -303,7 +278,7 @@ package {
 			var mageFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
-			tAnimations[Util.MONSTER_2] = mageDict;
+			tAnimations[Util.ENEMY_MAGE] = mageDict;
 
 			return tAnimations;
 		}
@@ -340,11 +315,11 @@ package {
 			tSfx[Util.TILE_FAILURE] = new sfxTileFailure();
 			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
 			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
-			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
 			tSfx[Util.COMBAT_FAILURE] = new sfxCombatFailure();
 			tSfx[Util.COMBAT_SUCCESS] = new sfxCombatSuccess();
 			tSfx[Util.LEVEL_UP] = new sfxLevelUp();
 			tSfx[Util.SFX_ATTACK] = new sfxAttack();
+			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
 
 			return tSfx;
 		}
