@@ -475,7 +475,7 @@ package {
 		}
 
 		private function onRoomComplete(event:GameEvent):void {
-			mixer.play(Util.COMBAT_FAILURE);
+			mixer.play(Util.COMBAT_SUCCESS);
 
 			if(!event.hasData) {
 				return;
@@ -555,6 +555,10 @@ package {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
 			}
+
+			if(currentFloor) {
+				addChild(currentFloor.rooms.tStatus);
+			}
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {
@@ -574,8 +578,6 @@ package {
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
 			if (buildHud) {
-				showBuildHudImage = !touch.isTouching(buildHud);
-
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
@@ -608,6 +610,15 @@ package {
 				removeChild(phaseBanner);
 				phaseBanner = null;
 			}
+
+			if(gameState == STATE_BUILD) {
+				showBuildHudImage = !touch.isTouching(buildHud);
+				showBuildHudImage = showBuildHudImage ? !touch.isTouching(goldHud) : showBuildHudImage;
+				showBuildHudImage = showBuildHudImage ? !touch.isTouching(bgmMuteButton) : showBuildHudImage;
+				showBuildHudImage = showBuildHudImage ? !touch.isTouching(sfxMuteButton) : showBuildHudImage;
+				showBuildHudImage = showBuildHudImage ? !touch.isTouching(runButton) : showBuildHudImage;
+				showBuildHudImage = showBuildHudImage ? !touch.isTouching(shopButton) : showBuildHudImage;
+			}
 		}
 
 		private function putImageOnFloor(touch:Touch):void {
@@ -625,7 +636,7 @@ package {
 					// Player correctly placed the tile. Add it to the grid.
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
-					currentFloor.rooms.tileAdd(newTile);
+					currentFloor.rooms.addTile(newTile);
 					currentFloor.fogGrid[newTile.grid_x][newTile.grid_y] = false;
 					currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y);
 					// check if we placed the tile next to any preplaced tiles, and if we did, remove

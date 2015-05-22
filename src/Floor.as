@@ -3,12 +3,10 @@
 
 package {
 	import flash.ui.Keyboard;
-	import flash.utils.ByteArray;
+	// import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 	import flash.geom.Point;
-
-	import mx.utils.StringUtil;
 
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -52,7 +50,6 @@ package {
 		private var initialLoS:int;
 
 		private var floorFiles:Dictionary;
-		private var nextFloor:String;
 		private var onCompleteCallback:Function;
 
 		private var textures:Dictionary;
@@ -62,11 +59,9 @@ package {
 
 		// logger
 		private var logger:Logger;
-		private var nextTransition:String;
 
 		public var tutorialImage:Image;
 
-		// private var nextFloorButton:Clickable;
 		private var tutorialDisplaying:Boolean;
 		private var originalTutorialDisplaying:Boolean;
 
@@ -190,18 +185,12 @@ package {
 			if (tutorialImage) {
 				tutorialImage.x += value;
 			}
-			/*if (nextFloorButton) {
-				nextFloorButton.x += value;
-			}*/
 		}
 
 		public function shiftTutorialY(value:int):void {
 			if (tutorialImage) {
 				tutorialImage.y += value;
 			}
-			/*if (nextFloorButton) {
-				nextFloorButton.y += value;
-			}*/
 		}
 
 		public function toggleRun():void {
@@ -299,14 +288,6 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-
-			/*
-			if(tutorialImage && originalTutorialDisplaying) {
-				tutorialDisplaying = true;
-				tutorialImage.x = getToX(0);
-				tutorialImage.y = getToY(0);
-				addChild(tutorialImage);
-			}*/
 		}
 
 		// Get rid of the old character (if it exists) and make a new one
@@ -330,7 +311,6 @@ package {
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int;
-
 			var radius:int = char.los;
 
 			for(x = i - radius; x <= i + radius; x++) {
@@ -447,9 +427,6 @@ package {
 			var floorData:Object = JSON.parse(floorDataString);
 
 			floorName = floorData["floor_name"];
-
-			nextFloor = "LOL PLACEHOLDER";
-			nextTransition = "LOL ALSO PLACEHOLDER";
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
@@ -575,10 +552,6 @@ package {
 
 		private function onEnterFrame(e:Event):void {
 			addChild(char);
-
-			/*if (nextFloorButton) {
-				addChild(nextFloorButton);
-			}*/
 
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
@@ -708,25 +681,6 @@ package {
 			winBox.addChild(new TextField(popup.width, popup.height, NEXT_LEVEL_MESSAGE, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
-
-			// We don't have any other floors yet, so no need for the button at
-			// the moment.
-			// TODO: remove if we only have one floor.
-			/*nextFloorButton = new Clickable(0, 0, onCompleteCallback, winBox);
-			nextFloorButton.addParameter(altCallback); // Default = switchToFloor
-			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TRANSITION_INDEX]);
-			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_FLOOR_INDEX]);
-			nextFloorButton.addParameter(floorFiles[nextFloor][Util.DICT_TILES_INDEX]);
-
-			var i:int = 0;
-			if(nextFloor == Util.FLOOR_1) {
-				i = 1;
-			} else if(nextFloor == Util.FLOOR_2) {
-				i = 2;
-			} else if(nextFloor == Util.FLOOR_8) {
-				i = 3;
-			}
-			nextFloorButton.addParameter(i);*/
 		}
 
 		// Called when the character moves into an objective tile. Updates objectiveState
@@ -738,7 +692,9 @@ package {
 		}
 
 		private function onRoomReveal(event:GameEvent):void {
-			mixer.play(Util.FLOOR_RESET);
+			mixer.play(Util.COMBAT_FAILURE);
+
+			rooms.tStatus.text = "reveal";
 
 			if(!event.hasData) {
 				return;

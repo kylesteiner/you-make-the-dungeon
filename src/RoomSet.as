@@ -1,116 +1,131 @@
 package {
     //import starling.display.*;
     import starling.events.*;
+    import starling.text.TextField;
 
     import flash.utils.Dictionary;
     import flash.utils.ByteArray;
     import flash.geom.Point;
 
-    import mx.utils.StringUtil;
-
     import tiles.*;
 
     public class RoomSet extends EventDispatcher {
 
+        // Map of string -> Array of Points (spaces and walls)
         public var rooms:Dictionary;
-        public var buildableRooms:Dictionary;
-        public var builtRooms:Dictionary;
+
+        // Map of string -> Array of Points (spaces)
+        public var roomSpaces:Dictionary;
+
+        // Map of string -> Array of Points (spaces player has filled)
+        public var builtRoomTiles:Dictionary;
+
+        // Map of string -> string of callback names
         public var roomToFunction:Dictionary;
-        //public var roomFunctions:Dictionary;
+
+        // Map of string -> boolean of if fog has been cleared from a room
         public var roomsRevealed:Dictionary;
+
+        // Map of string -> boolean of if the room callback has fired
         public var roomsComplete:Dictionary;
 
-        //public var seenTiles:Array;
+        public var tStatus:TextField = new TextField(128, 128, "normal", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 
-        public function RoomSet(roomJSON:Object) {
+        public function RoomSet(roomData:Array) {
             super();
 
             rooms = new Dictionary();
-            buildableRooms = new Dictionary();
-            builtRooms = new Dictionary();
+            roomSpaces = new Dictionary();
+            builtRoomTiles = new Dictionary();
             roomToFunction = new Dictionary();
             roomsRevealed = new Dictionary();
             roomsComplete = new Dictionary();
             //roomFunctions = callbacks;
             //seenTiles = new Array(); // only needed if tile could be added on location of existing tile
-            buildRooms(roomJSON);
+            buildRooms(roomData);
+
+            tStatus.touchable = false;
         }
 
-        public function buildRooms(roomJSON:Object):void {
-            return;
-
-            var roomDataString:String = roomData.readUTFBytes(roomData.length);
-            var roomDataArray:Array = roomDataString.split("\n");
-
+        public function buildRooms(roomData:Array):void {
+            // roomData is an Array of JSON objects
             var i:int; var j:int;
-            var isOpen:Boolean;
-            var splitData:Array;
-            var coordData:Array;
+            var roomJSON:Object;
             var roomName:String;
-            var callbackString:String;
-            var roomCoords:Array;
-            var buildCoords:Array;
-            var currCoord:Point;
-            for(i = 0; i < roomDataArray.length; i++) {
-                splitData = roomDataArray[i].split("\t");
-                roomName = StringUtil.trim(splitData[0]);
-                //roomName = "hh";
-                callbackString = StringUtil.trim(splitData[1]);
-                //callbackString = "h";
-                isOpen = StringUtil.trim(splitData[2]) == "0" ? false : true;
-                isOpen = false;
-                roomCoords = rooms[roomName] ? rooms[roomName] : new Array();
-                buildCoords = buildableRooms[roomName] ? buildableRooms[roomName] : new Array();
+            var roomCallback:String;
+            var wallCoords:Array;
+            var openCoords:Array;
 
-                // Does not protect against non-unique tile entries
-                for(j = 3; j < splitData.length; j++) {
-                    coordData = StringUtil.trim(splitData[j]).split(",");
-                    currCoord = new Point(parseInt(coordData[0]), parseInt(coordData[1]));
-                    roomCoords.push(currCoord);
-                    if(isOpen) {
-                        buildCoords.push(currCoord);
-                    }
+            var allTiles:Array;
+            var openTiles:Array;
+            var tilePoint:Object;
+            var currentPoint:Point;
+            for(i = 0; i < roomData.length; i++) {
+                roomJSON = roomData[i];
+                roomName = roomJSON["name"];
+                roomCallback = roomJSON["callback"];
+                wallCoords = roomJSON["walls"]; // Set of (x, y) JSON objects
+                openCoords = roomJSON["spaces"]; // Set of (x, y) JSON objects
+
+                allTiles = new Array();
+                openTiles = new Array();
+
+                for(j = 0; j < openCoords.length; j++) {
+                    tilePoint = openCoords[i];
+                    currentPoint = new Point(tilePoint["x"], tilePoint["y"]);
+                    allTiles.push(currentPoint);
+                    openTiles.push(new Point(tilePoint["x"], tilePoint["y"]));
                 }
 
-                if(!rooms[roomName]) {
-                    rooms[roomName] = roomCoords;
-                    buildableRooms[roomName] = buildCoords;
-                    builtRooms[roomName] = new Array();
-                    roomToFunction[roomName] = callbackString;
-                    roomsRevealed[roomName] = false;
-                    roomsComplete[roomName] = false;
+                for(j = 0; j < wallCoords.length; j++) {
+                    tilePoint = wallCoords[i];
+                    currentPoint = new Point(tilePoint["x"], tilePoint["y"]);
+                    allTiles.push(currentPoint);
                 }
+
+                rooms[roomName] = allTiles;
+                roomSpaces[roomName] = openTiles;
+                builtRoomTiles[roomName] = new Array();
+                roomToFunction[roomName] = roomCallback;
+                roomsRevealed[roomName] = false;
+                roomsComplete[roomName] = false;
             }
         }
 
-        public function tileAdd(tile:Tile):void {
+        public function addTile(tile:Tile):void {
             var tx:int = tile.grid_x;
             var ty:int = tile.grid_y;
             var tilePoint:Point = new Point(tx, ty);
+            tStatus.text = tx + ", " + ty;
 
             var key:String;
-            var buildCoords:Array;
-            var builtCoords:Array;
+            var openSpaces:Array;
+            var builtTiles:Array;
             var roomPoint:Point;
+            var i:int;
             dispatchEvent(new GameEvent(GameEvent.COMPLETE_ROOM, 0, 0));
-            for each (key in rooms) {
-                buildCoords = buildableRooms[key];
-                builtCoords = builtRooms[key];
-                for each (roomPoint in buildCoords) {
-                    if(tilePoint == roomPoint) {
-                        if(!roomsRevealed[key] && builtCoords.length == 0) {
+            for (key in rooms) {
+                openSpaces = roomSpaces[key];
+                builtTiles = builtRoomTiles[key];
+                for(i = 0; i < openSpaces.length; i++) {
+                    roomPoint = openSpaces[i];
+                    //tStatus.text = tStatus.text == "reveal" ? "reveal" : tStatus.text == "equal" ? "equal" : "all";
+                    if(tilePoint.x == roomPoint.x && tilePoint.y == roomPoint.y) {
+                        tStatus.text = tStatus.text == "reveal" ? "reveal" : "equal";
+                        if(!roomsRevealed[key] && builtTiles.length == 0) {
                             roomsRevealed[key] = true;
                             // reveal room function goes here
                             var revealData:Array = new Array();
                             revealData.push(rooms[key]);
+                            tStatus.text = "reveal";
                             dispatchEvent(new GameEvent(GameEvent.REVEAL_ROOM, 0, 0, revealData));
                         }
 
-                        if(builtCoords.indexOf(tilePoint) == -1) {
-                            builtCoords.push(tilePoint);
+                        if(builtTiles.indexOf(tilePoint) == -1) {
+                            builtTiles.push(tilePoint);
                         }
 
-                        if(!roomsComplete[key] && builtCoords.length == buildCoords.length) {
+                        if(!roomsComplete[key] && builtTiles.length == openSpaces.length) {
                             roomsComplete[key] = true;
                             var completeData:Array = new Array();
                             completeData.push(roomToFunction[key]);
@@ -121,6 +136,10 @@ package {
                     }
                 }
             }
+        }
+
+        public function removeTile(tile:Tile):void {
+
         }
     }
 }
