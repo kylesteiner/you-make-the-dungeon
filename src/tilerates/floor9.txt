@@ -1,3 +1,0 @@
-empty	50
-enemy	50
-healing	0

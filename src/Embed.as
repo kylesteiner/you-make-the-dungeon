@@ -72,30 +72,6 @@ package {
 
 		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
-		[Embed(source='floordata/floor0.txt', mimeType="application/octet-stream")] public static const floor0:Class;
-		[Embed(source='floordata/floor1.txt', mimeType="application/octet-stream")] public static const floor1:Class;
-		[Embed(source='floordata/floor2.txt', mimeType="application/octet-stream")] public static const floor2:Class;
-		[Embed(source='floordata/floor3.txt', mimeType="application/octet-stream")] public static const floor3:Class;
-		[Embed(source='floordata/floor4.txt', mimeType="application/octet-stream")] public static const floor4:Class;
-		[Embed(source='floordata/floor5.txt', mimeType="application/octet-stream")] public static const floor5:Class;
-		[Embed(source='floordata/floor6.txt', mimeType="application/octet-stream")] public static const floor6:Class;
-		[Embed(source='floordata/floor7.txt', mimeType="application/octet-stream")] public static const floor7:Class;
-		[Embed(source='floordata/floor8.txt', mimeType="application/octet-stream")] public static const floor8:Class;
-		[Embed(source='floordata/floor9.txt', mimeType="application/octet-stream")] public static const floor9:Class;
-		[Embed(source='floordata/floor10.txt', mimeType="application/octet-stream")] public static const floor10:Class;
-		[Embed(source='floordata/floor11.txt', mimeType="application/octet-stream")] public static const floor11:Class;
-		[Embed(source='tilerates/floor0.txt', mimeType="application/octet-stream")] public static const tiles0:Class;
-		[Embed(source='tilerates/floor1.txt', mimeType="application/octet-stream")] public static const tiles1:Class;
-		[Embed(source='tilerates/floor2.txt', mimeType="application/octet-stream")] public static const tiles2:Class;
-		[Embed(source='tilerates/floor3.txt', mimeType="application/octet-stream")] public static const tiles3:Class;
-		[Embed(source='tilerates/floor4.txt', mimeType="application/octet-stream")] public static const tiles4:Class;
-		[Embed(source='tilerates/floor5.txt', mimeType="application/octet-stream")] public static const tiles5:Class;
-		[Embed(source='tilerates/floor6.txt', mimeType="application/octet-stream")] public static const tiles6:Class;
-		[Embed(source='tilerates/floor7.txt', mimeType="application/octet-stream")] public static const tiles7:Class;
-		[Embed(source='tilerates/floor8.txt', mimeType="application/octet-stream")] public static const tiles8:Class;
-		[Embed(source='tilerates/floor9.txt', mimeType="application/octet-stream")] public static const tiles9:Class;
-		[Embed(source='tilerates/floor10.txt', mimeType="application/octet-stream")] public static const tiles10:Class;
-		[Embed(source='tilerates/floor11.txt', mimeType="application/octet-stream")] public static const tiles11:Class;
 		[Embed(source='assets/transitions/floor0.png')] public static const transitions0:Class;
 		[Embed(source='assets/transitions/floor1.png')] public static const transitions1:Class;
 		[Embed(source='assets/transitions/floor2.png')] public static const transitions2:Class;
@@ -112,7 +88,6 @@ package {
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
 		[Embed(source='assets/animations/character/idle/character_2.png')] public static const characterIdleAnim2:Class;
-		//[Embed(source='assets/animations/character/idle/character_3.png')] public static const characterIdleAnim3:Class;
 
 		[Embed(source='assets/animations/character/move/character_move_0.png')] public static const characterMoveAnim0:Class;
 		[Embed(source='assets/animations/character/move/character_move_1.png')] public static const characterMoveAnim1:Class;
@@ -126,8 +101,6 @@ package {
 
 		[Embed(source='assets/animations/character/combat_attack/char_ca_0.png')] public static const charCombatAtkAnim0:Class;
 		[Embed(source='assets/animations/character/combat_attack/char_ca_1.png')] public static const charCombatAtkAnim1:Class;
-		//[Embed(source='assets/animations/character/combat_attack/char_ca_2.png')] public static const charCombatAtkAnim2:Class;
-		//[Embed(source='assets/animations/character/combat_attack/char_ca_3.png')] public static const charCombatAtkAnim3:Class;
 
 		[Embed(source='assets/animations/character/combat_faint/char_cf_0.png')] public static const charCombatFaintAnim0:Class;
 		[Embed(source='assets/animations/character/combat_faint/char_cf_1.png')] public static const charCombatFaintAnim1:Class;
