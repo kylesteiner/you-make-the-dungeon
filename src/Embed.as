@@ -51,6 +51,7 @@ package {
 		[Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
 		[Embed(source='assets/icons/los.png')] public static const icon_los:Class;
 		[Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
+		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
 
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -149,7 +150,7 @@ package {
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
 		[Embed(source='assets/sfx/floor_begin.mp3')] public static const sfxFloorBegin:Class;
 		[Embed(source='assets/sfx/button_press.mp3')] public static const sfxButtonPress:Class;
-		[Embed(source='assets/sfx/floor_reset.mp3')] public static const sfxFloorReset:Class;
+		[Embed(source='assets/sfx/tile_remove.mp3')] public static const sfxTileRemove:Class;
 		[Embed(source='assets/sfx/combat_failure_new.mp3')] public static const sfxCombatFailure:Class;
 		[Embed(source='assets/sfx/combat_success_long.mp3')] public static const sfxCombatSuccess:Class;
 		[Embed(source='assets/sfx/level_up.mp3')] public static const sfxLevelUp:Class;
@@ -182,8 +183,8 @@ package {
 			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
-			textures[Util.MONSTER_1] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
-			textures[Util.MONSTER_2] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
+			textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
 
 			textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
 			textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
@@ -223,6 +224,7 @@ package {
 			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
 			textures[Util.ICON_LOS] = Texture.fromBitmap(new icon_los(), true, false, 1);
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
+			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
@@ -291,7 +293,7 @@ package {
 			var fighterFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			fighterFaintVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
 			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
-			tAnimations[Util.MONSTER_1] = fighterDict;
+			tAnimations[Util.ENEMY_FIGHTER] = fighterDict;
 
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
@@ -303,7 +305,7 @@ package {
 			var mageFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
-			tAnimations[Util.MONSTER_2] = mageDict;
+			tAnimations[Util.ENEMY_MAGE] = mageDict;
 
 			return tAnimations;
 		}
@@ -340,11 +342,11 @@ package {
 			tSfx[Util.TILE_FAILURE] = new sfxTileFailure();
 			tSfx[Util.FLOOR_BEGIN] = new sfxFloorBegin();
 			tSfx[Util.BUTTON_PRESS] = new sfxButtonPress();
-			tSfx[Util.FLOOR_RESET] = new sfxFloorReset();
 			tSfx[Util.COMBAT_FAILURE] = new sfxCombatFailure();
 			tSfx[Util.COMBAT_SUCCESS] = new sfxCombatSuccess();
 			tSfx[Util.LEVEL_UP] = new sfxLevelUp();
 			tSfx[Util.SFX_ATTACK] = new sfxAttack();
+			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
 
 			return tSfx;
 		}

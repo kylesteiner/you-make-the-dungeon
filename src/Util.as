@@ -90,6 +90,7 @@ package {
 		public static const ICON_STAMINA:String = "icon_stamina";
 		public static const ICON_LOS:String = "icon_los";
 		public static const ICON_GOLD:String = "icon_gold";
+		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
@@ -138,8 +139,8 @@ package {
 		public static const ENEMY_COMBAT_IDLE:String = "enemy_combat_idle";
 		public static const ENEMY_COMBAT_ATTACK:String = "enemy_combat_attack";
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
-		public static const MONSTER_1:String = "monster_1";
-		public static const MONSTER_2:String = "monster_2";
+		public static const ENEMY_FIGHTER:String = "enemy_fighter";
+		public static const ENEMY_MAGE:String = "enemy_mage";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
 
@@ -149,11 +150,11 @@ package {
 		public static const TILE_FAILURE:String = "tile_failure";
 		public static const FLOOR_BEGIN:String = "floor_begin";
 		public static const BUTTON_PRESS:String = "button_press";
-		public static const FLOOR_RESET:String = "floor_reset";
 		public static const COMBAT_FAILURE:String = "combat_failure";
 		public static const COMBAT_SUCCESS:String = "combat_success";
 		public static const LEVEL_UP:String = "level_up";
 		public static const SFX_ATTACK:String = "sfx_attack";
+		public static const TILE_REMOVE:String = "tile_remove";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -166,6 +167,9 @@ package {
 		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
+
+		// Costs go here
+		public static const TILE_DELETE_COST:int = 0;
 
 		public static var logger:Logger;
 

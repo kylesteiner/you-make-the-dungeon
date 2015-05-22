@@ -93,7 +93,7 @@
 			"type": "enemy",
 			"x": 6,
 			"y": 11,
-			"texture": "monster_1",
+			"texture": "enemy_fighter",
 			"hp": 5,
 			"attack": 2,
 			"reward": 5

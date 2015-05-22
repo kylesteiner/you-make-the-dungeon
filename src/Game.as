@@ -1,4 +1,6 @@
 package {
+	import entities.Enemy;
+	import entities.Entity;
 	import flash.media.*;
 	import flash.ui.Mouse;
 	import flash.utils.ByteArray;
@@ -137,58 +139,42 @@ package {
 
 		private function initializeFloorWorld():void {
 			world = new Sprite();
-			//world.height = 2048;
-			//world.width = 2048;
-			//world.addChild(new Quad(world.height, world.width, 0xff000000));
-			//world.addChild(new Image(Texture.fromBitmap(new grid_background())));
 
-			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
-			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
-
-			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
-			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
-
-			sfxMuteButton = new Clickable(
-					Util.PIXELS_PER_TILE,
-					Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
-					toggleSFXMute,
-					null,
-					textures[Util.ICON_MUTE_SFX]);
-			//sfxMuteButton.x += (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			//sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
-			sfxMuteButton.x = goldHud.x - sfxMuteButton.width - Util.UI_PADDING;
-			sfxMuteButton.y = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
+			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
+			sfxMuteButton.y = Util.UI_PADDING;
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
-			//bgmMuteButton.x = Util.BORDER_PIXELS * Util.PIXELS_PER_TILE;
-			//bgmMuteButton.y = Util.STAGE_HEIGHT - bgmMuteButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
-			//resetButton = new Clickable(2 * Util.PIXELS_PER_TILE, Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE, resetFloor, null, textures[Util.ICON_RESET]);
-			//resetButton.x = Util.STAGE_WIDTH - resetButton.width - textures[Util.CHAR_HUD].width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			//resetButton.y = Util.STAGE_HEIGHT - resetButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
+			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
+			goldHud.y = sfxMuteButton.y + sfxMuteButton.height + Util.UI_PADDING;
 
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
 									  runFloor,
 									  null,
 									  textures[Util.ICON_RUN]);
-			//runButton.x = resetButton.x - runButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
-			runButton.x = sfxMuteButton.x;
-			runButton.y = Util.STAGE_HEIGHT - runButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			runButton.x = Util.STAGE_WIDTH - runButton.width - Util.UI_PADDING;
+			runButton.y = Util.STAGE_HEIGHT - runButton.height - Util.UI_PADDING;
+
+			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
+			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
+			shopButton.x = runButton.x - shopButton.width - Util.UI_PADDING
+			shopButton.y = Util.STAGE_HEIGHT - shopButton.height - Util.UI_PADDING;
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
 									  endRun,
 									  null,
 									  textures[Util.ICON_END]);
-			//endButton.x = resetButton.x - endButton.width - 2 * (Util.BORDER_PIXELS + Util.BUTTON_SPACING) * Util.PIXELS_PER_TILE;
 			endButton.x = runButton.x;
-			endButton.y = Util.STAGE_HEIGHT - endButton.height - (Util.BORDER_PIXELS * Util.PIXELS_PER_TILE);
+			endButton.y = runButton.y;
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
-			buildHud = new BuildHUD(textures, logger); // TODO: Add entities
+			buildHud = new BuildHUD(textures, logger);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -217,15 +203,13 @@ package {
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
-			//mixer.play(Util.COMBAT_FAILURE);
 			removeChild(currentCombat);
-			// event.enemy.state.hp = event.enemy.state.maxHp;
-			// Prompt clickable into either floor reset or continue modifying floor
-			/*logger.logAction(4, {
+
+			logger.logAction(4, {
 				"characterAttack":event.character.attack,
 				"enemyAttack":event.enemy.attack,
 				"enemyHealthLeft":event.enemy.hp
-			});*/
+			});
 
 			var alertBox:Sprite = new Sprite();
 			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
@@ -338,18 +322,9 @@ package {
 
 			world.addChild(currentFloor);
 			world.addChild(cursorHighlight);
-			//world.x = Util.STAGE_WIDTH / 4;
 
-			/*var charWidth:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.width;
-			var charX:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.x;
-			world.x = Util.STAGE_WIDTH / 2 - Util.grid_to_real(Util.real_to_grid(charX));
-
-			var charHeight:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.height;
-			var charY:int = currentFloor == null ? 0 : currentFloor.char == null ? 0 : currentFloor.char.y;
-			world.y = Util.STAGE_HEIGHT / 2 - Util.grid_to_real(Util.real_to_grid(charY)) - (Util.PIXELS_PER_TILE * 3.0 / 4);*/
 			centerWorldOnCharacter();
-			//currentFloor.shiftTutorialX(-1 *(Util.STAGE_WIDTH / 4));
-			//currentFloor.shiftTutorialY(-1 *(Util.STAGE_HEIGHT / 4));
+
 			addChild(world);
 			// mute button should always be on top
 			addChild(bgmMuteButton);
@@ -447,7 +422,7 @@ package {
 			healingTiles = 0;
 			currentFloor.resetFloor();
 			//charHud.char = currentFloor.char
-			mixer.play(Util.FLOOR_RESET);
+			mixer.play(Util.TILE_REMOVE);
 		}
 
 		public function runFloor():void {
@@ -459,6 +434,7 @@ package {
 			});
 			removeChild(runButton);
 			buildHud.deselect();
+			currentFloor.clearHighlightedLocations();
 			removeChild(buildHud);
 			removeChild(shopButton);
 
@@ -495,6 +471,7 @@ package {
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp
 			});
+
 			removeChild(endButton);
 			removeChild(runHud);
 			addChild(runButton);
@@ -577,32 +554,30 @@ package {
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
-			if (buildHud) {
+			// Manage build hud display and current image
+			showBuildHudImage = touch.isTouching(currentFloor);
+			if (gameState == STATE_BUILD) {
+				if (touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
+					buildHud.closePopup();
+				}
+
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
 					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
 					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
-					//currentFloor.clearHighlightedLocations();
-					//currentFloor.highlightAllowedLocations(selectedTile);
+					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.hudState);
 					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
 						// Player clicked inside grid
-						putImageOnFloor(touch);
+						buildHandleClick(touch);
 					}
-				}
-
-				if (gameState == STATE_BUILD && touch.phase == TouchPhase.BEGAN && !touch.isTouching(buildHud)) {
-					// User clicked so do something
-					buildHud.closePopup();
-
-					// Replicated conditionals are no fun, but it's necessary here
-					if (buildHud.hasSelected()) {
-						mixer.play(Util.FLOOR_RESET);
-					}
+				} else {
+					currentFloor.clearHighlightedLocations();
 				}
 			}
 
+
 			// Click outside of shop (onblur)
-			if (shopHud && getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
+			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
 				removeChild(shopHud);
 			}
 
@@ -621,18 +596,26 @@ package {
 			}
 		}
 
-		private function putImageOnFloor(touch:Touch):void {
-			if (!buildHud.isEntityDisplay) {
-				var newTile:Tile = new Tile(0, 0, buildHud.directions[Util.NORTH], buildHud.directions[Util.SOUTH],
-												  buildHud.directions[Util.EAST], buildHud.directions[Util.WEST],
-												  buildHud.currentImage.texture);
-				// Realigns the new tile on the Floor.
-				newTile.x = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.x - world.x + Util.PIXELS_PER_TILE / 2));
-				newTile.y = Util.grid_to_real(Util.real_to_grid(buildHud.currentImage.y - world.y + Util.PIXELS_PER_TILE / 2));
-				newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
-				newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
-				if (!currentFloor.grid[newTile.grid_x][newTile.grid_y]/* &&
-					currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]*/) {
+		private function buildHandleClick(touch:Touch):void {
+			var currentTile:Tile; var currentEntity:Entity; var newTile:Tile; var newEntity:Entity;
+
+			var tempX:int = touch.globalX - world.x;
+			var tempY:int = touch.globalY - world.y;
+			if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
+				&& tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
+				currentTile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
+				currentEntity = currentFloor.entityGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
+			} else {
+				// Did not click a valid tile location
+				return;
+			}
+
+			if (buildHud.hudState == BuildHUD.STATE_DELETE) {
+				// Deleting position on grid
+				currentFloor.deleteSelected(currentTile, currentEntity);
+			} else if (buildHud.hudState == BuildHUD.STATE_TILE) {
+				newTile = buildHud.buildTileFromImage(world.x, world.y);
+				if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Player correctly placed the tile. Add it to the grid.
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
@@ -660,8 +643,16 @@ package {
 				} else {
 					mixer.play(Util.TILE_FAILURE);
 				}
-			} else {
-				// Handle entities
+			} else if(buildHud.hudState == BuildHUD.STATE_ENTITY) {
+				if (currentFloor.isEmptyTile(currentTile)) {
+					// Player correctly placed the entity. Add it to the grid.
+					newEntity = buildHud.buildEntityFromImage(currentTile);
+					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;
+					currentFloor.addChild(newEntity);
+					mixer.play(Util.TILE_MOVE);
+				} else {
+					mixer.play(Util.TILE_FAILURE);
+				}
 			}
 		}
 
@@ -743,6 +734,10 @@ package {
 			// Possible race condition which will leave phantom images
 			// on the floor from discarded old buildHud images
 			removeChild(buildHud.currentImage);
+
+			if(currentFloor) {
+				currentFloor.clearHighlightedLocations();
+			}
 		}
 	}
 }
