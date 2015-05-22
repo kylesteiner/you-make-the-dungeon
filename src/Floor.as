@@ -460,18 +460,18 @@ package {
 			}
 		}
 
-		public function deleteSelected(tile:Tile, entity:Entity):void {
+		public function deleteSelected(tile:Tile, entity:Entity):Boolean {
 			if (entity) {
 				removeChild(entity);
 				entityGrid[entity.grid_x][entity.grid_y] = null;
 				removeMonsterFromArray(entity);
+				return true;
 			} else if (isEmptyTile(tile)) {
 				removeChild(tile);
 				grid[tile.grid_x][tile.grid_y] = null;
-				mixer.play(Util.TILE_REMOVE);
-			} else {
-				mixer.play(Util.TILE_FAILURE);
+				return true;
 			}
+			return false;
 		}
 		
 		// removes the monster from the array of mosnters
