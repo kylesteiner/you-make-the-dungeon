@@ -90,6 +90,7 @@ package {
 		public static const ICON_STAMINA:String = "icon_stamina";
 		public static const ICON_LOS:String = "icon_los";
 		public static const ICON_GOLD:String = "icon_gold";
+		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";

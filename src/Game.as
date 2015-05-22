@@ -575,7 +575,7 @@ package {
 					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.isEntityDisplay);
 					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
 						// Player clicked inside grid
-						putImageOnFloor(touch);
+						buildHandleClick(touch);
 					}
 				} else {
 					currentFloor.clearHighlightedLocations();
@@ -594,16 +594,23 @@ package {
 			}
 		}
 		
-		private function putImageOnFloor(touch:Touch):void {
-			var currentTile:Tile; var newTile:Tile; var newEntity:Entity;
+		private function buildHandleClick(touch:Touch):void {
+			var currentTile:Tile; var currentEntity:Entity; var newTile:Tile; var newEntity:Entity;
 			
 			var tempX:int = touch.globalX - world.x;
 			var tempY:int = touch.globalY - world.y;
 			if (tempX > 0 && tempX < currentFloor.gridWidth * Util.PIXELS_PER_TILE
 				&& tempY > 0 && tempY < currentFloor.gridHeight * Util.PIXELS_PER_TILE) {
 				currentTile = currentFloor.grid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
+				currentEntity = currentFloor.entityGrid[Util.real_to_grid(tempX)][Util.real_to_grid(tempY)];
 			} else {
 				// Did not click a valid tile location
+				return;
+			}
+			
+			if (buildHud.currentImage.texture == textures[Util.ICON_DELETE]) {
+				// Deleting position on grid
+				currentFloor.deleteSelected(currentTile, currentEntity);
 				return;
 			}
 			
@@ -637,7 +644,7 @@ package {
 					mixer.play(Util.TILE_FAILURE);
 				}
 			} else {
-				if (currentTile && currentFloor.isEmptyTile(currentTile.grid_x, currentTile.grid_y)) {
+				if (currentFloor.isEmptyTile(currentTile)) {
 					// Player correctly placed the entity. Add it to the grid.
 					newEntity = buildHud.buildEntityFromImage(currentTile);
 					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;

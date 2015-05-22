@@ -21,6 +21,7 @@ package {
 		public static const SELECT_BUTTON_WIDTH:int = 48;
 		public static const SELECT_BUTTON_HEIGHT:int = 16;
 		public static const SELECT_BUTTON_MARGIN:int = 4;
+		public static const DELETE_BUTTON_SIZE:int = 52;
 
 		private var textures:Dictionary;
 		private var highlightedLocations:Array; // Why is this being managed in BuildHUD?
@@ -80,6 +81,9 @@ package {
 		private var entityClickables:Array;
 		private var entitySelectButtons:Array;
 
+		private var deleteQuad:Quad;
+		private var deleteButton:Clickable;
+		
 		private var logger:Logger;
 		private var entityFactory:EntityFactory;
 
@@ -225,7 +229,18 @@ package {
 				selectEntityButton.addParameter("index", i);
 				entitySelectButtons.push(selectEntityButton);
 			}
-
+			
+			deleteQuad = new Quad(DELETE_BUTTON_SIZE, DELETE_BUTTON_SIZE, 0x000000);
+			deleteQuad.x = entityQuad.x + entityQuad.width + HUD_MARGIN;
+			deleteQuad.y = TOP;
+			var interiorDQ:Quad = new Quad(deleteQuad.width - 2*QUAD_BORDER_PIXELS,
+										   deleteQuad.height - 2*QUAD_BORDER_PIXELS);
+			interiorDQ.x = deleteQuad.x + QUAD_BORDER_PIXELS;
+			interiorDQ.y = deleteQuad.y + QUAD_BORDER_PIXELS;
+			deleteButton = new Clickable(deleteQuad.x + QUAD_BORDER_PIXELS,
+										 deleteQuad.y + QUAD_BORDER_PIXELS,
+										 deleteClickable, null, textures[Util.ICON_DELETE]);
+	
 			addChild(tileQuad);
 			addChild(interiorTQ);
 
@@ -247,6 +262,10 @@ package {
 				addChild(entityClickables[i]);
 				addChild(entitySelectButtons[i]);
 			}
+			
+			addChild(deleteQuad);
+			addChild(interiorDQ);
+			addChild(deleteButton);
 		}
 
 		public function updateUI():void {
@@ -390,6 +409,15 @@ package {
 			entity.grid_x = currentTile.grid_x;
 			entity.grid_y = currentTile.grid_y;
 			return entity;
+		}
+		
+		public function deleteClickable():void {
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
+			
+			currentTile = null;
+			currentImage = new Image(textures[Util.ICON_DELETE]);
+			currentImage.touchable = false;
+			isEntityDisplay = true;
 		}
 
 		/**********************************************************************************

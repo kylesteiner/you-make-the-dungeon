@@ -351,16 +351,16 @@ package {
 			} else {
 				for (x = 0; x < gridWidth; x++) {
 					for (y = 0; y < gridHeight; y++) {
-						addRemoveHighlight(x, y, isEmptyTile(x, y) && !entityGrid[x][y]);
+						addRemoveHighlight(x, y, isEmptyTile(grid[x][y]) && !entityGrid[x][y]);
 					}
 				}
 			}
 		}
 		
-		public function isEmptyTile(x:int, y:int):Boolean {
-			return grid[x][y] is Tile && !(grid[x][y] is EntryTile) &&
-				   !(grid[x][y] is ExitTile) && !(grid[x][y] is ImpassableTile) &&
-				   !entityGrid[x][y];
+		public function isEmptyTile(tile:Tile):Boolean {
+			return tile is Tile && !(tile is EntryTile) &&
+				   !(tile is ExitTile) && !(tile is ImpassableTile) &&
+				   !entityGrid[tile.grid_x][tile.grid_y];
 		}
 		
 		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {
@@ -444,6 +444,18 @@ package {
 				if (y - 1 >= 0 && grid[x][y].north) {
 					getAllowedLocationsHelper(x, y - 1, directions, visited, available, Util.SOUTH);
 				}
+			}
+		}
+		
+		public function deleteSelected(tile:Tile, entity:Entity):void {
+			if (entity) {
+				removeChild(entity);
+				entityGrid[entity.grid_x][entity.grid_y] = null;
+			} else if (isEmptyTile(tile)) {
+				removeChild(tile);
+				grid[tile.grid_x][tile.grid_y] = null;
+			} else {
+				mixer.play(Util.TILE_FAILURE);
 			}
 		}
 
