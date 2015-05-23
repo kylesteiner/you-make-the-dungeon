@@ -5,6 +5,7 @@ package {
 		public static const ARRIVED_AT_TILE:String = "arrived_at_tile";
         public static const ARRIVED_AT_EXIT:String = "arrived_at_exit";
 		public static const ENTERED_COMBAT:String = "entered_combat";
+		public static const HEALED:String = "healed";
         public static const OBJ_COMPLETED:String = "obj_completed";
 		public static const STAMINA_EXPENDED:String = "stamina_expended";
 		public static const BUILD_HUD_IMAGE_CHANGE:String = "build_hud_image_change";

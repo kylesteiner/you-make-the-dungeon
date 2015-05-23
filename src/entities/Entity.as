@@ -21,5 +21,8 @@ package entities {
 		}
 
 		public function handleChar(c:Character):void {}
+
+		// Override if the state of the entity needs to be reset between runs.
+		public function reset():void {}
 	}
 }

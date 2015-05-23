@@ -25,7 +25,6 @@ package {
 		public var char:Character;
 		public var floorName:String;
 		public var highlightedLocations:Array;
-
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
 		// Map string (objective key) -> boolean (state)
@@ -48,25 +47,28 @@ package {
 		private var initialAttack:int;
 		private var initialLoS:int;
 
+		// Entities that have been removed in by character actions the run phase
+		// but need to be replaced after the run phase.
+		private var removedEntities:Array;
+
+		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
 		private var nextFloor:String;
+		private var nextTransition:String;
 		private var onCompleteCallback:Function;
+		public var altCallback:Function;
 
+		// Assets.
 		private var textures:Dictionary;
 		private var animations:Dictionary;
-
 		private var mixer:Mixer;
 
-		private var nextTransition:String;
-
+		// Tutorial UI elements.
 		public var tutorialImage:Image;
-
-		// private var nextFloorButton:Clickable;
 		private var tutorialDisplaying:Boolean;
 		private var originalTutorialDisplaying:Boolean;
 
-		public var altCallback:Function;
-
+		// Array for storing user key presses.
 		public var pressedKeys:Array;
 
 		// grid: The initial layout of the floor.
@@ -99,6 +101,7 @@ package {
 
 			pressedKeys = new Array();
 			objectiveState = new Dictionary();
+			removedEntities = new Array();
 
 			// Get floor layout information from the JSON file.
 			parseFloorData(floorData);
@@ -125,6 +128,7 @@ package {
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
+			addEventListener(GameEvent.HEALED, onHeal);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
@@ -149,7 +153,7 @@ package {
 		}
 
 		public function toggleRun():void {
-			char.toggleRun();
+			char.toggleRunUI();
 		}
 
 		public function getEntry():Tile {
@@ -174,6 +178,18 @@ package {
 				}
 			}
 			return null;
+		}
+
+		// Resets the floor after a run.
+		public function resetFloor():void {
+			char.reset();
+
+			while (removedEntities.length > 0) {
+				var entity:Entity = removedEntities.pop();
+				entity.reset();
+				entityGrid[entity.grid_x][entity.grid_y] = entity;
+				addChild(entity);
+			}
 		}
 
 		// Initializes or resets the state of the floor based on the initial
@@ -429,7 +445,6 @@ package {
 		}
 
 		private function parseFloorData(floorDataString:String):void {
-			trace(floorDataString);
 			var floorData:Object = JSON.parse(floorDataString);
 
 			floorName = floorData["floor_name"];
@@ -551,6 +566,8 @@ package {
 		}
 
 		private function onEnterFrame(e:Event):void {
+			// Workaround because tiles are above the Character in the display
+			// hierarchy after being placed.
 			addChild(char);
 
 			if(tutorialImage && tutorialDisplaying) {
@@ -635,7 +652,6 @@ package {
 			if(!char.runState) {
 				return;
 			}
-
 			if(pressedKeys.indexOf(event.keyCode) == -1) {
 				pressedKeys.push(event.keyCode);
 			}
@@ -645,7 +661,6 @@ package {
 			if(!char.runState) {
 				return;
 			}
-
 			if(pressedKeys.indexOf(event.keyCode) == -1) {
 				return;
 			}
@@ -664,15 +679,8 @@ package {
 			entity.handleChar(char);
 		}
 
-		public function onCombatSuccess(enemy:Enemy):void {
-			entityGrid[enemy.grid_x][enemy.grid_y] = null;
-			removeChild(enemy);
-		}
-
 		// Event handler for when a character arrives at an exit tile.
-		// The event chain goes: character -> floor -> tile -> floor.
 		private function onCharExited(e:GameEvent):void {
-			// TODO: Do actual win condition handling.
 			if (Util.logger) {
 				Util.logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
@@ -695,11 +703,29 @@ package {
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
 		}
 
+		// Called after the character defeats an enemy entity.
+		public function onCombatSuccess(enemy:Enemy):void {
+			removedEntities.push(enemy);
+			entityGrid[enemy.grid_x][enemy.grid_y] = null;
+			removeChild(enemy);
+		}
+
 		// Called when the character moves into an objective tile. Updates
 		// objectiveState to mark the tile as visited.
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
 			objectiveState[obj.key] = true;
+			removedEntities.push(obj);
+			entityGrid[e.x][e.y] = null;
+			removeChild(obj);
+		}
+
+		// Called when the character is healed.
+		private function onHeal(e:GameEvent):void {
+			var heal:Healing = entityGrid[e.x][e.y];
+			removedEntities.push(heal);
+			entityGrid[e.x][e.y] = null;
+			removeChild(heal);
 		}
 	}
 }

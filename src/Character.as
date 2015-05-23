@@ -15,9 +15,11 @@ package {
 		public static const BASE_HP:int = 5;
 		public static const PIXELS_PER_FRAME:int = 4;
 
-		// Game mechanic stats
 		public var grid_x:int;
 		public var grid_y:int;
+		public var initialX:int;
+		public var initialY:int;
+
 		public var maxHp:int;
 		public var hp:int;
 		public var maxStamina:int;
@@ -51,8 +53,10 @@ package {
 			super();
 			x = Util.grid_to_real(g_x);
 			y = Util.grid_to_real(g_y);
-			grid_x = x;
-			grid_y = y;
+			grid_x = g_x;
+			grid_y = g_y;
+			initialX = g_x;
+			initialY = g_y;
 
 			this.maxHp = hp;
 			this.hp = hp;
@@ -80,7 +84,17 @@ package {
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
-		public function toggleRun():void {
+
+		public function reset():void {
+			hp = maxHp;
+			stamina = maxStamina;
+			grid_x = initialX;
+			grid_y = initialY;
+			x = Util.grid_to_real(initialX);
+			y = Util.grid_to_real(initialY);
+		}
+
+		public function toggleRunUI():void {
 			runState = !runState;
 			if(runState) {
 				addChild(attackImage);

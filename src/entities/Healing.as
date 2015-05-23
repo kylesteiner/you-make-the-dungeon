@@ -9,19 +9,20 @@ package entities {
 		}
 
 		override public function handleChar(c:Character):void {
+			if (c.hp == c.maxHp) {
+				return;  // Early return if no healing necessary
+			}
+
 			Util.logger.logAction(6, {
 				"characterHealth": c.hp,
 				"characterMaxHealth": c.maxHp,
 				"healthRestored": health
 			});
-
-			if (c.hp == c.maxHp) {
-				return;
-			}
 			c.hp += health;
 			if (c.hp > c.maxHp) {
 				c.hp = c.maxHp;
 			}
+			dispatchEvent(new GameEvent(GameEvent.HEALED, grid_x, grid_y));
 		}
 	}
 }

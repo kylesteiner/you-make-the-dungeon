@@ -471,8 +471,7 @@ package {
 
 			gameState = STATE_BUILD;
 			currentFloor.toggleRun();
-			// TODO: soft reset
-			// currentFloor.resetFloor();
+			currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
 
