@@ -239,6 +239,7 @@ package {
 			}
 			
 			rooms = new RoomSet(floorData["rooms"]);
+			addChild(rooms);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.

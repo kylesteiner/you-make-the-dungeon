@@ -1,5 +1,5 @@
 package {
-    //import starling.display.*;
+    import starling.display.*;
     import starling.events.*;
     import starling.text.TextField;
 
@@ -9,7 +9,7 @@ package {
 
     import tiles.*;
 
-    public class RoomSet extends EventDispatcher {
+    public class RoomSet extends Sprite {
 
         // Map of string -> Array of Points (spaces and walls)
         public var rooms:Dictionary;
@@ -107,15 +107,13 @@ package {
                 builtTiles = builtRoomTiles[key];
                 for(i = 0; i < openSpaces.length; i++) {
                     roomPoint = openSpaces[i];
-                    tStatus.text = tStatus.text == "reveal" ? "reveal" : tStatus.text == "equal" ? "equal" : "all";
                     if(tilePoint.x == roomPoint.x && tilePoint.y == roomPoint.y) {
-                        tStatus.text = tStatus.text == "reveal" ? "reveal" : "equal";
+                        tStatus.text = "in room";
                         if(!roomsRevealed[key] && builtTiles.length == 0) {
-                            roomsRevealed[key] = true;
-                            // reveal room function goes here
+                            tStatus.text = "reveal";
+							roomsRevealed[key] = true;
                             var revealData:Array = new Array();
                             revealData.push(rooms[key]);
-                            tStatus.text = "reveal";
                             dispatchEvent(new GameEvent(GameEvent.REVEAL_ROOM, 0, 0, revealData));
                         }
 
@@ -124,7 +122,8 @@ package {
                         }
 
                         if(!roomsComplete[key] && builtTiles.length == openSpaces.length) {
-                            roomsComplete[key] = true;
+                            tStatus.text = "complete";
+							roomsComplete[key] = true;
                             var completeData:Array = new Array();
                             completeData.push(roomToFunction[key]);
                             dispatchEvent(new GameEvent(GameEvent.COMPLETE_ROOM, 0, 0, completeData));
