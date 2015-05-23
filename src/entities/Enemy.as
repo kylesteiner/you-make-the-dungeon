@@ -96,6 +96,7 @@ package entities {
 				"enemyHealth": hp,
 				"enemyReward": reward
 			});
+			c.inCombat = true;
 			dispatchEvent(new GameEvent(GameEvent.ENTERED_COMBAT, grid_x, grid_y));
 		}
 

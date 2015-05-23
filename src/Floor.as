@@ -779,6 +779,7 @@ package {
 			removedEntities.push(enemy);
 			entityGrid[enemy.grid_x][enemy.grid_y] = null;
 			removeChild(enemy);
+			char.inCombat = false;
 			Util.logger.logAction(17, {
 				"characterHealthLeft":char.hp,
 				"characterHealthMax":char.maxHp,
