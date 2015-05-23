@@ -551,8 +551,8 @@ package {
 
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
-					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
-					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
+					buildHud.currentImage.x = touch.globalX - buildHud.currentImage.width / 2;
+					buildHud.currentImage.y = touch.globalY - buildHud.currentImage.height / 2;
 					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.hudState);
 					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
 						// Player clicked inside grid
