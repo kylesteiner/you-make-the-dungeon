@@ -129,16 +129,22 @@ package {
 			if (direction == Util.NORTH) {
 				destX = x;
 				destY = y - Util.PIXELS_PER_TILE;
+				Util.logger.logAction(11, { "directionMoved": "North" });
 			} else if (direction == Util.EAST) {
 				destX = x + Util.PIXELS_PER_TILE;
 				destY = y;
+				Util.logger.logAction(11, { "directionMoved": "East" });
 			} else if (direction == Util.SOUTH) {
 				destX = x;
 				destY = y + Util.PIXELS_PER_TILE;
+				Util.logger.logAction(11, { "directionMoved": "South" });
 			} else if (direction == Util.WEST) {
 				destX = x - Util.PIXELS_PER_TILE;
 				destY = y;
+				Util.logger.logAction(11, { "directionMoved": "West" });
 			}
+			grid_x = Util.real_to_grid(destX);
+			grid_y = Util.real_to_grid(destY);
 		}
 
 		private function onEnterFrame(e:EnterFrameEvent):void {
@@ -161,8 +167,6 @@ package {
 
 				if (x == destX && y == destY && moving) {
 					moving = false;
-					grid_x = Util.real_to_grid(x);
-					grid_y = Util.real_to_grid(y);
 
 					removeChild(currentAnimation);
 					currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);

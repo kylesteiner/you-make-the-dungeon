@@ -471,8 +471,8 @@ package {
 				entityGrid[entity.grid_x][entity.grid_y] = null;
 				removeEnemyFromArray(entity);
 				Util.logger.logAction(12, {
-					"deleted":"entity", 
-					"costOfDeleted":entity.cost 
+					"deleted":"entity",
+					"costOfDeleted":entity.cost
 				});
 				return true;
 			} else if (isEmptyTile(tile)) {
@@ -519,6 +519,10 @@ package {
 			var cgx:int; var cgy:int;
 			var charTile:Tile; var nextTile:Tile;
 
+			if (char.moving) {
+				return;
+			}
+
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -536,15 +540,7 @@ package {
 
 					nextTile = grid[cgx][cgy-1];
 					if (charTile.north && nextTile.south) {
-						if (!char.inCombat && !char.moving) {
-							moveAllEnemies(1);
-						}
 						char.move(Util.NORTH);
-						if (Util.logger) {
-							Util.logger.logAction(11, {
-								"directionMoved": "North"
-							});
-						}
 					}
 				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
 					if(!grid[cgx][cgy+1]) {
@@ -553,15 +549,8 @@ package {
 
 					nextTile = grid[cgx][cgy+1];
 					if (charTile.south && nextTile.north) {
-						if (!char.inCombat && !char.moving) {
-							moveAllEnemies(3);
-						}
 						char.move(Util.SOUTH);
-						if (Util.logger) {
-							Util.logger.logAction(11, {
-								"directionMoved": "South"
-							});
-						}
+
 					}
 				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
 					if(!grid[cgx-1][cgy]) {
@@ -570,15 +559,7 @@ package {
 
 					nextTile = grid[cgx-1][cgy];
 					if (charTile.west && nextTile.east) {
-						if (!char.inCombat && !char.moving) {
-							moveAllEnemies(2);
-						}
 						char.move(Util.WEST);
-						if (Util.logger) {
-							Util.logger.logAction(11, {
-								"directionMoved": "West"
-							});
-						}
 					}
 				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
 					if(!grid[cgx+1][cgy]) {
@@ -587,15 +568,7 @@ package {
 
 					nextTile = grid[cgx+1][cgy];
 					if (charTile.east && nextTile.west) {
-						if (!char.inCombat && !char.moving) {
-							moveAllEnemies(0);
-						}
 						char.move(Util.EAST);
-						if (Util.logger) {
-							Util.logger.logAction(11, {
-								"directionMoved": "East"
-							});
-						}
 					}
 				}
 			}
