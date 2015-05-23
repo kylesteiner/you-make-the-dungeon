@@ -496,6 +496,7 @@ package {
 			removeChild(runHud);
 
 			addChild(runSummary);
+			currentFloor.toggleRun(STATE_BUILD);
 		}
 
 		public function endRunButton():void {
@@ -515,7 +516,7 @@ package {
 			addChild(shopButton);
 
 			gameState = STATE_BUILD;
-			currentFloor.toggleRun(gameState);
+			//currentFloor.toggleRun(gameState);
 			currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
