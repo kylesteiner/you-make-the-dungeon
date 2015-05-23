@@ -8,7 +8,6 @@ package {
 
 	import tiles.*;
 	import entities.*;
-	import clickable.*;
 
 	public class BuildHUD extends Sprite {
 		public static const QUAD_BORDER_PIXELS:int = 2;

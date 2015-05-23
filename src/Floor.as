@@ -48,6 +48,8 @@ package {
 		// Entities that have been removed in by character actions the run phase
 		// but need to be replaced after the run phase.
 		private var removedEntities:Array;
+		// Revealed enemies that randomly walk about the floor.
+		public var activeEnemies:Array;
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
@@ -69,8 +71,9 @@ package {
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
 
-		// Revealed enemies that randomly walk about the floor.
-		public var activeEnemies:Array;
+		// Summary and related state.
+		public var runSummary:Summary;
+		private var preHealth:int;
 
 		private var totalRuns:int;
 
@@ -86,6 +89,7 @@ package {
 							  floorFiles:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
+							  runSummary:Summary,
 							  showPrompt:int = 0) {
 			super();
 			this.textures = textures;
@@ -94,6 +98,7 @@ package {
 			this.initialStamina = initialStamina;
 			this.initialAttack = initialAttack;
 			initialLoS = initialLineOfSight;
+			this.runSummary = runSummary;
 			totalRuns = 0;
 
 			this.floorFiles = floorFiles;
@@ -200,6 +205,10 @@ package {
 					grid[tX][tY] = im;
 					addChild(im);
 				}
+
+				if (fogGrid[tX][tY]) {
+					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
+				}
 			}
 
 			// Parse the entities and place them on the entityGrid.
@@ -229,6 +238,10 @@ package {
 					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
 					addChild(obj);
+				}
+
+				if (fogGrid[tX][tY]) {
+					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
 				}
 			}
 
@@ -270,6 +283,15 @@ package {
 
 		public function toggleRun(gameState:String):void {
 			char.toggleRunUI();
+
+			// Ensure that the character and all enemies are higher in the
+			// display order than the tiles.
+			removeChild(char);
+			addChild(char);
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
 
 			// Currently populates grid twice for every run and
 			// also bumps up total runs twice which is ambiguous behavior.
@@ -544,10 +566,6 @@ package {
 		}
 
 		private function onEnterFrame(e:Event):void {
-			// Workaround because tiles are above the Character in the display
-			// hierarchy after being placed.
-			addChild(char);
-
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
@@ -569,8 +587,7 @@ package {
 				}
 
 				charTile = grid[cgx][cgy];
-
-				if (keyCode == Keyboard.UP && cgy > 0) {
+				if ((keyCode == Keyboard.UP || keyCode == Util.UP_KEY) && cgy > 0) {
 					if(!grid[cgx][cgy-1]) {
 						continue;
 					}
@@ -579,7 +596,7 @@ package {
 					if (charTile.north && nextTile.south) {
 						char.move(Util.NORTH);
 					}
-				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
+				} else if ((keyCode == Keyboard.DOWN || keyCode == Util.DOWN_KEY) && cgy < gridHeight - 1) {
 					if(!grid[cgx][cgy+1]) {
 						continue;
 					}
@@ -589,7 +606,7 @@ package {
 						char.move(Util.SOUTH);
 
 					}
-				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
+				} else if ((keyCode == Keyboard.LEFT || keyCode == Util.LEFT_KEY) && cgx > 0) {
 					if(!grid[cgx-1][cgy]) {
 						continue;
 					}
@@ -598,7 +615,7 @@ package {
 					if (charTile.west && nextTile.east) {
 						char.move(Util.WEST);
 					}
-				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
+				} else if ((keyCode == Keyboard.RIGHT || keyCode == Util.RIGHT_KEY) && cgx < gridWidth - 1) {
 					if(!grid[cgx+1][cgy]) {
 						continue;
 					}
@@ -738,6 +755,9 @@ package {
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
 		private function onCharArrived(e:GameEvent):void {
+			preHealth = char.hp;
+			runSummary.distanceTraveled++;
+
 			if (goldGrid[char.grid_x][char.grid_y]) {
 				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
 			}
@@ -790,6 +810,9 @@ package {
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
+
+			runSummary.enemiesDefeated++;
+			runSummary.damageTaken += preHealth - char.hp;
 		}
 
 		// Called when the character moves into an objective tile. Updates
@@ -808,6 +831,8 @@ package {
 			removedEntities.push(heal);
 			entityGrid[e.x][e.y] = null;
 			removeChild(heal);
+
+			runSummary.amountHealed += char.hp - preHealth;
 		}
 	}
 }

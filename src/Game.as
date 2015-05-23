@@ -3,6 +3,7 @@ package {
 	import entities.Entity;
 	import flash.media.*;
 	import flash.ui.Mouse;
+	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -13,7 +14,6 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 
-	import clickable.*;
 	import entities.*;
 	import tiles.*;
 
@@ -70,6 +70,7 @@ package {
 		private var shopHud:ShopHUD;
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
+		private var runSummary:Summary;
 
 		private var gameState:String;
 		private var gold:int;
@@ -134,6 +135,8 @@ package {
 
 			combatSkip = false;
 			gold = Util.STARTING_GOLD;
+
+			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -274,48 +277,35 @@ package {
 			addChild(sfxMuteButton);
 		}
 
-		public function switchToTransition(transition:Texture,
-										   floor:String,
-										   initialHealth:int,
-										   initialStamina:int,
-										   initialAttack:int,
-										   initialLoS:int):void {
+		public function switchToTransition(params:Object):void {
 			prepareSwap();
-
 			isMenu = false;
-			currentTransition = new Transition(0,
-											   0,
-											   switchToFloor,
-											   null,
-											   transition,
-											   floor,
-											   initialHealth,
-											   initialStamina,
-											   initialAttack,
-											   initialLoS);
+
+			currentTransition = new Clickable(0, 0, switchToFloor, null, params["transition"]);
+			currentTransition.addParameter("floorData", params["floorData"]);
+			currentTransition.addParameter("initHealth", params["initHealth"]);
+			currentTransition.addParameter("initStamina", params["initStamina"]);
+			currentTransition.addParameter("initAttack", params["initAttack"]);
+			currentTransition.addParameter("initLos", params["initLos"]);
 			addChild(currentTransition);
 		}
 
-		public function switchToFloor(floorData:String,
-									  initialHealth:int,
-									  initialStamina:int,
-									  initialAttack:int,
-									  initialLoS:int):void {
+		public function switchToFloor(params:Object):void {
 			prepareSwap();
-
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(floorData,
+			currentFloor = new Floor(params["floorData"],
 									 textures,
 									 animations,
-									 initialHealth,
-									 initialStamina,
-									 initialAttack,
-									 initialLoS,
+									 params["initHealth"],
+									 params["initStamina"],
+									 params["initAttack"],
+									 params["initLos"],
 									 floors,
 									 switchToTransition,
-									 mixer);
+									 mixer,
+									 runSummary);
 			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
@@ -359,25 +349,25 @@ package {
 
 			floors = Embed.setupFloors();
 
-			var startGameButton:StartGame = new StartGame(
+			var startGame:Clickable = new Clickable(
 					256,
 					192,
 					switchToTransition,
 					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
-					null,
-					transitions[Util.MAIN_FLOOR],
-					floors[Util.MAIN_FLOOR],
-					Util.STARTING_HEALTH,
-					Util.STARTING_STAMINA,
-					Util.STARTING_ATTACK,
-					Util.STARTING_LOS);
+					null);
+			startGame.addParameter("transition", transitions[Util.MAIN_FLOOR]);
+			startGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
+			startGame.addParameter("initHealth", Util.STARTING_HEALTH);
+			startGame.addParameter("initStamina", Util.STARTING_STAMINA);
+			startGame.addParameter("initAttack", Util.STARTING_ATTACK);
+			startGame.addParameter("initLos", Util.STARTING_LOS);
 
 			var creditsButton:Clickable = new Clickable(
 					256,
 					256,
 					createCredits,
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startGameButton, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, startGame, creditsButton)));
 		}
 
 		public function createCredits():void {
@@ -453,13 +443,6 @@ package {
 		}
 
 		public function endRun():void {
-			//TODO: I AM A STUB
-			// 		call at end of run automatically when stamina <= 0
-			//		reset char, bring up new display which triggers phase change afterwards
-			//		add gold and other items
-			// will log gold gained here, stamina left, health left,
-			// and other keys as seen needed
-			//TODO: figure out how to log gold earned
 			var reason:String;
 			if (currentFloor.char.stamina <= 0) {
 				reason = "staminaExpended";
@@ -477,6 +460,14 @@ package {
 
 			removeChild(endButton);
 			removeChild(runHud);
+
+			addChild(runSummary);
+		}
+
+		public function returnToBuild():void {
+			removeChild(runSummary);
+			runSummary.reset();
+
 			addChild(runButton);
 
 			buildHud.updateUI();
@@ -521,7 +512,7 @@ package {
 			}
 
 			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
-			if(pressedKeys[Util.DOWN_KEY]) {
+			if(pressedKeys[Keyboard.DOWN] || pressedKeys[Util.DOWN_KEY]) {
 				world.y -= worldShift;
 
 				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
@@ -529,7 +520,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Util.UP_KEY]) {
+			if(pressedKeys[Keyboard.UP] || pressedKeys[Util.UP_KEY]) {
 				world.y += worldShift;
 
 				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
@@ -537,7 +528,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Util.RIGHT_KEY]) {
+			if(pressedKeys[Keyboard.RIGHT] || pressedKeys[Util.RIGHT_KEY]) {
 				world.x -= worldShift;
 
 				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
@@ -545,7 +536,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Util.LEFT_KEY]) {
+			if(pressedKeys[Keyboard.LEFT] || pressedKeys[Util.LEFT_KEY]) {
 				world.x += worldShift;
 
 				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
@@ -717,18 +708,16 @@ package {
 		private function onKeyDown(event:KeyboardEvent):void {
 			// to ensure that they can't move the world around until
 			// a floor is loaded, and not cause flash errors
-			var input:String = String.fromCharCode(event.charCode);
+			pressedKeys[event.keyCode] = true;
 
-			pressedKeys[input] = true;
-
-			if(input == Util.MUTE_KEY) {
+			if(event.keyCode == Util.MUTE_KEY) {
 				mixer.togglePlay();
 				Util.logger.logAction(15, {
 					"buttonClicked":"Mute"
 				});
 			}
 
-			if (input == Util.COMBAT_SKIP_KEY) {
+			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				Util.logger.logAction(15, {
 					"buttonClicked":"Combat Skip"
 				});
@@ -749,11 +738,12 @@ package {
 		}
 
 		public function onKeyUp(event:KeyboardEvent):void {
-			var input:String = String.fromCharCode(event.charCode);
-			pressedKeys[input] = false;
+			pressedKeys[event.keyCode] = false;
 
 			if(!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
-			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY]) {
+			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY] &&
+			   !pressedKeys[Keyboard.UP] && !pressedKeys[Keyboard.DOWN] &&
+			   !pressedKeys[Keyboard.LEFT] && !pressedKeys[Keyboard.RIGHT]) {
 				cameraAccel = DEFAULT_CAMERA_ACCEL;
 			}
 		}
@@ -779,6 +769,7 @@ package {
 				runHud.goldCollected += coin.gold; // add gold amount
 				runHud.tilesVisited += 1;
 				gold += coin.gold; // add gold amount
+				runSummary.goldCollected += coin.gold;
 				goldHud.update(gold);
 				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
 				currentFloor.goldGrid[event.x][event.y] = null;
