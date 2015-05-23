@@ -222,19 +222,14 @@ package {
 			alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
 			alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
 
-			messageToPlayer = new Clickable(0, 0, resetFloorCharacter, alertBox);
+			messageToPlayer = new Clickable(0, 0, function():void {
+				removeChild(messageToPlayer);
+				endRun();
+			},  alertBox);
 			//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width);
 			//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height);
 
 			addChild(messageToPlayer);
-		}
-
-		private function resetFloorCharacter():void {
-			removeChild(messageToPlayer);
-			//removeChild(charHud);
-			currentFloor.resetCharacter();
-			//charHud = new CharHud(currentFloor.char, textures);
-			//addChild(charHud);
 		}
 
 		private function prepareSwap():void {
@@ -250,7 +245,6 @@ package {
 				removeChild(messageToPlayer);
 				// mute button should always be present
 				removeChild(currentTransition);
-				//removeChild(resetButton);
 				removeChild(runButton);
 				//removeChild(charHud);
 				removeChild(buildHud);
@@ -274,6 +268,7 @@ package {
 										   floor:String,
 										   initialHealth:int,
 										   initialStamina:int,
+										   initialAttack:int,
 										   initialLoS:int):void {
 			prepareSwap();
 
@@ -286,6 +281,7 @@ package {
 											   floor,
 											   initialHealth,
 											   initialStamina,
+											   initialAttack,
 											   initialLoS);
 			addChild(currentTransition);
 		}
@@ -293,6 +289,7 @@ package {
 		public function switchToFloor(floorData:String,
 									  initialHealth:int,
 									  initialStamina:int,
+									  initialAttack:int,
 									  initialLoS:int):void {
 			prepareSwap();
 
@@ -304,6 +301,7 @@ package {
 									 animations,
 									 initialHealth,
 									 initialStamina,
+									 initialAttack,
 									 initialLoS,
 									 floors,
 									 switchToTransition,
@@ -361,6 +359,7 @@ package {
 					floors[Util.MAIN_FLOOR],
 					Util.STARTING_HEALTH,
 					Util.STARTING_STAMINA,
+					Util.STARTING_ATTACK,
 					Util.STARTING_LOS);
 
 			var creditsButton:Clickable = new Clickable(
@@ -641,7 +640,7 @@ package {
 					trace(newEntity.grid_y);
 					currentFloor.addChild(newEntity);
 					if (newEntity is Enemy) {
-						currentFloor.enemies.push(newEntity);
+						currentFloor.activeEnemies.push(newEntity);
 					}
 					mixer.play(Util.TILE_MOVE);
 				} else {

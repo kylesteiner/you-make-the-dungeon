@@ -8,6 +8,7 @@ package clickable {
 		private var floor:String;
 		private var initialHealth:int;
 		private var initialStamina:int;
+		private var initialAttack:int;
 		private var initialLoS:int;
 		private var transition:Texture;
 
@@ -20,17 +21,19 @@ package clickable {
 								  floor:String,
 								  initialHealth:int,
 								  initialStamina:int,
+								  initialAttack:int,
 								  initialLoS:int) {
 			super(xPos, yPos, onClick, baseDisplay, baseTexture);
 			this.transition = transition;
 			this.floor = floor;
 			this.initialHealth = initialHealth;
 			this.initialStamina = initialStamina;
+			this.initialAttack = initialAttack;
 			this.initialLoS = initialLoS;
 		}
 
 		override public function callCallback():void {
-            onClick(transition, floor, initialHealth, initialStamina, initialLoS);
+            onClick(transition, floor, initialHealth, initialStamina, initialAttack, initialLoS);
 		}
 	}
 }

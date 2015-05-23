@@ -27,7 +27,14 @@ package entities {
 		public var enemyHpTextField:TextField;
 		public var enemyAtkTextField:TextField;
 
-		public function Enemy(g_x:int, g_y:int, enemyName:String, texture:Texture, maxHp:int, attack:int, reward:int, immobile:Boolean = false) {
+		public function Enemy(g_x:int,
+							  g_y:int,
+							  enemyName:String,
+							  texture:Texture,
+							  maxHp:int,
+							  attack:int,
+							  reward:int,
+							  immobile:Boolean = false) {
 			super(g_x, g_y, texture);
 			this.maxHp = maxHp;
 			this.hp = maxHp;
@@ -56,15 +63,6 @@ package entities {
 			grid_x = destX;
 			grid_y = destY;
 			trace("move done");
-		}
-
-		// reset function to reset the monsters onto
-		// their initial positions.
-		public function reset():void {
-			grid_x = initialGrid_x;
-			grid_y = initialGrid_y;
-			x = initialX;
-			y = initialY;
 		}
 
 		override public function handleChar(c:Character):void {
@@ -98,6 +96,17 @@ package entities {
 			base.addChild(enemyAtkTextField);
 
 			return base;
+		}
+
+		// Reset the monsters to their initial positions.
+		override public function reset():void {
+			moving = false;
+			inCombat = false;
+			grid_x = initialGrid_x;
+			grid_y = initialGrid_y;
+			x = initialX;
+			y = initialY;
+			hp = maxHp;
 		}
 	}
 }

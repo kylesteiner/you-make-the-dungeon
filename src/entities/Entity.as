@@ -34,5 +34,8 @@ package entities {
 		public function generateOverlay():Sprite {
 			return new Sprite();
 		}
+
+		// Override if the state of the entity needs to be reset between runs.
+		public function reset():void {}
 	}
 }
