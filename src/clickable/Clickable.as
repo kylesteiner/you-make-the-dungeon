@@ -17,7 +17,6 @@ package clickable {
         public var onClick:Function;
         public var parameters:Dictionary;
         public var hasParameters:Boolean;
-        public var baseSprite:Sprite;
 
         public function Clickable(xPos:int,
                                   yPos:int,
@@ -30,25 +29,21 @@ package clickable {
             height = Util.STAGE_HEIGHT;
             width = Util.STAGE_WIDTH;
 
-            baseSprite = new Sprite();
-
             if (baseDisplay) {
                 baseImage = baseDisplay;
-                baseSprite.addChild(baseImage);
+                addChild(baseImage);
             }
 
             if (baseTexture) {
                 texture = baseTexture;
                 textureImage = new Image(texture);
-                baseSprite.addChild(textureImage);
+                addChild(textureImage);
             }
 
             parameters = new Dictionary();
 
             this.onClick = onClick;
 
-            addChild(baseSprite);
-            
             addEventListener(TouchEvent.TOUCH, onMouseEvent);
         }
 
