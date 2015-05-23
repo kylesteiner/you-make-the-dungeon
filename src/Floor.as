@@ -574,7 +574,7 @@ package {
 			}
 		}
 
-		private function moveAllEnemies(charDirection:int):void {
+		/*private function moveAllEnemies(charDirection:int):void {
 			var monster:Enemy; var x:int; var y:int;
 			var tile:Tile;
 			for each (monster in activeEnemies) {
@@ -724,7 +724,7 @@ package {
 				}
 				trace("moved");
 			}
-		}
+		}*/
 
 		private function onKeyDown(event:KeyboardEvent):void {
 			if(!char.runState) {
