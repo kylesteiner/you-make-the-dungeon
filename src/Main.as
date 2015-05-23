@@ -1,13 +1,14 @@
 package {
-	import starling.core.Starling;
+	//import starling.core.Starling;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
+	import flash.utils.getDefinitionByName;
 
 	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
-	public class Main extends MovieClip {		
-		private var _starling:Starling;
+	public class Main extends MovieClip {
+		private var _starling:Object;
 		private static const PROGRESS_BAR_HEIGHT:Number = 20;
 
 		public function Main() {
@@ -16,7 +17,7 @@ package {
 			loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
 		}
 
-		
+
 		private function loaderInfo_progressHandler(event:ProgressEvent):void {
 			//this example draws a basic progress bar
 			trace("hello");
@@ -31,7 +32,10 @@ package {
 			graphics.clear();
 			gotoAndStop(2);
 
-			_starling = new Starling(Game, stage);
+			var RootType:Class = getDefinitionByName("src.Game") as Class;
+			var StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
+			//_starling = new Starling(Game, stage);
+			_starling = new StarlingType(RootType, stage);
 			_starling.start();
 		}
 	}
