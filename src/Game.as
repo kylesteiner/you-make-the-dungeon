@@ -230,6 +230,9 @@ package {
 		private function onCombatSuccess(event:AnimationEvent):void {
 			removeChild(currentCombat);
 			currentFloor.onCombatSuccess(event.enemy);
+			gold += event.enemy.reward;
+			runSummary.goldCollected += event.enemy.reward;
+			goldHud.update(gold);
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
