@@ -30,6 +30,8 @@ package entities {
 		public var enemyHpTextField:TextField;
 		public var enemyAtkTextField:TextField;
 
+		public var speed:int;
+
 		public function Enemy(g_x:int,
 							  g_y:int,
 							  enemyName:String,
@@ -53,6 +55,7 @@ package entities {
 			this.stationary = stationary;
 			moving = false;
 			inCombat = false;
+			speed = Util.speed;
 
 			addOverlay();
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -136,16 +139,16 @@ package entities {
 		private function onEnterFrame(e:EnterFrameEvent):void {
 			if (moving) {
 				if (x > destX) {
-					x -= Character.PIXELS_PER_FRAME;
+					x -= speed;
 				}
 				if (x < destX) {
-					x += Character.PIXELS_PER_FRAME;
+					x += speed;
 				}
 				if (y > destY) {
-					y -= Character.PIXELS_PER_FRAME;
+					y -= speed;
 				}
 				if (y < destY) {
-					y += Character.PIXELS_PER_FRAME;
+					y += speed;
 				}
 
 				if (x == destX && y == destY) {

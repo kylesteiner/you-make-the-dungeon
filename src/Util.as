@@ -37,6 +37,10 @@ package {
 		public static const WEST:int = 3;
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
 
+		// Movement speed in pixels per frame
+		public static const SPEED_SLOW:int = 4;
+		public static const SPEED_FAST:int = 8;
+
 		// Keys to the dictionary of textures.
 		public static const DOOR:String = "door";
 
@@ -102,7 +106,6 @@ package {
 		public static const ICON_SLOW_COMBAT:String = "icon_slow_combat";
 		public static const ICON_FAST_RUN:String = "icon_fast_run";
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
-
 
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
@@ -184,6 +187,7 @@ package {
 		public static const HEALING_COST:int = 10;
 
 		public static var logger:Logger;
+		public static var speed:int;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

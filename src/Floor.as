@@ -425,6 +425,25 @@ package {
 				   !entityGrid[tile.grid_x][tile.grid_y];
 		}
 
+		public function updateRunSpeed():void {
+			char.speed = Util.speed;
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					if (entityGrid[x][y] is Enemy) {
+						var enemy:Enemy = entityGrid[x][y] as Enemy;
+						enemy.speed = Util.speed;
+					}
+				}
+			}
+
+			for (var i:int = 0; i < removedEntities.length; i++) {
+				if (removedEntities[i] is Enemy) {
+					var removedEnemy:Enemy = removedEntities[i] as Enemy;
+					removedEnemy.speed = Util.speed;
+				}
+			}
+		}
+
 		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {
 			// Clear any old highlight at this location
 			removeChild(highlightedLocations[x][y]);

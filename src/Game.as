@@ -100,6 +100,8 @@ package {
 			logger = Logger.initialize(gid, gname, skey, cid, null);
 			Util.logger = logger;
 
+			Util.speed = Util.SPEED_SLOW;
+
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
 
@@ -802,6 +804,9 @@ package {
 
 			var chosen:String = runPhaseSpeed ? Util.ICON_FAST_RUN : Util.ICON_SLOW_RUN;
 			runSpeedButton.updateImage(null, textures[chosen]);
+
+			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
+			currentFloor.updateRunSpeed();
 		}
 
 		public function toggleCombatSpeed():void {
