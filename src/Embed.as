@@ -58,6 +58,11 @@ package {
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
 		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
 
+		[Embed(source='assets/icons/slow_combat.png')] public static const icon_fast_combat:Class;
+		[Embed(source='assets/icons/base_combat.png')] public static const icon_slow_combat:Class;
+		[Embed(source='assets/icons/red_run.png')] public static const icon_fast_run:Class;
+		[Embed(source='assets/icons/slow_run.png')] public static const icon_slow_run:Class;
+
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
 		[Embed(source='assets/tiles/clean/tile_n.png')] public static var tile_n:Class;
@@ -210,6 +215,11 @@ package {
 			textures[Util.ICON_SFX_MUTE] = Texture.fromEmbeddedAsset(icon_sfx_muted);
 			textures[Util.ICON_BGM_PLAY] = Texture.fromEmbeddedAsset(icon_bgm_playing);
 			textures[Util.ICON_BGM_MUTE] = Texture.fromEmbeddedAsset(icon_bgm_muted);
+
+			textures[Util.ICON_FAST_COMBAT] = Texture.fromEmbeddedAsset(icon_fast_combat);
+			textures[Util.ICON_SLOW_COMBAT] = Texture.fromEmbeddedAsset(icon_slow_combat);
+			textures[Util.ICON_FAST_RUN] = Texture.fromEmbeddedAsset(icon_fast_run);
+			textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);

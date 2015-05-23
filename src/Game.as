@@ -39,6 +39,8 @@ package {
 		private var sfxMuteButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
+		private var combatSpeedButton:Clickable;
+		private var runSpeedButton:Clickable;
 
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
@@ -65,6 +67,7 @@ package {
 
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
+		private var runPhaseSpeed:Boolean;
 		private var runHud:RunHUD;
 		private var goldHud:GoldHUD;
 		private var shopHud:ShopHUD;
@@ -156,28 +159,36 @@ package {
 
 			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_SFX_PLAY]);
 			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
-			sfxMuteButton.y = Util.UI_PADDING;
+			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
 
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_BGM_PLAY]);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
+			combatSpeedButton = new Clickable(0, 0, toggleCombatSpeed, null, textures[Util.ICON_SLOW_COMBAT]);
+			combatSpeedButton.x = bgmMuteButton.x - combatSpeedButton.width - Util.UI_PADDING;
+			combatSpeedButton.y = Util.STAGE_HEIGHT - combatSpeedButton.height - Util.UI_PADDING;
+
+			runSpeedButton = new Clickable(0, 0, toggleRunSpeed, null, textures[Util.ICON_SLOW_RUN]);
+			runSpeedButton.x = combatSpeedButton.x - runSpeedButton.width - Util.UI_PADDING;
+			runSpeedButton.y = combatSpeedButton.y;
+
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
-			goldHud.y = sfxMuteButton.y + sfxMuteButton.height + Util.UI_PADDING;
+			goldHud.y = Util.UI_PADDING;
 
 			runButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
 									  runFloor,
 									  null,
 									  textures[Util.ICON_RUN]);
-			runButton.x = Util.STAGE_WIDTH - runButton.width - Util.UI_PADDING;
-			runButton.y = Util.STAGE_HEIGHT - runButton.height - Util.UI_PADDING;
+			runButton.x = goldHud.x - runButton.width - Util.UI_PADDING;
+			runButton.y = Util.UI_PADDING;
 
 			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
 			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
 			shopButton.x = runButton.x - shopButton.width - Util.UI_PADDING
-			shopButton.y = Util.STAGE_HEIGHT - shopButton.height - Util.UI_PADDING;
+			shopButton.y = Util.UI_PADDING;
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
@@ -260,6 +271,8 @@ package {
 				removeChild(buildHud);
 				removeChild(goldHud);
 				removeChild(runHud);
+				removeChild(combatSpeedButton);
+				removeChild(runSpeedButton);
 			}
 		}
 
@@ -335,6 +348,8 @@ package {
 			// mute button should always be on top
 			addChild(bgmMuteButton);
 			addChild(sfxMuteButton);
+			addChild(combatSpeedButton);
+			addChild(runSpeedButton);
 			//addChild(resetButton);
 			addChild(runButton);
 			addChild(goldHud);
@@ -789,6 +804,21 @@ package {
 				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
 				currentFloor.goldGrid[event.x][event.y] = null;
 			}
+		}
+
+		public function toggleRunSpeed():void {
+			runPhaseSpeed = !runPhaseSpeed;
+
+			var chosen:String = runPhaseSpeed ? Util.ICON_FAST_RUN : Util.ICON_SLOW_RUN;
+			runSpeedButton.updateImage(null, textures[chosen]);
+		}
+
+		public function toggleCombatSpeed():void {
+			combatSkip = !combatSkip;
+
+			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
+			combatSpeedButton.updateImage(null, textures[chosen]);
+			//var baseImage:Image =
 		}
 	}
 }

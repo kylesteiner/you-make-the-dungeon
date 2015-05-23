@@ -97,6 +97,11 @@ package {
 		public static const ICON_SFX_MUTE:String = "sfx_mute";
 		public static const ICON_BGM_PLAY:String = "bgm_play";
 		public static const ICON_BGM_MUTE:String = "bgm_mute";
+		public static const ICON_FAST_COMBAT:String = "icon_fast_combat";
+		public static const ICON_SLOW_COMBAT:String = "icon_slow_combat";
+		public static const ICON_FAST_RUN:String = "icon_fast_run";
+		public static const ICON_SLOW_RUN:String = "icon_slow_run";
+
 
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
