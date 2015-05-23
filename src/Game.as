@@ -417,7 +417,7 @@ package {
 			emptyTiles = 0;
 			enemyTiles = 0;
 			healingTiles = 0;
-			currentFloor.initializeFloorState();
+			currentFloor.resetFloor();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.TILE_REMOVE);
 		}
@@ -638,7 +638,7 @@ package {
 					trace(newEntity.grid_y);
 					currentFloor.addChild(newEntity);
 					if (newEntity is Enemy) {
-						currentFloor.enemies.push(newEntity);
+						currentFloor.activeEnemies.push(newEntity);
 					}
 					mixer.play(Util.TILE_MOVE);
 				} else {

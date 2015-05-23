@@ -31,9 +31,6 @@ package {
 		public var objectiveState:Dictionary;
 
 		// Grid metadata.
-		private var initialGrid:Array;
-		private var initialFogGrid:Array;
-		private var initialEntities:Array;
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
@@ -71,8 +68,8 @@ package {
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
 
-		public var enemies:Array;
-		public var initialEnemies:Array;
+		// Revealed enemies that randomly walk about the floor.
+		public var activeEnemies:Array;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -105,9 +102,7 @@ package {
 			pressedKeys = new Array();
 			objectiveState = new Dictionary();
 			removedEntities = new Array();
-
-			enemies = new Array();
-			initialEnemies = new Array();
+			activeEnemies = new Array();
 
 			// Get floor layout information from the JSON file.
 			parseFloorData(floorData);
@@ -118,10 +113,7 @@ package {
 			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
 			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
 			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
-			addChild(mapBoundsBackground);
-
-			// Initialize floor using the initial state.
-			initializeFloorState();
+			addChildAt(mapBoundsBackground, 0);
 
 			highlightedLocations = new Array(gridWidth);
 			for (var i:int = 0; i < gridWidth; i++) {
@@ -188,6 +180,8 @@ package {
 
 		// Resets the floor after a run.
 		public function resetFloor():void {
+			clearHighlightedLocations();
+
 			char.reset();
 
 			while (removedEntities.length > 0) {
@@ -196,82 +190,10 @@ package {
 				entityGrid[entity.grid_x][entity.grid_y] = entity;
 				addChild(entity);
 			}
-		}
 
-		// Initializes or resets the state of the floor based on the initial
-		// floor state parsed from the floor file.
-		public function initializeFloorState():void {
-			var i:int; var j:int;
-			if (grid) {
-				// Remove all tiles from the display tree.
-				for (i = 0; i < grid.length; i++) {
-					for (j = 0; j < grid[i].length; j++) {
-						if (grid[i][j]) {
-							grid[i][j].removeFromParent();
-						}
-					}
-				}
-				clearHighlightedLocations();
-			}
-
-			if (entityGrid) {
-				for (i = 0; i < entityGrid.length; i++) {
-					for (j = 0; j < entityGrid[i].length; j++) {
-						if (entityGrid[i][j]) {
-							entityGrid[i][j].removeFromParent();
-						}
-					}
-				}
-			}
-
-			// Replace the current grid with a fresh one.
-			grid = initializeGrid(gridWidth, gridHeight);
-			fogGrid = initializeGrid(gridWidth, gridHeight);
-			entityGrid = initializeGrid(gridWidth, gridHeight);
-
-			// Add all of the initial tiles to the grid and display tree.
-			for (i = 0; i < initialGrid.length; i++) {
-				for (j = 0; j < initialGrid[i].length; j++) {
-					grid[i][j] = initialGrid[i][j];
-					if (grid[i][j]) {
-						var t:Tile = grid[i][j];
-						t.reset();
-						addChild(t);
-					}
-				}
-			}
-
-			// Add all of the initial entities to the grid and display tree.
-			for (i = 0; i < initialGrid.length; i++) {
-				for (j = 0; j < initialGrid[i].length; j++) {
-					entityGrid[i][j] = initialEntities[i][j];
-					if (entityGrid[i][j]) {
-						addChild(entityGrid[i][j]);
-					}
-				}
-			}
-
-			// Add all of the fogged places into the map
-			for (i = 0; i < initialFogGrid.length; i++) {
-				for (j = 0; j < initialFogGrid[i].length; j++) {
-					fogGrid[i][j] = initialFogGrid[i][j];
-					if (fogGrid[i][j]) {
-						addChild(fogGrid[i][j]);
-					}
-				}
-			}
-
-			resetCharacter();
-
-			// Reset the objective state.
 			for (var k:Object in objectiveState) {
 				var key:String = String(k);
 				objectiveState[key] = false;
-			}
-
-			// move initialEnemies into enemies
-			for each (var enem:Enemy in initialEnemies) {
-				enemies.push(enem);
 			}
 		}
 
@@ -300,14 +222,14 @@ package {
 			var radius:int = char.los;
 
 			for (x = i - radius; x <= i + radius; x++) {
-				if (x >= 0 && x < initialFogGrid.length) {
+				if (x >= 0 && x < gridWidth) {
 					for (y = j - radius; y <= j + radius; y++) {
-						if (y >= 0 && y < initialFogGrid[x].length) {
+						if (y >= 0 && y < gridHeight) {
 							if (Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
 								fogGrid[x][y] = false;
 								if (entityGrid[x][y] is Enemy) {
-									enemies.push(entityGrid[x][y]);
+									activeEnemies.push(entityGrid[x][y]);
 								}
 							}
 						}
@@ -440,7 +362,7 @@ package {
 			if (entity) {
 				removeChild(entity);
 				entityGrid[entity.grid_x][entity.grid_y] = null;
-				removeMonsterFromArray(entity);
+				removeEnemyFromArray(entity);
 				return true;
 			} else if (isEmptyTile(tile)) {
 				removeChild(tile);
@@ -450,14 +372,12 @@ package {
 			return false;
 		}
 
-		// removes the monster from the array of mosnters
-		// because there isn't a basic remove from array function
-		private function removeMonsterFromArray(entity:Entity):void {
-			trace(enemies);
-			for (var index:int = 0; index < enemies.length; index++) {
-				if (enemies[index] == entity) {
-					enemies.splice(index, 1);
-					trace(enemies);
+		// Removes the enemy from activeEnemies because there isn't a basic
+		// remove from array function
+		private function removeEnemyFromArray(entity:Entity):void {
+			for (var i:int = 0; i < activeEnemies.length; i++) {
+				if (activeEnemies[i] == entity) {
+					activeEnemies.splice(i, 1);
 				}
 			}
 		}
@@ -481,27 +401,26 @@ package {
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
 
-			initialGrid = initializeGrid(gridWidth, gridHeight);
-			initialFogGrid = initializeGrid(gridWidth, gridHeight);
-			initialEntities = initializeGrid(gridWidth, gridHeight);
+			// Initialize all grids.
+			grid = initializeGrid(gridWidth, gridHeight);
+			fogGrid = initializeGrid(gridWidth, gridHeight);
+			entityGrid = initializeGrid(gridWidth, gridHeight);
 
-			// Add a fog image at every grid tile.
 			var i:int;
 			var j:int;
-			for (i = 0; i < initialFogGrid.length; i++) {
-				for (j = 0; j < initialFogGrid[i].length; j++) {
+			// Add a fog image at every grid tile.
+			for (i = 0; i < gridWidth; i++) {
+				for (j = 0; j < gridHeight; j++) {
 					var fog:Image = new Image(textures[Util.TILE_FOG]);
 					fog.x = i * Util.PIXELS_PER_TILE;
 					fog.y = j * Util.PIXELS_PER_TILE;
-					initialFogGrid[i][j] = fog;
+					fogGrid[i][j] = fog;
+					addChild(fog);
 				}
 			}
 
-			// Parse the character's starting position.
-			initialX = floorData["character_start"]["x"];
-			initialY = floorData["character_start"]["y"];
-			char = new Character(initialX,
-								 initialY,
+			char = new Character(floorData["character_start"]["x"],
+								 floorData["character_start"]["y"],
 								 initialHp,
 								 initialStamina,
 								 initialAttack,
@@ -514,6 +433,7 @@ package {
 			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
 			var tTexture:Texture;
 
+			// Parse the tiles and place them on the grid.
 			var floorTiles:Array = floorData["tiles"];
 			preplacedTiles = floorTiles.length;
 			for (i = 0; i < floorTiles.length; i++) {
@@ -534,19 +454,30 @@ package {
 				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 
 				if (tile["type"] == "empty") {
-					initialGrid[tX][tY] = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
+					var t:Tile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
+					grid[tX][tY] = t;
+					addChild(t);
 				} else if (tile["type"] == "entry") {
-					initialGrid[tX][tY] = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
-					initialFogGrid[tX][tY] = false;
+					var en:EntryTile = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
+					grid[tX][tY] = en;
+					addChild(en);
+					removeChild(fogGrid[tX][tY]);
+					fogGrid[tX][tY] = false;
 					setUpInitialFoglessSpots(tX, tY);
 				} else if (tile["type"] == "exit") {
-					initialGrid[tX][tY] = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
-					initialFogGrid[tX][tY] = false;
+					var ex:ExitTile = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
+					grid[tX][tY] = ex;
+					addChild(ex);
+					removeChild(fogGrid[tX][tY]);
+					fogGrid[tX][tY] = false;
 				} else if (tile["type"] == "none") {
-					initialGrid[tX][tY] = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
+					var im:ImpassableTile = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
+					grid[tX][tY] = im;
+					addChild(im);
 				}
 			}
 
+			// Parse the entities and place them on the entityGrid.
 			var floorEntities:Array = floorData["entities"];
 			for (i = 0; i < floorEntities.length; i++) {
 				var entity:Object = floorEntities[i];
@@ -558,17 +489,21 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-
-					initialEntities[tX][tY] = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
-					initialEnemies.push(initialEntities[tX][tY]);
+					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
+					entityGrid[tX][tY] = enemy;
+					addChild(enemy);
 				} else if (entity["type"] == "healing") {
 					var health:int = entity["health"];
-					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
+					var healing:Healing = new Healing(tX, tY, textures[textureName], health);
+					entityGrid[tX][tY] = healing;
+					addChild(healing);
 				} else if (entity["type"] == "objective") {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
-					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
+					var obj:Objective = new Objective(tX, tY, textures[textureName], key, prereqs);
+					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
+					addChild(obj);
 				}
 			}
 		}
@@ -582,13 +517,14 @@ package {
 			var radius:int = char.los;
 
 			for(x = i - radius; x <= i + radius; x++) {
-				if(x >= 0 && x < initialFogGrid.length) {
-					for(y = j - radius; y <= j + radius; y++) {
-						if(y >= 0 && y < initialFogGrid[x].length) {
-							if(Math.abs(x-i) + Math.abs(y-j) <= radius) {
-								initialFogGrid[x][y] = false;
-								if (initialEntities[x][y] is Enemy) {
-									enemies.push(initialEntities[x][y]);
+				if (x >= 0 && x < gridWidth) {
+					for (y = j - radius; y <= j + radius; y++) {
+						if (y >= 0 && y < gridHeight) {
+							if (Math.abs(x-i) + Math.abs(y-j) <= radius) {
+								removeChild(fogGrid[x][y]);
+								fogGrid[x][y] = false;
+								if (entityGrid[x][y] is Enemy) {
+									activeEnemies.push(entityGrid[x][y]);
 								}
 							}
 						}
@@ -695,7 +631,7 @@ package {
 		private function moveAllEnemies(charDirection:int):void {
 			var monster:Enemy; var x:int; var y:int;
 			var tile:Tile;
-			for each (monster in enemies) {
+			for each (monster in activeEnemies) {
 				if (monster.setInStone) {
 					continue;
 				}
