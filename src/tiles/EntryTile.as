@@ -1,6 +1,8 @@
 package tiles {
     import starling.textures.Texture;
     import starling.text.TextField;
+	import starling.utils.Color;
+	import starling.text.TextField;
 
     public class EntryTile extends Tile {
         public var label:TextField;
@@ -13,7 +15,11 @@ package tiles {
                                   w:Boolean,
                                   texture:Texture) {
             super(g_x, g_y, n, s, e, w, texture);
-            label = new TextField(32,32,"Start","Verdana",8);
+            label = new TextField(Util.PIXELS_PER_TILE,
+                                  Util.PIXELS_PER_TILE,
+                                  "Start",
+                                  "Bebas",
+                                  Util.SMALL_FONT_SIZE);
             addChild(label);
         }
     }

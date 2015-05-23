@@ -1,6 +1,9 @@
 package tiles {
     import starling.textures.Texture;
     import starling.text.TextField;
+	import starling.utils.Color;
+	import starling.text.TextField;
+
 
     public class ExitTile extends Tile {
         public var label:TextField;
@@ -13,16 +16,18 @@ package tiles {
                                  w:Boolean,
                                  texture:Texture) {
             super(g_x, g_y, n, s, e, w, texture);
-            label = new TextField(32,32,"Exit","Verdana",8);
+            label = new TextField(Util.PIXELS_PER_TILE,
+                                  Util.PIXELS_PER_TILE,
+                                  "Exit",
+                                  "Bebas",
+                                  Util.SMALL_FONT_SIZE);
             addChild(label);
         }
 
         override public function handleChar(c:Character):void {
-            dispatchEvent(new TileEvent(TileEvent.CHAR_EXITED,
+            dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT,
                                         grid_x,
-                                        grid_y,
-                                        c,
-                                        true));
+                                        grid_y));
         }
     }
 }

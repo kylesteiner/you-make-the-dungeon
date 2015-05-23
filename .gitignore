@@ -1,3 +1,9 @@
 *.swf
 *.swf.cache
 .DS_Store
+*.as3proj
+bin/*
+obj/*
+pythonScripts/dumps/*
+pythonScripts/dump*
+Thumbs.db

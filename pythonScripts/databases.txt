@@ -1,0 +1,5 @@
+Name : cgs_gc_YouMakeTheDungeon
+Id:       115
+SKey:  9a01148aa509b6eb4a3945f4d845cadb
+DbUser:  gc_YMD
+DbPassword:  23e7224eb0

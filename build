@@ -1,2 +1,2 @@
 #!/bin/bash
-mxmlc -source-path+=lib/starling/src -debug=true -incremental=false -static-link-runtime-shared-libraries=true src/Main.as -output ymtd.swf
+mxmlc -source-path+=lib/starling/src -library-path+=lib/CGSCommon.swc -debug=true -incremental=false -static-link-runtime-shared-libraries=true src/Main.as -output ymtd.swf
