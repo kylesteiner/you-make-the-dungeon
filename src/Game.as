@@ -793,13 +793,13 @@ package {
 		}
 
 		public function onGainGold(event:GameEvent):void {
-			mixer.play(Util.COIN_COLLECT);
 			// Get coin entity from floor
 			// Remove coin entity from floor
 			// Add amount to gold
 			// TODO: Add gold population code to floor
 			var coin:Coin = currentFloor.goldGrid[event.x][event.y];
-			if(coin) { // if floor tile has gold
+			if (coin) { // if floor tile has gold
+				mixer.play(Util.COIN_COLLECT);
 				runHud.goldCollected += coin.gold; // add gold amount
 				runHud.tilesVisited += 1;
 				gold += coin.gold; // add gold amount

@@ -6,6 +6,7 @@ package {
         public static const ARRIVED_AT_EXIT:String = "arrived_at_exit";
 		public static const ENTERED_COMBAT:String = "entered_combat";
 		public static const HEALED:String = "healed";
+		public static const MOVING:String = "moving";
         public static const OBJ_COMPLETED:String = "obj_completed";
 		public static const STAMINA_EXPENDED:String = "stamina_expended";
         public static const REVEAL_ROOM:String = "reveal_room";
