@@ -3,7 +3,6 @@
 
 package {
 	import flash.ui.Keyboard;
-	// import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.geom.Point;
 
@@ -68,6 +67,7 @@ package {
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
 
+		// Rooms that exist on the floor
 		public var rooms:RoomSet;
 		
 		// Revealed enemies that randomly walk about the floor.
@@ -164,7 +164,6 @@ package {
 				tType = tile["type"];
 				tX = tile["x"];
 				tY = tile["y"];
-
 				// Build the String referring to the texture.
 				// Final portion of each string needs to have
 				// escape characters stripped off. This will cause

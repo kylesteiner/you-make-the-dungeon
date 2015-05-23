@@ -66,19 +66,18 @@ package {
                 roomCallback = roomJSON["callback"];
                 wallCoords = roomJSON["walls"]; // Set of (x, y) JSON objects
                 openCoords = roomJSON["spaces"]; // Set of (x, y) JSON objects
-
                 allTiles = new Array();
                 openTiles = new Array();
 
-                for(j = 0; j < openCoords.length; j++) {
-                    tilePoint = openCoords[i];
+                for (j = 0; j < openCoords.length; j++) {
+                    tilePoint = openCoords[j];
                     currentPoint = new Point(tilePoint["x"], tilePoint["y"]);
                     allTiles.push(currentPoint);
                     openTiles.push(new Point(tilePoint["x"], tilePoint["y"]));
                 }
 
-                for(j = 0; j < wallCoords.length; j++) {
-                    tilePoint = wallCoords[i];
+                for (j = 0; j < wallCoords.length; j++) {
+                    tilePoint = wallCoords[j];
                     currentPoint = new Point(tilePoint["x"], tilePoint["y"]);
                     allTiles.push(currentPoint);
                 }
@@ -103,13 +102,12 @@ package {
             var builtTiles:Array;
             var roomPoint:Point;
             var i:int;
-            dispatchEvent(new GameEvent(GameEvent.COMPLETE_ROOM, 0, 0));
             for (key in rooms) {
                 openSpaces = roomSpaces[key];
                 builtTiles = builtRoomTiles[key];
                 for(i = 0; i < openSpaces.length; i++) {
                     roomPoint = openSpaces[i];
-                    //tStatus.text = tStatus.text == "reveal" ? "reveal" : tStatus.text == "equal" ? "equal" : "all";
+                    tStatus.text = tStatus.text == "reveal" ? "reveal" : tStatus.text == "equal" ? "equal" : "all";
                     if(tilePoint.x == roomPoint.x && tilePoint.y == roomPoint.y) {
                         tStatus.text = tStatus.text == "reveal" ? "reveal" : "equal";
                         if(!roomsRevealed[key] && builtTiles.length == 0) {
