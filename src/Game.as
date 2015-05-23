@@ -484,9 +484,11 @@ package {
 				reason = "endRunButton";
 			}
 			logger.logAction(8, {
-				"goldEarned":0,
+				"goldEarned":runHud.goldCollected,
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp,
+				"tilesVisited": runHud.tilesVisited,
+				"enemiesDefeated":runHud.enemiesDefeated,
 				"reason":reason
 			});
 
