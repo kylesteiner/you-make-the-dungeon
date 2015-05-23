@@ -7,7 +7,6 @@ package clickable {
 	public class Transition extends Clickable {
 		private var floor:String;
 		private var initialHealth:int;
-		private var initialAttack:int;
 		private var initialStamina:int;
 		private var initialAttack:int;
 		private var initialLoS:int;
@@ -19,14 +18,12 @@ package clickable {
                                    baseTexture:Texture,
 								   floor:String,
 								   initialHealth:int,
-								   initialAttack:int,
 								   initialStamina:int,
 								   initialAttack:int,
 								   initialLoS:int) {
 			super(xPos, yPos, onClick, baseDisplay, baseTexture);
 			this.floor = floor;
 			this.initialHealth = initialHealth;
-			this.initialAttack = initialAttack;
 			this.initialStamina = initialStamina;
 			this.initialAttack = initialAttack;
 			this.initialLoS = initialLoS;

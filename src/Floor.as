@@ -5,7 +5,6 @@ package {
 	import flash.ui.Keyboard;
 	// import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
 	import flash.geom.Point;
 
 	import starling.display.Image;
@@ -41,7 +40,6 @@ package {
 		private var initialX:int;
 		private var initialY:int;
 		private var initialHp:int;
-		private var initialAtk:int;
 		private var initialStamina:int;
 		private var initialAttack:int;
 		private var initialLoS:int;
@@ -62,8 +60,6 @@ package {
 		private var animations:Dictionary;
 		private var mixer:Mixer;
 
-		private var nextTransition:String;
-
 		// Tutorial UI elements.
 		public var tutorialImage:Image;
 		private var tutorialDisplaying:Boolean;
@@ -83,7 +79,6 @@ package {
 							  textures:Dictionary,
 							  animations:Dictionary,
 							  initialHp:int,
-							  initialAtk:int,
 							  initialStamina:int,
 							  initialAttack:int,
 							  initialLineOfSight:int,
@@ -95,7 +90,6 @@ package {
 			this.textures = textures;
 			this.animations = animations;
 			this.initialHp = initialHp;
-			this.initialAtk = initialAtk;
 			this.initialStamina = initialStamina;
 			this.initialAttack = initialAttack;
 			initialLoS = initialLineOfSight;
@@ -239,6 +233,8 @@ package {
 			for (i = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
+			
+			rooms = new RoomSet(floorData["rooms"]);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
@@ -316,23 +312,6 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-		}
-
-		// Get rid of the old character (if it exists) and make a new one
-		// with the default values.
-		public function resetCharacter():void {
-			if (char) {
-				char.removeFromParent();
-			}
-			char = new Character(initialX,
-								 initialY,
-							 	 initialHp,
-								 initialAtk,
-								 initialStamina,
-								 initialLoS,
-								 animations[Util.CHARACTER],
-								 textures[Util.ICON_ATK]);
-			addChild(char);
 		}
 
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
@@ -529,134 +508,6 @@ package {
 				arr[i] = new Array(y);
 			}
 			return arr;
-		}
-
-		private function parseFloorData(floorDataString:String):void {
-			trace(floorDataString);
-			var floorData:Object = JSON.parse(floorDataString);
-
-			floorName = floorData["floor_name"];
-
-			gridWidth = floorData["floor_dimensions"]["width"];
-			gridHeight = floorData["floor_dimensions"]["height"];
-
-			initialGrid = initializeGrid(gridWidth, gridHeight);
-			initialFogGrid = initializeGrid(gridWidth, gridHeight);
-			initialEntities = initializeGrid(gridWidth, gridHeight);
-
-			// Add a fog image at every grid tile.
-			var i:int;
-			var j:int;
-			for (i = 0; i < initialFogGrid.length; i++) {
-				for (j = 0; j < initialFogGrid[i].length; j++) {
-					var fog:Image = new Image(textures[Util.TILE_FOG]);
-					fog.x = i * Util.PIXELS_PER_TILE;
-					fog.y = j * Util.PIXELS_PER_TILE;
-					initialFogGrid[i][j] = fog;
-				}
-			}
-
-			// Parse the character's starting position.
-			initialX = floorData["character_start"]["x"];
-			initialY = floorData["character_start"]["y"];
-			char = new Character(initialX,
-								 initialY,
-								 initialHp,
-								 initialAtk,
-								 initialStamina,
-								 initialLoS,
-								 animations[Util.CHARACTER],
-								 textures[Util.ICON_ATK]);
-
-			var tType:String;
-			var tX:int; var tY:int;
-			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
-			var tTexture:Texture;
-
-			var floorTiles:Array = floorData["tiles"];
-			preplacedTiles = floorTiles.length;
-			for (i = 0; i < floorTiles.length; i++) {
-				var tile:Object = floorTiles[i];
-
-				tType = tile["type"];
-				tX = tile["x"];
-				tY = tile["y"];
-
-				// Build the String referring to the texture.
-				// Final portion of each string needs to have
-				// escape characters stripped off. This will cause
-				// bugs with preplaced tiles otherwise.
-				tN = (tile["edges"].indexOf("n") != -1) ? true : false;
-				tS = (tile["edges"].indexOf("s") != -1) ? true : false;
-				tE = (tile["edges"].indexOf("e") != -1) ? true : false;
-				tW = (tile["edges"].indexOf("w") != -1) ? true : false;
-
-				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
-
-				if (tile["type"] == "empty") {
-					initialGrid[tX][tY] = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
-				} else if (tile["type"] == "entry") {
-					initialGrid[tX][tY] = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
-					initialFogGrid[tX][tY] = false;
-					setUpInitialFoglessSpots(tX, tY);
-				} else if (tile["type"] == "exit") {
-					initialGrid[tX][tY] = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
-					initialFogGrid[tX][tY] = false;
-				} else if (tile["type"] == "none") {
-					initialGrid[tX][tY] = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
-				}
-			}
-
-			var floorEntities:Array = floorData["entities"];
-			for (i = 0; i < floorEntities.length; i++) {
-				var entity:Object = floorEntities[i];
-				tX = entity["x"];
-				tY = entity["y"];
-				var textureName:String = entity["texture"];
-
-				if (entity["type"] == "enemy") {
-					var hp:int = entity["hp"];
-					var attack:int = entity["attack"];
-					var reward:int = entity["reward"];
-					initialEntities[tX][tY] = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
-				} else if (entity["type"] == "healing") {
-					var health:int = entity["health"];
-					initialEntities[tX][tY] = new Healing(tX, tY, textures[textureName], health);
-				} else if (entity["type"] == "objective") {
-					var key:String = entity["key"];
-					var prereqs:Array = entity["prereqs"];
-					initialEntities[tX][tY] = new Objective(tX, tY, textures[textureName], key, prereqs);
-					objectiveState[key] = false;
-				}
-			}
-
-			var tempFloorEntities:Array = floorData["temporary_entities"];
-			for(i = 0; i < tempFloorEntities.length; i++) {
-				// do something
-			}
-
-			rooms = new RoomSet(floorData["rooms"]);
-		}
-
-		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
-		// does 2 in each direction, and one in every diagonal direction
-		// unlike the public function, just sets that spot to false
-		// and doesn't deal with trying to remove a child that might not exist.
-		private function setUpInitialFoglessSpots(i:int, j:int):void {
-			var x:int; var y:int;
-			var radius:int = char.los;
-
-			for(x = i - radius; x <= i + radius; x++) {
-				if(x >= 0 && x < initialFogGrid.length) {
-					for(y = j - radius; y <= j + radius; y++) {
-						if(y >= 0 && y < initialFogGrid[x].length) {
-							if(Math.abs(x-i) + Math.abs(y-j) <= radius) {
-								initialFogGrid[x][y] = false;
-							}
-						}
-					}
-				}
-			}
 		}
 
 		private function onEnterFrame(e:Event):void {

@@ -45,7 +45,6 @@ package {
 		public function Character(g_x:int,
 								  g_y:int,
 								  hp:int,
-								  attack:int,
 								  stamina:int,
 								  attack:int,
 								  lineOfSight:int,

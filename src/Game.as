@@ -266,7 +266,6 @@ package {
 		public function switchToTransition(transition:Texture,
 										   floor:String,
 										   initialHealth:int,
-										   initialAttack:int,
 										   initialStamina:int,
 										   initialAttack:int,
 										   initialLoS:int):void {
@@ -280,7 +279,6 @@ package {
 											   transition,
 											   floor,
 											   initialHealth,
-											   initialAttack,
 											   initialStamina,
 											   initialAttack,
 											   initialLoS);
@@ -289,7 +287,6 @@ package {
 
 		public function switchToFloor(floorData:String,
 									  initialHealth:int,
-									  initialAtk:int,
 									  initialStamina:int,
 									  initialAttack:int,
 									  initialLoS:int):void {
@@ -303,7 +300,6 @@ package {
 									 textures,
 									 animations,
 									 initialHealth,
-									 initialAtk,
 									 initialStamina,
 									 initialAttack,
 									 initialLoS,
@@ -362,7 +358,6 @@ package {
 					transitions[Util.MAIN_FLOOR],
 					floors[Util.MAIN_FLOOR],
 					Util.STARTING_HEALTH,
-					Util.STARTING_ATTACK,
 					Util.STARTING_STAMINA,
 					Util.STARTING_ATTACK,
 					Util.STARTING_LOS);
