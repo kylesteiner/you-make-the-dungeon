@@ -21,6 +21,68 @@
 			"y": 5,
 			"edges": ["s"]
 		},
+		{
+			"type": "empty",
+			"x": 7,
+			"y": 9,
+			"edges": ["e", "s"]
+		},
+		{
+			"type": "empty",
+			"x": 9,
+			"y": 3,
+			"edges": ["e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 11,
+			"y": 14,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 14,
+			"y": 12,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 21,
+			"y": 10,
+			"edges": ["n", "s"]
+		},
+		{
+			"type": "empty",
+			"x": 25,
+			"y": 2,
+			"edges": ["n", "s", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 25,
+			"y": 5,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 26,
+			"y": 5,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 27,
+			"y": 0,
+			"edges": ["n", "e", "s"]
+		},
+		{
+			"type": "empty",
+			"x": 27,
+			"y": 1,
+			"edges": ["n", "s", "e", "w"]
+		},
+
+
 		{"type": "none", "x": 0, "y": 9, "edges": []},
 		{"type": "none", "x": 0, "y": 10, "edges": []},
 		{"type": "none", "x": 0, "y": 11, "edges": []},
@@ -240,12 +302,102 @@
 	"entities": [
 		{
 			"type": "enemy",
-			"x": 10,
+			"x": 5,
+			"y": 24,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 7,
+			"y": 9,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 9,
+			"y": 3,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 11,
+			"y": 14,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 14,
+			"y": 12,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 21,
 			"y": 10,
 			"texture": "enemy_fighter",
 			"hp": 5,
-			"attack": 2,
-			"reward": 5
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 25,
+			"y": 2,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 25,
+			"y": 5,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 26,
+			"y": 5,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 27,
+			"y": 0,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 27,
+			"y": 1,
+			"texture": "enemy_fighter",
+			"hp": 5,
+			"attack": 1,
+			"reward": 10
 		}
 	]
 }
