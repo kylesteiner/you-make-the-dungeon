@@ -306,7 +306,10 @@ package {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
 
-					if(grid[x][y] && !(char.grid_x == x && char.grid_y == y) && gameState == Game.STATE_RUN) {
+					if (grid[x][y]
+						&& !(grid[x][y] is ImpassableTile)
+						&& !(char.grid_x == x && char.grid_y == y)
+						&& gameState == Game.STATE_RUN) {
 						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, totalRuns));
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
