@@ -545,10 +545,6 @@ package {
 			var cgx:int; var cgy:int;
 			var charTile:Tile; var nextTile:Tile;
 
-			if(goldGrid[char.grid_x][char.grid_y]) {
-				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
-			}
-
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -812,6 +808,10 @@ package {
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
 		private function onCharArrived(e:GameEvent):void {
+			if (goldGrid[char.grid_x][char.grid_y]) {
+				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
+			}
+
 			var entity:Entity = entityGrid[e.x][e.y];
 			if (!entity) {
 				return;
