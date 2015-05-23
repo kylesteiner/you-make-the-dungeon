@@ -93,6 +93,10 @@ package {
 		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
 		public static const CURSOR_RETICLE:String = "cursor_reticle";
+		public static const ICON_SFX_PLAY:String = "sfx_play";
+		public static const ICON_SFX_MUTE:String = "sfx_mute";
+		public static const ICON_BGM_PLAY:String = "bgm_play";
+		public static const ICON_BGM_MUTE:String = "bgm_mute";
 
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";

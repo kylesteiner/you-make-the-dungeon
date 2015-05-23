@@ -154,11 +154,11 @@ package {
 		private function initializeFloorWorld():void {
 			world = new Sprite();
 
-			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_MUTE_SFX]);
+			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_SFX_PLAY]);
 			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
 			sfxMuteButton.y = Util.UI_PADDING;
 
-			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_MUTE_BGM]);
+			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_BGM_PLAY]);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
@@ -412,10 +412,16 @@ package {
 
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
+
+			var chosen:String = mixer.playing ? Util.ICON_BGM_PLAY : Util.ICON_BGM_MUTE;
+			bgmMuteButton.updateImage(null, textures[chosen]);
 		}
 
 		public function toggleSFXMute():void {
 			mixer.toggleSFXMute();
+
+			var chosen:String = mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
+			sfxMuteButton.updateImage(null, textures[chosen]);
 		}
 
 		public function resetFloor():void {

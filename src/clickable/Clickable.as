@@ -63,19 +63,27 @@ package clickable {
 
         public function updateImage(baseDisplay:DisplayObject, textureDisplay:Texture = null):void {
             if(textureDisplay) {
-                removeChild(textureImage);
+                if(textureImage) {
+                    removeChild(textureImage);
+                }
+
                 texture = textureDisplay;
                 textureImage = new Image(textureDisplay);
                 addChild(textureImage);
             }
 
             if(baseDisplay) {
-                removeChild(baseImage);
+                if(baseImage) {
+                    removeChild(baseImage);
+                }
+
                 baseImage = baseDisplay;
             }
 
             // Add baseDisplay regardless to ensure that the ordering remains the same
-            addChild(baseImage);
+            if(baseImage) {
+                addChild(baseImage);
+            }
         }
 
         private function onMouseEvent(event:TouchEvent):void {
