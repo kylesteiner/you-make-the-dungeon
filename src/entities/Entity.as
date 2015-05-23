@@ -11,6 +11,7 @@ package entities {
 		public var grid_y:int;
 		public var img:Image;
 		public var cost:int;
+		public var deletable:Boolean; // true if placed by buildHud
 		public var overlaySprite:Sprite;
 
 		public function Entity(g_x:int, g_y:int, texture:Texture) {

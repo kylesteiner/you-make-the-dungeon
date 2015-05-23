@@ -373,7 +373,7 @@ package {
 					} else if(hudState == BuildHUD.STATE_ENTITY) {
 						addBool = isEmptyTile(grid[x][y]) && !entityGrid[x][y] && !fogGrid[x][y];
 					} else if(hudState == BuildHUD.STATE_DELETE) {
-						addBool = isEmptyTile(grid[x][y]); // Add boolean for preplaced tiles
+						addBool = isEmptyTile(grid[x][y]) && grid[x][y].deletable;
 					}
 
 					addRemoveHighlight(x, y, hudState, addBool);
@@ -492,7 +492,7 @@ package {
 		}
 
 		public function deleteSelected(tile:Tile, entity:Entity):Boolean {
-			if (entity) {
+			if (entity && entity.deletable) {
 				removeChild(entity);
 				entityGrid[entity.grid_x][entity.grid_y] = null;
 				removeEnemyFromArray(entity);
@@ -501,7 +501,7 @@ package {
 					"costOfDeleted":entity.cost
 				});
 				return true;
-			} else if (isEmptyTile(tile)) {
+			} else if (isEmptyTile(tile) && tile.deletable) {
 				removeChild(tile);
 				grid[tile.grid_x][tile.grid_y] = null;
 				Util.logger.logAction(12, {

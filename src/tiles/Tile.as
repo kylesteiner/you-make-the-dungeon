@@ -21,6 +21,7 @@ package tiles {
 		public var infoWidth:int;
 		public var infoHeight:int;
 		public var cost:int;
+		public var deletable:Boolean; // true if placed by buildHud
 
 		// Create a new Tile object at position (g_x,g_y) of the grid.
 		// If n, s, e, or w is true, that edge of the tile will be passable.
