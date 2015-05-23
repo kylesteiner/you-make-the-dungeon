@@ -183,17 +183,17 @@ package {
 
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_XP:int = 0;
-		public static const STARTING_HEALTH:int = 10;
-		public static const STARTING_STAMINA:int = 60; // high for debug purposes
-		public static const STARTING_GOLD:int = 1000; // high for debug purposes
+		public static const STARTING_HEALTH:int = 5;
+		public static const STARTING_STAMINA:int = 5; // high for debug purposes
+		public static const STARTING_GOLD:int = 60; // high for debug purposes
 		public static const STARTING_LOS:int = 2;
 
 		// Costs go here
 		public static const BASE_TILE_COST:int = 5;
 		public static const REFUND_PERCENT:int = 50;
-		public static const ENEMY_FIGHTER_COST:int = 5;
-		public static const ENEMY_MAGE_COST:int = 8;
-		public static const HEALING_COST:int = 10;
+		public static const ENEMY_FIGHTER_COST:int = 20;
+		public static const ENEMY_MAGE_COST:int = 50;
+		public static const HEALING_COST:int = 15;
 
 		public static var logger:Logger;
 		public static var speed:int;

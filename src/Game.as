@@ -47,7 +47,7 @@ package {
 		private var mixer:Mixer;
 		private var textures:Dictionary;  // Map String -> Texture. See util.as.
 		private var floors:Dictionary; // Map String -> String
-		private var transitions:Dictionary; // Map String -> Texture
+		//private var transitions:Dictionary; // Map String -> Texture
 		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 
 		private var sfx:Dictionary; // Map String -> SFX
@@ -109,7 +109,7 @@ package {
 
 			textures = Embed.setupTextures();
 			floors = Embed.setupFloors();
-			transitions = Embed.setupTransitions();
+			//transitions = Embed.setupTransitions();
 			animations = Embed.setupAnimations();
 
 			sfx = Embed.setupSFX();

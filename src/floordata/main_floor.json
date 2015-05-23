@@ -398,6 +398,110 @@
 			"hp": 5,
 			"attack": 1,
 			"reward": 10
+		},
+		{
+			"type": "enemy",
+			"x": 3,
+			"y": 11,
+			"texture": "enemy_mage",
+			"hp": 9,
+			"attack": 3,
+			"reward": 20
+		},
+		{
+			"type": "enemy",
+			"x": 17,
+			"y": 28,
+			"texture": "enemy_mage",
+			"hp": 9,
+			"attack": 3,
+			"reward": 20
+		},
+		{
+			"type": "enemy",
+			"x": 18,
+			"y": 14,
+			"texture": "enemy_mage",
+			"hp": 9,
+			"attack": 3,
+			"reward": 20
+		},
+		{
+			"type": "enemy",
+			"x": 20,
+			"y": 3,
+			"texture": "enemy_mage",
+			"hp": 9,
+			"attack": 3,
+			"reward": 20
+		},
+		{
+			"type": "enemy",
+			"x": 22,
+			"y": 16,
+			"texture": "enemy_mage",
+			"hp": 9,
+			"attack": 3,
+			"reward": 20
+		},
+		{
+			"type": "enemy",
+			"x": 15,
+			"y": 5,
+			"texture": "enemy_fighter",
+			"hp": 15,
+			"attack": 2,
+			"reward": 50
+		},
+		{
+			"type": "enemy",
+			"x": 18,
+			"y": 11,
+			"texture": "enemy_fighter",
+			"hp": 22,
+			"attack": 1,
+			"reward": 50
+		},
+		{
+			"type": "enemy",
+			"x": 28,
+			"y": 26,
+			"texture": "enemy_mage",
+			"hp": 9,
+			"attack": 1,
+			"reward": 100
+		},
+		{
+			"type": "enemy",
+			"x": 12,
+			"y": 27,
+			"texture": "enemy_mage",
+			"hp": 8,
+			"attack": 5,
+			"reward": 60
+		},
+		{
+			"type": "enemy",
+			"x": 4,
+			"y": 5,
+			"texture": "enemy_mage",
+			"hp": 15,
+			"attack": 3,
+			"reward": 100
+		},
+		{
+			"type": "healing",
+			"x": 0,
+			"y": 1,
+			"texture": "health",
+			"health": 8
+		},
+		{
+			"type": "healing",
+			"x": 21,
+			"y": 25,
+			"texture": "health",
+			"health": 8 
 		}
 	]
 }

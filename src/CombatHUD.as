@@ -199,7 +199,7 @@ package {
             }
 
             charHealthText.text = char.hp + " / " + char.maxHp;
-            enemyHealthText.text = String(enemy.hp);
+            enemyHealthText.text = enemy.hp + " / " + enemy.maxHp;
 
             if(charDamagedText) {
                 charDamagedText.y += DAMAGE_TEXT_SHIFT;
@@ -293,8 +293,8 @@ package {
         }
 
         public function createXpText(amount:int):TextField {
-            var tXp:TextField = new TextField(256, 128, "+" + amount + " EXP", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
-            tXp.color = Color.GREEN;
+            var tXp:TextField = new TextField(256, 128, "+" + amount + " GOLD", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+            tXp.color = Color.YELLOW;
             tXp.x = (Util.STAGE_WIDTH / 2) - (tXp.width / 2);
             tXp.y = (Util.STAGE_HEIGHT / 2) - tXp.height;
             return tXp;

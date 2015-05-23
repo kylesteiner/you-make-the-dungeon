@@ -17,7 +17,7 @@ package {
 	import tiles.*;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here to return the the main menu."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing the demo!\nClick here to return the the main menu."
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -53,8 +53,6 @@ package {
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
-		private var nextFloor:String;
-		private var nextTransition:String;
 		private var onCompleteCallback:Function;
 		public var altCallback:Function;
 
@@ -116,8 +114,6 @@ package {
 			// Parse the floor layout information from the JSON file.
 			var floorData:Object = JSON.parse(floorDataString);
 			floorName = floorData["floor_name"];
-			nextFloor = "LOL PLACEHOLDER";
-			nextTransition = "LOL ALSO PLACEHOLDER";
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
@@ -295,9 +291,6 @@ package {
 				addChild(enemy);
 			}
 
-			// Currently populates grid twice for every run and
-			// also bumps up total runs twice which is ambiguous behavior.
-			// Just means rate of gold increase is doubled which is probably fine.
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -310,9 +303,10 @@ package {
 
 					if (grid[x][y]
 						&& !(grid[x][y] is ImpassableTile)
+						&& !fogGrid[x][y]
 						&& !(char.grid_x == x && char.grid_y == y)
 						&& gameState == Game.STATE_RUN) {
-						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, totalRuns));
+						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, 1 + totalRuns / 15));
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
 					}

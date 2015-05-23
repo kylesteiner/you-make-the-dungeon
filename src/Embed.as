@@ -20,19 +20,19 @@ package {
 
 		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
-		[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
-		[Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
-		[Embed(source='assets/effects/large/hl_yellow.png')] public static var hl_yellow:Class;
+		//[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
+		//[Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
+		//[Embed(source='assets/effects/large/hl_yellow.png')] public static var hl_yellow:Class;
 		[Embed(source='assets/effects/large/hl_tile.png')] public static var hl_tile:Class;
 		[Embed(source='assets/effects/large/hl_delete.png')] public static var hl_delete:Class;
 		[Embed(source='assets/effects/large/hl_entity.png')] public static var hl_entity:Class;
 
-		[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
+		//[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
-		[Embed(source='assets/entities/large/hero.png')] public static var entity_hero:Class;
+		//[Embed(source='assets/entities/large/hero.png')] public static var entity_hero:Class;
 		[Embed(source='assets/entities/large/new_key.png')] public static var entity_key:Class;
-		[Embed(source='assets/entities/large/enemy_1.png')] public static var entity_fighter:Class;
-		[Embed(source='assets/entities/large/enemy_2.png')] public static var entity_mage:Class;
+		[Embed(source='assets/entities/large/enemy_fighter.png')] public static var entity_fighter:Class;
+		[Embed(source='assets/entities/large/enemy_mage.png')] public static var entity_mage:Class;
 
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] public static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] public static const league_font:Class;
@@ -82,18 +82,18 @@ package {
 
 		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
-		[Embed(source='assets/transitions/floor0.png')] public static const transitions0:Class;
-		[Embed(source='assets/transitions/floor1.png')] public static const transitions1:Class;
-		[Embed(source='assets/transitions/floor2.png')] public static const transitions2:Class;
-		[Embed(source='assets/transitions/floor3.png')] public static const transitions3:Class;
-		[Embed(source='assets/transitions/floor4.png')] public static const transitions4:Class;
-		[Embed(source='assets/transitions/floor5.png')] public static const transitions5:Class;
-		[Embed(source='assets/transitions/floor6.png')] public static const transitions6:Class;
-		[Embed(source='assets/transitions/floor7.png')] public static const transitions7:Class;
-		[Embed(source='assets/transitions/floor8.png')] public static const transitions8:Class;
-		[Embed(source='assets/transitions/floor9.png')] public static const transitions9:Class;
-		[Embed(source='assets/transitions/floor_final.png')] public static const transitionsFinal:Class;
-		[Embed(source='assets/transitions/floor_final_exp.png')] public static const transitionsFinalExp:Class;
+		//[Embed(source='assets/transitions/floor0.png')] public static const transitions0:Class;
+		//[Embed(source='assets/transitions/floor1.png')] public static const transitions1:Class;
+		//[Embed(source='assets/transitions/floor2.png')] public static const transitions2:Class;
+		//[Embed(source='assets/transitions/floor3.png')] public static const transitions3:Class;
+		//[Embed(source='assets/transitions/floor4.png')] public static const transitions4:Class;
+		//[Embed(source='assets/transitions/floor5.png')] public static const transitions5:Class;
+		//[Embed(source='assets/transitions/floor6.png')] public static const transitions6:Class;
+		//[Embed(source='assets/transitions/floor7.png')] public static const transitions7:Class;
+		//[Embed(source='assets/transitions/floor8.png')] public static const transitions8:Class;
+		//[Embed(source='assets/transitions/floor9.png')] public static const transitions9:Class;
+		//[Embed(source='assets/transitions/floor_final.png')] public static const transitionsFinal:Class;
+		//[Embed(source='assets/transitions/floor_final_exp.png')] public static const transitionsFinalExp:Class;
 
 		[Embed(source='assets/tutorials/tutorial_nea.png')] public static const tutorial_nea:Class;
 		[Embed(source='assets/tutorials/tutorial_exit.png')] public static const tutorial_exit:Class;
@@ -148,14 +148,14 @@ package {
 		[Embed(source='assets/sfx/attack.mp3')] public static const sfxAttack:Class;
 		[Embed(source='assets/sfx/coin_collect.mp3')] public static const sfxCoinCollect:Class;
 
-		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
+		//[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
 		[Embed(source='assets/bgm/glow-in-the-dark.mp3')] public static const bgmGlowInTheDark:Class;
-		[Embed(source='assets/bgm/lovers-walk.mp3')] public static const bgmLoversWalk:Class;
+		//[Embed(source='assets/bgm/lovers-walk.mp3')] public static const bgmLoversWalk:Class;
 		[Embed(source='assets/bgm/oriental-drift.mp3')] public static const bgmOrientalDrift:Class;
 
 		// Currently unused
-		[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
+		//[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
 
 		public static function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
@@ -171,8 +171,8 @@ package {
 			textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
 			textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
 
-			textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
-			textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
+			//textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
+			//textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
 			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
@@ -196,9 +196,9 @@ package {
 			textures[Util.TILE_W] = Texture.fromBitmap(new tile_w(), true, false, scale);
 
 			textures[Util.TILE_FOG] = Texture.fromBitmap(new fog(), true, false, scale);
-			textures[Util.TILE_HL_Y] = Texture.fromBitmap(new hl_yellow(), true, false, scale);
-			textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
-			textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
+			//textures[Util.TILE_HL_Y] = Texture.fromBitmap(new hl_yellow(), true, false, scale);
+			//textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
+			//textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
 			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
 			textures[Util.TILE_HL_TILE] = Texture.fromBitmap(new hl_tile(), true, false, scale);
 			textures[Util.TILE_HL_DEL] = Texture.fromBitmap(new hl_delete(), true, false, scale);
@@ -328,19 +328,17 @@ package {
 			return tFloors;
 		}
 
-		public static function setupTransitions():Dictionary {
+		/*public static function setupTransitions():Dictionary {
 			var transitions:Dictionary = new Dictionary();
 			transitions[Util.MAIN_FLOOR] = Texture.fromEmbeddedAsset(transitions1);
 			return transitions;
-		}
+		}*/
 
 		public static function setupBGM():Array {
 			var tBgm:Array = new Array();
 
-			tBgm.push(new bgmDivingTurtle());
 			tBgm.push(new bgmGentleThoughts());
 			tBgm.push(new bgmGlowInTheDark());
-			tBgm.push(new bgmLoversWalk());
 			tBgm.push(new bgmOrientalDrift());
 
 			return tBgm;

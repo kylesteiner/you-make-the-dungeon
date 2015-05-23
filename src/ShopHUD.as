@@ -81,10 +81,10 @@ package {
 		}
 
 		private function displayShopItems():void {
-			displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), 100, incHP);
-			displayShopItem(2, new Image(textures[Util.ICON_ATK]), 200, incAtk);
-			displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), 300, incStamina);
-			displayShopItem(4, new Image(textures[Util.ICON_LOS]), 400, incLos);
+			displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), 15, incHP);
+			displayShopItem(2, new Image(textures[Util.ICON_ATK]), 30, incAtk);
+			displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), 10, incStamina);
+			displayShopItem(4, new Image(textures[Util.ICON_LOS]), 30, incLos);
 		}
 
 		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):void {
@@ -113,33 +113,33 @@ package {
 
 		public function incHP(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setHP(char.maxHp + 5);
+				setHP(char.maxHp + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterHP":char.maxHp,
-					"upgradeAmount":5
+					"upgradeAmount":1
 				})
 			}
 		}
 
 		public function incAtk(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setAtk(char.attack + 5);
+				setAtk(char.attack + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterAttack":char.attack,
-					"upgradeAmount":5
+					"upgradeAmount":1
 				})
 			}
 		}
 
 		public function incStamina(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setStamina(char.maxStamina + 5);
+				setStamina(char.maxStamina + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterStamina":char.maxStamina,
-					"upgradeAmount":5
+					"upgradeAmount":1
 				})
 			}
 		}
@@ -150,7 +150,7 @@ package {
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterLOS":char.los,
-					"upgradeAmount":5
+					"upgradeAmount":1
 				})
 			}
 		}
