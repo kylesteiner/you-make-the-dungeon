@@ -45,6 +45,7 @@ package {
 		private var initialY:int;
 		private var initialHp:int;
 		private var initialStamina:int;
+		private var initialAttack:int;
 		private var initialLoS:int;
 
 		private var floorFiles:Dictionary;
@@ -75,6 +76,7 @@ package {
 							  animations:Dictionary,
 							  initialHp:int,
 							  initialStamina:int,
+							  initialAttack:int,
 							  initialLineOfSight:int,
 							  floorFiles:Dictionary,
 							  nextFloorCallback:Function,
@@ -85,6 +87,7 @@ package {
 			this.animations = animations;
 			this.initialHp = initialHp;
 			this.initialStamina = initialStamina;
+			this.initialAttack = initialAttack;
 			initialLoS = initialLineOfSight;
 
 			this.floorFiles = floorFiles;
@@ -255,6 +258,7 @@ package {
 								 initialY,
 							 	 initialHp,
 								 initialStamina,
+								 initialAttack,
 								 initialLoS,
 								 animations[Util.CHARACTER],
 								 textures[Util.ICON_ATK]);
@@ -458,6 +462,7 @@ package {
 								 initialY,
 								 initialHp,
 								 initialStamina,
+								 initialAttack,
 								 initialLoS,
 								 animations[Util.CHARACTER],
 								 textures[Util.ICON_ATK]);

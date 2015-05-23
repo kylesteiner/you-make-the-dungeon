@@ -269,6 +269,7 @@ package {
 										   floor:String,
 										   initialHealth:int,
 										   initialStamina:int,
+										   initialAttack:int,
 										   initialLoS:int):void {
 			prepareSwap();
 
@@ -281,6 +282,7 @@ package {
 											   floor,
 											   initialHealth,
 											   initialStamina,
+											   initialAttack,
 											   initialLoS);
 			addChild(currentTransition);
 		}
@@ -288,6 +290,7 @@ package {
 		public function switchToFloor(floorData:String,
 									  initialHealth:int,
 									  initialStamina:int,
+									  initialAttack:int,
 									  initialLoS:int):void {
 			prepareSwap();
 
@@ -299,6 +302,7 @@ package {
 									 animations,
 									 initialHealth,
 									 initialStamina,
+									 initialAttack,
 									 initialLoS,
 									 floors,
 									 switchToTransition,
@@ -356,6 +360,7 @@ package {
 					floors[Util.MAIN_FLOOR],
 					Util.STARTING_HEALTH,
 					Util.STARTING_STAMINA,
+					Util.STARTING_ATTACK,
 					Util.STARTING_LOS);
 
 			var creditsButton:Clickable = new Clickable(

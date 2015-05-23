@@ -44,6 +44,7 @@ package {
 								  g_y:int,
 								  hp:int,
 								  stamina:int,
+								  attack:int,
 								  lineOfSight:int,
 								  animationDict:Dictionary,
 								  attackTexture:Texture) {
