@@ -73,7 +73,7 @@ package {
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
-		public function Floor(floorData:String,
+		public function Floor(floorDataString:String,
 							  textures:Dictionary,
 							  animations:Dictionary,
 							  initialHp:int,
@@ -104,8 +104,14 @@ package {
 			removedEntities = new Array();
 			activeEnemies = new Array();
 
-			// Get floor layout information from the JSON file.
-			parseFloorData(floorData);
+			// Parse the floor layout information from the JSON file.
+			var floorData:Object = JSON.parse(floorDataString);
+			floorName = floorData["floor_name"];
+			nextFloor = "LOL PLACEHOLDER";
+			nextTransition = "LOL ALSO PLACEHOLDER";
+
+			gridWidth = floorData["floor_dimensions"]["width"];
+			gridHeight = floorData["floor_dimensions"]["height"];
 
 			// Set up the background.
 			var mapBoundsBackground:Image = new Image(textures[Util.GRID_BACKGROUND]);
@@ -113,10 +119,116 @@ package {
 			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
 			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
 			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
-			addChildAt(mapBoundsBackground, 0);
+			addChild(mapBoundsBackground);
+
+			// Initialize all grids.
+			grid = initializeGrid(gridWidth, gridHeight);
+			fogGrid = initializeGrid(gridWidth, gridHeight);
+			entityGrid = initializeGrid(gridWidth, gridHeight);
+
+			var i:int;
+			var j:int;
+			// Add a fog image at every grid tile.
+			for (i = 0; i < gridWidth; i++) {
+				for (j = 0; j < gridHeight; j++) {
+					var fog:Image = new Image(textures[Util.TILE_FOG]);
+					fog.x = i * Util.PIXELS_PER_TILE;
+					fog.y = j * Util.PIXELS_PER_TILE;
+					fogGrid[i][j] = fog;
+					addChild(fog);
+				}
+			}
+
+			char = new Character(floorData["character_start"]["x"],
+								 floorData["character_start"]["y"],
+								 initialHp,
+								 initialStamina,
+								 initialAttack,
+								 initialLoS,
+								 animations[Util.CHARACTER],
+								 textures[Util.ICON_ATK]);
+
+			var tType:String;
+			var tX:int; var tY:int;
+			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
+			var tTexture:Texture;
+
+			// Parse the tiles and place them on the grid.
+			var floorTiles:Array = floorData["tiles"];
+			preplacedTiles = floorTiles.length;
+			for (i = 0; i < floorTiles.length; i++) {
+				var tile:Object = floorTiles[i];
+
+				tType = tile["type"];
+				tX = tile["x"];
+				tY = tile["y"];
+
+				// Build the String referring to the texture.
+				// Final portion of each string needs to have
+				// escape characters stripped off. This will cause
+				// bugs with preplaced tiles otherwise.
+				tN = (tile["edges"].indexOf("n") != -1) ? true : false;
+				tS = (tile["edges"].indexOf("s") != -1) ? true : false;
+				tE = (tile["edges"].indexOf("e") != -1) ? true : false;
+				tW = (tile["edges"].indexOf("w") != -1) ? true : false;
+				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
+
+				if (tile["type"] == "empty") {
+					var t:Tile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
+					grid[tX][tY] = t;
+					addChild(t);
+				} else if (tile["type"] == "entry") {
+					var en:EntryTile = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
+					grid[tX][tY] = en;
+					addChild(en);
+					removeChild(fogGrid[tX][tY]);
+					fogGrid[tX][tY] = null;
+					removeFoggedLocations(tX, tY);
+				} else if (tile["type"] == "exit") {
+					var ex:ExitTile = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
+					grid[tX][tY] = ex;
+					addChild(ex);
+					removeChild(fogGrid[tX][tY]);
+					fogGrid[tX][tY] = null;
+				} else if (tile["type"] == "none") {
+					var im:ImpassableTile = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
+					grid[tX][tY] = im;
+					addChild(im);
+				}
+			}
+
+			// Parse the entities and place them on the entityGrid.
+			var floorEntities:Array = floorData["entities"];
+			for (i = 0; i < floorEntities.length; i++) {
+				var entity:Object = floorEntities[i];
+				tX = entity["x"];
+				tY = entity["y"];
+				var textureName:String = entity["texture"];
+
+				if (entity["type"] == "enemy") {
+					var hp:int = entity["hp"];
+					var attack:int = entity["attack"];
+					var reward:int = entity["reward"];
+					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
+					entityGrid[tX][tY] = enemy;
+					addChild(enemy);
+				} else if (entity["type"] == "healing") {
+					var health:int = entity["health"];
+					var healing:Healing = new Healing(tX, tY, textures[textureName], health);
+					entityGrid[tX][tY] = healing;
+					addChild(healing);
+				} else if (entity["type"] == "objective") {
+					var key:String = entity["key"];
+					var prereqs:Array = entity["prereqs"];
+					var obj:Objective = new Objective(tX, tY, textures[textureName], key, prereqs);
+					entityGrid[tX][tY] = obj;
+					objectiveState[key] = false;
+					addChild(obj);
+				}
+			}
 
 			highlightedLocations = new Array(gridWidth);
-			for (var i:int = 0; i < gridWidth; i++) {
+			for (i = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
@@ -389,148 +501,6 @@ package {
 				arr[i] = new Array(y);
 			}
 			return arr;
-		}
-
-		private function parseFloorData(floorDataString:String):void {
-			var floorData:Object = JSON.parse(floorDataString);
-
-			floorName = floorData["floor_name"];
-			nextFloor = "LOL PLACEHOLDER";
-			nextTransition = "LOL ALSO PLACEHOLDER";
-
-			gridWidth = floorData["floor_dimensions"]["width"];
-			gridHeight = floorData["floor_dimensions"]["height"];
-
-			// Initialize all grids.
-			grid = initializeGrid(gridWidth, gridHeight);
-			fogGrid = initializeGrid(gridWidth, gridHeight);
-			entityGrid = initializeGrid(gridWidth, gridHeight);
-
-			var i:int;
-			var j:int;
-			// Add a fog image at every grid tile.
-			for (i = 0; i < gridWidth; i++) {
-				for (j = 0; j < gridHeight; j++) {
-					var fog:Image = new Image(textures[Util.TILE_FOG]);
-					fog.x = i * Util.PIXELS_PER_TILE;
-					fog.y = j * Util.PIXELS_PER_TILE;
-					fogGrid[i][j] = fog;
-					addChild(fog);
-				}
-			}
-
-			char = new Character(floorData["character_start"]["x"],
-								 floorData["character_start"]["y"],
-								 initialHp,
-								 initialStamina,
-								 initialAttack,
-								 initialLoS,
-								 animations[Util.CHARACTER],
-								 textures[Util.ICON_ATK]);
-
-			var tType:String;
-			var tX:int; var tY:int;
-			var tN:Boolean; var tS:Boolean; var tE:Boolean; var tW:Boolean;
-			var tTexture:Texture;
-
-			// Parse the tiles and place them on the grid.
-			var floorTiles:Array = floorData["tiles"];
-			preplacedTiles = floorTiles.length;
-			for (i = 0; i < floorTiles.length; i++) {
-				var tile:Object = floorTiles[i];
-
-				tType = tile["type"];
-				tX = tile["x"];
-				tY = tile["y"];
-
-				// Build the String referring to the texture.
-				// Final portion of each string needs to have
-				// escape characters stripped off. This will cause
-				// bugs with preplaced tiles otherwise.
-				tN = (tile["edges"].indexOf("n") != -1) ? true : false;
-				tS = (tile["edges"].indexOf("s") != -1) ? true : false;
-				tE = (tile["edges"].indexOf("e") != -1) ? true : false;
-				tW = (tile["edges"].indexOf("w") != -1) ? true : false;
-				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
-
-				if (tile["type"] == "empty") {
-					var t:Tile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
-					grid[tX][tY] = t;
-					addChild(t);
-				} else if (tile["type"] == "entry") {
-					var en:EntryTile = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
-					grid[tX][tY] = en;
-					addChild(en);
-					removeChild(fogGrid[tX][tY]);
-					fogGrid[tX][tY] = false;
-					setUpInitialFoglessSpots(tX, tY);
-				} else if (tile["type"] == "exit") {
-					var ex:ExitTile = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
-					grid[tX][tY] = ex;
-					addChild(ex);
-					removeChild(fogGrid[tX][tY]);
-					fogGrid[tX][tY] = false;
-				} else if (tile["type"] == "none") {
-					var im:ImpassableTile = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
-					grid[tX][tY] = im;
-					addChild(im);
-				}
-			}
-
-			// Parse the entities and place them on the entityGrid.
-			var floorEntities:Array = floorData["entities"];
-			for (i = 0; i < floorEntities.length; i++) {
-				var entity:Object = floorEntities[i];
-				tX = entity["x"];
-				tY = entity["y"];
-				var textureName:String = entity["texture"];
-
-				if (entity["type"] == "enemy") {
-					var hp:int = entity["hp"];
-					var attack:int = entity["attack"];
-					var reward:int = entity["reward"];
-					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
-					entityGrid[tX][tY] = enemy;
-					addChild(enemy);
-				} else if (entity["type"] == "healing") {
-					var health:int = entity["health"];
-					var healing:Healing = new Healing(tX, tY, textures[textureName], health);
-					entityGrid[tX][tY] = healing;
-					addChild(healing);
-				} else if (entity["type"] == "objective") {
-					var key:String = entity["key"];
-					var prereqs:Array = entity["prereqs"];
-					var obj:Objective = new Objective(tX, tY, textures[textureName], key, prereqs);
-					entityGrid[tX][tY] = obj;
-					objectiveState[key] = false;
-					addChild(obj);
-				}
-			}
-		}
-
-		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
-		// does 2 in each direction, and one in every diagonal direction
-		// unlike the public function, just sets that spot to false
-		// and doesn't deal with trying to remove a child that might not exist.
-		private function setUpInitialFoglessSpots(i:int, j:int):void {
-			var x:int; var y:int;
-			var radius:int = char.los;
-
-			for(x = i - radius; x <= i + radius; x++) {
-				if (x >= 0 && x < gridWidth) {
-					for (y = j - radius; y <= j + radius; y++) {
-						if (y >= 0 && y < gridHeight) {
-							if (Math.abs(x-i) + Math.abs(y-j) <= radius) {
-								removeChild(fogGrid[x][y]);
-								fogGrid[x][y] = false;
-								if (entityGrid[x][y] is Enemy) {
-									activeEnemies.push(entityGrid[x][y]);
-								}
-							}
-						}
-					}
-				}
-			}
 		}
 
 		private function onEnterFrame(e:Event):void {
