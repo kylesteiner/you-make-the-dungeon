@@ -595,60 +595,75 @@ package {
 				if (enemy.grid_y > 0
 					&& grid[enemy.grid_x][enemy.grid_y-1]
 					&& grid[enemy.grid_x][enemy.grid_y-1].south
-					&& entityGrid[enemy.grid_x][enemy.grid_y-1] == null
-					&& (char.grid_x != enemy.grid_x && char.grid_y != enemy.grid_y-1)) {
+					&& entityGrid[enemy.grid_x][enemy.grid_y-1] == null) {
 					possibleDirections.push(Util.NORTH);
 				}
 				// South
 				if (enemy.grid_y < gridHeight - 1
 					&& grid[enemy.grid_x][enemy.grid_y+1]
 					&& grid[enemy.grid_x][enemy.grid_y+1].north
-					&& entityGrid[enemy.grid_x][enemy.grid_y+1] == null
-					&& (char.grid_x != enemy.grid_x && char.grid_y != enemy.grid_y+1)) {
+					&& entityGrid[enemy.grid_x][enemy.grid_y+1] == null) {
 					possibleDirections.push(Util.SOUTH);
 				}
 				// East
 				if (enemy.grid_x < gridWidth - 1
 					&& grid[enemy.grid_x+1][enemy.grid_y]
 					&& grid[enemy.grid_x+1][enemy.grid_y].west
-					&& entityGrid[enemy.grid_x+1][enemy.grid_y] == null
-					&& (char.grid_x != enemy.grid_x+1 && char.grid_y != enemy.grid_y)) {
+					&& entityGrid[enemy.grid_x+1][enemy.grid_y] == null) {
 					possibleDirections.push(Util.EAST);
 				}
 				// West
 				if (enemy.grid_x > 0
 					&& grid[enemy.grid_x-1][enemy.grid_y]
 					&& grid[enemy.grid_x-1][enemy.grid_y].east
-					&& entityGrid[enemy.grid_x-1][enemy.grid_y] == null
-					&& (char.grid_x != enemy.grid_x-1 && char.grid_y != enemy.grid_y)) {
+					&& entityGrid[enemy.grid_x-1][enemy.grid_y] == null) {
 					possibleDirections.push(Util.WEST);
 				}
 
 				// If the enemy has no options, then stay put.
 				if (possibleDirections.length == 0) {
-					trace("no possible moves");
 					continue;
 				}
 
 				// Pick a random direction for the enemy to move to.
 				var direction:int = possibleDirections[Util.randomRange(0, possibleDirections.length - 1)];
+
+				// If the character is already at that location, then don't move
+				// (this prevents the enemies from being too tricky to corner)
+				if (direction == Util.NORTH
+					&& enemy.grid_x == char.grid_x
+					&& enemy.grid_y - 1 == char.grid_y) {
+					continue;
+				}
+				if (direction == Util.SOUTH
+					&& enemy.grid_x == char.grid_x
+					&& enemy.grid_y + 1 == char.grid_y) {
+					continue;
+				}
+				if (direction == Util.EAST
+					&& enemy.grid_x + 1 == char.grid_x
+					&& enemy.grid_y == char.grid_y) {
+					continue;
+				}
+				if (direction == Util.WEST
+					&& enemy.grid_x - 1== char.grid_x
+					&& enemy.grid_y == char.grid_y) {
+					continue;
+				}
+
 				// Move the entity's position in the entityGrid.
 				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				switch (direction) {
 					case Util.NORTH:
-						trace("moving north");
 						entityGrid[enemy.grid_x][enemy.grid_y - 1] = enemy;
 						break;
 					case Util.SOUTH:
-						trace("moving south");
 						entityGrid[enemy.grid_x][enemy.grid_y + 1] = enemy;
 						break;
 					case Util.EAST:
-						trace("moving east");
 						entityGrid[enemy.grid_x + 1][enemy.grid_y] = enemy;
 						break;
 					case Util.WEST:
-						trace("moving west");
 						entityGrid[enemy.grid_x - 1][enemy.grid_y] = enemy;
 						break;
 				}
