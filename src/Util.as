@@ -3,6 +3,7 @@
 
 package {
 	import Logger;
+	import starling.text.TextField;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -73,9 +74,9 @@ package {
 		public static const TILE_HL_B:String = "hl_b";
 		public static const TILE_HL_G:String = "hl_g";
 		public static const TILE_HL_R:String = "hl_r";
-		public static const TILE_HL_G_NEW:String = "hl_g_new";
-		public static const TILE_CHECK_B:String = "check_b";
-		public static const TILE_CHECK_UB:String = "check_ub";
+		public static const TILE_HL_TILE:String = "hl_tile";
+		public static const TILE_HL_DEL:String = "hl_delete";
+		public static const TILE_HL_ENTITY:String = "hl_entity";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
 		public static const ICON_CURSOR_2:String = "icon_cursor_2";
@@ -91,6 +92,8 @@ package {
 		public static const ICON_GOLD:String = "icon_gold";
 		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
+		public static const CURSOR_RETICLE:String = "cursor_reticle";
+
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
@@ -154,15 +157,15 @@ package {
 		public static const LEVEL_UP:String = "level_up";
 		public static const SFX_ATTACK:String = "sfx_attack";
 		public static const TILE_REMOVE:String = "tile_remove";
+		public static const COIN_COLLECT:String = "coin_collect";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
 		public static const DICT_TRANSITION_INDEX:int = 2;
 
-		//public static const STARTING_LEVEL:int = 1;
-		//public static const STARTING_XP:int = 0;
-		public static const STARTING_HEALTH:int = 10;
 		public static const STARTING_ATTACK:int = 1;
+		public static const STARTING_XP:int = 0;
+		public static const STARTING_HEALTH:int = 10;
 		public static const STARTING_STAMINA:int = 60; // high for debug purposes
 		public static const STARTING_GOLD:int = 1000; // high for debug purposes
 		public static const STARTING_LOS:int = 2;
@@ -238,6 +241,10 @@ package {
 				hash = hash & hash;
 			}
 			return hash;
+		}
+
+		public static function defaultTextField(width:int, height:int, initialText:String, size:int = Util.MEDIUM_FONT_SIZE):TextField {
+			return new TextField(width, height, initialText, Util.DEFAULT_FONT, size);
 		}
 	}
 }

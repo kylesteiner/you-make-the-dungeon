@@ -3,6 +3,8 @@ package {
 	import flash.utils.Dictionary;
 	import starling.textures.*;
 	import starling.events.*;
+	import starling.text.TextField;
+	import starling.utils.Color;
 
 	import tiles.*;
 	import entities.*;
@@ -205,13 +207,14 @@ package {
 			entityQuad.x = tileQuad.x + tileQuad.width + HUD_MARGIN;
 			entityQuad.y = tileQuad.y;
 			var interiorEQ:Quad = new Quad(entityQuad.width - 2*QUAD_BORDER_PIXELS,
-											entityQuad.height - 2*QUAD_BORDER_PIXELS);
+										   entityQuad.height - 2*QUAD_BORDER_PIXELS);
 			interiorEQ.x = entityQuad.x + QUAD_BORDER_PIXELS;
 			interiorEQ.y = entityQuad.y + QUAD_BORDER_PIXELS;
 
 			entityClickables = new Array();
 			entitySelectButtons = new Array();
 			var i:int; var entityX:int; var entityY:int;
+			var entitySprite:Sprite;
 			var entityTexture:Texture;
 			var entityPopupButton:Clickable;
 			var selectEntityButton:Clickable;
@@ -219,8 +222,12 @@ package {
 			for(i = 0; i < entityList.length; i++) {
 				entityX = QUAD_BORDER_PIXELS + Util.PIXELS_PER_TILE * i + entityQuad.x;
 				entityY = QUAD_BORDER_PIXELS * 2;
+				entitySprite = new Sprite();
+				//var ia:Array = entityMap[entityList[i]][entityDisplayList[i]][0];
+				//var ia:Array = entityMap
+				entitySprite = entityMap[entityList[i][entityDisplayList[i]]][0]().generateOverlay();
 				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
-				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, null, entityTexture);
+				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, entitySprite, entityTexture);
 				entityPopupButton.addParameter("index", i);
 				entityClickables.push(entityPopupButton);
 
@@ -311,8 +318,11 @@ package {
 				var entityRow:int = i / ENTITIES_PER_LINE;
 				var entityX:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityColumn + 1) + entityWidth * entityColumn;
 				var entityY:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityRow + 1) + entityHeight * entityRow;
+
+				var entitySprite:Sprite = entityMap[key][0]().generateOverlay();
 				var entityTexture:Texture = entityMap[key][1];
-				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, null, entityTexture);
+				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, entitySprite, entityTexture);
+
 				renderEntity.addParameter("index", index);
 				renderEntity.addParameter("change", i);
 				popupEntities.push(renderEntity);
@@ -355,6 +365,7 @@ package {
 				if(hudState == STATE_ENTITY && i == currentEntityIndex) {
 					color = COLOR_SELECTED;
 				}
+				// Can also just overwrite color field but requires treating baseImage as a Quad
 				currentButton.baseImage = new Quad(currentButton.baseImage.width,
 												   currentButton.baseImage.height,
 												   color);
@@ -385,12 +396,11 @@ package {
 		}
 
 		public function deselect():void {
-			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-
             currentImage = null;
             currentEntityIndex = -1;
 			hudState = STATE_NONE;
             updateSelectButtons();
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
         }
 
 		public function buildTileFromImage(worldX:int, worldY:int):Tile {
@@ -409,23 +419,20 @@ package {
 		public function buildEntityFromImage(currentTile:Tile):Entity {
 			var catIndex:int = entityDisplayList[currentEntityIndex];
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
-			var entity:Entity = entityMap[entityKey][0]();
-			entity.x = currentTile.x;
-			entity.y = currentTile.y;
-			entity.grid_x = currentTile.grid_x;
-			entity.grid_y = currentTile.grid_y;
+			var entity:Entity = entityMap[entityKey][0](currentTile.grid_x, currentTile.grid_y);
 			entity.cost = getCost();
 			return entity;
 		}
 
 		public function deleteClickable():void {
 			deselect();
+			hudState = STATE_DELETE;
 			currentImage = new Image(textures[Util.ICON_DELETE]);
 			currentImage.touchable = false;
-			hudState = STATE_DELETE;
 			closePopup();
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 		}
-		
+
 		public function getRefundForDelete(tile:Tile, entity:Entity):int {
 			if (entity) {
 				return entity.cost * Util.REFUND_PERCENT / 100
@@ -507,6 +514,7 @@ package {
 				currentEntity = null
 				currentImage = null;
 				currentEntityIndex = -1;
+				hudState = STATE_NONE;
 			} else {
 				selectEntity(values["index"]);
 				currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);

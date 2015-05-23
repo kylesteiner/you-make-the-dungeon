@@ -92,26 +92,26 @@ package entities {
             return trapDict;
         }
 
-        public function constructLightHealing():Healing {
+        public function constructLightHealing(x:int=0, y:int=0):Healing {
             var healing:int = 3;
 
-            return new Healing(0, 0, textures[Util.HEALING], healing);
+            return new Healing(x, y, textures[Util.HEALING], healing);
         }
 
-        public function constructFighter():Enemy {
+        public function constructFighter(x:int=0, y:int=0):Enemy {
             var hp:int = 5;
             var atk:int = 1;
             var reward:int = 3;
 
-            return new Enemy(0, 0, Util.ENEMY_FIGHTER, textures[Util.ENEMY_FIGHTER], hp, atk, reward);
+            return new Enemy(x, y, Util.ENEMY_FIGHTER, textures[Util.ENEMY_FIGHTER], hp, atk, reward);
         }
 
-        public function constructMage():Enemy {
+        public function constructMage(x:int=0, y:int=0):Enemy {
             var hp:int = 8;
             var atk:int = 2;
             var reward:int = 7;
 
-            return new Enemy(0, 0, Util.ENEMY_MAGE, textures[Util.ENEMY_MAGE], hp, atk, reward);
+            return new Enemy(x, y, Util.ENEMY_MAGE, textures[Util.ENEMY_MAGE], hp, atk, reward);
         }
     }
 }

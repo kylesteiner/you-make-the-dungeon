@@ -29,6 +29,7 @@ package {
 		private static const STATE_POPUP:String = "game_popup";
 
 		private var cursorAnim:MovieClip;
+		private var cursorReticle:Image;
 		private var cursorHighlight:Image;
 		private var shopButton:Clickable;
 		private var bgmMuteButton:Clickable;
@@ -109,6 +110,10 @@ package {
 
 			initializeFloorWorld();
 			initializeMenuWorld();
+
+			cursorReticle = new Image(textures[Util.CURSOR_RETICLE]);
+			cursorReticle.touchable = false;
+			addChild(cursorReticle);
 
 			cursorAnim = new MovieClip(animations[Util.ICON_CURSOR][Util.ICON_CURSOR], Util.ANIM_FPS);
 			cursorAnim.loop = true;
@@ -218,19 +223,14 @@ package {
 			alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
 			alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
 
-			messageToPlayer = new Clickable(0, 0, resetFloorCharacter, alertBox);
+			messageToPlayer = new Clickable(0, 0, function():void {
+				removeChild(messageToPlayer);
+				endRun();
+			},  alertBox);
 			//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width);
 			//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height);
 
 			addChild(messageToPlayer);
-		}
-
-		private function resetFloorCharacter():void {
-			removeChild(messageToPlayer);
-			//removeChild(charHud);
-			currentFloor.resetCharacter();
-			//charHud = new CharHud(currentFloor.char, textures);
-			//addChild(charHud);
 		}
 
 		private function prepareSwap():void {
@@ -246,7 +246,6 @@ package {
 				removeChild(messageToPlayer);
 				// mute button should always be present
 				removeChild(currentTransition);
-				//removeChild(resetButton);
 				removeChild(runButton);
 				//removeChild(charHud);
 				removeChild(buildHud);
@@ -271,6 +270,7 @@ package {
 										   initialHealth:int,
 										   initialAttack:int,
 										   initialStamina:int,
+										   initialAttack:int,
 										   initialLoS:int):void {
 			prepareSwap();
 
@@ -284,6 +284,7 @@ package {
 											   initialHealth,
 											   initialAttack,
 											   initialStamina,
+											   initialAttack,
 											   initialLoS);
 			addChild(currentTransition);
 		}
@@ -292,6 +293,7 @@ package {
 									  initialHealth:int,
 									  initialAtk:int,
 									  initialStamina:int,
+									  initialAttack:int,
 									  initialLoS:int):void {
 			prepareSwap();
 
@@ -305,6 +307,7 @@ package {
 									 initialHealth,
 									 initialAtk,
 									 initialStamina,
+									 initialAttack,
 									 initialLoS,
 									 floors,
 									 switchToTransition,
@@ -363,6 +366,7 @@ package {
 					Util.STARTING_HEALTH,
 					Util.STARTING_ATTACK,
 					Util.STARTING_STAMINA,
+					Util.STARTING_ATTACK,
 					Util.STARTING_LOS);
 
 			var creditsButton:Clickable = new Clickable(
@@ -525,6 +529,7 @@ package {
 				addChild(buildHud.currentImage);
 			}
 
+			addChild(cursorReticle);
 			addChild(cursorAnim);
 
 			if(gameState == STATE_RUN && runHud && currentFloor) {
@@ -550,6 +555,8 @@ package {
 			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
 
 			// TODO: make it so cursorAnim can move outside of the world
+			cursorReticle.x = touch.globalX - cursorReticle.width / 2;
+			cursorReticle.y = touch.globalY - cursorReticle.height / 2 - 2;
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
@@ -562,8 +569,8 @@ package {
 
 				if (buildHud.hasSelected()) {
 					// Move buildHud image to cursor
-					buildHud.currentImage.x = touch.globalX - (Util.PIXELS_PER_TILE / 2);
-					buildHud.currentImage.y = touch.globalY - (Util.PIXELS_PER_TILE / 2);
+					buildHud.currentImage.x = touch.globalX - buildHud.currentImage.width / 2;
+					buildHud.currentImage.y = touch.globalY - buildHud.currentImage.height / 2;
 					currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.hudState);
 					if (touch.phase == TouchPhase.ENDED && touch.isTouching(currentFloor)) {
 						// Player clicked inside grid
@@ -658,7 +665,12 @@ package {
 					// Player correctly placed the entity. Add it to the grid.
 					newEntity = buildHud.buildEntityFromImage(currentTile);
 					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;
+					trace(newEntity.grid_x);
+					trace(newEntity.grid_y);
 					currentFloor.addChild(newEntity);
+					if (newEntity is Enemy) {
+						currentFloor.activeEnemies.push(newEntity);
+					}
 					mixer.play(Util.TILE_MOVE);
 				} else {
 					mixer.play(Util.TILE_FAILURE);
