@@ -1,8 +1,10 @@
 package entities {
 	import starling.textures.Texture;
+	import starling.display.Sprite;
 	import starling.text.TextField;
 	import starling.utils.Color;
 	import Util;
+
 	public class Enemy extends Entity {
 		public var maxHp:int;
 		public var hp:int;
@@ -40,19 +42,7 @@ package entities {
 			stationary = immobile;
 			currentDirection = Math.random() * 100 % Util.DIRECTIONS.length;
 
-			enemyHpTextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.MEDIUM_FONT_SIZE, hp.toString());
-			enemyHpTextField.color = Color.GREEN;
-			enemyHpTextField.autoScale = true;
-			enemyHpTextField.y = img.height / 2;
-
-			enemyAtkTextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.MEDIUM_FONT_SIZE, attack.toString());
-			enemyAtkTextField.color = Color.RED;
-			enemyAtkTextField.autoScale = true;
-			enemyAtkTextField.x = enemyHpTextField.x + enemyHpTextField.width;
-			enemyAtkTextField.y = enemyHpTextField.y;
-
-			addChild(enemyHpTextField);
-			addChild(enemyAtkTextField);
+			addOverlay();
 		}
 
 		public function move(destX:int, destY:int):void {
@@ -87,6 +77,27 @@ package entities {
 				"enemyReward": reward
 			});
 			dispatchEvent(new GameEvent(GameEvent.ENTERED_COMBAT, grid_x, grid_y));
+		}
+
+		override public function generateOverlay():Sprite {
+			var base:Sprite = new Sprite();
+
+			// Aligned to top-left
+			enemyHpTextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.SMALL_FONT_SIZE, hp.toString(), Util.SMALL_FONT_SIZE);
+			enemyHpTextField.autoScale = true;
+			enemyHpTextField.x = img.width - enemyHpTextField.width - Entity.INFO_MARGIN;
+			enemyHpTextField.y = Entity.INFO_MARGIN;
+
+			// Aligned to bottom-right
+			enemyAtkTextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.SMALL_FONT_SIZE, attack.toString(), Util.SMALL_FONT_SIZE);
+			enemyAtkTextField.autoScale = true;
+			enemyAtkTextField.x = img.width - enemyAtkTextField.width - Entity.INFO_MARGIN;
+			enemyAtkTextField.y = img.height - enemyAtkTextField.height - Entity.INFO_MARGIN;
+
+			base.addChild(enemyHpTextField);
+			base.addChild(enemyAtkTextField);
+
+			return base;
 		}
 	}
 }

@@ -92,6 +92,8 @@ package {
 		public static const ICON_GOLD:String = "icon_gold";
 		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
+		public static const CURSOR_RETICLE:String = "cursor_reticle";
+
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
@@ -151,6 +153,7 @@ package {
 		public static const LEVEL_UP:String = "level_up";
 		public static const SFX_ATTACK:String = "sfx_attack";
 		public static const TILE_REMOVE:String = "tile_remove";
+		public static const COIN_COLLECT:String = "coin_collect";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -236,8 +239,8 @@ package {
 			return hash;
 		}
 
-		public static function defaultTextField(width:int, height:int, initialText:String):TextField {
-			return new TextField(width, height, initialText, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+		public static function defaultTextField(width:int, height:int, initialText:String, size:int = Util.MEDIUM_FONT_SIZE):TextField {
+			return new TextField(width, height, initialText, Util.DEFAULT_FONT, size);
 		}
 	}
 }

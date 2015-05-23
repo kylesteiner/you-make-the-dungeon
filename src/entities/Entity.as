@@ -5,11 +5,13 @@ package entities {
 
 	// Base class for all Entities. Should not be instantiated.
 	public class Entity extends Sprite {
+		public static const INFO_MARGIN:int = 8;
+
 		public var grid_x:int;
 		public var grid_y:int;
 		public var img:Image;
 		public var cost:int;
-		public var baseSprite:Sprite;
+		public var overlaySprite:Sprite;
 
 		public function Entity(g_x:int, g_y:int, texture:Texture) {
 			super();
@@ -23,5 +25,14 @@ package entities {
 		}
 
 		public function handleChar(c:Character):void {}
+
+		public function addOverlay():void {
+			overlaySprite = generateOverlay();
+			addChild(overlaySprite);
+		}
+
+		public function generateOverlay():Sprite {
+			return new Sprite();
+		}
 	}
 }

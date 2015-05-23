@@ -207,13 +207,14 @@ package {
 			entityQuad.x = tileQuad.x + tileQuad.width + HUD_MARGIN;
 			entityQuad.y = tileQuad.y;
 			var interiorEQ:Quad = new Quad(entityQuad.width - 2*QUAD_BORDER_PIXELS,
-											entityQuad.height - 2*QUAD_BORDER_PIXELS);
+										   entityQuad.height - 2*QUAD_BORDER_PIXELS);
 			interiorEQ.x = entityQuad.x + QUAD_BORDER_PIXELS;
 			interiorEQ.y = entityQuad.y + QUAD_BORDER_PIXELS;
 
 			entityClickables = new Array();
 			entitySelectButtons = new Array();
 			var i:int; var entityX:int; var entityY:int;
+			var entitySprite:Sprite;
 			var entityTexture:Texture;
 			var entityPopupButton:Clickable;
 			var selectEntityButton:Clickable;
@@ -221,8 +222,12 @@ package {
 			for(i = 0; i < entityList.length; i++) {
 				entityX = QUAD_BORDER_PIXELS + Util.PIXELS_PER_TILE * i + entityQuad.x;
 				entityY = QUAD_BORDER_PIXELS * 2;
+				entitySprite = new Sprite();
+				//var ia:Array = entityMap[entityList[i]][entityDisplayList[i]][0];
+				//var ia:Array = entityMap
+				entitySprite = entityMap[entityList[i][entityDisplayList[i]]][0]().generateOverlay();
 				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
-				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, null, entityTexture);
+				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, entitySprite, entityTexture);
 				entityPopupButton.addParameter("index", i);
 				entityClickables.push(entityPopupButton);
 
@@ -313,26 +318,10 @@ package {
 				var entityRow:int = i / ENTITIES_PER_LINE;
 				var entityX:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityColumn + 1) + entityWidth * entityColumn;
 				var entityY:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityRow + 1) + entityHeight * entityRow;
+
+				var entitySprite:Sprite = entityMap[key][0]().generateOverlay();
 				var entityTexture:Texture = entityMap[key][1];
-				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, null, entityTexture);
-
-				/*if(i == EntityFactory.ENEMY_CATEGORY) {
-					var sampleEnemy:Enemy = entityMap[key][0]();
-
-					var enemyHpTextField:TextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.MEDIUM_FONT_SIZE, sampleEnemy.maxHp.toString());
-					enemyHpTextField.color = Color.GREEN;
-					enemyHpTextField.autoScale = true;
-					enemyHpTextField.y = renderEntity.textureImage.height / 2;
-
-					var enemyAtkTextField:TextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.MEDIUM_FONT_SIZE, sampleEnemy.attack.toString());
-					enemyAtkTextField.color = Color.RED;
-					enemyAtkTextField.autoScale = true;
-					enemyAtkTextField.x = enemyHpTextField.x + enemyHpTextField.width;
-					enemyAtkTextField.y = enemyHpTextField.y;
-
-					renderEntity.baseSprite.addChild(enemyHpTextField);
-					renderEntity.baseSprite.addChild(enemyAtkTextField);
-				}*/
+				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, entitySprite, entityTexture);
 
 				renderEntity.addParameter("index", index);
 				renderEntity.addParameter("change", i);
@@ -376,6 +365,7 @@ package {
 				if(hudState == STATE_ENTITY && i == currentEntityIndex) {
 					color = COLOR_SELECTED;
 				}
+				// Can also just overwrite color field but requires treating baseImage as a Quad
 				currentButton.baseImage = new Quad(currentButton.baseImage.width,
 												   currentButton.baseImage.height,
 												   color);

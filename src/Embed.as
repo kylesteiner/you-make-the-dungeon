@@ -52,6 +52,7 @@ package {
 		[Embed(source='assets/icons/los.png')] public static const icon_los:Class;
 		[Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
+		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
 
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -128,6 +129,7 @@ package {
 		[Embed(source='assets/sfx/combat_success_long.mp3')] public static const sfxCombatSuccess:Class;
 		[Embed(source='assets/sfx/level_up.mp3')] public static const sfxLevelUp:Class;
 		[Embed(source='assets/sfx/attack.mp3')] public static const sfxAttack:Class;
+		[Embed(source='assets/sfx/coin_collect.mp3')] public static const sfxCoinCollect:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
@@ -205,6 +207,8 @@ package {
 
 			textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
 			textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
+
+			textures[Util.CURSOR_RETICLE] = Texture.fromEmbeddedAsset(cursor_reticle);
 			return textures;
 		}
 
@@ -320,6 +324,7 @@ package {
 			tSfx[Util.LEVEL_UP] = new sfxLevelUp();
 			tSfx[Util.SFX_ATTACK] = new sfxAttack();
 			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
+			tSfx[Util.COIN_COLLECT] = new sfxCoinCollect();
 
 			return tSfx;
 		}

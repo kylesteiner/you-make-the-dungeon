@@ -29,6 +29,7 @@ package {
 		private static const STATE_POPUP:String = "game_popup";
 
 		private var cursorAnim:MovieClip;
+		private var cursorReticle:Image;
 		private var cursorHighlight:Image;
 		private var shopButton:Clickable;
 		private var bgmMuteButton:Clickable;
@@ -109,6 +110,10 @@ package {
 
 			initializeFloorWorld();
 			initializeMenuWorld();
+
+			cursorReticle = new Image(textures[Util.CURSOR_RETICLE]);
+			cursorReticle.touchable = false;
+			addChild(cursorReticle);
 
 			cursorAnim = new MovieClip(animations[Util.ICON_CURSOR][Util.ICON_CURSOR], Util.ANIM_FPS);
 			cursorAnim.loop = true;
@@ -510,6 +515,7 @@ package {
 				addChild(buildHud.currentImage);
 			}
 
+			addChild(cursorReticle);
 			addChild(cursorAnim);
 
 			if(gameState == STATE_RUN && runHud && currentFloor) {
@@ -531,6 +537,8 @@ package {
 			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
 
 			// TODO: make it so cursorAnim can move outside of the world
+			cursorReticle.x = touch.globalX - cursorReticle.width / 2;
+			cursorReticle.y = touch.globalY - cursorReticle.height / 2 - 2;
 			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
 			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
