@@ -312,6 +312,35 @@ package {
 					}
 				}
 			}
+
+			// Temporary rewards code
+			if(goldGrid[3][3]) {
+				goldGrid[3][3].gold = 100;
+			}
+
+			if(goldGrid[2][27]) {
+				goldGrid[2][27].gold = 100;
+			}
+
+			if(goldGrid[14][19]) {
+				goldGrid[14][19].gold = 30;
+			}
+
+			if(goldGrid[16][1]) {
+				goldGrid[16][1].gold = 100;
+			}
+
+			if(goldGrid[19][9]) {
+				goldGrid[19][9].gold = 50;
+			}
+
+			if(goldGrid[26][24]) {
+				goldGrid[26][24].gold = 100;
+			}
+
+			if(goldGrid[28][3]) {
+				goldGrid[28][3].gold = 75;
+			}
 		}
 
 		public function getEntry():Tile {

@@ -81,8 +81,120 @@
 			"y": 1,
 			"edges": ["n", "s", "e", "w"]
 		},
-
-
+		{
+			"type": "empty",
+			"x": 3,
+			"y": 3,
+			"edges": ["s", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 2,
+			"y": 27,
+			"edges": ["s", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 3,
+			"y": 11,
+			"edges": ["s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 4,
+			"y": 5,
+			"edges": ["n", "s"]
+		},
+		{
+			"type": "empty",
+			"x": 14,
+			"y": 19,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 15,
+			"y": 5,
+			"edges": ["e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 16,
+			"y": 1,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 12,
+			"y": 27,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 17,
+			"y": 28,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 18,
+			"y": 14,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 18,
+			"y": 11,
+			"edges": ["n", "s"]
+		},
+		{
+			"type": "empty",
+			"x": 19,
+			"y": 9,
+			"edges": ["s", "e"]
+		},
+		{
+			"type": "empty",
+			"x": 20,
+			"y": 3,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 22,
+			"y": 16,
+			"edges": ["s", "e"]
+		},
+		{
+			"type": "empty",
+			"x": 26,
+			"y": 24,
+			"edges": ["s", "e"]
+		},
+		{
+			"type": "empty",
+			"x": 28,
+			"y": 26,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 28,
+			"y": 3,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 21,
+			"y": 25,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 0,
+			"y": 1,
+			"edges": ["s", "e", "w"]
+		},
 		{"type": "none", "x": 0, "y": 9, "edges": []},
 		{"type": "none", "x": 0, "y": 10, "edges": []},
 		{"type": "none", "x": 0, "y": 11, "edges": []},
@@ -501,7 +613,7 @@
 			"x": 21,
 			"y": 25,
 			"texture": "health",
-			"health": 8 
+			"health": 8
 		}
 	]
 }
