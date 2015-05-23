@@ -477,10 +477,18 @@ package {
 				removeChild(entity);
 				entityGrid[entity.grid_x][entity.grid_y] = null;
 				removeMonsterFromArray(entity);
+				Util.logger.logAction(12, {
+					"deleted":"entity", 
+					"costOfDeleted":entity.cost 
+				});
 				return true;
 			} else if (isEmptyTile(tile)) {
 				removeChild(tile);
 				grid[tile.grid_x][tile.grid_y] = null;
+				Util.logger.logAction(12, {
+					"deleted":"tile",
+					"costOfTile":tile.cost
+				} );
 				return true;
 			}
 			return false;
@@ -878,6 +886,10 @@ package {
 			if(!char.runState) {
 				return;
 			}
+			
+			Util.logger.logAction(16, {
+				"keyPressedCode":event.keyCode
+			});
 
 			if(pressedKeys.indexOf(event.keyCode) == -1) {
 				pressedKeys.push(event.keyCode);
@@ -909,6 +921,16 @@ package {
 
 		public function onCombatSuccess(enemy:Enemy):void {
 			entityGrid[enemy.grid_x][enemy.grid_y] = null;
+			Util.logger.logAction(17, {
+				"characterHealthLeft":char.hp,
+				"characterHealthMax":char.maxHp,
+				"characterStaminaLeft":char.stamina,
+				"characterStaminaMax":char.maxStamina,
+				"characterAttack":char.attack,
+				"enemyHealth":enemy.hp,
+				"enemyAttack":enemy.attack,
+				"reward":enemy.reward
+			});
 			removeChild(enemy);
 		}
 
