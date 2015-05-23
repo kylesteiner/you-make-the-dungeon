@@ -95,6 +95,14 @@ package {
 		[Embed(source='assets/transitions/floor_final.png')] public static const transitionsFinal:Class;
 		[Embed(source='assets/transitions/floor_final_exp.png')] public static const transitionsFinalExp:Class;
 
+		[Embed(source='assets/tutorials/tutorial_nea.png')] public static const tutorial_nea:Class;
+		[Embed(source='assets/tutorials/tutorial_exit.png')] public static const tutorial_exit:Class;
+		[Embed(source='assets/tutorials/tutorial_gold.png')] public static const tutorial_gold:Class;
+		[Embed(source='assets/tutorials/tutorial_adventurers.png')] public static const tutorial_adventurers:Class;
+		[Embed(source='assets/tutorials/tutorial_spend.png')] public static const tutorial_spend:Class;
+		[Embed(source='assets/tutorials/tutorial_keys.png')] public static const tutorial_keys:Class;
+		[Embed(source='assets/tutorials/tutorial_ui.png')] public static const tutorial_ui:Class;
+
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
 		[Embed(source='assets/animations/character/idle/character_2.png')] public static const characterIdleAnim2:Class;

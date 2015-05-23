@@ -103,7 +103,6 @@ package {
 		public static const ICON_FAST_RUN:String = "icon_fast_run";
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
 
-
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
@@ -131,6 +130,14 @@ package {
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
 		public static const MAIN_FLOOR:String = "main_floor"
+
+		public static const TUTORIAL_NEA:String = "tutorial_nea";
+		public static const TUTORIAL_EXIT:String = "tutorial_exit"
+		public static const TUTORIAL_GOLD:String = "tutorial_gold"
+		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
+		public static const TUTORIAL_SPEND:String = "tutorial_spend"
+		public static const TUTORIAL_KEYS:String = "tutorial_keys"
+		public static const TUTORIAL_UI:String = "tutorial_ui"
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";
