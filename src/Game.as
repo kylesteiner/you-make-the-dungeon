@@ -136,7 +136,7 @@ package {
 			combatSkip = false;
 			gold = Util.STARTING_GOLD;
 
-			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND]);
+			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
