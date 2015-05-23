@@ -83,6 +83,10 @@ package {
 		private var pressedKeys:Dictionary;
 
 		public function Game() {
+			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
+		}
+		
+		private function startGame(event:Event):void {
 			Mouse.hide();
 
 			var gid:uint = 115;
