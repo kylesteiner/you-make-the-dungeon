@@ -14,6 +14,7 @@ package {
 	import starling.textures.Texture;
 
 	import clickable.*;
+	import entities.*;
 	import tiles.*;
 
 	public class Game extends Sprite {
@@ -21,12 +22,14 @@ package {
 		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
+		public static const DEFAULT_CAMERA_ACCEL:int = 1;
+		public static const MAX_CAMERA_ACCEL:int = 3;
 
-		private static const STATE_MENU:String = "game_menu";
-		private static const STATE_BUILD:String = "game_build";
-		private static const STATE_RUN:String = "game_run";
-		private static const STATE_COMBAT:String = "game_combat";
-		private static const STATE_POPUP:String = "game_popup";
+		public static const STATE_MENU:String = "game_menu";
+		public static const STATE_BUILD:String = "game_build";
+		public static const STATE_RUN:String = "game_run";
+		public static const STATE_COMBAT:String = "game_combat";
+		public static const STATE_POPUP:String = "game_popup";
 
 		private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
@@ -74,6 +77,10 @@ package {
 		private var phaseBanner:Image;
 		private var phaseBannerTimer:Number;
 
+		private var cameraAccel:Number;
+		// Key -> Boolean representing which keys are being held down
+		private var pressedKeys:Dictionary;
+
 		public function Game() {
 			Mouse.hide();
 
@@ -106,6 +113,9 @@ package {
 			staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
 			addChild(staticBackgroundImage);
 
+			cameraAccel = DEFAULT_CAMERA_ACCEL;
+			pressedKeys = new Dictionary();
+
 			initializeFloorWorld();
 			initializeMenuWorld();
 
@@ -129,6 +139,7 @@ package {
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
 			addEventListener(GameEvent.ENTERED_COMBAT, startCombat);
 
@@ -138,6 +149,7 @@ package {
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.COMPLETE_ROOM, onRoomComplete);
 			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
+			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 		}
 
 		private function initializeFloorWorld():void {
@@ -429,9 +441,11 @@ package {
 			removeChild(shopButton);
 
 			addChild(endButton);
+
+			runHud.startRun();
 			addChild(runHud);
 			gameState = STATE_RUN;
-			currentFloor.toggleRun();
+			currentFloor.toggleRun(gameState);
 
 			constructPhaseBanner();
 		}
@@ -480,7 +494,7 @@ package {
 			addChild(shopButton);
 
 			gameState = STATE_BUILD;
-			currentFloor.toggleRun();
+			currentFloor.toggleRun(gameState);
 			currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
@@ -510,6 +524,44 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
+
+			cameraAccel += event.passedTime;
+			if(cameraAccel > MAX_CAMERA_ACCEL) {
+				cameraAccel = MAX_CAMERA_ACCEL;
+			}
+
+			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
+			if(pressedKeys[Util.DOWN_KEY]) {
+				world.y -= worldShift;
+
+				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
+					world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1);
+				}
+			}
+
+			if(pressedKeys[Util.UP_KEY]) {
+				world.y += worldShift;
+
+				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
+					world.y = Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT;
+				}
+			}
+
+			if(pressedKeys[Util.RIGHT_KEY]) {
+				world.x -= worldShift;
+
+				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
+					world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1);
+				}
+			}
+
+			if(pressedKeys[Util.LEFT_KEY]) {
+				world.x += worldShift;
+
+				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
+					world.x = Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH;
+				}
+			}
 
 			if(phaseBanner) {
 				phaseBannerTimer += event.passedTime;
@@ -647,7 +699,7 @@ package {
 						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y - 1);
 					}
 					numberOfTilesPlaced++;
-					logger.logAction(1, { 
+					logger.logAction(1, {
 						"goldSpend": cost,
 						"northOpen":newTile.north,
 						"southOpen":newTile.south,
@@ -691,6 +743,7 @@ package {
 			// a floor is loaded, and not cause flash errors
 			var input:String = String.fromCharCode(event.charCode);
 
+			pressedKeys[input] = true;
 
 			if(input == Util.MUTE_KEY) {
 				mixer.togglePlay();
@@ -716,53 +769,16 @@ package {
 				if(currentFloor.floorName == Util.TUTORIAL_PAN_FLOOR) {
 					currentFloor.removeTutorial();
 				}
+			}
+		}
 
-				// TODO: add bounds that the camera cannot go beyond,
-				//		 and limit what contexts the camera movement
-				//		 can be used in.
-				if (input == Util.DOWN_KEY) {
-					world.y -= Util.grid_to_real(Util.CAMERA_SHIFT);
-					if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
-						currentFloor.shiftTutorialY(Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1) + world.y + Util.grid_to_real(Util.CAMERA_SHIFT));
-						world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1);
-					} else {
-						currentFloor.shiftTutorialY(Util.grid_to_real(Util.CAMERA_SHIFT));
-					}
-					logger.logAction(2, { "pannedDirection":"down"} );
-				}
+		public function onKeyUp(event:KeyboardEvent):void {
+			var input:String = String.fromCharCode(event.charCode);
+			pressedKeys[input] = false;
 
-				if (input == Util.UP_KEY) {
-					world.y += Util.grid_to_real(Util.CAMERA_SHIFT);
-					if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
-						currentFloor.shiftTutorialY(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.y - Util.STAGE_HEIGHT + Util.PIXELS_PER_TILE);
-						world.y = Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT
-					} else {
-						currentFloor.shiftTutorialY( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
-					}
-					logger.logAction(2, { "pannedDirection":"up"} );
-				}
-
-				if (input == Util.RIGHT_KEY) {
-					world.x -= Util.grid_to_real(Util.CAMERA_SHIFT);
-					if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
-						currentFloor.shiftTutorialX(Util.PIXELS_PER_TILE * (currentFloor.gridWidth -1 ) + world.x + Util.grid_to_real(Util.CAMERA_SHIFT));
-						world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1);
-					} else {
-						currentFloor.shiftTutorialX(Util.grid_to_real(Util.CAMERA_SHIFT));
-					}
-					logger.logAction(2, { "pannedDirection":"right"} );
-				}
-
-				if (input == Util.LEFT_KEY) {
-					world.x += Util.grid_to_real(Util.CAMERA_SHIFT);
-					if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
-						currentFloor.shiftTutorialX(-1 * Util.grid_to_real(Util.CAMERA_SHIFT) + world.x - Util.STAGE_WIDTH + Util.PIXELS_PER_TILE);
-						world.x = Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH
-					} else {
-						currentFloor.shiftTutorialX( -1 * Util.grid_to_real(Util.CAMERA_SHIFT));
-					}
-					logger.logAction(2, { "pannedDirection":"left"} );
-				}
+			if(!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
+			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY]) {
+				cameraAccel = DEFAULT_CAMERA_ACCEL;
 			}
 		}
 
@@ -773,6 +789,23 @@ package {
 
 			if(currentFloor) {
 				currentFloor.clearHighlightedLocations();
+			}
+		}
+
+		public function onGainGold(event:GameEvent):void {
+			mixer.play(Util.COIN_COLLECT);
+			// Get coin entity from floor
+			// Remove coin entity from floor
+			// Add amount to gold
+			// TODO: Add gold population code to floor
+			var coin:Coin = currentFloor.goldGrid[event.x][event.y];
+			if(coin) { // if floor tile has gold
+				runHud.goldCollected += coin.gold; // add gold amount
+				runHud.tilesVisited += 1;
+				gold += coin.gold; // add gold amount
+				goldHud.update(gold);
+				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
+				currentFloor.goldGrid[event.x][event.y] = null;
 			}
 		}
 	}
