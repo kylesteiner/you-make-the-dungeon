@@ -419,6 +419,7 @@ package {
 			newTile.grid_x = Util.real_to_grid(newTile.x + Util.PIXELS_PER_TILE / 2);
 			newTile.grid_y = Util.real_to_grid(newTile.y + Util.PIXELS_PER_TILE / 2);
 			newTile.cost = getCost();
+			newTile.deletable = true;
 			return newTile;
 		}
 
@@ -427,6 +428,7 @@ package {
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
 			var entity:Entity = entityMap[entityKey][0](currentTile.grid_x, currentTile.grid_y);
 			entity.cost = getCost();
+			entity.deletable = true;
 			return entity;
 		}
 

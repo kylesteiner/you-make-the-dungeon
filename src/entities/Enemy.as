@@ -1,6 +1,8 @@
 package entities {
 	import starling.textures.Texture;
 	import starling.display.Sprite;
+	import starling.events.Event;
+	import starling.events.EnterFrameEvent;
 	import starling.text.TextField;
 	import starling.utils.Color;
 	import Util;
@@ -11,10 +13,11 @@ package entities {
 		public var attack:int;
 		public var reward:int;
 
-		public var currentDirection:int; // 0 is east, 1 is north, 2 is west, 3 is south
-		public var stationary:Boolean; // for boss monsters
-		public var moving:Boolean; // because apparently its clicked multiple times.
+		public var stationary:Boolean;
+		public var moving:Boolean;
 		public var inCombat:Boolean;
+		private var destX:int;
+		private var destY:int;
 
 		// initial x and y for resets
 		public var initialGrid_x:int;
@@ -34,35 +37,54 @@ package entities {
 							  maxHp:int,
 							  attack:int,
 							  reward:int,
-							  immobile:Boolean = false) {
+							  stationary:Boolean = false) {
 			super(g_x, g_y, texture);
 			this.maxHp = maxHp;
 			this.hp = maxHp;
 			this.attack = attack;
 			this.reward = reward;
 			this.enemyName = enemyName;
-			this.enemyName = enemyName;
+
 			initialGrid_x = g_x;
 			initialGrid_y = g_y;
 			initialX = x;
 			initialY = y;
-			stationary = immobile;
-			currentDirection = Math.random() * 100 % Util.DIRECTIONS.length;
+
+			this.stationary = stationary;
+			moving = false;
+			inCombat = false;
 
 			addOverlay();
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
-		public function move(destX:int, destY:int):void {
-			trace("move");
-			// movement code here, maybe nicer animations, for now i'll just physically change their positions
-			trace(destX - grid_x);
-			trace(destY - grid_y);
-			// Should use Util.grid_to_real here
-			x += (destX - grid_x) * Util.PIXELS_PER_TILE;
-			y += (destY - grid_y) * Util.PIXELS_PER_TILE;
-			grid_x = destX;
-			grid_y = destY;
-			trace("move done");
+		// Begins moving the Enemy in the provided direction. The grid x/y are
+		// set to the new position immediately, but the real x/y changes
+		// continuously over many frames.
+		public function move(direction:int):void {
+			if (moving || inCombat) {
+				return;
+			}
+			if (Util.DIRECTIONS.indexOf(direction) == -1) {
+				return;
+			}
+			moving = true;
+
+			if (direction == Util.NORTH) {
+				destX = x;
+				destY = y - Util.PIXELS_PER_TILE;
+			} else if (direction == Util.EAST) {
+				destX = x + Util.PIXELS_PER_TILE;
+				destY = y;
+			} else if (direction == Util.SOUTH) {
+				destX = x;
+				destY = y + Util.PIXELS_PER_TILE;
+			} else if (direction == Util.WEST) {
+				destX = x - Util.PIXELS_PER_TILE;
+				destY = y;
+			}
+			grid_x = Util.real_to_grid(destX);
+			grid_y = Util.real_to_grid(destY);
 		}
 
 		override public function handleChar(c:Character):void {
@@ -74,6 +96,7 @@ package entities {
 				"enemyHealth": hp,
 				"enemyReward": reward
 			});
+			c.inCombat = true;
 			dispatchEvent(new GameEvent(GameEvent.ENTERED_COMBAT, grid_x, grid_y));
 		}
 
@@ -107,6 +130,28 @@ package entities {
 			x = initialX;
 			y = initialY;
 			hp = maxHp;
+		}
+
+		// Animate movement between tiles.
+		private function onEnterFrame(e:EnterFrameEvent):void {
+			if (moving) {
+				if (x > destX) {
+					x -= Character.PIXELS_PER_FRAME;
+				}
+				if (x < destX) {
+					x += Character.PIXELS_PER_FRAME;
+				}
+				if (y > destY) {
+					y -= Character.PIXELS_PER_FRAME;
+				}
+				if (y < destY) {
+					y += Character.PIXELS_PER_FRAME;
+				}
+
+				if (x == destX && y == destY) {
+					moving = false;
+				}
+			}
 		}
 	}
 }
