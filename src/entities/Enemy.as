@@ -69,6 +69,8 @@ package entities {
 
 		// Reset the monsters to their initial positions.
 		override public function reset():void {
+			moving = false;
+			inCombat = false;
 			grid_x = initialGrid_x;
 			grid_y = initialGrid_y;
 			x = initialX;

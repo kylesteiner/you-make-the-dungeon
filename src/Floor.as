@@ -620,7 +620,7 @@ package {
 							direction = 2;
 						}
 					} else if (direction == 2) { // west
-						if (tile.north && randomPick == 1) {
+						if (tile.west && randomPick == 1) {
 							monster.currentDirection = 1;
 							direction = 1;
 						} else if (tile.south && randomPick == 2) {
