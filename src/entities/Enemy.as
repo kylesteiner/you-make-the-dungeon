@@ -44,12 +44,15 @@ package entities {
 			this.attack = attack;
 			this.reward = reward;
 			this.enemyName = enemyName;
-			this.enemyName = enemyName;
+
 			initialGrid_x = g_x;
 			initialGrid_y = g_y;
 			initialX = x;
 			initialY = y;
+
 			this.stationary = stationary;
+			moving = false;
+			inCombat = false;
 
 			addOverlay();
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);

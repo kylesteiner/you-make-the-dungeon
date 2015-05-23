@@ -239,6 +239,7 @@ package {
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
+			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
@@ -574,157 +575,82 @@ package {
 			}
 		}
 
-		/*private function moveAllEnemies(charDirection:int):void {
-			var monster:Enemy; var x:int; var y:int;
-			var tile:Tile;
-			for each (monster in activeEnemies) {
-				if (monster.stationary) {
+		private function moveAllEnemies():void {
+			for each (var enemy:Enemy in activeEnemies) {
+				if (enemy.stationary) {
 					continue;
 				}
-				var notMoved:Boolean = true;
-				var movement:Array = new Array();
-				movement[0] = false;
-				movement[1] = false;
-				movement[2] = false;
-				movement[3] = false;
-				while (notMoved) {
-					var direction:int = monster.currentDirection;
-					tile = grid[monster.grid_x][monster.grid_y];
-					if (movement[0] && movement[1] && movement[2] && movement[3]) {
-						break;
-					}
-					// 0 means keep direction, 1 means pick the first
-					// direction in if, 2 means the othe
-					var randomPick:int = Math.random() * 100 % 3;
-					if (direction == 0) { // east
-						if (tile.north && randomPick == 1) {
-							monster.currentDirection = 1;
-							direction = 1;
-						} else if (tile.south && randomPick == 2) {
-							monster.currentDirection = 3;
-							direction = 3;
-						}
-					} else if (direction == 1) { // north
-						if (tile.east && randomPick == 1) {
-							monster.currentDirection = 0;
-							direction = 0;
-						} else if (tile.west && randomPick == 2) {
-							monster.currentDirection = 2;
-							direction = 2;
-						}
-					} else if (direction == 2) { // west
-						if (tile.west && randomPick == 1) {
-							monster.currentDirection = 1;
-							direction = 1;
-						} else if (tile.south && randomPick == 2) {
-							monster.currentDirection = 3;
-							direction = 3;
-						}
-					} else { // south
-						if (tile.east && randomPick == 1) {
-							monster.currentDirection = 0;
-							direction = 0;
-						} else if (tile.west && randomPick == 2) {
-							monster.currentDirection = 2;
-							direction = 2;
-						}
-					}
-					if (direction == 0) { // east
-						if (tile.east && tile.grid_x != gridWidth - 1
-								&& grid[tile.grid_x + 1][tile.grid_y]
-								&& grid[tile.grid_x + 1][tile.grid_y].west) {
-							// move monster east
-							if (charDirection == 2 && char.grid_x == tile.grid_x + 1
-									&& char.grid_y == tile.grid_y
-									|| entityGrid[tile.grid_x + 1][tile.grid_y]) {
-								notMoved = false;
-							} else if (!entityGrid[tile.grid_x + 1][tile.grid_y]) {
-								x = monster.grid_x;
-								y = monster.grid_y;
-								monster.move(monster.grid_x + 1, monster.grid_y);
-								notMoved = false;
-								entityGrid[x + 1][y] = entityGrid[x][y];
-								entityGrid[x][y] = null;
-							} else {
-								monster.currentDirection = Math.random() * 100 % 4;
-							}
-						} else {
-							// pick new random direction
-							monster.currentDirection = Math.random() * 100 % 4;
-						}
-					} else if (direction == 1) { // north
-						if (tile.north && tile.grid_y > 0
-								&& grid[tile.grid_x][tile.grid_y - 1]
-								&& grid[tile.grid_x][tile.grid_y - 1].south) {
-							// move monster north
-							if (charDirection == 3 && char.grid_x == tile.grid_x
-									&& char.grid_y == tile.grid_y - 1
-									|| entityGrid[tile.grid_x][tile.grid_y -1]) {
-								notMoved = false;
-							} else if (!entityGrid[tile.grid_x][tile.grid_y - 1]) {
-								x = monster.grid_x;
-								y = monster.grid_y;
-								monster.move(monster.grid_x, monster.grid_y - 1);
-								notMoved = false;
-								entityGrid[x][y - 1] = entityGrid[x][y];
-								entityGrid[x][y] = null;
-							} else {
-								monster.currentDirection = Math.random() * 100 % 4;
-							}
-						} else {
-							// pick new random direction
-							monster.currentDirection = Math.random() * 100 % 4;
-						}
-					} else if (direction == 2) { // west
-						if (tile.west && tile.grid_x > 0
-								&& grid[tile.grid_x - 1][tile.grid_y]
-								&& grid[tile.grid_x - 1][tile.grid_y].east) {
-							// move monster west
-							if (charDirection == 0 && char.grid_x == tile.grid_x - 1
-									&& char.grid_y == tile.grid_y) {
-								notMoved = false;
-							} else if (!entityGrid[tile.grid_x - 1][tile.grid_y]){
-								x = monster.grid_x;
-								y = monster.grid_y;
-								monster.move(monster.grid_x - 1, monster.grid_y);
-								notMoved = false;
-								entityGrid[x - 1][y] = entityGrid[x][y];
-								entityGrid[x][y] = null;
-							} else {
-								monster.currentDirection = Math.random() * 100 % 4;
-							}
-						} else {
-							// pick new random direction
-							monster.currentDirection = Math.random() * 100 % 4;
-						}
-					} else { // direction equals 3, south
-						if (tile.south && tile.grid_y != gridHeight - 1
-								&& grid[tile.grid_x][tile.grid_y + 1]
-								&& grid[tile.grid_x][tile.grid_y + 1].north) {
-							// move monster south
-							if (charDirection == 1 && char.grid_x == tile.grid_x
-									&& char.grid_y == tile.grid_y + 1) {
-								notMoved = false;
-							} else if (!entityGrid[tile.grid_x][tile.grid_y + 1]) {
-								x = monster.grid_x;
-								y = monster.grid_y;
-								monster.move(monster.grid_x, monster.grid_y + 1);
-								notMoved = false;
-								entityGrid[x][y + 1] = entityGrid[x][y];
-								entityGrid[x][y] = null;
-							} else {
-								monster.currentDirection = Math.random() * 100 % 4;
-							}
-						} else {
-							// pick new random direction
-							monster.currentDirection = Math.random() * 100 % 4;
-						}
-					}
-					movement[direction] = true;
+				if (char.grid_x == enemy.grid_x && char.grid_y == enemy.grid_y) {
+					continue;
 				}
-				trace("moved");
+
+				// Determine which moves are legal for the Enemy.
+				var possibleDirections:Array = new Array();
+				// North
+				if (enemy.grid_y > 0
+					&& grid[enemy.grid_x][enemy.grid_y-1]
+					&& grid[enemy.grid_x][enemy.grid_y-1].south
+					&& entityGrid[enemy.grid_x][enemy.grid_y-1] == null
+					&& (char.grid_x != enemy.grid_x && char.grid_y != enemy.grid_y-1)) {
+					possibleDirections.push(Util.NORTH);
+				}
+				// South
+				if (enemy.grid_y < gridHeight - 1
+					&& grid[enemy.grid_x][enemy.grid_y+1]
+					&& grid[enemy.grid_x][enemy.grid_y+1].north
+					&& entityGrid[enemy.grid_x][enemy.grid_y+1] == null
+					&& (char.grid_x != enemy.grid_x && char.grid_y != enemy.grid_y+1)) {
+					possibleDirections.push(Util.SOUTH);
+				}
+				// East
+				if (enemy.grid_x < gridWidth - 1
+					&& grid[enemy.grid_x+1][enemy.grid_y]
+					&& grid[enemy.grid_x+1][enemy.grid_y].west
+					&& entityGrid[enemy.grid_x+1][enemy.grid_y] == null
+					&& (char.grid_x != enemy.grid_x+1 && char.grid_y != enemy.grid_y)) {
+					possibleDirections.push(Util.EAST);
+				}
+				// West
+				if (enemy.grid_x > 0
+					&& grid[enemy.grid_x-1][enemy.grid_y]
+					&& grid[enemy.grid_x-1][enemy.grid_y].east
+					&& entityGrid[enemy.grid_x-1][enemy.grid_y] == null
+					&& (char.grid_x != enemy.grid_x-1 && char.grid_y != enemy.grid_y)) {
+					possibleDirections.push(Util.WEST);
+				}
+
+				// If the enemy has no options, then stay put.
+				if (possibleDirections.length == 0) {
+					trace("no possible moves");
+					continue;
+				}
+
+				// Pick a random direction for the enemy to move to.
+				var direction:int = possibleDirections[Util.randomRange(0, possibleDirections.length - 1)];
+				// Move the entity's position in the entityGrid.
+				entityGrid[enemy.grid_x][enemy.grid_y] = null;
+				switch (direction) {
+					case Util.NORTH:
+						trace("moving north");
+						entityGrid[enemy.grid_x][enemy.grid_y - 1] = enemy;
+						break;
+					case Util.SOUTH:
+						trace("moving south");
+						entityGrid[enemy.grid_x][enemy.grid_y + 1] = enemy;
+						break;
+					case Util.EAST:
+						trace("moving east");
+						entityGrid[enemy.grid_x + 1][enemy.grid_y] = enemy;
+						break;
+					case Util.WEST:
+						trace("moving west");
+						entityGrid[enemy.grid_x - 1][enemy.grid_y] = enemy;
+						break;
+				}
+				// Command the enemy to move.
+				enemy.move(direction);
 			}
-		}*/
+		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
 			if(!char.runState) {
@@ -755,7 +681,7 @@ package {
 		// When the character's new direction is set, we will move all of the
 		// enemies.
 		private function onCharMoving(e:GameEvent):void {
-
+			moveAllEnemies();
 		}
 
 		// When a character arrives at a tile, it fires an event up to Floor.
