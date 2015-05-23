@@ -409,11 +409,7 @@ package {
 		public function buildEntityFromImage(currentTile:Tile):Entity {
 			var catIndex:int = entityDisplayList[currentEntityIndex];
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
-			var entity:Entity = entityMap[entityKey][0]();
-			entity.x = currentTile.x;
-			entity.y = currentTile.y;
-			entity.grid_x = currentTile.grid_x;
-			entity.grid_y = currentTile.grid_y;
+			var entity:Entity = entityMap[entityKey][0](currentTile.grid_x, currentTile.grid_y);
 			entity.cost = getCost();
 			return entity;
 		}
@@ -425,7 +421,7 @@ package {
 			hudState = STATE_DELETE;
 			closePopup();
 		}
-		
+
 		public function getRefundForDelete(tile:Tile, entity:Entity):int {
 			if (entity) {
 				return entity.cost * Util.REFUND_PERCENT / 100
