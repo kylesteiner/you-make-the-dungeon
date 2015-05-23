@@ -42,6 +42,10 @@ package {
 
 		[Embed(source='assets/icons/medium/mute_bgm.png')] public static const icon_mute_bgm:Class;
 		[Embed(source='assets/icons/medium/mute_sfx.png')] public static const icon_mute_sfx:Class;
+		[Embed(source='assets/icons/sfx_play.png')] public static const icon_sfx_playing:Class;
+		[Embed(source='assets/icons/sfx_mute.png')] public static const icon_sfx_muted:Class;
+		[Embed(source='assets/icons/bgm_play.png')] public static const icon_bgm_playing:Class;
+		[Embed(source='assets/icons/bgm_mute.png')] public static const icon_bgm_muted:Class;
 		[Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
 		[Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
@@ -53,6 +57,11 @@ package {
 		[Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
 		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
+
+		[Embed(source='assets/icons/slow_combat.png')] public static const icon_fast_combat:Class;
+		[Embed(source='assets/icons/base_combat.png')] public static const icon_slow_combat:Class;
+		[Embed(source='assets/icons/red_run.png')] public static const icon_fast_run:Class;
+		[Embed(source='assets/icons/slow_run.png')] public static const icon_slow_run:Class;
 
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -201,6 +210,16 @@ package {
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
+
+			textures[Util.ICON_SFX_PLAY] = Texture.fromEmbeddedAsset(icon_sfx_playing);
+			textures[Util.ICON_SFX_MUTE] = Texture.fromEmbeddedAsset(icon_sfx_muted);
+			textures[Util.ICON_BGM_PLAY] = Texture.fromEmbeddedAsset(icon_bgm_playing);
+			textures[Util.ICON_BGM_MUTE] = Texture.fromEmbeddedAsset(icon_bgm_muted);
+
+			textures[Util.ICON_FAST_COMBAT] = Texture.fromEmbeddedAsset(icon_fast_combat);
+			textures[Util.ICON_SLOW_COMBAT] = Texture.fromEmbeddedAsset(icon_slow_combat);
+			textures[Util.ICON_FAST_RUN] = Texture.fromEmbeddedAsset(icon_fast_run);
+			textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
