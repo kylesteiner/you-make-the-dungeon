@@ -284,6 +284,15 @@ package {
 		public function toggleRun(gameState:String):void {
 			char.toggleRunUI();
 
+			// Ensure that the character and all enemies are higher in the
+			// display order than the tiles.
+			removeChild(char);
+			addChild(char);
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
+
 			// Currently populates grid twice for every run and
 			// also bumps up total runs twice which is ambiguous behavior.
 			// Just means rate of gold increase is doubled which is probably fine.
@@ -557,10 +566,6 @@ package {
 		}
 
 		private function onEnterFrame(e:Event):void {
-			// Workaround because tiles are above the Character in the display
-			// hierarchy after being placed.
-			addChild(char);
-
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
