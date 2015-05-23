@@ -3,6 +3,7 @@
 
 package {
 	import Logger;
+	import starling.text.TextField;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -73,9 +74,9 @@ package {
 		public static const TILE_HL_B:String = "hl_b";
 		public static const TILE_HL_G:String = "hl_g";
 		public static const TILE_HL_R:String = "hl_r";
-		public static const TILE_HL_G_NEW:String = "hl_g_new";
-		public static const TILE_CHECK_B:String = "check_b";
-		public static const TILE_CHECK_UB:String = "check_ub";
+		public static const TILE_HL_TILE:String = "hl_tile";
+		public static const TILE_HL_DEL:String = "hl_delete";
+		public static const TILE_HL_ENTITY:String = "hl_entity";
 
 		public static const ICON_CURSOR:String = "icon_cursor";
 		public static const ICON_CURSOR_2:String = "icon_cursor_2";
@@ -233,6 +234,10 @@ package {
 				hash = hash & hash;
 			}
 			return hash;
+		}
+
+		public static function defaultTextField(width:int, height:int, initialText:String):TextField {
+			return new TextField(width, height, initialText, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 		}
 	}
 }

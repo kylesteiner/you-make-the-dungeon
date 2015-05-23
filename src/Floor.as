@@ -67,7 +67,7 @@ package {
 		public var altCallback:Function;
 
 		public var pressedKeys:Array;
-		
+
 		public var enemies:Array;
 		public var initialEnemies:Array;
 
@@ -99,7 +99,7 @@ package {
 
 			pressedKeys = new Array();
 			objectiveState = new Dictionary();
-			
+
 			enemies = new Array();
 			initialEnemies = new Array();
 
@@ -292,7 +292,7 @@ package {
 				var key:String = String(k);
 				objectiveState[key] = false;
 			}
-			
+
 			for (var index:int = 0; index < enemies.length; index++) {
 				enemies.pop();
 			}
@@ -352,20 +352,22 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
-			var x:int; var y:int;
+			var x:int; var y:int; var addBool:Boolean;
+			var allowed:Array = hudState == BuildHUD.STATE_TILE ? getAllowedLocations(directions) : new Array();
 
-			if (hudState == BuildHUD.STATE_TILE) {
-				var allowed:Array = getAllowedLocations(directions);
-				for (x = 0; x < gridWidth; x++) {
-					for (y = 0; y < gridHeight; y++) {
-						addRemoveHighlight(x, y, allowed[x][y]);
+			for(x = 0; x < gridWidth; x++) {
+				for(y = 0; y < gridHeight; y++) {
+					addBool = false;
+
+					if(hudState == BuildHUD.STATE_TILE) {
+						addBool = allowed[x][y];
+					} else if(hudState == BuildHUD.STATE_ENTITY) {
+						addBool = isEmptyTile(grid[x][y]) && !entityGrid[x][y] && !fogGrid[x][y];
+					} else if(hudState == BuildHUD.STATE_DELETE) {
+						addBool = isEmptyTile(grid[x][y]); // Add boolean for preplaced tiles
 					}
-				}
-			} else if (hudState == BuildHUD.STATE_ENTITY) {
-				for (x = 0; x < gridWidth; x++) {
-					for (y = 0; y < gridHeight; y++) {
-						addRemoveHighlight(x, y, isEmptyTile(grid[x][y]) && !entityGrid[x][y]);
-					}
+
+					addRemoveHighlight(x, y, hudState, addBool);
 				}
 			}
 		}
@@ -376,20 +378,30 @@ package {
 				   !entityGrid[tile.grid_x][tile.grid_y];
 		}
 
-		private function addRemoveHighlight(x:int, y:int, add:Boolean):void {
+		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {
+			// Clear any old highlight at this location
+			removeChild(highlightedLocations[x][y]);
+			highlightedLocations[x][y] = null;
+
 			if (add) {
 				// Highlight available location on grid
-				if (!highlightedLocations[x][y]) {
-					var hl:Image = new Image(textures[Util.TILE_HL_G_NEW]);
-					hl.x = x * Util.PIXELS_PER_TILE;
-					hl.y = y * Util.PIXELS_PER_TILE;
-					highlightedLocations[x][y] = hl;
+				var textureString:String;
+				var highlight:Image;
+
+				if(hudState == BuildHUD.STATE_TILE) {
+					textureString = Util.TILE_HL_TILE;
+				} else if(hudState == BuildHUD.STATE_ENTITY) {
+					textureString = Util.TILE_HL_ENTITY;
+				} else if(hudState == BuildHUD.STATE_DELETE) {
+					textureString = Util.TILE_HL_DEL;
 				}
+
+				highlight = new Image(textures[textureString]);
+				highlight.x = x * Util.PIXELS_PER_TILE;
+				highlight.y = y * Util.PIXELS_PER_TILE;
+				highlightedLocations[x][y] = highlight;
+
 				addChild(highlightedLocations[x][y]);
-			} else {
-				// Remove old highlighted location
-				removeChild(highlightedLocations[x][y]);
-				highlightedLocations[x][y] = null;
 			}
 		}
 
@@ -473,7 +485,7 @@ package {
 			}
 			return false;
 		}
-		
+
 		// removes the monster from the array of mosnters
 		// because there isn't a basic remove from array function
 		private function removeMonsterFromArray(entity:Entity):void {
@@ -709,12 +721,12 @@ package {
 				}
 			}
 		}
-		
+
 		private function moveAllEnemies(charDirection:int):void {
 			var monster:Enemy; var x:int; var y:int;
 			var tile:Tile;
 			for each (monster in enemies) {
-				if (monster.setInStone) {
+				if (monster.stationary) {
 					continue;
 				}
 				var notMoved:Boolean = true;
@@ -773,7 +785,7 @@ package {
 							if (charDirection == 2 && char.grid_x == tile.grid_x + 1
 									&& char.grid_y == tile.grid_y
 									|| entityGrid[tile.grid_x + 1][tile.grid_y]) {
-								notMoved = false;	
+								notMoved = false;
 							} else if (!entityGrid[tile.grid_x + 1][tile.grid_y]) {
 								x = monster.grid_x;
 								y = monster.grid_y;

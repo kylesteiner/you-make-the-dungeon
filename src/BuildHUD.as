@@ -3,6 +3,8 @@ package {
 	import flash.utils.Dictionary;
 	import starling.textures.*;
 	import starling.events.*;
+	import starling.text.TextField;
+	import starling.utils.Color;
 
 	import tiles.*;
 	import entities.*;
@@ -313,6 +315,25 @@ package {
 				var entityY:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityRow + 1) + entityHeight * entityRow;
 				var entityTexture:Texture = entityMap[key][1];
 				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, null, entityTexture);
+
+				/*if(i == EntityFactory.ENEMY_CATEGORY) {
+					var sampleEnemy:Enemy = entityMap[key][0]();
+
+					var enemyHpTextField:TextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.MEDIUM_FONT_SIZE, sampleEnemy.maxHp.toString());
+					enemyHpTextField.color = Color.GREEN;
+					enemyHpTextField.autoScale = true;
+					enemyHpTextField.y = renderEntity.textureImage.height / 2;
+
+					var enemyAtkTextField:TextField = Util.defaultTextField(Util.PIXELS_PER_TILE / 2, Util.MEDIUM_FONT_SIZE, sampleEnemy.attack.toString());
+					enemyAtkTextField.color = Color.RED;
+					enemyAtkTextField.autoScale = true;
+					enemyAtkTextField.x = enemyHpTextField.x + enemyHpTextField.width;
+					enemyAtkTextField.y = enemyHpTextField.y;
+
+					renderEntity.baseSprite.addChild(enemyHpTextField);
+					renderEntity.baseSprite.addChild(enemyAtkTextField);
+				}*/
+
 				renderEntity.addParameter("index", index);
 				renderEntity.addParameter("change", i);
 				popupEntities.push(renderEntity);
@@ -385,12 +406,11 @@ package {
 		}
 
 		public function deselect():void {
-			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-
             currentImage = null;
             currentEntityIndex = -1;
 			hudState = STATE_NONE;
             updateSelectButtons();
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
         }
 
 		public function buildTileFromImage(worldX:int, worldY:int):Tile {
@@ -420,12 +440,13 @@ package {
 
 		public function deleteClickable():void {
 			deselect();
+			hudState = STATE_DELETE;
 			currentImage = new Image(textures[Util.ICON_DELETE]);
 			currentImage.touchable = false;
-			hudState = STATE_DELETE;
 			closePopup();
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 		}
-		
+
 		public function getRefundForDelete(tile:Tile, entity:Entity):int {
 			if (entity) {
 				return entity.cost * Util.REFUND_PERCENT / 100
@@ -507,6 +528,7 @@ package {
 				currentEntity = null
 				currentImage = null;
 				currentEntityIndex = -1;
+				hudState = STATE_NONE;
 			} else {
 				selectEntity(values["index"]);
 				currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);

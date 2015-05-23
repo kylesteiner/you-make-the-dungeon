@@ -23,9 +23,9 @@ package {
 		[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
 		[Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
 		[Embed(source='assets/effects/large/hl_yellow.png')] public static var hl_yellow:Class;
-		[Embed(source='assets/effects/large/hl_green_new.png')] public static var hl_green_new:Class;
-		[Embed(source='assets/effects/large/check_bordered.png')] public static var check_bordered:Class;
-		[Embed(source='assets/effects/large/check_unbordered.png')] public static var check_unbordered:Class;
+		[Embed(source='assets/effects/large/hl_tile.png')] public static var hl_tile:Class;
+		[Embed(source='assets/effects/large/hl_delete.png')] public static var hl_delete:Class;
+		[Embed(source='assets/effects/large/hl_entity.png')] public static var hl_entity:Class;
 
 		[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
@@ -181,9 +181,9 @@ package {
 			textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
 			textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
 			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
-			textures[Util.TILE_HL_G_NEW] = Texture.fromBitmap(new hl_green_new(), true, false, scale);
-			textures[Util.TILE_CHECK_B] = Texture.fromBitmap(new check_bordered(), true, false, scale);
-			textures[Util.TILE_CHECK_UB] = Texture.fromBitmap(new check_unbordered(), true, false, scale);
+			textures[Util.TILE_HL_TILE] = Texture.fromBitmap(new hl_tile(), true, false, scale);
+			textures[Util.TILE_HL_DEL] = Texture.fromBitmap(new hl_delete(), true, false, scale);
+			textures[Util.TILE_HL_ENTITY] = Texture.fromBitmap(new hl_entity(), true, false, scale);
 
 			// WARNING: ICONS ARE NOT SCALED LIKE THE TILES
 			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
