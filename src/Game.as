@@ -14,6 +14,7 @@ package {
 	import starling.textures.Texture;
 
 	import clickable.*;
+	import entities.*;
 	import tiles.*;
 
 	public class Game extends Sprite {
@@ -22,11 +23,11 @@ package {
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
 
-		private static const STATE_MENU:String = "game_menu";
-		private static const STATE_BUILD:String = "game_build";
-		private static const STATE_RUN:String = "game_run";
-		private static const STATE_COMBAT:String = "game_combat";
-		private static const STATE_POPUP:String = "game_popup";
+		public static const STATE_MENU:String = "game_menu";
+		public static const STATE_BUILD:String = "game_build";
+		public static const STATE_RUN:String = "game_run";
+		public static const STATE_COMBAT:String = "game_combat";
+		public static const STATE_POPUP:String = "game_popup";
 
 		private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
@@ -432,7 +433,7 @@ package {
 			runHud.startRun();
 			addChild(runHud);
 			gameState = STATE_RUN;
-			currentFloor.toggleRun();
+			currentFloor.toggleRun(gameState);
 
 			constructPhaseBanner();
 		}
@@ -473,7 +474,7 @@ package {
 			addChild(shopButton);
 
 			gameState = STATE_BUILD;
-			currentFloor.toggleRun();
+			currentFloor.toggleRun(gameState);
 			currentFloor.resetFloor();
 
 			centerWorldOnCharacter();
@@ -761,13 +762,14 @@ package {
 			// Remove coin entity from floor
 			// Add amount to gold
 			// TODO: Add gold population code to floor
-			var amount:int = currentFloor.goldGrid[event.x][event.y];
-			if(amount > 0) { // if floor tile has gold
-				runHud.goldCollected += amount; // add gold amount
+			var coin:Coin = currentFloor.goldGrid[event.x][event.y];
+			if(coin) { // if floor tile has gold
+				runHud.goldCollected += coin.gold; // add gold amount
 				runHud.tilesVisited += 1;
-				gold += amount; // add gold amount
+				gold += coin.gold; // add gold amount
 				goldHud.update(gold);
-				currentFloor.goldGrid[event.x][event.y] = 0;
+				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
+				currentFloor.goldGrid[event.x][event.y] = null;
 			}
 		}
 	}

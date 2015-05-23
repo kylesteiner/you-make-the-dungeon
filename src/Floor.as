@@ -72,6 +72,8 @@ package {
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
 
+		private var totalRuns:int;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorDataString:String,
@@ -92,6 +94,7 @@ package {
 			this.initialStamina = initialStamina;
 			this.initialAttack = initialAttack;
 			initialLoS = initialLineOfSight;
+			totalRuns = 0;
 
 			this.floorFiles = floorFiles;
 			onCompleteCallback = nextFloorCallback;
@@ -264,14 +267,26 @@ package {
 			}
 		}
 
-		public function toggleRun():void {
+		public function toggleRun(gameState:String):void {
 			char.toggleRunUI();
 
+			// Currently populates grid twice for every run and
+			// also bumps up total runs twice which is ambiguous behavior.
+			// Just means rate of gold increase is doubled which is probably fine.
+			if(gameState == Game.STATE_RUN) {
+				totalRuns += 1;
+			}
+
 			var x:int; var y:int;
+			var goldSprite:Coin;
 			for(x = 0; x < gridWidth; x++) {
 				for(y = 0; y < gridHeight; y++) {
-					if(grid[x][y] && char.grid_x != x && char.grid_y != y) {
-						goldGrid[x][y] = 1; // Need to add sprite and stuff
+					removeChild(goldGrid[x][y]);
+
+					if(grid[x][y] && !(char.grid_x == x && char.grid_y == y) && gameState == Game.STATE_RUN) {
+						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, totalRuns));
+						goldGrid[x][y] = goldSprite;
+						addChild(goldSprite);
 					}
 				}
 			}
@@ -530,7 +545,7 @@ package {
 			var cgx:int; var cgy:int;
 			var charTile:Tile; var nextTile:Tile;
 
-			if(goldGrid[char.grid_x][char.grid_y] > 0) {
+			if(goldGrid[char.grid_x][char.grid_y]) {
 				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
 			}
 
