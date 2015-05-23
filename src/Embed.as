@@ -236,6 +236,14 @@ package {
 			textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
 
 			textures[Util.CURSOR_RETICLE] = Texture.fromEmbeddedAsset(cursor_reticle);
+
+			textures[Util.TUTORIAL_NEA] = Texture.fromEmbeddedAsset(tutorial_nea);
+			textures[Util.TUTORIAL_EXIT] = Texture.fromEmbeddedAsset(tutorial_exit);
+			textures[Util.TUTORIAL_GOLD] = Texture.fromEmbeddedAsset(tutorial_gold);
+			textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
+			textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
+			textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
+			textures[Util.TUTORIAL_UI] = Texture.fromEmbeddedAsset(tutorial_ui);
 			return textures;
 		}
 

@@ -112,6 +112,7 @@ package {
 		public static const LEFT_KEY:int = Keyboard.A;
 		public static const RIGHT_KEY:int = Keyboard.D;
 		public static const DOWN_KEY:int = Keyboard.S;
+		public static const TUTORIAL_SKIP_KEY:int = Keyboard.G;
 
 		// if we want to use arrow keys, here are the relevant char codes:
 		// up: 38		left: 37
