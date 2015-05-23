@@ -195,7 +195,9 @@ package {
 
             if(attackAnimation) {
                 attackAnimation.advanceTime(e.passedTime);
-                addChild(attackAnimation);
+                if(!attackAnimation.isComplete) {
+                    addChild(attackAnimation);
+                }
             }
 
             charHealthText.text = char.hp + " / " + char.maxHp;

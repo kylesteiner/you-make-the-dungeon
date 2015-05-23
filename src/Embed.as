@@ -131,10 +131,10 @@ package {
 		[Embed(source='assets/animations/mage/idle/mage_idle_1.png')] public static const enemyMageCombatIdleAnim1:Class;
 		[Embed(source='assets/animations/mage/idle/mage_idle_2.png')] public static const enemyMageCombatIdleAnim2:Class;
 
-		[Embed(source='assets/animations/generic/attack/attack_0.png')] public static const genericAttackAnim0:Class;
-		[Embed(source='assets/animations/generic/attack/attack_1.png')] public static const genericAttackAnim1:Class;
-		[Embed(source='assets/animations/generic/attack/attack_2.png')] public static const genericAttackAnim2:Class;
-		[Embed(source='assets/animations/generic/attack/attack_3.png')] public static const genericAttackAnim3:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_0.png')] public static const genericAttackAnim0:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_1.png')] public static const genericAttackAnim1:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim2:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim3:Class;
 
 		[Embed(source='assets/sfx/floor_complete_new.mp3')] public static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] public static const sfxTileMove:Class;
@@ -328,12 +328,6 @@ package {
 			tFloors[Util.MAIN_FLOOR] = (new mainFloor() as ByteArray).toString();
 			return tFloors;
 		}
-
-		/*public static function setupTransitions():Dictionary {
-			var transitions:Dictionary = new Dictionary();
-			transitions[Util.MAIN_FLOOR] = Texture.fromEmbeddedAsset(transitions1);
-			return transitions;
-		}*/
 
 		public static function setupBGM():Array {
 			var tBgm:Array = new Array();
