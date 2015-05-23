@@ -106,16 +106,16 @@ package {
 		}
 
 		// Begins moving the Character from one tile to the next.
-		// When the move animation is completed, the tile that the character
-		// moved into will receive an event.
-		// If the Character is currently moving, this method will do nothing.
+		// The grid x/y are set immediately, but the real x/y changes
+		// continuously over many frames. Once the character arrives at the tile
+		// an event is passed to floor.
 		public function move(direction:int):void {
 			trace("character.move(" + direction + ")");
 			if (moving || inCombat) {
 				return;
 			}
 
-			if(Util.DIRECTIONS.indexOf(direction) == -1) {
+			if (Util.DIRECTIONS.indexOf(direction) == -1) {
 				return;
 			}
 
@@ -145,6 +145,8 @@ package {
 			}
 			grid_x = Util.real_to_grid(destX);
 			grid_y = Util.real_to_grid(destY);
+
+			dispatchEvent(new GameEvent(GameEvent.MOVING, grid_x, grid_y));
 		}
 
 		private function onEnterFrame(e:EnterFrameEvent):void {

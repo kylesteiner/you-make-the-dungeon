@@ -752,6 +752,12 @@ package {
 			// TODO: test functionality with pressng + releasing many keys
 		}
 
+		// When the character's new direction is set, we will move all of the
+		// enemies.
+		private function onCharMoving(e:GameEvent):void {
+
+		}
+
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
 		private function onCharArrived(e:GameEvent):void {
