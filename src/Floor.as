@@ -577,8 +577,7 @@ package {
 				}
 
 				charTile = grid[cgx][cgy];
-
-				if (keyCode == Keyboard.UP && cgy > 0) {
+				if ((keyCode == Keyboard.UP || keyCode == Util.UP_KEY) && cgy > 0) {
 					if(!grid[cgx][cgy-1]) {
 						continue;
 					}
@@ -587,7 +586,7 @@ package {
 					if (charTile.north && nextTile.south) {
 						char.move(Util.NORTH);
 					}
-				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
+				} else if ((keyCode == Keyboard.DOWN || keyCode == Util.DOWN_KEY) && cgy < gridHeight - 1) {
 					if(!grid[cgx][cgy+1]) {
 						continue;
 					}
@@ -597,7 +596,7 @@ package {
 						char.move(Util.SOUTH);
 
 					}
-				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
+				} else if ((keyCode == Keyboard.LEFT || keyCode == Util.LEFT_KEY) && cgx > 0) {
 					if(!grid[cgx-1][cgy]) {
 						continue;
 					}
@@ -606,7 +605,7 @@ package {
 					if (charTile.west && nextTile.east) {
 						char.move(Util.WEST);
 					}
-				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
+				} else if ((keyCode == Keyboard.RIGHT || keyCode == Util.RIGHT_KEY) && cgx < gridWidth - 1) {
 					if(!grid[cgx+1][cgy]) {
 						continue;
 					}

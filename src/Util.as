@@ -4,6 +4,7 @@
 package {
 	import Logger;
 	import starling.text.TextField;
+	import flash.ui.Keyboard;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -97,12 +98,12 @@ package {
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
-		public static const MUTE_KEY:String = "m";
-		public static const COMBAT_SKIP_KEY:String = "k";
-		public static const UP_KEY:String = "w";
-		public static const LEFT_KEY:String = "a";
-		public static const RIGHT_KEY:String = "d";
-		public static const DOWN_KEY:String = "s";
+		public static const MUTE_KEY:int = Keyboard.M;
+		public static const COMBAT_SKIP_KEY:int = Keyboard.K;
+		public static const UP_KEY:int = Keyboard.W;
+		public static const LEFT_KEY:int = Keyboard.A;
+		public static const RIGHT_KEY:int = Keyboard.D;
+		public static const DOWN_KEY:int = Keyboard.S;
 
 		// if we want to use arrow keys, here are the relevant char codes:
 		// up: 38		left: 37

@@ -3,6 +3,7 @@ package {
 	import entities.Entity;
 	import flash.media.*;
 	import flash.ui.Mouse;
+	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -506,7 +507,7 @@ package {
 			}
 
 			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
-			if(pressedKeys[Util.DOWN_KEY]) {
+			if(pressedKeys[Keyboard.DOWN] || pressedKeys[Util.DOWN_KEY]) {
 				world.y -= worldShift;
 
 				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
@@ -514,7 +515,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Util.UP_KEY]) {
+			if(pressedKeys[Keyboard.UP] || pressedKeys[Util.UP_KEY]) {
 				world.y += worldShift;
 
 				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
@@ -522,7 +523,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Util.RIGHT_KEY]) {
+			if(pressedKeys[Keyboard.RIGHT] || pressedKeys[Util.RIGHT_KEY]) {
 				world.x -= worldShift;
 
 				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
@@ -530,7 +531,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Util.LEFT_KEY]) {
+			if(pressedKeys[Keyboard.LEFT] || pressedKeys[Util.LEFT_KEY]) {
 				world.x += worldShift;
 
 				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
@@ -702,18 +703,16 @@ package {
 		private function onKeyDown(event:KeyboardEvent):void {
 			// to ensure that they can't move the world around until
 			// a floor is loaded, and not cause flash errors
-			var input:String = String.fromCharCode(event.charCode);
+			pressedKeys[event.keyCode] = true;
 
-			pressedKeys[input] = true;
-
-			if(input == Util.MUTE_KEY) {
+			if(event.keyCode == Util.MUTE_KEY) {
 				mixer.togglePlay();
 				Util.logger.logAction(15, {
 					"buttonClicked":"Mute"
 				});
 			}
 
-			if (input == Util.COMBAT_SKIP_KEY) {
+			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				Util.logger.logAction(15, {
 					"buttonClicked":"Combat Skip"
 				});
@@ -734,11 +733,12 @@ package {
 		}
 
 		public function onKeyUp(event:KeyboardEvent):void {
-			var input:String = String.fromCharCode(event.charCode);
-			pressedKeys[input] = false;
+			pressedKeys[event.keyCode] = false;
 
 			if(!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
-			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY]) {
+			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY] &&
+			   !pressedKeys[Keyboard.UP] && !pressedKeys[Keyboard.DOWN] &&
+			   !pressedKeys[Keyboard.LEFT] && !pressedKeys[Keyboard.RIGHT]) {
 				cameraAccel = DEFAULT_CAMERA_ACCEL;
 			}
 		}
