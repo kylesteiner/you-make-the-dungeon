@@ -200,6 +200,10 @@ package {
 					grid[tX][tY] = im;
 					addChild(im);
 				}
+				
+				if (fogGrid[tX][tY]) {
+					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
+				}
 			}
 
 			// Parse the entities and place them on the entityGrid.
@@ -229,6 +233,10 @@ package {
 					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
 					addChild(obj);
+				}
+				
+				if (fogGrid[tX][tY]) {
+					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
 				}
 			}
 
