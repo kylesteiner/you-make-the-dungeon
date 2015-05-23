@@ -181,7 +181,7 @@ package {
 			runSpeedButton.x = combatSpeedButton.x - runSpeedButton.width - Util.UI_PADDING;
 			runSpeedButton.y = combatSpeedButton.y;
 
-			goldHud = new GoldHUD(Util.STARTING_GOLD, textures);
+			goldHud = new GoldHUD(Util.STARTING_GOLD, textures, mixer);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			goldHud.y = Util.UI_PADDING;
 
@@ -810,7 +810,6 @@ package {
 			// TODO: Add gold population code to floor
 			var coin:Coin = currentFloor.goldGrid[event.x][event.y];
 			if (coin) { // if floor tile has gold
-				mixer.play(Util.COIN_COLLECT);
 				runHud.goldCollected += coin.gold; // add gold amount
 				runHud.tilesVisited += 1;
 				gold += coin.gold; // add gold amount

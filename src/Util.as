@@ -176,6 +176,7 @@ package {
 		public static const SFX_ATTACK:String = "sfx_attack";
 		public static const TILE_REMOVE:String = "tile_remove";
 		public static const COIN_COLLECT:String = "coin_collect";
+		public static const GOLD_SPEND:String = "gold_spend";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
