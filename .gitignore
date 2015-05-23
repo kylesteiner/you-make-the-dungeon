@@ -6,3 +6,4 @@ bin/*
 obj/*
 pythonScripts/dumps/*
 pythonScripts/dump*
+Thumbs.db
