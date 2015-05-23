@@ -200,7 +200,7 @@ package {
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
-									  endRun,
+									  endRunButton,
 									  null,
 									  textures[Util.ICON_END]);
 			endButton.x = runButton.x;
@@ -496,6 +496,12 @@ package {
 			removeChild(runHud);
 
 			addChild(runSummary);
+		}
+
+		public function endRunButton():void {
+			if(currentFloor && !currentFloor.completed) {
+				endRun();
+			}
 		}
 
 		public function returnToBuild():void {
