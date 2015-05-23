@@ -280,9 +280,7 @@ package {
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
 				var selectEB:Clickable = entityClickables[i];
-				selectEB.removeChild(selectEB.textureImage);
-				selectEB.textureImage = new Image(entityMap[entityList[i][entityDisplayList[i]]][1]);
-				selectEB.addChild(selectEB.textureImage);
+				selectEB.updateImage(null, entityMap[entityList[i][entityDisplayList[i]]][1]);
 			}
 		}
 
@@ -349,11 +347,10 @@ package {
 		}
 
 		public function updateSelectButtons():void {
-			tileSelectButton.removeChild(tileSelectButton.baseImage);
-			tileSelectButton.baseImage = new Quad(tileSelectButton.baseImage.width,
+			var replacementQuad:Quad = new Quad(tileSelectButton.baseImage.width,
 												tileSelectButton.baseImage.height,
 												hudState == STATE_TILE ? COLOR_SELECTED : COLOR_DESELECTED);
-			tileSelectButton.addChild(tileSelectButton.baseImage);
+			tileSelectButton.updateImage(replacementQuad);
 
 			var i:int; var color:uint;
 			var currentButton:Clickable;
@@ -419,11 +416,7 @@ package {
 		public function buildEntityFromImage(currentTile:Tile):Entity {
 			var catIndex:int = entityDisplayList[currentEntityIndex];
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
-			var entity:Entity = entityMap[entityKey][0]();
-			entity.x = currentTile.x;
-			entity.y = currentTile.y;
-			entity.grid_x = currentTile.grid_x;
-			entity.grid_y = currentTile.grid_y;
+			var entity:Entity = entityMap[entityKey][0](currentTile.grid_x, currentTile.grid_y);
 			entity.cost = getCost();
 			return entity;
 		}

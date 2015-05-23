@@ -58,9 +58,7 @@ package {
 
 		public var logger:Logger;
 		private var numberOfTilesPlaced:int;
-		private var emptyTiles:int;
-		private var enemyTiles:int;
-		private var healingTiles:int;
+		private var entitiesPlaced:int;
 
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
@@ -223,19 +221,14 @@ package {
 			alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
 			alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
 
-			messageToPlayer = new Clickable(0, 0, resetFloorCharacter, alertBox);
+			messageToPlayer = new Clickable(0, 0, function():void {
+				removeChild(messageToPlayer);
+				endRun();
+			},  alertBox);
 			//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width);
 			//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height);
 
 			addChild(messageToPlayer);
-		}
-
-		private function resetFloorCharacter():void {
-			removeChild(messageToPlayer);
-			//removeChild(charHud);
-			currentFloor.resetCharacter();
-			//charHud = new CharHud(currentFloor.char, textures);
-			//addChild(charHud);
 		}
 
 		private function prepareSwap():void {
@@ -251,7 +244,6 @@ package {
 				removeChild(messageToPlayer);
 				// mute button should always be present
 				removeChild(currentTransition);
-				//removeChild(resetButton);
 				removeChild(runButton);
 				//removeChild(charHud);
 				removeChild(buildHud);
@@ -275,6 +267,7 @@ package {
 										   floor:String,
 										   initialHealth:int,
 										   initialStamina:int,
+										   initialAttack:int,
 										   initialLoS:int):void {
 			prepareSwap();
 
@@ -287,6 +280,7 @@ package {
 											   floor,
 											   initialHealth,
 											   initialStamina,
+											   initialAttack,
 											   initialLoS);
 			addChild(currentTransition);
 		}
@@ -294,6 +288,7 @@ package {
 		public function switchToFloor(floorData:String,
 									  initialHealth:int,
 									  initialStamina:int,
+									  initialAttack:int,
 									  initialLoS:int):void {
 			prepareSwap();
 
@@ -305,6 +300,7 @@ package {
 									 animations,
 									 initialHealth,
 									 initialStamina,
+									 initialAttack,
 									 initialLoS,
 									 floors,
 									 switchToTransition,
@@ -362,6 +358,7 @@ package {
 					floors[Util.MAIN_FLOOR],
 					Util.STARTING_HEALTH,
 					Util.STARTING_STAMINA,
+					Util.STARTING_ATTACK,
 					Util.STARTING_LOS);
 
 			var creditsButton:Clickable = new Clickable(
@@ -414,10 +411,6 @@ package {
 			//logger.logAction(8, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
 			//			     "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
 			//reset counters
-			numberOfTilesPlaced = 0;
-			emptyTiles = 0;
-			enemyTiles = 0;
-			healingTiles = 0;
 			currentFloor.resetFloor();
 			//charHud.char = currentFloor.char
 			mixer.play(Util.TILE_REMOVE);
@@ -426,9 +419,7 @@ package {
 		public function runFloor():void {
 			logger.logAction(3, {
 				"numberOfTiles":numberOfTilesPlaced,
-				"EmptyTilesPlaced":emptyTiles,
-				"MonsterTilesPlaced":enemyTiles,
-				"HealthTilesPlaced":healingTiles
+				"numberOfEntitiesPlaced":entitiesPlaced
 			});
 			removeChild(runButton);
 			buildHud.deselect();
@@ -458,10 +449,19 @@ package {
 			// will log gold gained here, stamina left, health left,
 			// and other keys as seen needed
 			//TODO: figure out how to log gold earned
+			var reason:String;
+			if (currentFloor.char.stamina <= 0) {
+				reason = "staminaExpended";
+			} else if (currentFloor.char.hp <= 0) {
+				reason = "healthExpended";
+			} else {
+				reason = "endRunButton";
+			}
 			logger.logAction(8, {
 				"goldEarned":0,
 				"staminaLeft": currentFloor.char.stamina,
-				"healthLeft": currentFloor.char.hp
+				"healthLeft": currentFloor.char.hp,
+				"reason":reason
 			});
 
 			removeChild(endButton);
@@ -626,8 +626,13 @@ package {
 						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y - 1);
 					}
 					numberOfTilesPlaced++;
-					emptyTiles++;
-					logger.logAction(1, { } );
+					logger.logAction(1, { 
+						"goldSpend": cost,
+						"northOpen":newTile.north,
+						"southOpen":newTile.south,
+						"eastOpen":newTile.east,
+						"westOpen":newTile.west
+					});
 					mixer.play(Util.TILE_MOVE);
 				} else {
 					mixer.play(Util.TILE_FAILURE);
@@ -635,6 +640,7 @@ package {
 			} else if (buildHud.hudState == BuildHUD.STATE_ENTITY) {
 				cost = buildHud.getCost();
 				if (currentFloor.isEmptyTile(currentTile) && gold - cost >= 0) {
+					var type:String = "healing";
 					gold -= cost;
 					goldHud.update(gold);
 					// Player correctly placed the entity. Add it to the grid.
@@ -644,9 +650,15 @@ package {
 					trace(newEntity.grid_y);
 					currentFloor.addChild(newEntity);
 					if (newEntity is Enemy) {
-						currentFloor.enemies.push(newEntity);
+						currentFloor.activeEnemies.push(newEntity);
+						type = "enemy";
 					}
 					mixer.play(Util.TILE_MOVE);
+					logger.logAction(18, {
+						"cost":cost,
+						"entityPlaced":type
+					});
+					entitiesPlaced++;
 				} else {
 					mixer.play(Util.TILE_FAILURE);
 				}
@@ -661,9 +673,15 @@ package {
 
 			if(input == Util.MUTE_KEY) {
 				mixer.togglePlay();
+				Util.logger.logAction(15, {
+					"buttonClicked":"Mute"
+				});
 			}
 
-			if(input == Util.COMBAT_SKIP_KEY) {
+			if (input == Util.COMBAT_SKIP_KEY) {
+				Util.logger.logAction(15, {
+					"buttonClicked":"Combat Skip"
+				});
 				combatSkip = !combatSkip;
 				if(currentCombat && gameState == STATE_COMBAT) {
 					if(currentCombat.skipping != combatSkip) {

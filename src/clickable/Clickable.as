@@ -61,6 +61,23 @@ package clickable {
             parameters[key] = data;
         }
 
+        public function updateImage(baseDisplay:DisplayObject, textureDisplay:Texture = null):void {
+            if(textureDisplay) {
+                removeChild(textureImage);
+                texture = textureDisplay;
+                textureImage = new Image(textureDisplay);
+                addChild(textureImage);
+            }
+
+            if(baseDisplay) {
+                removeChild(baseImage);
+                baseImage = baseDisplay;
+            }
+
+            // Add baseDisplay regardless to ensure that the ordering remains the same
+            addChild(baseImage);
+        }
+
         private function onMouseEvent(event:TouchEvent):void {
             var touch:Touch = event.getTouch(this, TouchPhase.BEGAN);
             if(!touch) {
