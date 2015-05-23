@@ -626,7 +626,7 @@ package {
 						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y - 1);
 					}
 					numberOfTilesPlaced++;
-					logger.logAction(1, { 
+					logger.logAction(1, {
 						"goldSpend": cost,
 						"northOpen":newTile.north,
 						"southOpen":newTile.south,
@@ -761,10 +761,13 @@ package {
 			// Remove coin entity from floor
 			// Add amount to gold
 			// TODO: Add gold population code to floor
-			if(true) { // if floor tile has gold
-				runHud.goldCollected += 1; // add gold amount
+			var amount:int = currentFloor.goldGrid[event.x][event.y];
+			if(amount > 0) { // if floor tile has gold
+				runHud.goldCollected += amount; // add gold amount
 				runHud.tilesVisited += 1;
-				gold += 1; // add gold amount
+				gold += amount; // add gold amount
+				goldHud.update(gold);
+				currentFloor.goldGrid[event.x][event.y] = 0;
 			}
 		}
 	}

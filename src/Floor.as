@@ -22,6 +22,7 @@ package {
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
 		public var fogGrid:Array;		// 2D Array of fog Images.
+		public var goldGrid:Array;		// 2D Array of gold to be populated each run phase
 		public var char:Character;
 		public var floorName:String;
 		public var highlightedLocations:Array;
@@ -125,6 +126,7 @@ package {
 			grid = initializeGrid(gridWidth, gridHeight);
 			fogGrid = initializeGrid(gridWidth, gridHeight);
 			entityGrid = initializeGrid(gridWidth, gridHeight);
+			goldGrid = initializeGrid(gridWidth, gridHeight);
 
 			var i:int;
 			var j:int;
@@ -264,6 +266,15 @@ package {
 
 		public function toggleRun():void {
 			char.toggleRunUI();
+
+			var x:int; var y:int;
+			for(x = 0; x < gridWidth; x++) {
+				for(y = 0; y < gridHeight; y++) {
+					if(grid[x][y] && char.grid_x != x && char.grid_y != y) {
+						goldGrid[x][y] = 1; // Need to add sprite and stuff
+					}
+				}
+			}
 		}
 
 		public function getEntry():Tile {
@@ -471,8 +482,8 @@ package {
 				entityGrid[entity.grid_x][entity.grid_y] = null;
 				removeEnemyFromArray(entity);
 				Util.logger.logAction(12, {
-					"deleted":"entity", 
-					"costOfDeleted":entity.cost 
+					"deleted":"entity",
+					"costOfDeleted":entity.cost
 				});
 				return true;
 			} else if (isEmptyTile(tile)) {
@@ -518,6 +529,10 @@ package {
 			var keyCode:uint;
 			var cgx:int; var cgy:int;
 			var charTile:Tile; var nextTile:Tile;
+
+			if(goldGrid[char.grid_x][char.grid_y] > 0) {
+				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
+			}
 
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);

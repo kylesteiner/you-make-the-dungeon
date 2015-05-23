@@ -82,11 +82,13 @@ package {
 		private var wButton:Quad;
 		private var eButton:Quad;
 		private var tileSelectButton:Clickable;
+		private var tileGoldCost:Sprite;
 
 		private var entityQuad:Quad; // Rect drawn for background of entity select
 		private var popup:Sprite;
 		private var entityClickables:Array;
 		private var entitySelectButtons:Array;
+		private var entityGoldCosts:Array;
 
 		private var deleteQuad:Quad;
 		private var deleteButton:Clickable;
@@ -202,6 +204,8 @@ package {
 			eastToggle = new Clickable(tileNECorner.x, tileNECorner.y + tileNWCorner.height, toggleEast, eButton);
 			westToggle = new Clickable(tileNWCorner.x, tileNWCorner.y + tileNWCorner.height, toggleWest, wButton);
 
+			tileGoldCost = createTileGoldCost();
+
 			entityQuad = new Quad(Util.PIXELS_PER_TILE * (entityList.length > 0 ? entityList.length : 1),
 								  Util.PIXELS_PER_TILE + SELECT_BUTTON_MARGIN + SELECT_BUTTON_HEIGHT, 0x000000);
 			entityQuad.x = tileQuad.x + tileQuad.width + HUD_MARGIN;
@@ -213,6 +217,7 @@ package {
 
 			entityClickables = new Array();
 			entitySelectButtons = new Array();
+			entityGoldCosts = new Array();
 			var i:int; var entityX:int; var entityY:int;
 			var entitySprite:Sprite;
 			var entityTexture:Texture;
@@ -222,9 +227,6 @@ package {
 			for(i = 0; i < entityList.length; i++) {
 				entityX = QUAD_BORDER_PIXELS + Util.PIXELS_PER_TILE * i + entityQuad.x;
 				entityY = QUAD_BORDER_PIXELS * 2;
-				entitySprite = new Sprite();
-				//var ia:Array = entityMap[entityList[i]][entityDisplayList[i]][0];
-				//var ia:Array = entityMap
 				entitySprite = entityMap[entityList[i][entityDisplayList[i]]][0]().generateOverlay();
 				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
 				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, entitySprite, entityTexture);
@@ -237,6 +239,10 @@ package {
 												   selectEntityClickable, selectEntityQuad);
 				selectEntityButton.addParameter("index", i);
 				entitySelectButtons.push(selectEntityButton);
+
+				var entityGoldCost:Sprite = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
+				entityGoldCost.x = entityPopupButton.x + entityPopupButton.width - (3*entityGoldCost.width / 4);
+				entityGoldCosts.push(entityGoldCost);
 			}
 
 			deleteQuad = new Quad(DELETE_BUTTON_SIZE, DELETE_BUTTON_SIZE, 0x000000);
@@ -264,12 +270,15 @@ package {
 			addChild(eastToggle);
 			addChild(westToggle);
 
+			addChild(tileGoldCost);
+
 			addChild(entityQuad);
 			addChild(interiorEQ);
 
 			for(i = 0; i < entityClickables.length; i++) {
 				addChild(entityClickables[i]);
 				addChild(entitySelectButtons[i]);
+				addChild(entityGoldCosts[i]);
 			}
 
 			addChild(deleteQuad);
@@ -468,6 +477,10 @@ package {
 			directions[direction] = !directions[direction];
 			toggleButtons[direction].color = directions[direction] ? COLOR_TRUE : COLOR_FALSE;
 			selectTile(true);
+
+			removeChild(tileGoldCost);
+			tileGoldCost = createTileGoldCost();
+			addChild(tileGoldCost);
 		}
 
 		public function toggleNorth():void {
@@ -545,6 +558,41 @@ package {
 			currentImage.touchable = false;
 			hudState = STATE_ENTITY;
 			updateSelectButtons();
+			updateEntityGoldCosts();
+		}
+
+		public function createGoldCost(cost:int):Sprite {
+			var base:Sprite = new Sprite();
+
+			var goldImage:Image = new Image(textures[Util.ICON_GOLD]);
+			var costText:TextField = new TextField(goldImage.width, goldImage.height, cost.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			costText.autoScale = true;
+
+			base.addChild(goldImage);
+			base.addChild(costText);
+
+			base.touchable = false;
+
+			return base;
+		}
+
+		public function createTileGoldCost():Sprite {
+			var base:Sprite = createGoldCost(getTileCost());
+			base.x = tileQuad.x + tileQuad.width - (base.width / 2);
+			return base;
+		}
+
+		public function updateEntityGoldCosts():void {
+			var i:int;
+			var newCost:Sprite;
+			for(i = 0; i < entityGoldCosts.length; i++) {
+				removeChild(entityGoldCosts[i]);
+				newCost = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
+				newCost.x = entityGoldCosts[i].x;
+				newCost.y = entityGoldCosts[i].y;
+				entityGoldCosts[i] = newCost;
+				addChild(entityGoldCosts[i]);
+			}
 		}
 	}
 }
