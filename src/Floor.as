@@ -333,6 +333,11 @@ package {
 				entity.reset();
 				entityGrid[entity.grid_x][entity.grid_y] = entity;
 				addChild(entity);
+
+				if (entity is Enemy) {
+					var enemyEntity:Enemy = entity as Enemy;
+					activeEnemies.push(enemyEntity);
+				}
 			}
 
 			for (var k:Object in objectiveState) {
