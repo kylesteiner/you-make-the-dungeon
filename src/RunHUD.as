@@ -7,6 +7,10 @@ package {
     import starling.text.TextField;
 
     public class RunHUD extends Sprite {
+        public static const HEALTH_BAR_COLOR:uint = 0xff0000;
+        public static const STAMINA_BAR_COLOR:uint = 0x0000ff;
+        public static const HEALTH_BAR_WIDTH:int = 32;
+        public static const STAMINA_BAR_WIDTH:int = 32;
 
         public var hud:Sprite;
         public var healthBar:Quad;
@@ -16,13 +20,11 @@ package {
         public var healthIcon:Image;
         public var staminaIcon:Image;
 
+        public var goldCollected:int;
+        public var tilesVisited:int;
+        public var enemiesDefeated:int;
+
         private var textures:Dictionary;
-
-        public static const HEALTH_BAR_COLOR:uint = 0xff0000;
-        public static const STAMINA_BAR_COLOR:uint = 0x0000ff;
-        public static const HEALTH_BAR_WIDTH:int = 32;
-        public static const STAMINA_BAR_WIDTH:int = 32;
-
 
         public function RunHUD(textureDict:Dictionary) {
             textures = textureDict;
@@ -57,6 +59,12 @@ package {
             hud.addChild(staminaText);
 
             addChild(hud);
+        }
+
+        public function startRun():void {
+            goldCollected = 0;
+            tilesVisited = 0;
+            enemiesDefeated = 0;
         }
 
         public function update(character:Character):void {

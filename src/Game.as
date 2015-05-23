@@ -437,6 +437,8 @@ package {
 			removeChild(shopButton);
 
 			addChild(endButton);
+
+			runHud.startRun();
 			addChild(runHud);
 			gameState = STATE_RUN;
 			currentFloor.toggleRun();
@@ -741,6 +743,11 @@ package {
 			// Remove coin entity from floor
 			// Add amount to gold
 			// TODO: Add gold population code to floor
+			if(true) { // if floor tile has gold
+				runHud.goldCollected += 1; // add gold amount
+				runHud.tilesVisited += 1;
+				gold += 1; // add gold amount
+			}
 		}
 	}
 }
