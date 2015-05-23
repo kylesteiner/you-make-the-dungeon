@@ -106,16 +106,16 @@ package {
 		}
 
 		// Begins moving the Character from one tile to the next.
-		// When the move animation is completed, the tile that the character
-		// moved into will receive an event.
-		// If the Character is currently moving, this method will do nothing.
+		// The grid x/y are set immediately, but the real x/y changes
+		// continuously over many frames. Once the character arrives at the tile
+		// an event is passed to floor.
 		public function move(direction:int):void {
 			trace("character.move(" + direction + ")");
 			if (moving || inCombat) {
 				return;
 			}
 
-			if(Util.DIRECTIONS.indexOf(direction) == -1) {
+			if (Util.DIRECTIONS.indexOf(direction) == -1) {
 				return;
 			}
 
@@ -129,16 +129,24 @@ package {
 			if (direction == Util.NORTH) {
 				destX = x;
 				destY = y - Util.PIXELS_PER_TILE;
+				Util.logger.logAction(11, { "directionMoved": "North" });
 			} else if (direction == Util.EAST) {
 				destX = x + Util.PIXELS_PER_TILE;
 				destY = y;
+				Util.logger.logAction(11, { "directionMoved": "East" });
 			} else if (direction == Util.SOUTH) {
 				destX = x;
 				destY = y + Util.PIXELS_PER_TILE;
+				Util.logger.logAction(11, { "directionMoved": "South" });
 			} else if (direction == Util.WEST) {
 				destX = x - Util.PIXELS_PER_TILE;
 				destY = y;
+				Util.logger.logAction(11, { "directionMoved": "West" });
 			}
+			grid_x = Util.real_to_grid(destX);
+			grid_y = Util.real_to_grid(destY);
+
+			dispatchEvent(new GameEvent(GameEvent.MOVING, grid_x, grid_y));
 		}
 
 		private function onEnterFrame(e:EnterFrameEvent):void {
@@ -161,8 +169,6 @@ package {
 
 				if (x == destX && y == destY && moving) {
 					moving = false;
-					grid_x = Util.real_to_grid(x);
-					grid_y = Util.real_to_grid(y);
 
 					removeChild(currentAnimation);
 					currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
