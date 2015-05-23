@@ -280,9 +280,7 @@ package {
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
 				var selectEB:Clickable = entityClickables[i];
-				selectEB.removeChild(selectEB.textureImage);
-				selectEB.textureImage = new Image(entityMap[entityList[i][entityDisplayList[i]]][1]);
-				selectEB.addChild(selectEB.textureImage);
+				selectEB.updateImage(null, entityMap[entityList[i][entityDisplayList[i]]][1]);
 			}
 		}
 
@@ -349,11 +347,10 @@ package {
 		}
 
 		public function updateSelectButtons():void {
-			tileSelectButton.removeChild(tileSelectButton.baseImage);
-			tileSelectButton.baseImage = new Quad(tileSelectButton.baseImage.width,
+			var replacementQuad:Quad = new Quad(tileSelectButton.baseImage.width,
 												tileSelectButton.baseImage.height,
 												hudState == STATE_TILE ? COLOR_SELECTED : COLOR_DESELECTED);
-			tileSelectButton.addChild(tileSelectButton.baseImage);
+			tileSelectButton.updateImage(replacementQuad);
 
 			var i:int; var color:uint;
 			var currentButton:Clickable;
