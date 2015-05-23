@@ -309,23 +309,6 @@ package {
 			}
 		}
 
-		// Get rid of the old character (if it exists) and make a new one
-		// with the default values.
-		public function resetCharacter():void {
-			if (char) {
-				char.removeFromParent();
-			}
-			char = new Character(initialX,
-								 initialY,
-							 	 initialHp,
-								 initialStamina,
-								 initialAttack,
-								 initialLoS,
-								 animations[Util.CHARACTER],
-								 textures[Util.ICON_ATK]);
-			addChild(char);
-		}
-
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
