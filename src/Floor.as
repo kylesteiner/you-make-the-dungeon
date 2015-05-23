@@ -306,7 +306,10 @@ package {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
 
-					if(grid[x][y] && !(char.grid_x == x && char.grid_y == y) && gameState == Game.STATE_RUN) {
+					if (grid[x][y]
+						&& !(grid[x][y] is ImpassableTile)
+						&& !(char.grid_x == x && char.grid_y == y)
+						&& gameState == Game.STATE_RUN) {
 						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, totalRuns));
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
@@ -420,6 +423,25 @@ package {
 				   !(tile is ExitTile) &&
 				   !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
+		}
+
+		public function updateRunSpeed():void {
+			char.speed = Util.speed;
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					if (entityGrid[x][y] is Enemy) {
+						var enemy:Enemy = entityGrid[x][y] as Enemy;
+						enemy.speed = Util.speed;
+					}
+				}
+			}
+
+			for (var i:int = 0; i < removedEntities.length; i++) {
+				if (removedEntities[i] is Enemy) {
+					var removedEnemy:Enemy = removedEntities[i] as Enemy;
+					removedEnemy.speed = Util.speed;
+				}
+			}
 		}
 
 		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {

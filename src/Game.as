@@ -100,6 +100,8 @@ package {
 			logger = Logger.initialize(gid, gname, skey, cid, null);
 			Util.logger = logger;
 
+			Util.speed = Util.SPEED_SLOW;
+
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
 
@@ -228,6 +230,9 @@ package {
 		private function onCombatSuccess(event:AnimationEvent):void {
 			removeChild(currentCombat);
 			currentFloor.onCombatSuccess(event.enemy);
+			gold += event.enemy.reward;
+			runSummary.goldCollected += event.enemy.reward;
+			goldHud.update(gold);
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
@@ -802,6 +807,9 @@ package {
 
 			var chosen:String = runPhaseSpeed ? Util.ICON_FAST_RUN : Util.ICON_SLOW_RUN;
 			runSpeedButton.updateImage(null, textures[chosen]);
+
+			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
+			currentFloor.updateRunSpeed();
 		}
 
 		public function toggleCombatSpeed():void {
