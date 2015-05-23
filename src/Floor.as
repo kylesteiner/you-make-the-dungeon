@@ -297,6 +297,11 @@ package {
 
 			char.reset();
 
+			for each (var enemy:Enemy in activeEnemies) {
+				enemy.reset();
+				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
+			}
+
 			while (removedEntities.length > 0) {
 				var entity:Entity = removedEntities.pop();
 				entity.reset();
@@ -470,7 +475,7 @@ package {
 			if (entity) {
 				removeChild(entity);
 				entityGrid[entity.grid_x][entity.grid_y] = null;
-				removeEnemyFromArray(entity);
+				removeEnemyFromActive(entity);
 				Util.logger.logAction(12, {
 					"deleted":"entity",
 					"costOfDeleted":entity.cost
@@ -490,7 +495,7 @@ package {
 
 		// Removes the enemy from activeEnemies because there isn't a basic
 		// remove from array function
-		private function removeEnemyFromArray(entity:Entity):void {
+		private function removeEnemyFromActive(entity:Entity):void {
 			for (var i:int = 0; i < activeEnemies.length; i++) {
 				if (activeEnemies[i] == entity) {
 					activeEnemies.splice(i, 1);
@@ -720,6 +725,7 @@ package {
 
 		// Called after the character defeats an enemy entity.
 		public function onCombatSuccess(enemy:Enemy):void {
+			removeEnemyFromActive(enemy);
 			removedEntities.push(enemy);
 			entityGrid[enemy.grid_x][enemy.grid_y] = null;
 			removeChild(enemy);
