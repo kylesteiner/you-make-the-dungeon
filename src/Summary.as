@@ -17,6 +17,7 @@ package {
 		public var goldCollected:int;
 
 		private var complete:TextField;
+		private var clickContinue:TextField;
 		private var healedField:TextField;
 		private var damageField:TextField;
 		private var distanceField:TextField;
@@ -100,6 +101,10 @@ package {
 			healedField.y = 256;
 			healedField.hAlign = HAlign.LEFT;
 			addChild(healedField);
+
+			clickContinue = new TextField(560, 64, "Click to Continue", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+			clickContinue.y = 304;
+			addChild(clickContinue);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
