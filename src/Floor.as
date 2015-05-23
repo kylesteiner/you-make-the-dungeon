@@ -17,7 +17,7 @@ package {
 	import tiles.*;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here to return the the main menu."
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -249,6 +249,8 @@ package {
 			for (i = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
+
+			addChild(char);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
@@ -600,6 +602,10 @@ package {
 				return;
 			}
 
+			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed) {
+				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
+			}
+
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -788,17 +794,18 @@ package {
 			if (!entity) {
 				return;
 			}
+
 			entity.handleChar(char);
 		}
 
 		// Event handler for when a character arrives at an exit tile.
 		private function onCharExited(e:GameEvent):void {
-			if (Util.logger) {
+			/*if (Util.logger) {
 				Util.logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
 					"characterMaxHP":char.maxHp
 				});
-			}
+			}*/
 			completed = true;
 
 			mixer.play(Util.FLOOR_COMPLETE);
@@ -811,8 +818,11 @@ package {
 										  NEXT_LEVEL_MESSAGE,
 										  Util.DEFAULT_FONT,
 										  Util.MEDIUM_FONT_SIZE));
-			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
-			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+			//winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
+			//winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+
+			var nC:Clickable = new Clickable(0, 0, onCompleteCallback, winBox);
+			addChild(nC);
 		}
 
 		// Called after the character defeats an enemy entity.

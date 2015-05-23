@@ -30,6 +30,7 @@ package {
 		public static const STATE_RUN:String = "game_run";
 		public static const STATE_COMBAT:String = "game_combat";
 		public static const STATE_POPUP:String = "game_popup";
+		public static const STATE_TUTORIAL:String = "game_tutorial";
 
 		private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
@@ -74,6 +75,7 @@ package {
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
+		private var tutorialHud:TutorialHUD;
 
 		private var gameState:String;
 		private var gold:int;
@@ -157,6 +159,7 @@ package {
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
+			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
 		}
 
 		private function initializeFloorWorld():void {
@@ -205,6 +208,7 @@ package {
 
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
 			buildHud = new BuildHUD(textures);
+			tutorialHud = new TutorialHUD(textures);
 
 			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
@@ -275,6 +279,7 @@ package {
 				// mute button should always be present
 				removeChild(currentTransition);
 				removeChild(runButton);
+				removeChild(endButton);
 				//removeChild(charHud);
 				removeChild(buildHud);
 				removeChild(goldHud);
@@ -321,12 +326,12 @@ package {
 									 params["initAttack"],
 									 params["initLos"],
 									 floors,
-									 switchToTransition,
+									 transitionToStart,
 									 mixer,
 									 runSummary);
-			if (currentFloor.floorName == Util.FLOOR_8) {
-				currentFloor.altCallback = transitionToStart;
-			}
+			//if (currentFloor.floorName == Util.FLOOR_8) {
+			//	currentFloor.altCallback = transitionToStart;
+			//}
 
 			logger.logLevelStart(1, {
 				"characterHP":currentFloor.char.maxHp,
@@ -353,12 +358,13 @@ package {
 			//addChild(charHud);
 
 			addChild(buildHud);
+			addChild(tutorialHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
 			gameState = STATE_BUILD;
 		}
 
-		public function transitionToStart(a:Array):void {
+		public function transitionToStart():void {
 			createMainMenu();
 		}
 
@@ -372,10 +378,10 @@ package {
 			var startGame:Clickable = new Clickable(
 					256,
 					192,
-					switchToTransition,
+					switchToFloor,
 					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
 					null);
-			startGame.addParameter("transition", transitions[Util.MAIN_FLOOR]);
+			//startGame.addParameter("transition", transitions[Util.MAIN_FLOOR]);
 			startGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
 			startGame.addParameter("initHealth", Util.STARTING_HEALTH);
 			startGame.addParameter("initStamina", Util.STARTING_STAMINA);
@@ -596,7 +602,7 @@ package {
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
 
-			if(!touch) {
+			if(!touch || gameState == Game.STATE_TUTORIAL) {
 				return;
 			}
 
@@ -732,6 +738,10 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
+			if(gameState == STATE_TUTORIAL) {
+				return;
+			}
+
 			// to ensure that they can't move the world around until
 			// a floor is loaded, and not cause flash errors
 			pressedKeys[event.keyCode] = true;
@@ -817,7 +827,11 @@ package {
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, textures[chosen]);
-			//var baseImage:Image =
+		}
+
+		public function onTutorialComplete(event:GameEvent):void {
+			gameState = Game.STATE_BUILD;
+			removeChild(tutorialHud);
 		}
 	}
 }

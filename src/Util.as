@@ -116,6 +116,7 @@ package {
 		public static const LEFT_KEY:int = Keyboard.A;
 		public static const RIGHT_KEY:int = Keyboard.D;
 		public static const DOWN_KEY:int = Keyboard.S;
+		public static const TUTORIAL_SKIP_KEY:int = Keyboard.G;
 
 		// if we want to use arrow keys, here are the relevant char codes:
 		// up: 38		left: 37
@@ -134,6 +135,14 @@ package {
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
 		public static const MAIN_FLOOR:String = "main_floor"
+
+		public static const TUTORIAL_NEA:String = "tutorial_nea";
+		public static const TUTORIAL_EXIT:String = "tutorial_exit"
+		public static const TUTORIAL_GOLD:String = "tutorial_gold"
+		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
+		public static const TUTORIAL_SPEND:String = "tutorial_spend"
+		public static const TUTORIAL_KEYS:String = "tutorial_keys"
+		public static const TUTORIAL_UI:String = "tutorial_ui"
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";
