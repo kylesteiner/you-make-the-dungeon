@@ -13,7 +13,6 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 
-	import clickable.*;
 	import entities.*;
 	import tiles.*;
 
@@ -274,45 +273,31 @@ package {
 			addChild(sfxMuteButton);
 		}
 
-		public function switchToTransition(transition:Texture,
-										   floor:String,
-										   initialHealth:int,
-										   initialStamina:int,
-										   initialAttack:int,
-										   initialLoS:int):void {
+		public function switchToTransition(params:Object):void {
 			prepareSwap();
-
 			isMenu = false;
-			currentTransition = new Transition(0,
-											   0,
-											   switchToFloor,
-											   null,
-											   transition,
-											   floor,
-											   initialHealth,
-											   initialStamina,
-											   initialAttack,
-											   initialLoS);
+
+			currentTransition = new Clickable(0, 0, switchToFloor, null, params["transition"]);
+			currentTransition.addParameter("floorData", params["floorData"]);
+			currentTransition.addParameter("initHealth", params["initHealth"]);
+			currentTransition.addParameter("initStamina", params["initStamina"]);
+			currentTransition.addParameter("initAttack", params["initAttack"]);
+			currentTransition.addParameter("initLos", params["initLos"]);
 			addChild(currentTransition);
 		}
 
-		public function switchToFloor(floorData:String,
-									  initialHealth:int,
-									  initialStamina:int,
-									  initialAttack:int,
-									  initialLoS:int):void {
+		public function switchToFloor(params:Object):void {
 			prepareSwap();
-
 			isMenu = false;
 
 			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(floorData,
+			currentFloor = new Floor(params["floorData"],
 									 textures,
 									 animations,
-									 initialHealth,
-									 initialStamina,
-									 initialAttack,
-									 initialLoS,
+									 params["initHealth"],
+									 params["initStamina"],
+									 params["initAttack"],
+									 params["initLos"],
 									 floors,
 									 switchToTransition,
 									 mixer);
@@ -359,25 +344,25 @@ package {
 
 			floors = Embed.setupFloors();
 
-			var startGameButton:StartGame = new StartGame(
+			var startGame:Clickable = new Clickable(
 					256,
 					192,
 					switchToTransition,
 					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
-					null,
-					transitions[Util.MAIN_FLOOR],
-					floors[Util.MAIN_FLOOR],
-					Util.STARTING_HEALTH,
-					Util.STARTING_STAMINA,
-					Util.STARTING_ATTACK,
-					Util.STARTING_LOS);
+					null);
+			startGame.addParameter("transition", transitions[Util.MAIN_FLOOR]);
+			startGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
+			startGame.addParameter("initHealth", Util.STARTING_HEALTH);
+			startGame.addParameter("initStamina", Util.STARTING_STAMINA);
+			startGame.addParameter("initAttack", Util.STARTING_ATTACK);
+			startGame.addParameter("initLos", Util.STARTING_LOS);
 
 			var creditsButton:Clickable = new Clickable(
 					256,
 					256,
 					createCredits,
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startGameButton, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, startGame, creditsButton)));
 		}
 
 		public function createCredits():void {

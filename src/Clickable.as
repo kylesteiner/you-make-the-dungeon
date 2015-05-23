@@ -1,4 +1,4 @@
-package clickable {
+package {
     import starling.display.DisplayObject;
     import starling.display.Image;
     import starling.display.Sprite;
