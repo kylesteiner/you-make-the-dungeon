@@ -70,6 +70,7 @@ package {
 		private var shopHud:ShopHUD;
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
+		private var runSummary:Summary;
 
 		private var gameState:String;
 		private var gold:int;
@@ -134,6 +135,8 @@ package {
 
 			combatSkip = false;
 			gold = Util.STARTING_GOLD;
+
+			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND]);
 
 			// Make sure the cursor stays on the top level of the drawtree.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -301,7 +304,8 @@ package {
 									 params["initLos"],
 									 floors,
 									 switchToTransition,
-									 mixer);
+									 mixer,
+									 runSummary);
 			if (currentFloor.floorName == Util.FLOOR_8) {
 				currentFloor.altCallback = transitionToStart;
 			}
@@ -439,13 +443,6 @@ package {
 		}
 
 		public function endRun():void {
-			//TODO: I AM A STUB
-			// 		call at end of run automatically when stamina <= 0
-			//		reset char, bring up new display which triggers phase change afterwards
-			//		add gold and other items
-			// will log gold gained here, stamina left, health left,
-			// and other keys as seen needed
-			//TODO: figure out how to log gold earned
 			var reason:String;
 			if (currentFloor.char.stamina <= 0) {
 				reason = "staminaExpended";
@@ -463,6 +460,14 @@ package {
 
 			removeChild(endButton);
 			removeChild(runHud);
+
+			addChild(runSummary);
+		}
+
+		public function returnToBuild():void {
+			removeChild(runSummary);
+			runSummary.reset();
+
 			addChild(runButton);
 
 			buildHud.updateUI();
@@ -764,6 +769,7 @@ package {
 				runHud.goldCollected += coin.gold; // add gold amount
 				runHud.tilesVisited += 1;
 				gold += coin.gold; // add gold amount
+				runSummary.goldCollected += coin.gold;
 				goldHud.update(gold);
 				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
 				currentFloor.goldGrid[event.x][event.y] = null;

@@ -2,7 +2,7 @@ package {
 	import starling.display.DisplayObject;
 	import starling.events.EnterFrameEvent;
 	import starling.events.Event;
-	import starling.text.Textfield;
+	import starling.text.TextField;
 	import starling.textures.Texture;
 
 	public class Summary extends Clickable {
@@ -59,12 +59,20 @@ package {
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
-		private function onEnterFrame(e:EnterFrameEvent) {
-			goldField.text = "Gold Collected	" + goldCollected;
-			enemiesField.text = "Enemies Defeated	" + enemiesDefeated;
-			distanceField.text = "Distance Traveled	" + distanceTraveled;
-			damageField.text = "Damage taken	" + damageTaken;
-			healingField.text = "Amount Healed	" + amountHealed;
+		private function onEnterFrame(e:EnterFrameEvent):void {
+			goldField.text = "Gold Collected: " + goldCollected;
+			enemiesField.text = "Enemies Defeated: " + enemiesDefeated;
+			distanceField.text = "Distance Traveled: " + distanceTraveled;
+			damageField.text = "Damage taken: " + damageTaken;
+			healedField.text = "Amount Healed: " + amountHealed;
+		}
+
+		public function reset():void {
+			amountHealed = 0;
+			damageTaken = 0;
+			distanceTraveled = 0;
+			enemiesDefeated = 0;
+			goldCollected = 0;
 		}
 	}
 }
