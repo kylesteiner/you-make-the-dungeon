@@ -823,12 +823,12 @@ package {
 
 		// Event handler for when a character arrives at an exit tile.
 		private function onCharExited(e:GameEvent):void {
-			/*if (Util.logger) {
+			if (Util.logger) {
 				Util.logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
 					"characterMaxHP":char.maxHp
 				});
-			}*/
+			}
 			completed = true;
 
 			mixer.play(Util.FLOOR_COMPLETE);
