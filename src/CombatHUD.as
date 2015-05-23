@@ -355,8 +355,8 @@ package {
                         mixer.play(Util.COMBAT_SUCCESS);
                     }
 
-                    xpText = createXpText(enemy.reward);
-                    addChild(xpText);
+                    //xpText = createXpText(enemy.reward);
+                    //addChild(xpText);
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();

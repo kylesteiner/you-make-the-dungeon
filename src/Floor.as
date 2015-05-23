@@ -281,6 +281,7 @@ package {
 
 		public function toggleRun(gameState:String):void {
 			char.toggleRunUI();
+			pressedKeys = new Array();
 
 			// Ensure that the character and all enemies are higher in the
 			// display order than the tiles.
