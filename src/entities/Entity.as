@@ -8,6 +8,7 @@ package entities {
 		public var grid_x:int;
 		public var grid_y:int;
 		public var img:Image;
+		public var cost:int;
 
 		public function Entity(g_x:int, g_y:int, texture:Texture) {
 			super();
