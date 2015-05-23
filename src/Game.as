@@ -139,6 +139,7 @@ package {
 
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
+			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 		}
 
 		private function initializeFloorWorld():void {
@@ -732,6 +733,14 @@ package {
 			if(currentFloor) {
 				currentFloor.clearHighlightedLocations();
 			}
+		}
+
+		public function onGainGold(event:GameEvent):void {
+			mixer.play(Util.COIN_COLLECT);
+			// Get coin entity from floor
+			// Remove coin entity from floor
+			// Add amount to gold
+			// TODO: Add gold population code to floor
 		}
 	}
 }
