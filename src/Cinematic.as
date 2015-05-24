@@ -35,6 +35,7 @@ package {
             fireNextCommand();
 
             addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+            addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
         }
 
         public function addCommand(newCommand:Dictionary):void {
@@ -68,6 +69,12 @@ package {
                 fireNextCommand();
             }
 
+        }
+
+        public function onKeyDown(event:KeyboardEvent):void {
+            if(event.keyCode == Util.TUTORIAL_SKIP_KEY) {
+                dispatchEvent(new GameEvent(GameEvent.CINEMATIC_COMPLETE, 0, 0));
+            }
         }
 
         public function fireNextCommand():void {
