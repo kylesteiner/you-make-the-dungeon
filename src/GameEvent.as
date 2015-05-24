@@ -1,5 +1,6 @@
 package {
 	import starling.events.Event;
+	import flash.utils.Dictionary;
 
 	public class GameEvent extends Event {
 		public static const ARRIVED_AT_TILE:String = "arrived_at_tile";
@@ -18,16 +19,14 @@ package {
 		public var x:int;
 		public var y:int;
 
-        public var hasData:Boolean;
-        public var gameData:Array;
+        public var gameData:Dictionary;
 
-		public function GameEvent(type:String, x:int, y:int, eventData:Array=null, bubbles:Boolean=true) {
+		public function GameEvent(type:String, x:int, y:int, eventData:Dictionary=null, bubbles:Boolean=true) {
 			super(type, bubbles);
 			this.x = x;
 			this.y = y;
 
-            hasData = !(eventData == null);
-            gameData = eventData;
+            gameData = eventData ? eventData : new Dictionary();
 		}
 	}
 }

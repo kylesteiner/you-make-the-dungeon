@@ -58,7 +58,7 @@ package {
 		// Room metadata and control flow
 		public var rooms:RoomSet;
 		public var roomFunctions:Dictionary;
-		
+
 		// Assets.
 		private var textures:Dictionary;
 		private var animations:Dictionary;
@@ -71,7 +71,7 @@ package {
 
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
-		
+
 		// Summary and related state.
 		public var runSummary:Summary;
 		private var preHealth:int;
@@ -236,13 +236,19 @@ package {
 					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
 					addChild(obj);
+				} else if (entity["type"] == "reward") {
+					var callback:String = entity["function"];
+					var param:String = entity["parameter"];
+					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], callback, param);
+					entityGrid[tX][tY] = rewardTile;
+					addChild(rewardTile);
 				}
 
 				if (fogGrid[tX][tY]) {
 					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
 				}
 			}
-			
+
 			roomFunctions = new Dictionary();
 			//roomFunctions[Util.ROOMCB_NONE] = SOME FUNCTION
 			rooms = new RoomSet(floorData["rooms"], roomFunctions);
@@ -320,35 +326,6 @@ package {
 						addChild(goldSprite);
 					}
 				}
-			}
-
-			// Temporary rewards code
-			if(goldGrid[3][3]) {
-				goldGrid[3][3].gold = 100;
-			}
-
-			if(goldGrid[2][27]) {
-				goldGrid[2][27].gold = 100;
-			}
-
-			if(goldGrid[14][19]) {
-				goldGrid[14][19].gold = 30;
-			}
-
-			if(goldGrid[16][1]) {
-				goldGrid[16][1].gold = 100;
-			}
-
-			if(goldGrid[19][9]) {
-				goldGrid[19][9].gold = 50;
-			}
-
-			if(goldGrid[26][24]) {
-				goldGrid[26][24].gold = 100;
-			}
-
-			if(goldGrid[28][3]) {
-				goldGrid[28][3].gold = 75;
 			}
 		}
 
@@ -901,11 +878,11 @@ package {
 		private function onRoomReveal(event:GameEvent):void {
 			mixer.play(Util.COMBAT_FAILURE);
 
-			if(!event.hasData) {
+			if(!event["revealed"]) {
 				return;
 			}
 
-			var coords:Array = event.gameData[0];
+			var coords:Array = event.gameData["revealed"];
 			var point:Point;
 			for each(point in coords) {
 				if(fogGrid[point.x][point.y]) {

@@ -459,9 +459,11 @@ package {
 				"numberOfEntitiesPlaced":entitiesPlaced
 			});
 			removeChild(runButton);
-			buildHud.deselect();
 			currentFloor.clearHighlightedLocations();
+			removeChild(buildHud.currentImage);
+			buildHud.deselect();
 			removeChild(buildHud);
+			removeChild(shopHud);
 			removeChild(shopButton);
 
 			addChild(endButton);
@@ -481,7 +483,7 @@ package {
 		private function onRoomComplete(event:GameEvent):void {
 			mixer.play(Util.COMBAT_SUCCESS);
 
-			if(!event.hasData) {
+			if(!event["completed"]) {
 				return;
 			}
 		}
@@ -841,16 +843,23 @@ package {
 			// Remove coin entity from floor
 			// Add amount to gold
 			// TODO: Add gold population code to floor
-			var coin:Coin = currentFloor.goldGrid[event.x][event.y];
-			if (coin) { // if floor tile has gold
-				runHud.goldCollected += coin.gold; // add gold amount
+			var addAmount:int = 0;
+			if (event.x >= 0 && event.x < currentFloor.gridWidth &&
+			    event.y >= 0 && event.y < currentFloor.gridHeight) { // if floor tile has gold
+				var coin:Coin = currentFloor.goldGrid[event.x][event.y];
+				addAmount += coin.gold;
 				runHud.tilesVisited += 1;
-				gold += coin.gold; // add gold amount
-				runSummary.goldCollected += coin.gold;
-				goldHud.update(gold);
 				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
 				currentFloor.goldGrid[event.x][event.y] = null;
 			}
+
+			if(event.gameData["amount"]) {
+				addAmount += event.gameData["amount"];
+			}
+
+			runHud.goldCollected += addAmount; // add gold amount
+			gold += addAmount;
+			goldHud.update(gold);
 		}
 
 		public function toggleRunSpeed():void {

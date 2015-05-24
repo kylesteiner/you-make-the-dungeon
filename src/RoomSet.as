@@ -108,8 +108,8 @@ package {
                     if(tilePoint.x == roomPoint.x && tilePoint.y == roomPoint.y) {
                         if(!roomsRevealed[key] && builtTiles.length == 0) {
 							roomsRevealed[key] = true;
-                            var revealData:Array = new Array();
-                            revealData.push(rooms[key]);
+                            var revealData:Dictionary = new Dictionary();
+                            revealData["revealed"] = rooms[key];
                             dispatchEvent(new GameEvent(GameEvent.REVEAL_ROOM, 0, 0, revealData));
                         }
 
@@ -119,8 +119,8 @@ package {
 
                         if(!roomsComplete[key] && builtTiles.length == openSpaces.length) {
 							roomsComplete[key] = true;
-                            var completeData:Array = new Array();
-                            completeData.push(roomToFunction[key]);
+                            var completeData:Dictionary = new Dictionary();
+                            completeData["completed"] = roomToFunction[key];
                             dispatchEvent(new GameEvent(GameEvent.COMPLETE_ROOM, 0, 0, completeData));
                             // complete room by calling function
 							if (roomToFunction[key] && roomFunctions[roomToFunction[key]]) {

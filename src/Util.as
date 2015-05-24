@@ -174,6 +174,7 @@ package {
 		public static const CHAR_COMBAT_ATTACK:String = "character_combat_attack";
 		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
 		public static const HEALING:String = "health";
+		public static const REWARD:String = "reward";
 		public static const KEY:String = "key";
 		public static const ENEMY_COMBAT_IDLE:String = "enemy_combat_idle";
 		public static const ENEMY_COMBAT_ATTACK:String = "enemy_combat_attack";
