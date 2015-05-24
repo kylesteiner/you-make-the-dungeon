@@ -10,8 +10,7 @@ package entities {
 		public function Coin(g_x:int, g_y:int, texture:Texture, gold:int) {
 			super(g_x, g_y, texture);
 			this.gold = gold;
-
-			addOverlay();
+			//addOverlay();
 		}
 
 		override public function generateOverlay():Sprite {

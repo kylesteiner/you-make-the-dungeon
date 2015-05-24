@@ -322,7 +322,7 @@ package {
 						&& !fogGrid[x][y]
 						&& !(char.grid_x == x && char.grid_y == y)
 						&& gameState == Game.STATE_RUN) {
-						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, 1 + totalRuns / 15));
+						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], 1);
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
 					}
