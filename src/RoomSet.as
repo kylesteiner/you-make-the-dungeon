@@ -32,17 +32,16 @@ package {
         // Map of string -> boolean of if the room callback has fired
         public var roomsComplete:Dictionary;
 
-        public function RoomSet(roomData:Array, roomFunctions:Dictionary) {
+        public function RoomSet(roomData:Array, callbacks:Dictionary) {
             super();
 
 			rooms = new Dictionary();
             roomSpaces = new Dictionary();
             builtRoomTiles = new Dictionary();
 			roomToFunction = new Dictionary();
-			this.roomFunctions = roomFunctions;
             roomsRevealed = new Dictionary();
             roomsComplete = new Dictionary();
-            //roomFunctions = callbacks;
+            roomFunctions = callbacks;
             //seenTiles = new Array(); // only needed if tile could be added on location of existing tile
             buildRooms(roomData);
         }
