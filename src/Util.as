@@ -112,6 +112,7 @@ package {
 
 		public static const MUTE_KEY:int = Keyboard.M;
 		public static const COMBAT_SKIP_KEY:int = Keyboard.K;
+		public static const SPEED_TOGGLE_KEY:int = Keyboard.J;
 		public static const UP_KEY:int = Keyboard.W;
 		public static const LEFT_KEY:int = Keyboard.A;
 		public static const RIGHT_KEY:int = Keyboard.D;

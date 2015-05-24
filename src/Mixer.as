@@ -39,6 +39,9 @@ package {
         }
 
         public function toggleSFXMute():void {
+            Util.logger.logAction(15, {
+                "buttonClicked":"SFX Mute"
+            });
             sfxMuted = !sfxMuted;
         }
 
@@ -47,6 +50,10 @@ package {
         }
 
         public function togglePlay():void {
+            Util.logger.logAction(15, {
+                "buttonClicked":"BGM Mute"
+            });
+
             if(playing) {
                 player.stop();
                 playing = false;
