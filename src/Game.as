@@ -31,6 +31,7 @@ package {
 		public static const STATE_COMBAT:String = "game_combat";
 		public static const STATE_POPUP:String = "game_popup";
 		public static const STATE_TUTORIAL:String = "game_tutorial";
+		public static const STATE_SUMMARY:String = "game_summary";
 
 		private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
@@ -511,12 +512,13 @@ package {
 			removeChild(endButton);
 			removeChild(runHud);
 
+			gameState = STATE_SUMMARY;
 			addChild(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
 		public function endRunButton():void {
-			if(currentFloor && !currentFloor.completed) {
+			if(currentFloor && !currentFloor.completed && gameState == STATE_RUN) {
 				endRun();
 			}
 		}
