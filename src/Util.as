@@ -192,9 +192,10 @@ package {
 		// Costs go here
 		public static const BASE_TILE_COST:int = 5;
 		public static const REFUND_PERCENT:int = 50;
-		public static const ENEMY_FIGHTER_COST:int = 20;
-		public static const ENEMY_MAGE_COST:int = 50;
-		public static const HEALING_COST:int = 15;
+		public static const ENEMY_FIGHTER_COST:int = 40;
+		public static const ENEMY_MAGE_COST:int = 60;
+		public static const LIGHT_HEALING_COST:int = 30;
+		public static const MODERATE_HEALING_COST:int = 65;
 
 		public static var logger:Logger;
 		public static var speed:int;
