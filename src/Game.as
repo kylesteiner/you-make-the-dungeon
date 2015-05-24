@@ -249,7 +249,10 @@ package {
 				"enemyHealthLeft":event.enemy.hp
 			});
 
-			var alertBox:Sprite = new Sprite();
+			endRun();
+
+			// Short circuiting enemy death to end run page
+			/*var alertBox:Sprite = new Sprite();
 			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
 			alertBox.addChild(alertPopup);
 			alertBox.addChild(new TextField(alertPopup.width, alertPopup.height, FLOOR_FAIL_TEXT, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
@@ -260,10 +263,8 @@ package {
 				removeChild(messageToPlayer);
 				endRun();
 			},  alertBox);
-			//messageToPlayer.x = (Util.STAGE_WIDTH / 2) - (messageToPlayer.width);
-			//messageToPlayer.y = (Util.STAGE_HEIGHT / 2) - (messageToPlayer.height);
 
-			addChild(messageToPlayer);
+			addChild(messageToPlayer);*/
 		}
 
 		private function prepareSwap():void {
@@ -776,8 +777,20 @@ package {
 			// a floor is loaded, and not cause flash errors
 			pressedKeys[event.keyCode] = true;
 
-			if(event.keyCode == Util.MUTE_KEY) {
-				mixer.togglePlay();
+			if (event.keyCode == Util.BGM_MUTE_KEY) {
+				toggleBgmMute();
+			}
+
+			if (event.keyCode == Util.SFX_MUTE_KEY) {
+				toggleSFXMute();
+			}
+
+			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
+				if (gameState == STATE_BUILD) {
+					runFloor();
+				} else if (gameState == STATE_RUN) {
+					endRunButton();
+				}
 			}
 
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {

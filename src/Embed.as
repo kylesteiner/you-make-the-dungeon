@@ -40,12 +40,21 @@ package {
 		[Embed(source='assets/animations/cursor/cursor_small.png')] public static const icon_cursor:Class;
 		[Embed(source='assets/animations/cursor/cursor_small_2.png')] public static const icon_cursor_2:Class;
 
+		[Embed(source='assets/buttons/24x24/tile_up_active.png')] public static const tile_up_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_up_inactive.png')] public static const tile_up_inactive:Class;
+		[Embed(source='assets/buttons/24x24/tile_down_active.png')] public static const tile_down_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_down_inactive.png')] public static const tile_down_inactive:Class;
+		[Embed(source='assets/buttons/24x24/tile_right_active.png')] public static const tile_right_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_right_inactive.png')] public static const tile_right_inactive:Class;
+		[Embed(source='assets/buttons/24x24/tile_left_active.png')] public static const tile_left_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_left_inactive.png')] public static const tile_left_inactive:Class;
+
 		[Embed(source='assets/icons/medium/mute_bgm.png')] public static const icon_mute_bgm:Class;
 		[Embed(source='assets/icons/medium/mute_sfx.png')] public static const icon_mute_sfx:Class;
-		[Embed(source='assets/icons/sfx_play.png')] public static const icon_sfx_playing:Class;
-		[Embed(source='assets/icons/sfx_mute.png')] public static const icon_sfx_muted:Class;
-		[Embed(source='assets/icons/bgm_play.png')] public static const icon_bgm_playing:Class;
-		[Embed(source='assets/icons/bgm_mute.png')] public static const icon_bgm_muted:Class;
+		[Embed(source='assets/icons/sfx_play_lg.png')] public static const icon_sfx_playing:Class;
+		[Embed(source='assets/icons/sfx_mute_lg.png')] public static const icon_sfx_muted:Class;
+		[Embed(source='assets/icons/bgm_play_lg.png')] public static const icon_bgm_playing:Class;
+		[Embed(source='assets/icons/bgm_mute_lg.png')] public static const icon_bgm_muted:Class;
 		[Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
 		[Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
@@ -58,10 +67,14 @@ package {
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
 		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
 
-		[Embed(source='assets/icons/slow_combat.png')] public static const icon_fast_combat:Class;
-		[Embed(source='assets/icons/base_combat.png')] public static const icon_slow_combat:Class;
-		[Embed(source='assets/icons/red_run.png')] public static const icon_fast_run:Class;
-		[Embed(source='assets/icons/slow_run.png')] public static const icon_slow_run:Class;
+		[Embed(source='assets/icons/medium/enemies_menu.png')] public static const enemy_menu:Class;
+		[Embed(source='assets/icons/medium/healing_menu.png')] public static const healing_menu:Class;
+		[Embed(source='assets/icons/medium/traps_menu.png')] public static const trap_menu:Class;
+
+		[Embed(source='assets/icons/slow_combat_lg.png')] public static const icon_fast_combat:Class;
+		[Embed(source='assets/icons/base_combat_lg.png')] public static const icon_slow_combat:Class;
+		[Embed(source='assets/icons/red_run_lg.png')] public static const icon_fast_run:Class;
+		[Embed(source='assets/icons/slow_run_lg.png')] public static const icon_slow_run:Class;
 
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -81,19 +94,6 @@ package {
 		[Embed(source='assets/tiles/clean/tile_w.png')] public static var tile_w:Class;
 
 		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
-
-		//[Embed(source='assets/transitions/floor0.png')] public static const transitions0:Class;
-		//[Embed(source='assets/transitions/floor1.png')] public static const transitions1:Class;
-		//[Embed(source='assets/transitions/floor2.png')] public static const transitions2:Class;
-		//[Embed(source='assets/transitions/floor3.png')] public static const transitions3:Class;
-		//[Embed(source='assets/transitions/floor4.png')] public static const transitions4:Class;
-		//[Embed(source='assets/transitions/floor5.png')] public static const transitions5:Class;
-		//[Embed(source='assets/transitions/floor6.png')] public static const transitions6:Class;
-		//[Embed(source='assets/transitions/floor7.png')] public static const transitions7:Class;
-		//[Embed(source='assets/transitions/floor8.png')] public static const transitions8:Class;
-		//[Embed(source='assets/transitions/floor9.png')] public static const transitions9:Class;
-		//[Embed(source='assets/transitions/floor_final.png')] public static const transitionsFinal:Class;
-		//[Embed(source='assets/transitions/floor_final_exp.png')] public static const transitionsFinalExp:Class;
 
 		[Embed(source='assets/tutorials/tutorial_nea.png')] public static const tutorial_nea:Class;
 		[Embed(source='assets/tutorials/tutorial_exit.png')] public static const tutorial_exit:Class;
@@ -219,6 +219,9 @@ package {
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
+			textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
+			textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);
+			textures[Util.TRAP_MENU] = Texture.fromBitmap(new trap_menu(), true, false, 1);
 
 			textures[Util.ICON_SFX_PLAY] = Texture.fromEmbeddedAsset(icon_sfx_playing);
 			textures[Util.ICON_SFX_MUTE] = Texture.fromEmbeddedAsset(icon_sfx_muted);
@@ -231,6 +234,15 @@ package {
 			textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
+			textures[Util.TILE_UP_ACTIVE] = Texture.fromEmbeddedAsset(tile_up_active);
+			textures[Util.TILE_UP_INACTIVE] = Texture.fromEmbeddedAsset(tile_up_inactive);
+			textures[Util.TILE_DOWN_ACTIVE] = Texture.fromEmbeddedAsset(tile_down_active);
+			textures[Util.TILE_DOWN_INACTIVE] = Texture.fromEmbeddedAsset(tile_down_inactive);
+			textures[Util.TILE_RIGHT_ACTIVE] = Texture.fromEmbeddedAsset(tile_right_active);
+			textures[Util.TILE_RIGHT_INACTIVE] = Texture.fromEmbeddedAsset(tile_right_inactive);
+			textures[Util.TILE_LEFT_ACTIVE] = Texture.fromEmbeddedAsset(tile_left_active);
+			textures[Util.TILE_LEFT_INACTIVE] = Texture.fromEmbeddedAsset(tile_left_inactive);
+
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 
 			textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);

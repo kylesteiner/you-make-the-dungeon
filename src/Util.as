@@ -107,10 +107,15 @@ package {
 		public static const ICON_FAST_RUN:String = "icon_fast_run";
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
 
+		public static const ENEMY_MENU:String = "enemy_menu";
+		public static const HEALING_MENU:String = "healing_menu";
+		public static const TRAP_MENU:String = "trap_menu";
+
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
-		public static const MUTE_KEY:int = Keyboard.M;
+		public static const BGM_MUTE_KEY:int = Keyboard.M;
+		public static const SFX_MUTE_KEY:int = Keyboard.COMMA;
 		public static const COMBAT_SKIP_KEY:int = Keyboard.K;
 		public static const SPEED_TOGGLE_KEY:int = Keyboard.J;
 		public static const UP_KEY:int = Keyboard.W;
@@ -118,6 +123,7 @@ package {
 		public static const RIGHT_KEY:int = Keyboard.D;
 		public static const DOWN_KEY:int = Keyboard.S;
 		public static const TUTORIAL_SKIP_KEY:int = Keyboard.G;
+		public static const CHANGE_PHASE_KEY:int = Keyboard.SPACE;
 
 		// if we want to use arrow keys, here are the relevant char codes:
 		// up: 38		left: 37
@@ -147,6 +153,15 @@ package {
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"
 		public static const TUTORIAL_KEYS:String = "tutorial_keys"
 		public static const TUTORIAL_UI:String = "tutorial_ui"
+
+		public static const TILE_UP_ACTIVE:String = "tile_up_active";
+		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
+		public static const TILE_DOWN_ACTIVE:String = "tile_down_active";
+		public static const TILE_DOWN_INACTIVE:String = "tile_down_inactive";
+		public static const TILE_RIGHT_ACTIVE:String = "tile_right_active";
+		public static const TILE_RIGHT_INACTIVE:String = "tile_right_inactive";
+		public static const TILE_LEFT_ACTIVE:String = "tile_left_active";
+		public static const TILE_LEFT_INACTIVE:String = "tile_left_inactive";
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";

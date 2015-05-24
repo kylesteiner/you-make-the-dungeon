@@ -18,10 +18,11 @@ package {
 		public static const COLOR_FALSE:uint = 0xff0000;
 		public static const COLOR_SELECTED:uint = 0x00ff00;
 		public static const COLOR_DESELECTED:uint = 0x666666;
+		public static const COLOR_DESELECTED_ENTITY:uint = Color.WHITE;
 		public static const ENTITIES_PER_LINE:int = 4;
 		public static const SELECT_BUTTON_WIDTH:int = 48;
 		public static const SELECT_BUTTON_HEIGHT:int = 16;
-		public static const SELECT_BUTTON_MARGIN:int = 4;
+		public static const SELECT_BUTTON_MARGIN:int = 12;
 		public static const DELETE_BUTTON_SIZE:int = 52;
 
 		public static const STATE_TILE:String = "state_tile";
@@ -76,6 +77,7 @@ package {
 		private var eastToggle:Clickable;
 		private var westToggle:Clickable;
 		private var toggleButtons:Array;
+		private var toggleClickables:Array;
 		private var nButton:Quad;
 		private var sButton:Quad;
 		private var wButton:Quad;
@@ -86,6 +88,8 @@ package {
 		private var entityQuad:Quad; // Rect drawn for background of entity select
 		private var popup:Sprite;
 		private var entityClickables:Array;
+		private var entityHighlights:Array;
+		private var entityColoredRegions:Array;
 		private var entitySelectButtons:Array;
 		private var entityGoldCosts:Array;
 
@@ -189,7 +193,7 @@ package {
 											 tileQuad.y + tileQuad.height - SELECT_BUTTON_HEIGHT - 2*QUAD_BORDER_PIXELS,
 											 selectTile, tileSelectQuad);
 
-			toggleButtons = new Array();
+			/*toggleButtons = new Array();
 			nButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
 			sButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
 			eButton = new Quad(tileCornerSize, Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.width, COLOR_FALSE);
@@ -197,11 +201,22 @@ package {
 			toggleButtons.push(nButton);
 			toggleButtons.push(sButton);
 			toggleButtons.push(eButton);
-			toggleButtons.push(wButton);
-			northToggle = new Clickable(tileNWCorner.x + tileNWCorner.width, tileNWCorner.y, toggleNorth, nButton);
+			toggleButtons.push(wButton);*/
+			/*northToggle = new Clickable(tileNWCorner.x + tileNWCorner.width, tileNWCorner.y, toggleNorth, nButton);
 			southToggle = new Clickable(tileSWCorner.x + tileSWCorner.width, tileSWCorner.y, toggleSouth, sButton);
 			eastToggle = new Clickable(tileNECorner.x, tileNECorner.y + tileNWCorner.height, toggleEast, eButton);
-			westToggle = new Clickable(tileNWCorner.x, tileNWCorner.y + tileNWCorner.height, toggleWest, wButton);
+			westToggle = new Clickable(tileNWCorner.x, tileNWCorner.y + tileNWCorner.height, toggleWest, wButton);*/
+			toggleClickables = new Array();
+			var sample:Image = new Image(textures[Util.TILE_UP_ACTIVE]);
+			//northToggle = new Clickable(tileNWCorner.x + tileNWCorner.width, tileNWCorner.y, toggleNorth, null, textures[Util.TILE_UP_INACTIVE]);
+			northToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileNWCorner.y - 8, toggleNorth, null, textures[Util.TILE_UP_INACTIVE]);
+			southToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileSWCorner.y, toggleSouth, null, textures[Util.TILE_DOWN_INACTIVE]);
+			eastToggle = new Clickable(tileNECorner.x, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleEast, null, textures[Util.TILE_RIGHT_INACTIVE]);
+			westToggle = new Clickable(tileNWCorner.x - 8, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleWest, null, textures[Util.TILE_LEFT_INACTIVE]);
+			toggleClickables.push(northToggle);
+			toggleClickables.push(southToggle);
+			toggleClickables.push(eastToggle);
+			toggleClickables.push(westToggle);
 
 			tileGoldCost = createTileGoldCost();
 
@@ -214,33 +229,65 @@ package {
 			interiorEQ.x = entityQuad.x + QUAD_BORDER_PIXELS;
 			interiorEQ.y = entityQuad.y + QUAD_BORDER_PIXELS;
 
+			var menuButtons:Array = new Array(Util.ENEMY_MENU, Util.HEALING_MENU, Util.TRAP_MENU);
+
 			entityClickables = new Array();
 			entitySelectButtons = new Array();
 			entityGoldCosts = new Array();
+			entityHighlights = new Array();
+			entityColoredRegions = new Array();
 			var i:int; var entityX:int; var entityY:int;
 			var entitySprite:Sprite;
-			var entityTexture:Texture;
 			var entityPopupButton:Clickable;
+
+			var entityName:String;
+			var entityConstructor:Function;
+			var entityTexture:Texture;
+			var entityCost:int;
+			var entityCategory:int;
+
 			var selectEntityButton:Clickable;
-			var selectEntityQuad:Quad;
+			var selectEntityTexture:Texture;
+			var entityImage:Image;
+
 			for(i = 0; i < entityList.length; i++) {
+				entityName = entityList[i][entityDisplayList[i]];
+				entityConstructor = entityMap[entityList[i][entityDisplayList[i]]][0];
+				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
+				entityCost = entityMap[entityList[i][entityDisplayList[i]]][2];
+				entityCategory = entityMap[entityList[i][entityDisplayList[i]]][3];
+
 				entityX = QUAD_BORDER_PIXELS + Util.PIXELS_PER_TILE * i + entityQuad.x;
 				entityY = QUAD_BORDER_PIXELS * 2;
-				entitySprite = entityMap[entityList[i][entityDisplayList[i]]][0]().generateOverlay();
-				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
-				entityPopupButton = new Clickable(entityX, entityY, createPopupClickable, entitySprite, entityTexture);
+				entitySprite = entityConstructor().generateOverlay();
+				entityPopupButton = new Clickable(entityX, entityY, selectEntityClickable, entitySprite, entityTexture);
 				entityPopupButton.addParameter("index", i);
 				entityClickables.push(entityPopupButton);
 
-				selectEntityQuad = new Quad(SELECT_BUTTON_WIDTH, SELECT_BUTTON_HEIGHT, COLOR_DESELECTED);
-				selectEntityButton = new Clickable(entityX + (entityPopupButton.width - selectEntityQuad.width) / 2,
-				 								   entityY + entityPopupButton.height + SELECT_BUTTON_MARGIN,
-												   selectEntityClickable, selectEntityQuad);
+				var eQ:Quad = new Quad(entityPopupButton.width - 3 * HUD_MARGIN,
+									   entityPopupButton.height - 3 * HUD_MARGIN,
+									   Color.WHITE);
+				eQ.x = entityX + (1.5) * HUD_MARGIN;
+				eQ.y = entityY + 2 * HUD_MARGIN;
+				entityColoredRegions.push(eQ);
+
+				var oQ:Quad = new Quad(eQ.width + 2, eQ.height + 2, Color.BLACK);
+				oQ.x = eQ.x - 1;
+				oQ.y = eQ.y - 1;
+				entityHighlights.push(oQ);
+
+				selectEntityTexture = textures[menuButtons[entityCategory]];
+				entityImage = new Image(selectEntityTexture);
+				selectEntityButton = new Clickable(entityX + (entityPopupButton.width - entityImage.width) / 2,
+				 								   entityY + entityPopupButton.height + SELECT_BUTTON_MARGIN - 2,
+													createPopupClickable, entityImage);
 				selectEntityButton.addParameter("index", i);
 				entitySelectButtons.push(selectEntityButton);
 
-				var entityGoldCost:Sprite = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
+				//var entityGoldCost:Sprite = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
+				var entityGoldCost:Sprite = createGoldCost(entityCost);
 				entityGoldCost.x = entityPopupButton.x + entityPopupButton.width - (3*entityGoldCost.width / 4);
+				entityGoldCost.y = -4;
 				entityGoldCosts.push(entityGoldCost);
 			}
 
@@ -275,6 +322,8 @@ package {
 			addChild(interiorEQ);
 
 			for(i = 0; i < entityClickables.length; i++) {
+				addChild(entityHighlights[i]);
+				addChild(entityColoredRegions[i]);
 				addChild(entityClickables[i]);
 				addChild(entitySelectButtons[i]);
 				addChild(entityGoldCosts[i]);
@@ -366,21 +415,13 @@ package {
 												hudState == STATE_TILE ? COLOR_SELECTED : COLOR_DESELECTED);
 			tileSelectButton.updateImage(replacementQuad);
 
-			var i:int; var color:uint;
-			var currentButton:Clickable;
-			for(i = 0; i < entitySelectButtons.length; i++) {
-				currentButton = entitySelectButtons[i];
-				currentButton.removeChild(currentButton.baseImage);
+			var i:int;
+			for(i = 0; i < entityColoredRegions.length; i++) {
+				entityColoredRegions[i].color = Color.WHITE;
+			}
 
-				color = COLOR_DESELECTED;
-				if(hudState == STATE_ENTITY && i == currentEntityIndex) {
-					color = COLOR_SELECTED;
-				}
-				// Can also just overwrite color field but requires treating baseImage as a Quad
-				currentButton.baseImage = new Quad(currentButton.baseImage.width,
-												   currentButton.baseImage.height,
-												   color);
-				currentButton.addChild(currentButton.baseImage);
+			if(hudState == STATE_ENTITY) {
+				entityColoredRegions[currentEntityIndex].color = COLOR_SELECTED;
 			}
 		}
 
@@ -482,7 +523,10 @@ package {
 
 		public function toggleDirection(direction:int):void {
 			directions[direction] = !directions[direction];
-			toggleButtons[direction].color = directions[direction] ? COLOR_TRUE : COLOR_FALSE;
+			//var imageString:String = directions[direction] ? Util.TILE_HUD_ACTIVE : Util.TILE_HUD_INACTIVE;
+			//toggleClickables[direction].updateImage(new Image(textures[imageString]));
+			//toggleButtons[direction].color = directions[direction] ? COLOR_TRUE : COLOR_FALSE;
+			//toggleButtons[direction].
 			selectTile(true);
 
 			removeChild(tileGoldCost);
@@ -492,18 +536,28 @@ package {
 
 		public function toggleNorth():void {
 			toggleDirection(Util.NORTH);
+			var imageString:String = directions[Util.NORTH] ? Util.TILE_UP_ACTIVE : Util.TILE_UP_INACTIVE;
+			toggleClickables[Util.NORTH].updateImage(new Image(textures[imageString]));
+			//var imageString
+			//northToggle.updateImage(new Image())
 		}
 
 		public function toggleSouth():void {
 			toggleDirection(Util.SOUTH);
+			var imageString:String = directions[Util.SOUTH] ? Util.TILE_DOWN_ACTIVE : Util.TILE_DOWN_INACTIVE;
+			toggleClickables[Util.SOUTH].updateImage(new Image(textures[imageString]));
 		}
 
 		public function toggleEast():void {
 			toggleDirection(Util.EAST);
+			var imageString:String = directions[Util.EAST] ? Util.TILE_RIGHT_ACTIVE : Util.TILE_RIGHT_INACTIVE;
+			toggleClickables[Util.EAST].updateImage(new Image(textures[imageString]));
 		}
 
 		public function toggleWest():void {
 			toggleDirection(Util.WEST);
+			var imageString:String = directions[Util.WEST] ? Util.TILE_LEFT_ACTIVE : Util.TILE_LEFT_INACTIVE;
+			toggleClickables[Util.WEST].updateImage(new Image(textures[imageString]));
 		}
 
 		public function getTileCost():int {
@@ -586,6 +640,7 @@ package {
 		public function createTileGoldCost():Sprite {
 			var base:Sprite = createGoldCost(getTileCost());
 			base.x = tileQuad.x + tileQuad.width - (base.width / 2);
+			base.y = -4;
 			return base;
 		}
 
