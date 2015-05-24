@@ -93,6 +93,7 @@ package {
 			grid_y = initialY;
 			x = Util.grid_to_real(initialX);
 			y = Util.grid_to_real(initialY);
+			inCombat = false;
 		}
 
 		public function toggleRunUI():void {
