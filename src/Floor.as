@@ -57,7 +57,7 @@ package {
 
 		// Room metadata and control flow
 		public var rooms:RoomSet;
-		public var roomFunctions:Dictionary();
+		public var roomFunctions:Dictionary;
 		
 		// Assets.
 		private var textures:Dictionary;

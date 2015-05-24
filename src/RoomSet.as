@@ -22,12 +22,12 @@ package {
 
         // Map of string -> string of callback names
         public var roomToFunction:Dictionary;
-		
-		// Map of string -> callback function
-        public var roomFunctions:Dictionary;
 
-        // Map of string -> boolean of if fog has been cleared from a room
-        public var roomsRevealed:Dictionary;
+		// Map of string -> callback function
+		public var roomFunctions:Dictionary;
+
+		// Map of string -> boolean of if fog has been cleared from a room
+		public var roomsRevealed:Dictionary;
 
         // Map of string -> boolean of if the room callback has fired
         public var roomsComplete:Dictionary;
@@ -35,11 +35,11 @@ package {
         public function RoomSet(roomData:Array, roomFunctions:Dictionary) {
             super();
 
-            rooms = new Dictionary();
+			rooms = new Dictionary();
             roomSpaces = new Dictionary();
             builtRoomTiles = new Dictionary();
-            roomToFunction = new Dictionary();
-			roomFunctions = this.roomFunctions;
+			roomToFunction = new Dictionary();
+			this.roomFunctions = roomFunctions;
             roomsRevealed = new Dictionary();
             roomsComplete = new Dictionary();
             //roomFunctions = callbacks;
