@@ -29,8 +29,6 @@ package {
         // Map of string -> boolean of if the room callback has fired
         public var roomsComplete:Dictionary;
 
-        public var tStatus:TextField = new TextField(128, 128, "normal", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-
         public function RoomSet(roomData:Array) {
             super();
 
@@ -43,8 +41,6 @@ package {
             //roomFunctions = callbacks;
             //seenTiles = new Array(); // only needed if tile could be added on location of existing tile
             buildRooms(roomData);
-
-            tStatus.touchable = false;
         }
 
         public function buildRooms(roomData:Array):void {
@@ -95,7 +91,6 @@ package {
             var tx:int = tile.grid_x;
             var ty:int = tile.grid_y;
             var tilePoint:Point = new Point(tx, ty);
-            tStatus.text = tx + ", " + ty;
 
             var key:String;
             var openSpaces:Array;
@@ -108,9 +103,7 @@ package {
                 for(i = 0; i < openSpaces.length; i++) {
                     roomPoint = openSpaces[i];
                     if(tilePoint.x == roomPoint.x && tilePoint.y == roomPoint.y) {
-                        tStatus.text = "in room";
                         if(!roomsRevealed[key] && builtTiles.length == 0) {
-                            tStatus.text = "reveal";
 							roomsRevealed[key] = true;
                             var revealData:Array = new Array();
                             revealData.push(rooms[key]);
@@ -122,7 +115,6 @@ package {
                         }
 
                         if(!roomsComplete[key] && builtTiles.length == openSpaces.length) {
-                            tStatus.text = "complete";
 							roomsComplete[key] = true;
                             var completeData:Array = new Array();
                             completeData.push(roomToFunction[key]);

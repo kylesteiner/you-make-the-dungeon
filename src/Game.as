@@ -617,10 +617,6 @@ package {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
 			}
-
-			if(currentFloor) {
-				addChild(currentFloor.rooms.tStatus);
-			}
 		}
 
 		private function onMouseEvent(event:TouchEvent):void {

@@ -136,7 +136,6 @@ package {
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
 		public static const MAIN_FLOOR:String = "main_floor";
-		public static const MAIN_ROOMS:String = "main_rooms"; // Unused
 
 		// Room callbacks
 		public static const ROOMCB_NONE:String = "roomcb_none";
@@ -191,7 +190,7 @@ package {
 		public static const STARTING_XP:int = 0;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 1000;
+		public static const STARTING_GOLD:int = 60;
 		public static const STARTING_LOS:int = 2;
 
 		// Costs go here

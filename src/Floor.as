@@ -136,7 +136,7 @@ package {
 
 			var i:int;
 			var j:int;
-			/*// Add a fog image at every grid tile.
+			// Add a fog image at every grid tile.
 			for (i = 0; i < gridWidth; i++) {
 				for (j = 0; j < gridHeight; j++) {
 					var fog:Image = new Image(textures[Util.TILE_FOG]);
@@ -145,7 +145,7 @@ package {
 					fogGrid[i][j] = fog;
 					addChild(fog);
 				}
-			}*/
+			}
 
 			char = new Character(floorData["character_start"]["x"],
 								 floorData["character_start"]["y"],
@@ -897,8 +897,6 @@ package {
 
 		private function onRoomReveal(event:GameEvent):void {
 			mixer.play(Util.COMBAT_FAILURE);
-
-			rooms.tStatus.text = "reveal";
 
 			if(!event.hasData) {
 				return;
