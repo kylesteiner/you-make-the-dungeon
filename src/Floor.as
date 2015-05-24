@@ -46,7 +46,7 @@ package {
 
 		// Entities that have been removed in by character actions the run phase
 		// but need to be replaced after the run phase.
-		private var removedEntities:Array;
+		public var removedEntities:Array;
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
 
@@ -239,7 +239,8 @@ package {
 				} else if (entity["type"] == "reward") {
 					var callback:String = entity["function"];
 					var param:String = entity["parameter"];
-					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], callback, param);
+					var permanent:Boolean = entity["permanent"];
+					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], permanent, callback, param);
 					entityGrid[tX][tY] = rewardTile;
 					addChild(rewardTile);
 				}

@@ -149,6 +149,7 @@ package {
 		[Embed(source='assets/sfx/attack.mp3')] public static const sfxAttack:Class;
 		[Embed(source='assets/sfx/coin_collect.mp3')] public static const sfxCoinCollect:Class;
 		[Embed(source='assets/sfx/spend_gold.mp3')] public static const sfxGoldSpend:Class;
+		[Embed(source='assets/sfx/chest_open_lowhz.mp3')] public static const sfxReward:Class;
 
 		//[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
@@ -368,6 +369,7 @@ package {
 			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
 			tSfx[Util.COIN_COLLECT] = new sfxCoinCollect();
 			tSfx[Util.GOLD_SPEND] = new sfxGoldSpend();
+			tSfx[Util.REWARD_COLLECT] = new sfxReward();
 
 			return tSfx;
 		}

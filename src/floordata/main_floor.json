@@ -606,13 +606,13 @@
 			"texture": "health",
 			"health": 8
 		},
-		{"type": "reward", "x": 3, "y": 3, "texture": "reward", "function": "gold", "parameter": "100"},
-		{"type": "reward", "x": 2, "y": 27, "texture": "reward", "function": "gold", "parameter": "100"},
-		{"type": "reward", "x": 14, "y": 19, "texture": "reward", "function": "gold", "parameter": "30"},
-		{"type": "reward", "x": 16, "y": 1, "texture": "reward", "function": "gold", "parameter": "100"},
-		{"type": "reward", "x": 19, "y": 9, "texture": "reward", "function": "gold", "parameter": "50"},
-		{"type": "reward", "x": 26, "y": 24, "texture": "reward", "function": "gold", "parameter": "100"},
-		{"type": "reward", "x": 28, "y": 3, "texture": "reward", "function": "gold", "parameter": "75"}
+		{"type": "reward", "x": 3, "y": 3, "texture": "reward", "function": "gold", "parameter": "100", "permanent": true},
+		{"type": "reward", "x": 27, "y": 2, "texture": "reward", "function": "gold", "parameter": "100", "permanent": true},
+		{"type": "reward", "x": 19, "y": 14, "texture": "reward", "function": "gold", "parameter": "30", "permanent": true},
+		{"type": "reward", "x": 1, "y": 16, "texture": "reward", "function": "gold", "parameter": "100", "permanent": true},
+		{"type": "reward", "x": 9, "y": 19, "texture": "reward", "function": "gold", "parameter": "50", "permanent": true},
+		{"type": "reward", "x": 24, "y": 26, "texture": "reward", "function": "gold", "parameter": "100", "permanent": true},
+		{"type": "reward", "x": 3, "y": 28, "texture": "reward", "function": "gold", "parameter": "75", "permanent": true}
 	],
 	"temporary_entities": [
 

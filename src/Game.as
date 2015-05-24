@@ -104,6 +104,13 @@ package {
 
 			Util.speed = Util.SPEED_SLOW;
 
+			sfx = Embed.setupSFX();
+			bgm = Embed.setupBGM();
+
+			mixer = new Mixer(bgm, sfx);
+			addChild(mixer);
+			Util.mixer = mixer;
+
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
 
@@ -111,12 +118,6 @@ package {
 			floors = Embed.setupFloors();
 			//transitions = Embed.setupTransitions();
 			animations = Embed.setupAnimations();
-
-			sfx = Embed.setupSFX();
-			bgm = Embed.setupBGM();
-
-			mixer = new Mixer(bgm, sfx);
-			addChild(mixer);
 
 			staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
 			addChild(staticBackgroundImage);
@@ -854,8 +855,14 @@ package {
 				currentFloor.goldGrid[event.x][event.y] = null;
 			}
 
-			if(event.gameData["amount"]) {
+			if(event.gameData["amount"] && event.gameData["entity"]) {
 				addAmount += event.gameData["amount"];
+				var reward:Reward = event.gameData["entity"];
+				if(reward.permanent) {
+					currentFloor.removedEntities.push(reward);
+				}
+				currentFloor.removeChild(reward);
+				currentFloor.entityGrid[reward.grid_x][reward.grid_y] = null;
 			}
 
 			runHud.goldCollected += addAmount; // add gold amount

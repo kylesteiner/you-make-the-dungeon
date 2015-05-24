@@ -9,10 +9,12 @@ package entities {
 	public class Reward extends Entity {
         public var parameter:String;
         public var reward:Function
+        public var permanent:Boolean;
 
-		public function Reward(g_x:int, g_y:int, texture:Texture, rewardFunction:String, rewardParameter:String) {
+		public function Reward(g_x:int, g_y:int, texture:Texture, permanent:Boolean, rewardFunction:String, rewardParameter:String) {
 			super(g_x, g_y, texture);
             this.parameter = rewardParameter;
+            this.permanent = permanent;
 
             if (rewardFunction == "gold") {
                 reward = rewardGold;
@@ -22,12 +24,14 @@ package entities {
 		}
 
 		override public function handleChar(c:Character):void {
+            Util.mixer.play(Util.REWARD_COLLECT);
             reward(parameter);
 		}
 
         public function rewardGold(amount:String):void {
             var rewardDict:Dictionary = new Dictionary();
             rewardDict["amount"] = parseInt(amount);
+            rewardDict["entity"] = this;
             dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, -1, -1, rewardDict));
         }
 
