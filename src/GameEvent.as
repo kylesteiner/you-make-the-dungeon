@@ -15,6 +15,8 @@ package {
 		public static const BUILD_HUD_IMAGE_CHANGE:String = "build_hud_image_change";
 		public static const GAIN_GOLD:String = "gain_gold";
 		public static const TUTORIAL_COMPLETE:String = "tutorial_complete";
+		public static const MOVE_CAMERA:String = "move_camera";
+		public static const CINEMATIC_COMPLETE:String = "cinematic_complete";
 
 		public var x:int;
 		public var y:int;

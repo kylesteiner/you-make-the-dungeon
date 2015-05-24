@@ -32,6 +32,7 @@ package {
 		public static const STATE_POPUP:String = "game_popup";
 		public static const STATE_TUTORIAL:String = "game_tutorial";
 		public static const STATE_SUMMARY:String = "game_summary";
+		public static const STATE_CINEMATIC:String = "game_cinematic";
 
 		private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
@@ -77,6 +78,7 @@ package {
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
 		private var tutorialHud:TutorialHUD;
+		private var cinematic:Cinematic;
 
 		private var gameState:String;
 		private var gold:int;
@@ -163,6 +165,8 @@ package {
 			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
+			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
+			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 		}
 
 		private function initializeFloorWorld():void {
@@ -410,6 +414,10 @@ package {
 		}
 
 		public function openShopHUD():void {
+			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+				return;
+			}
+
 			if (getChildIndex(shopHud) == -1) {
 				logger.logAction(13, { } );
 				shopHud.update(currentFloor.char, gold);
@@ -457,6 +465,10 @@ package {
 		}
 
 		public function runFloor():void {
+			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+				return;
+			}
+
 			logger.logAction(3, {
 				"numberOfTiles":numberOfTilesPlaced,
 				"numberOfEntitiesPlaced":entitiesPlaced
@@ -775,7 +787,7 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if(gameState == STATE_TUTORIAL) {
+			if(gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
 				return;
 			}
 
@@ -900,8 +912,61 @@ package {
 		}
 
 		public function onTutorialComplete(event:GameEvent):void {
-			gameState = Game.STATE_BUILD;
+			gameState = Game.STATE_CINEMATIC;
 			removeChild(tutorialHud);
+			playOpeningCinematic();
+		}
+
+		public function playOpeningCinematic():void {
+			var commands:Array = new Array();
+
+			var moveToExit:Dictionary = new Dictionary();
+			moveToExit["command"] = Cinematic.COMMAND_MOVE;
+			moveToExit["destX"] = world.x + Util.grid_to_real(9);
+			moveToExit["destY"] = world.y + Util.grid_to_real(11);
+
+			var waitAtExit:Dictionary = new Dictionary();
+			waitAtExit["command"] = Cinematic.COMMAND_WAIT;
+			waitAtExit["timeToWait"] = 1.5;
+
+			var moveToStart:Dictionary = new Dictionary();
+			moveToStart["command"] = Cinematic.COMMAND_MOVE;
+			moveToStart["destX"] = world.x;
+			moveToStart["destY"] = world.y;
+
+			var waitAtStart:Dictionary = new Dictionary();
+			waitAtStart["command"] = Cinematic.COMMAND_WAIT;
+			waitAtStart["timeToWait"] = 0.5;
+
+			commands.push(moveToExit);
+			commands.push(waitAtExit);
+			commands.push(moveToStart);
+			commands.push(waitAtStart);
+
+			cinematic = new Cinematic(world.x, world.y, Util.CAMERA_SHIFT * 3, commands);
+			addChild(cinematic);
+
+			removeChild(buildHud);
+			removeChild(runButton);
+			removeChild(goldHud);
+			removeChild(shopButton);
+		}
+
+		public function onMoveCamera(event:GameEvent):void {
+			world.x += event.x;
+			world.y += event.y;
+		}
+
+		public function onCinematicComplete(event:GameEvent):void {
+			gameState = STATE_BUILD;
+			removeChild(cinematic);
+			centerWorldOnCharacter();
+			addChild(buildHud);
+			addChild(goldHud);
+			addChild(runButton);
+			addChild(shopButton);
+
+			mixer.play(Util.LEVEL_UP);
 		}
 	}
 }
