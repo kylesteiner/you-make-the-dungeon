@@ -757,21 +757,20 @@ package {
 
 			if(event.keyCode == Util.MUTE_KEY) {
 				mixer.togglePlay();
-				Util.logger.logAction(15, {
-					"buttonClicked":"Mute"
-				});
 			}
 
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
-				Util.logger.logAction(15, {
-					"buttonClicked":"Combat Skip"
-				});
-				combatSkip = !combatSkip;
+				//combatSkip = !combatSkip;
+				toggleCombatSpeed();
 				if(currentCombat && gameState == STATE_COMBAT) {
 					if(currentCombat.skipping != combatSkip) {
 						currentCombat.toggleSkip();
 					}
 				}
+			}
+
+			if (event.keyCode == Util.SPEED_TOGGLE_KEY) {
+				toggleRunSpeed();
 			}
 
 			if (currentFloor) {
@@ -821,6 +820,10 @@ package {
 		}
 
 		public function toggleRunSpeed():void {
+			Util.logger.logAction(15, {
+				"buttonClicked":"Increase Speed"
+			});
+
 			runPhaseSpeed = !runPhaseSpeed;
 
 			var chosen:String = runPhaseSpeed ? Util.ICON_FAST_RUN : Util.ICON_SLOW_RUN;
@@ -831,6 +834,10 @@ package {
 		}
 
 		public function toggleCombatSpeed():void {
+			Util.logger.logAction(15, {
+				"buttonClicked":"Combat Skip"
+			});
+
 			combatSkip = !combatSkip;
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;

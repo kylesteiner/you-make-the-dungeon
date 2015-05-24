@@ -62,6 +62,10 @@ package {
                 return;
             }
 
+            if(event.keyCode == Util.TUTORIAL_SKIP_KEY) {
+                dispatchEvent(new GameEvent(GameEvent.TUTORIAL_COMPLETE, 0, 0));
+            }
+
             advanceTutorial();
         }
 
