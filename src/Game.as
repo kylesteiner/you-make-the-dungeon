@@ -669,14 +669,14 @@ package {
 				phaseBanner = null;
 			}
 
-			if(gameState == STATE_BUILD) {
+			/*if(gameState == STATE_BUILD) {
 				showBuildHudImage = !touch.isTouching(buildHud);
 				showBuildHudImage = showBuildHudImage ? !touch.isTouching(goldHud) : showBuildHudImage;
 				showBuildHudImage = showBuildHudImage ? !touch.isTouching(bgmMuteButton) : showBuildHudImage;
 				showBuildHudImage = showBuildHudImage ? !touch.isTouching(sfxMuteButton) : showBuildHudImage;
 				showBuildHudImage = showBuildHudImage ? !touch.isTouching(runButton) : showBuildHudImage;
 				showBuildHudImage = showBuildHudImage ? !touch.isTouching(shopButton) : showBuildHudImage;
-			}
+			}*/
 		}
 
 		private function buildHandleClick(touch:Touch):void {

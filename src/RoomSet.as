@@ -22,6 +22,9 @@ package {
 
         // Map of string -> string of callback names
         public var roomToFunction:Dictionary;
+		
+		// Map of string -> callback function
+        public var roomFunctions:Dictionary;
 
         // Map of string -> boolean of if fog has been cleared from a room
         public var roomsRevealed:Dictionary;
@@ -29,13 +32,14 @@ package {
         // Map of string -> boolean of if the room callback has fired
         public var roomsComplete:Dictionary;
 
-        public function RoomSet(roomData:Array) {
+        public function RoomSet(roomData:Array, roomFunctions:Dictionary) {
             super();
 
             rooms = new Dictionary();
             roomSpaces = new Dictionary();
             builtRoomTiles = new Dictionary();
             roomToFunction = new Dictionary();
+			roomFunctions = this.roomFunctions;
             roomsRevealed = new Dictionary();
             roomsComplete = new Dictionary();
             //roomFunctions = callbacks;
@@ -120,15 +124,13 @@ package {
                             completeData.push(roomToFunction[key]);
                             dispatchEvent(new GameEvent(GameEvent.COMPLETE_ROOM, 0, 0, completeData));
                             // complete room by calling function
-                            // roomFunctions[roomToFunction[key]]();
+							if (roomToFunction[key] && roomFunctions[roomToFunction[key]]) {
+								roomFunctions[roomToFunction[key]]();
+							}
                         }
                     }
                 }
             }
-        }
-
-        public function removeTile(tile:Tile):void {
-
         }
     }
 }

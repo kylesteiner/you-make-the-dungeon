@@ -55,6 +55,10 @@ package {
 		private var onCompleteCallback:Function;
 		public var altCallback:Function;
 
+		// Room metadata and control flow
+		public var rooms:RoomSet;
+		public var roomFunctions:Dictionary();
+		
 		// Assets.
 		private var textures:Dictionary;
 		private var animations:Dictionary;
@@ -67,9 +71,6 @@ package {
 
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
-
-		// Rooms that exist on the floor
-		public var rooms:RoomSet;
 		
 		// Summary and related state.
 		public var runSummary:Summary;
@@ -241,28 +242,30 @@ package {
 					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
 				}
 			}
+			
+			roomFunctions = new Dictionary();
+			//roomFunctions[Util.ROOMCB_NONE] = SOME FUNCTION
+			rooms = new RoomSet(floorData["rooms"], roomFunctions);
 
 			highlightedLocations = new Array(gridWidth);
 			for (i = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
-			
-			rooms = new RoomSet(floorData["rooms"]);
-			addChild(rooms);
 
 			addChild(char);
+			addChild(rooms);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
+			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
 			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 		}
 
 		public function removeTutorial():void {

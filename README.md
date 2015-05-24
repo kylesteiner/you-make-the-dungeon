@@ -110,9 +110,6 @@ Floor data is stored in JSON files. Here is an example of a floor and its struct
 					"y": 5
 				}
 			]
-		},
-		{
-
 		}
 	]
 }
