@@ -796,6 +796,8 @@ package {
 					runFloor();
 				} else if (gameState == STATE_RUN) {
 					endRunButton();
+				} else if (gameState == STATE_SUMMARY) {
+					returnToBuild();
 				}
 			}
 
