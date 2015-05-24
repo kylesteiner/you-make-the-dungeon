@@ -363,7 +363,8 @@ package {
 			addChild(tutorialHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
-			gameState = STATE_BUILD;
+			// gameState = STATE_BUILD; // need additional logic here if we have many tutorials
+			gameState = STATE_TUTORIAL;
 		}
 
 		public function transitionToStart():void {
@@ -625,7 +626,7 @@ package {
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
 
-			if(!touch || gameState == Game.STATE_TUTORIAL) {
+			if(!touch) {
 				return;
 			}
 
