@@ -87,13 +87,14 @@ package {
 
 
 		public function reset():void {
+			moving = false;
+			inCombat = false;
 			hp = maxHp;
 			stamina = maxStamina;
 			grid_x = initialX;
 			grid_y = initialY;
 			x = Util.grid_to_real(initialX);
 			y = Util.grid_to_real(initialY);
-			inCombat = false;
 		}
 
 		public function toggleRunUI():void {
