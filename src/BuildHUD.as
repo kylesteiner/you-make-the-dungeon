@@ -8,7 +8,6 @@ package {
 
 	import tiles.*;
 	import entities.*;
-	import clickable.*;
 
 	public class BuildHUD extends Sprite {
 		public static const QUAD_BORDER_PIXELS:int = 2;
@@ -289,7 +288,8 @@ package {
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
 				var selectEB:Clickable = entityClickables[i];
-				selectEB.updateImage(null, entityMap[entityList[i][entityDisplayList[i]]][1]);
+				var selectOverlay:Sprite = entityMap[entityList[i][entityDisplayList[i]]][0]().generateOverlay();
+				selectEB.updateImage(selectOverlay, entityMap[entityList[i][entityDisplayList[i]]][1]);
 			}
 		}
 
@@ -333,6 +333,11 @@ package {
 				renderEntity.addParameter("index", index);
 				renderEntity.addParameter("change", i);
 				popupEntities.push(renderEntity);
+
+				var coinCost:Sprite = createGoldCost(entityMap[key][2]);
+				coinCost.x = entitySprite.x + entitySprite.width + (coinCost.width / 4);
+				//coinCost.y = -coinCost.height / 4;
+				entitySprite.addChild(coinCost);
 			}
 
 			var exitQuad:Quad = new Quad(16, 16, 0xff0000);

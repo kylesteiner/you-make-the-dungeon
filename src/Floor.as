@@ -16,7 +16,7 @@ package {
 	import tiles.*;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing the demo!\nClick here to return the the main menu."
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -47,11 +47,11 @@ package {
 		// Entities that have been removed in by character actions the run phase
 		// but need to be replaced after the run phase.
 		private var removedEntities:Array;
+		// Revealed enemies that randomly walk about the floor.
+		public var activeEnemies:Array;
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
-		private var nextFloor:String;
-		private var nextTransition:String;
 		private var onCompleteCallback:Function;
 		public var altCallback:Function;
 
@@ -71,8 +71,9 @@ package {
 		// Rooms that exist on the floor
 		public var rooms:RoomSet;
 		
-		// Revealed enemies that randomly walk about the floor.
-		public var activeEnemies:Array;
+		// Summary and related state.
+		public var runSummary:Summary;
+		private var preHealth:int;
 
 		private var totalRuns:int;
 
@@ -88,6 +89,7 @@ package {
 							  floorFiles:Dictionary,
 							  nextFloorCallback:Function,
 							  soundMixer:Mixer,
+							  runSummary:Summary,
 							  showPrompt:int = 0) {
 			super();
 			this.textures = textures;
@@ -96,6 +98,7 @@ package {
 			this.initialStamina = initialStamina;
 			this.initialAttack = initialAttack;
 			initialLoS = initialLineOfSight;
+			this.runSummary = runSummary;
 			totalRuns = 0;
 
 			this.floorFiles = floorFiles;
@@ -113,8 +116,6 @@ package {
 			// Parse the floor layout information from the JSON file.
 			var floorData:Object = JSON.parse(floorDataString);
 			floorName = floorData["floor_name"];
-			nextFloor = "LOL PLACEHOLDER";
-			nextTransition = "LOL ALSO PLACEHOLDER";
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
@@ -201,6 +202,10 @@ package {
 					grid[tX][tY] = im;
 					addChild(im);
 				}
+
+				if (fogGrid[tX][tY]) {
+					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
+				}
 			}
 
 			// Parse the entities and place them on the entityGrid.
@@ -231,6 +236,10 @@ package {
 					objectiveState[key] = false;
 					addChild(obj);
 				}
+
+				if (fogGrid[tX][tY]) {
+					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
+				}
 			}
 
 			highlightedLocations = new Array(gridWidth);
@@ -240,6 +249,8 @@ package {
 			
 			rooms = new RoomSet(floorData["rooms"]);
 			addChild(rooms);
+
+			addChild(char);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
@@ -275,10 +286,17 @@ package {
 
 		public function toggleRun(gameState:String):void {
 			char.toggleRunUI();
+			pressedKeys = new Array();
 
-			// Currently populates grid twice for every run and
-			// also bumps up total runs twice which is ambiguous behavior.
-			// Just means rate of gold increase is doubled which is probably fine.
+			// Ensure that the character and all enemies are higher in the
+			// display order than the tiles.
+			removeChild(char);
+			addChild(char);
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
+
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -289,12 +307,45 @@ package {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
 
-					if(grid[x][y] && !(char.grid_x == x && char.grid_y == y) && gameState == Game.STATE_RUN) {
-						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, totalRuns));
+					if (grid[x][y]
+						&& !(grid[x][y] is ImpassableTile)
+						&& !fogGrid[x][y]
+						&& !(char.grid_x == x && char.grid_y == y)
+						&& gameState == Game.STATE_RUN) {
+						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, 1 + totalRuns / 15));
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
 					}
 				}
+			}
+
+			// Temporary rewards code
+			if(goldGrid[3][3]) {
+				goldGrid[3][3].gold = 100;
+			}
+
+			if(goldGrid[2][27]) {
+				goldGrid[2][27].gold = 100;
+			}
+
+			if(goldGrid[14][19]) {
+				goldGrid[14][19].gold = 30;
+			}
+
+			if(goldGrid[16][1]) {
+				goldGrid[16][1].gold = 100;
+			}
+
+			if(goldGrid[19][9]) {
+				goldGrid[19][9].gold = 50;
+			}
+
+			if(goldGrid[26][24]) {
+				goldGrid[26][24].gold = 100;
+			}
+
+			if(goldGrid[28][3]) {
+				goldGrid[28][3].gold = 75;
 			}
 		}
 
@@ -402,6 +453,25 @@ package {
 				   !(tile is ExitTile) &&
 				   !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
+		}
+
+		public function updateRunSpeed():void {
+			char.speed = Util.speed;
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					if (entityGrid[x][y] is Enemy) {
+						var enemy:Enemy = entityGrid[x][y] as Enemy;
+						enemy.speed = Util.speed;
+					}
+				}
+			}
+
+			for (var i:int = 0; i < removedEntities.length; i++) {
+				if (removedEntities[i] is Enemy) {
+					var removedEnemy:Enemy = removedEntities[i] as Enemy;
+					removedEnemy.speed = Util.speed;
+				}
+			}
 		}
 
 		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {
@@ -548,10 +618,6 @@ package {
 		}
 
 		private function onEnterFrame(e:Event):void {
-			// Workaround because tiles are above the Character in the display
-			// hierarchy after being placed.
-			addChild(char);
-
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
@@ -564,6 +630,10 @@ package {
 				return;
 			}
 
+			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed) {
+				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
+			}
+
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -573,8 +643,7 @@ package {
 				}
 
 				charTile = grid[cgx][cgy];
-
-				if (keyCode == Keyboard.UP && cgy > 0) {
+				if ((keyCode == Keyboard.UP || keyCode == Util.UP_KEY) && cgy > 0) {
 					if(!grid[cgx][cgy-1]) {
 						continue;
 					}
@@ -583,7 +652,7 @@ package {
 					if (charTile.north && nextTile.south) {
 						char.move(Util.NORTH);
 					}
-				} else if (keyCode == Keyboard.DOWN && cgy < gridHeight - 1) {
+				} else if ((keyCode == Keyboard.DOWN || keyCode == Util.DOWN_KEY) && cgy < gridHeight - 1) {
 					if(!grid[cgx][cgy+1]) {
 						continue;
 					}
@@ -593,7 +662,7 @@ package {
 						char.move(Util.SOUTH);
 
 					}
-				} else if (keyCode == Keyboard.LEFT && cgx > 0) {
+				} else if ((keyCode == Keyboard.LEFT || keyCode == Util.LEFT_KEY) && cgx > 0) {
 					if(!grid[cgx-1][cgy]) {
 						continue;
 					}
@@ -602,7 +671,7 @@ package {
 					if (charTile.west && nextTile.east) {
 						char.move(Util.WEST);
 					}
-				} else if (keyCode == Keyboard.RIGHT && cgx < gridWidth - 1) {
+				} else if ((keyCode == Keyboard.RIGHT || keyCode == Util.RIGHT_KEY) && cgx < gridWidth - 1) {
 					if(!grid[cgx+1][cgy]) {
 						continue;
 					}
@@ -742,6 +811,9 @@ package {
 		// When a character arrives at a tile, it fires an event up to Floor.
 		// Find the tile it arrived at and call its handleChar() function.
 		private function onCharArrived(e:GameEvent):void {
+			preHealth = char.hp;
+			runSummary.distanceTraveled++;
+
 			if (goldGrid[char.grid_x][char.grid_y]) {
 				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
 			}
@@ -750,6 +822,7 @@ package {
 			if (!entity) {
 				return;
 			}
+
 			entity.handleChar(char);
 		}
 
@@ -773,8 +846,11 @@ package {
 										  NEXT_LEVEL_MESSAGE,
 										  Util.DEFAULT_FONT,
 										  Util.MEDIUM_FONT_SIZE));
-			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
-			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+			//winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
+			//winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+
+			var nC:Clickable = new Clickable(0, 0, onCompleteCallback, winBox);
+			addChild(nC);
 		}
 
 		// Called after the character defeats an enemy entity.
@@ -794,6 +870,9 @@ package {
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
+
+			runSummary.enemiesDefeated++;
+			runSummary.damageTaken += preHealth - char.hp;
 		}
 
 		// Called when the character moves into an objective tile. Updates
@@ -812,6 +891,8 @@ package {
 			removedEntities.push(heal);
 			entityGrid[e.x][e.y] = null;
 			removeChild(heal);
+
+			runSummary.amountHealed += char.hp - preHealth;
 		}
 
 		private function onRoomReveal(event:GameEvent):void {

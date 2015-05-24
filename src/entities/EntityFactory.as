@@ -8,6 +8,7 @@ package entities {
         public static const TRAP_CATEGORY:int = 2;
 
         public static const LIGHT_HEALING:String = "entity_light_healing";
+        public static const MODERATE_HEALING:String = "entity_moderate_healing";
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
 
@@ -79,9 +80,16 @@ package entities {
             var lightHealing:Array = new Array();
             lightHealing.push(constructLightHealing);
             lightHealing.push(textures[Util.HEALING]);
-            lightHealing.push(Util.HEALING_COST);
+            lightHealing.push(Util.LIGHT_HEALING_COST);
             lightHealing.push(HEALING_CATEGORY);
             healingDict[LIGHT_HEALING] = lightHealing;
+
+            var moderateHealing:Array = new Array();
+            moderateHealing.push(constructModerateHealing);
+            moderateHealing.push(textures[Util.HEALING]);
+            moderateHealing.push(Util.MODERATE_HEALING_COST);
+            moderateHealing.push(HEALING_CATEGORY);
+            healingDict[MODERATE_HEALING] = moderateHealing;
 
             return healingDict;
         }
@@ -98,18 +106,24 @@ package entities {
             return new Healing(x, y, textures[Util.HEALING], healing);
         }
 
+        public function constructModerateHealing(x:int=0, y:int=0):Healing {
+            var healing:int = 7;
+
+            return new Healing(x, y, textures[Util.HEALING], healing);
+        }
+
         public function constructFighter(x:int=0, y:int=0):Enemy {
             var hp:int = 5;
             var atk:int = 1;
-            var reward:int = 3;
+            var reward:int = 10;
 
             return new Enemy(x, y, Util.ENEMY_FIGHTER, textures[Util.ENEMY_FIGHTER], hp, atk, reward);
         }
 
         public function constructMage(x:int=0, y:int=0):Enemy {
-            var hp:int = 8;
-            var atk:int = 2;
-            var reward:int = 7;
+            var hp:int = 9;
+            var atk:int = 3;
+            var reward:int = 18;
 
             return new Enemy(x, y, Util.ENEMY_MAGE, textures[Util.ENEMY_MAGE], hp, atk, reward);
         }

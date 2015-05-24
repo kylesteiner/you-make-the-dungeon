@@ -8,69 +8,74 @@ package {
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 
-	import clickable.*;
 	import Util;
-	
+
 	public class ShopHUD extends Sprite {
 		private static const SHOP_OUTER_PADDING:int = 12;
-		
+
 		public var gold:int;
 		private var char:Character;
 		private var textures:Dictionary;
-		
+
 		private var goldHud:GoldHUD;
 		private var hpVal:TextField;
 		private var atkVal:TextField;
 		private var staminaVal:TextField;
 		private var losVal:TextField;
-		
+
 		private var shopItems:Array;
-		
+		private var itemCosts:Array;
+
 		/**********************************************************************************
 		 *  Intialization
 		 **********************************************************************************/
-		
+
 		public function ShopHUD(goldHud:GoldHUD, closeFunction:Function, textureDict:Dictionary) {
 			super();
 			this.goldHud = goldHud;
 			textures = textureDict;
-			
+
 			var bg:Image = new Image(textures[Util.SHOP_BACKGROUND]);
 			bg.x = (Util.STAGE_WIDTH - bg.width) / 2;
 			bg.y = (Util.STAGE_HEIGHT - bg.height) / 2;
 			addChild(bg);
-			
+
 			var closeShopButton:Clickable = new Clickable(0, 0, closeFunction, new TextField(250, 40, "CLOSE SHOP", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
 			closeShopButton.x = (Util.STAGE_WIDTH - closeShopButton.width) / 2;
 			closeShopButton.y = Util.STAGE_HEIGHT - (Util.STAGE_HEIGHT - height) / 2 - closeShopButton.height - SHOP_OUTER_PADDING;
 			addChild(closeShopButton);
-			
+
+			shopItems = new Array();
+			itemCosts = new Array();
+
 			displayCharStats();
 			displayShopItems();
+
+			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		}
-		
+
 		private function displayCharStats():void {
 			hpVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			hpVal.x = Util.STAGE_WIDTH / 5;
 			var hpImg:Image = new Image(textures[Util.ICON_HEALTH]);
 			setupStat(hpVal, hpImg);
-			
+
 			atkVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			atkVal.x = Util.STAGE_WIDTH / 5 * 2;
 			var atkImg:Image = new Image(textures[Util.ICON_ATK]);
 			setupStat(atkVal, atkImg);
-			
+
 			staminaVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			staminaVal.x = Util.STAGE_WIDTH / 5 * 3;
 			var staminaImg:Image = new Image(textures[Util.ICON_STAMINA]);
 			setupStat(staminaVal, staminaImg);
-			
+
 			losVal = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			losVal.x = Util.STAGE_WIDTH / 5 * 4;
 			var losImg:Image = new Image(textures[Util.ICON_LOS]);
 			setupStat(losVal, losImg);
 		}
-		
+
 		private function setupStat(tf:TextField, i:Image):void {
 			tf.height = tf.textBounds.height;
 			tf.hAlign = HAlign.LEFT;
@@ -80,82 +85,133 @@ package {
 			addChild(tf);
 			addChild(i);
 		}
-		
+
 		private function displayShopItems():void {
-			displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), 100, incHP);
-			displayShopItem(2, new Image(textures[Util.ICON_ATK]), 200, incAtk);
-			displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), 300, incStamina);
-			displayShopItem(4, new Image(textures[Util.ICON_LOS]), 400, incLos);
+			var i:int;
+			for(i = 0; i < shopItems.length; i++) {
+				removeChild(shopItems[i]);
+			}
+
+			shopItems = new Array();
+			itemCosts = new Array();
+			shopItems.push(displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), getHpCost(), incHP));
+			shopItems.push(displayShopItem(2, new Image(textures[Util.ICON_ATK]), getAttackCost(), incAtk));
+			shopItems.push(displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), getStaminaCost(), incStamina));
+			shopItems.push(displayShopItem(4, new Image(textures[Util.ICON_LOS]), getLOSCost(), incLos));
+
+			for(i = 0; i < shopItems.length; i++) {
+				addChild(shopItems[i]);
+			}
 		}
-		
-		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):void {
+
+		private function getHpCost():int {
+			var base:int = 15;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.maxHp - Util.STARTING_HEALTH;
+			}
+			return base + upgrades;
+		}
+
+		private function getStaminaCost():int {
+			var base:int = 10;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.maxStamina - Util.STARTING_STAMINA;
+			}
+			return base + upgrades;
+		}
+
+		private function getAttackCost():int {
+			var base:int = 20;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.attack - Util.STARTING_ATTACK;
+			}
+			return base * (upgrades + 1);
+		}
+
+		private function getLOSCost():int {
+			var base:int = 30;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.los - Util.STARTING_LOS;
+			}
+			return base * (upgrades + 1);
+		}
+
+		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):Clickable {
 			var item:Clickable = new Clickable(300, 300, callback, null, textures[Util.SHOP_ITEM]);
 			item.addParameter("cost", cost);
 			item.x = x + 110 * position;
 			item.y = y + 100 + 100 * (position / 3);
-			addChild(item);
-			
+
 			image.x = (item.width - image.width) / 2;
 			image.y = 20;
 			item.addChild(image);
-			
+
 			var coin:Image = new Image(textures[Util.ICON_GOLD]);
 			coin.y = item.height - coin.height - 2;
+			//coin.touchable = false;
 			item.addChild(coin);
-			
+
 			var itemCost:TextField = new TextField(item.width, coin.height, String(cost), Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
 			itemCost.y = coin.y;
+			//itemCost.touchable = false;
 			item.addChild(itemCost);
+			itemCosts.push(itemCost);
+
+			return item;
 		}
-		
+
 		/**********************************************************************************
 		 * Shop item callbacks
 		 **********************************************************************************/
-		
+
 		public function incHP(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setHP(char.maxHp + 5);
+				setHP(char.maxHp + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterHP":char.maxHp,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
-		
+
 		public function incAtk(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setAtk(char.attack + 5);
+				setAtk(char.attack + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterAttack":char.attack,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
-		
+
 		public function incStamina(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setStamina(char.maxStamina + 5);
+				setStamina(char.maxStamina + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterStamina":char.maxStamina,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
-		
+
 		public function incLos(params:Dictionary):void {
 			if (spend(params["cost"])) {
 				setLos(char.los + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterLOS":char.los,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
-		
+
 		/**********************************************************************************
 		 * Stat & Gold management
 		 **********************************************************************************/
@@ -178,27 +234,44 @@ package {
 				return true;
 			}
 		}
-		
+
 		private function setHP(val:int):void {
 			char.maxHp = val;
 			char.hp = char.maxHp;
 			hpVal.text = String(char.maxHp);
 		}
-		
+
 		private function setAtk(val:int):void {
 			char.attack = val;
 			atkVal.text = String(char.attack);
 		}
-		
+
 		private function setStamina(val:int):void {
 			char.maxStamina = val;
 			char.stamina = char.maxStamina;
 			staminaVal.text = String(char.maxStamina);
 		}
-		
+
 		private function setLos(val:int):void {
 			char.los = val;
 			losVal.text = String(char.los);
+		}
+
+		private function onEnterFrame(event:EnterFrameEvent):void {
+			var i:int;
+			var newCost:int;
+			var shopButton:Clickable;
+			for (i = 0; i < shopItems.length; i++) {
+				newCost = getHpCost();
+				newCost = i == 1 ? getAttackCost() : newCost;
+				newCost = i == 2 ? getStaminaCost() : newCost;
+				newCost = i == 3 ? getLOSCost() : newCost;
+
+				shopButton = shopItems[i];
+				shopButton.parameters["cost"] = newCost;
+
+				itemCosts[i].text = newCost.toString();
+			}
 		}
 	}
 }

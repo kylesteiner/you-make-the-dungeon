@@ -4,6 +4,7 @@
 package {
 	import Logger;
 	import starling.text.TextField;
+	import flash.ui.Keyboard;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -35,6 +36,10 @@ package {
 		public static const EAST:int = 2;
 		public static const WEST:int = 3;
 		public static const DIRECTIONS:Array = new Array(NORTH, SOUTH, EAST, WEST);
+
+		// Movement speed in pixels per frame
+		public static const SPEED_SLOW:int = 4;
+		public static const SPEED_FAST:int = 8;
 
 		// Keys to the dictionary of textures.
 		public static const DOOR:String = "door";
@@ -93,16 +98,25 @@ package {
 		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
 		public static const CURSOR_RETICLE:String = "cursor_reticle";
+		public static const ICON_SFX_PLAY:String = "sfx_play";
+		public static const ICON_SFX_MUTE:String = "sfx_mute";
+		public static const ICON_BGM_PLAY:String = "bgm_play";
+		public static const ICON_BGM_MUTE:String = "bgm_mute";
+		public static const ICON_FAST_COMBAT:String = "icon_fast_combat";
+		public static const ICON_SLOW_COMBAT:String = "icon_slow_combat";
+		public static const ICON_FAST_RUN:String = "icon_fast_run";
+		public static const ICON_SLOW_RUN:String = "icon_slow_run";
 
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
-		public static const MUTE_KEY:String = "m";
-		public static const COMBAT_SKIP_KEY:String = "k";
-		public static const UP_KEY:String = "w";
-		public static const LEFT_KEY:String = "a";
-		public static const RIGHT_KEY:String = "d";
-		public static const DOWN_KEY:String = "s";
+		public static const MUTE_KEY:int = Keyboard.M;
+		public static const COMBAT_SKIP_KEY:int = Keyboard.K;
+		public static const UP_KEY:int = Keyboard.W;
+		public static const LEFT_KEY:int = Keyboard.A;
+		public static const RIGHT_KEY:int = Keyboard.D;
+		public static const DOWN_KEY:int = Keyboard.S;
+		public static const TUTORIAL_SKIP_KEY:int = Keyboard.G;
 
 		// if we want to use arrow keys, here are the relevant char codes:
 		// up: 38		left: 37
@@ -125,6 +139,14 @@ package {
 
 		// Room callbacks
 		public static const ROOMCB_NONE:String = "roomcb_none";
+
+		public static const TUTORIAL_NEA:String = "tutorial_nea";
+		public static const TUTORIAL_EXIT:String = "tutorial_exit"
+		public static const TUTORIAL_GOLD:String = "tutorial_gold"
+		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
+		public static const TUTORIAL_SPEND:String = "tutorial_spend"
+		public static const TUTORIAL_KEYS:String = "tutorial_keys"
+		public static const TUTORIAL_UI:String = "tutorial_ui"
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";
@@ -158,6 +180,7 @@ package {
 		public static const SFX_ATTACK:String = "sfx_attack";
 		public static const TILE_REMOVE:String = "tile_remove";
 		public static const COIN_COLLECT:String = "coin_collect";
+		public static const GOLD_SPEND:String = "gold_spend";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -165,19 +188,21 @@ package {
 
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_XP:int = 0;
-		public static const STARTING_HEALTH:int = 10;
-		public static const STARTING_STAMINA:int = 60; // high for debug purposes
-		public static const STARTING_GOLD:int = 1000; // high for debug purposes
+		public static const STARTING_HEALTH:int = 5;
+		public static const STARTING_STAMINA:int = 5; // high for debug purposes
+		public static const STARTING_GOLD:int = 60; // high for debug purposes
 		public static const STARTING_LOS:int = 2;
 
 		// Costs go here
 		public static const BASE_TILE_COST:int = 5;
 		public static const REFUND_PERCENT:int = 50;
-		public static const ENEMY_FIGHTER_COST:int = 5;
-		public static const ENEMY_MAGE_COST:int = 8;
-		public static const HEALING_COST:int = 10;
+		public static const ENEMY_FIGHTER_COST:int = 40;
+		public static const ENEMY_MAGE_COST:int = 60;
+		public static const LIGHT_HEALING_COST:int = 30;
+		public static const MODERATE_HEALING_COST:int = 65;
 
 		public static var logger:Logger;
+		public static var speed:int;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
