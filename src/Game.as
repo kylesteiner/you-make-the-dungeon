@@ -390,8 +390,6 @@ package {
 		public function switchToNewFloor(params:Object):void {
 			// Clear save data and switch to floor.
 			gameState = STATE_TUTORIAL;
-			gold = Util.STARTING_GOLD;
-			buildHud.entityFactory = new EntityFactory(textures);
 			saveGame.clear();
 			switchToFloor(params);
 		}
