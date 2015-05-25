@@ -71,6 +71,7 @@ package {
 		public var logger:Logger;
 		private var numberOfTilesPlaced:int;
 		private var entitiesPlaced:int;
+		private var goldSpent:int;
 
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
@@ -436,6 +437,7 @@ package {
 
 		public function closeShopHUD():void {
 			if (getChildIndex(shopHud) != -1) {
+				goldSpent += gold - shopHud.gold;
 				gold = shopHud.gold;
 				removeChild(shopHud);
 			}
@@ -489,8 +491,10 @@ package {
 
 			logger.logAction(3, {
 				"numberOfTiles":numberOfTilesPlaced,
-				"numberOfEntitiesPlaced":entitiesPlaced
+				"numberOfEntitiesPlaced":entitiesPlaced,
+				"goldSpent":goldSpent
 			});
+			goldSpent = 0;
 			numberOfTilesPlaced = 0;
 			entitiesPlaced = 0;
 			removeChild(runButton);
@@ -744,7 +748,9 @@ package {
 
 			if (buildHud.hudState == BuildHUD.STATE_DELETE) {
 				if (currentFloor.deleteSelected(currentTile, currentEntity)) {
-					gold += buildHud.getRefundForDelete(currentTile, currentEntity);
+					var refund:int = buildHud.getRefundForDelete(currentTile, currentEntity);
+					gold += refund;
+					goldSpent -= refund;
 					goldHud.update(gold);
 					mixer.play(Util.TILE_REMOVE);
 				} else {
@@ -778,12 +784,13 @@ package {
 					}
 					numberOfTilesPlaced++;
 					logger.logAction(1, {
-						"goldSpend": cost,
+						"goldSpent": cost,
 						"northOpen":newTile.north,
 						"southOpen":newTile.south,
 						"eastOpen":newTile.east,
 						"westOpen":newTile.west
 					});
+					goldSpent += cost;
 					mixer.play(Util.TILE_MOVE);
 				} else {
 					mixer.play(Util.TILE_FAILURE);
@@ -809,6 +816,7 @@ package {
 						"cost":cost,
 						"entityPlaced":type
 					});
+					goldSpent += cost;
 					entitiesPlaced++;
 				} else {
 					mixer.play(Util.TILE_FAILURE);
@@ -909,6 +917,10 @@ package {
 				}
 				currentFloor.removeChild(reward);
 				currentFloor.entityGrid[reward.grid_x][reward.grid_y] = null;
+				logger.logAction(19, {
+					"type":"gold",
+					"goldEarned":addAmount
+				});
 			}
 
 			runHud.goldCollected += addAmount; // add gold amount
@@ -1004,7 +1016,7 @@ package {
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Util.mixer.play(Util.LEVEL_UP);
-
+				
 				tileUnlockTimer = 0;
 
 				var reward:Reward = event.gameData["entity"];
@@ -1079,6 +1091,34 @@ package {
 				tileUnlockPopup = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
 												(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
 												closeTileUnlock, tileUnlockSprite);
+				
+				
+				if (newEntity is Enemy) {
+					var temp:Enemy = newEntity as Enemy;
+					Util.logger.logAction(19, {
+						"type":"enemy",
+						"enemyHealth":temp.hp,
+						"enemyAttack":temp.attack,
+						"enemyReward":temp.reward,
+						"enemyName":temp.enemyName
+					});
+					trace(temp.hp);
+					trace(newEntity.cost);
+					trace(temp.reward);
+					trace(temp.attack);
+				} else if (newEntity is StaminaHeal) {
+					var tempS:StaminaHeal = newEntity as StaminaHeal;
+					Util.logger.logAction(19, {
+						"type":"staminaHeal",
+						"staminaRestored":tempS.stamina
+					});
+				} else { 
+					var tempH:Healing = newEntity as Healing;
+					Util.logger.logAction(19, {
+						"type":"healing",
+						"healthRestored":tempH.health
+					});
+				}
 			}
 
 			addChild(tileUnlockPopup);

@@ -183,7 +183,7 @@ package {
 			if (spend(params["cost"])) {
 				setAtk(char.attack + 1);
 				Util.logger.logAction(10, {
-					"itemBought":"hpIncrease",
+					"itemBought":"attackIncrease",
 					"newCharacterAttack":char.attack,
 					"upgradeAmount":1
 				});
@@ -194,7 +194,7 @@ package {
 			if (spend(params["cost"])) {
 				setStamina(char.maxStamina + 1);
 				Util.logger.logAction(10, {
-					"itemBought":"hpIncrease",
+					"itemBought":"staminaIncrease",
 					"newCharacterStamina":char.maxStamina,
 					"upgradeAmount":1
 				});
@@ -205,7 +205,7 @@ package {
 			if (spend(params["cost"])) {
 				setLos(char.los + 1);
 				Util.logger.logAction(10, {
-					"itemBought":"hpIncrease",
+					"itemBought":"lineOfSight",
 					"newCharacterLOS":char.los,
 					"upgradeAmount":1
 				});

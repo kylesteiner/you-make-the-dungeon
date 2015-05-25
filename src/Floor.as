@@ -887,6 +887,10 @@ package {
 			removedEntities.push(staminaHeal);
 			entityGrid[event.x][event.y] = null;
 			removeChild(staminaHeal);
+			Util.logger.logAction(14, {
+				"staminaHealed":staminaHeal.stamina,
+				"newCharacterStamina":char.stamina
+			});
 		}
 
 		private function onRoomReveal(event:GameEvent):void {
@@ -904,6 +908,7 @@ package {
 					fogGrid[point.x][point.y] = false;
 				}
 			}
+			Util.logger.logAction(7, { } );
 		}
 	}
 }
