@@ -100,7 +100,7 @@ package {
 		private var cameraAccel:Number;
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
-		
+
 		// for action 21, logging hover info help
 		private var helping:Boolean;
 		private var timeHovered:Number;
@@ -119,7 +119,7 @@ package {
 			// this is the current version, we'll treat 0 as the debugging
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
-			var cid:int = 5;
+			var cid:int = 7;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null, false);
 			Util.logger = logger;
@@ -633,7 +633,7 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
-			
+
 			if (helping) {
 				timeHovered += event.passedTime;
 			}
