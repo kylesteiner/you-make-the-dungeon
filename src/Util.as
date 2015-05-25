@@ -56,6 +56,8 @@ package {
 		public static const SHOP_ITEM:String = "shop_item";
 		public static const RUN_BANNER:String = "run_banner";
 		public static const BUILD_BANNER:String = "build_banner";
+		public static const RUN_HELP:String = "run_help";
+		public static const BUILD_HELP:String = "build_help";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -106,6 +108,7 @@ package {
 		public static const ICON_SLOW_COMBAT:String = "icon_slow_combat";
 		public static const ICON_FAST_RUN:String = "icon_fast_run";
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
+		public static const ICON_HELP:String = "icon_help";
 
 		public static const ENEMY_MENU:String = "enemy_menu";
 		public static const HEALING_MENU:String = "healing_menu";
@@ -152,7 +155,6 @@ package {
 		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"
 		public static const TUTORIAL_KEYS:String = "tutorial_keys"
-		public static const TUTORIAL_UI:String = "tutorial_ui"
 
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
@@ -208,17 +210,23 @@ package {
 		public static const STARTING_XP:int = 0;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 60;
+		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
-		// Costs go here
-		public static const BASE_TILE_COST:int = 5;
+		// Build costs
+		public static const BASE_TILE_COST:int = 2;
 		public static const REFUND_PERCENT:int = 50;
-		public static const ENEMY_FIGHTER_COST:int = 40;
-		public static const ENEMY_MAGE_COST:int = 60;
-		public static const LIGHT_HEALING_COST:int = 30;
-		public static const MODERATE_HEALING_COST:int = 65;
-		public static const LIGHT_STAMINA_HEAL_COST:int = 40;
+		public static const ENEMY_FIGHTER_COST:int = 20;
+		public static const ENEMY_MAGE_COST:int = 40;
+		public static const LIGHT_HEALING_COST:int = 20;
+		public static const MODERATE_HEALING_COST:int = 40;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
+
+		// Upgrade costs
+		public static const BASE_HP_UPGRADE_COST:int = 6;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 6;
+		public static const BASE_ATTACK_UPGRADE_COST:int = 10;
+		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
 		public static var logger:Logger;
 		public static var speed:int;

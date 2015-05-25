@@ -105,39 +105,35 @@ package {
 		}
 
 		private function getHpCost():int {
-			var base:int = 15;
 			var upgrades:int = 0;
-			if(char) {
+			if (char) {
 				upgrades = char.maxHp - Util.STARTING_HEALTH;
 			}
-			return base + upgrades;
+			return Util.BASE_HP_UPGRADE_COST + upgrades;
 		}
 
 		private function getStaminaCost():int {
-			var base:int = 10;
 			var upgrades:int = 0;
-			if(char) {
+			if (char) {
 				upgrades = char.maxStamina - Util.STARTING_STAMINA;
 			}
-			return base + upgrades;
+			return Util.BASE_STAMINA_UPGRADE_COST + upgrades;
 		}
 
 		private function getAttackCost():int {
-			var base:int = 20;
 			var upgrades:int = 0;
-			if(char) {
+			if (char) {
 				upgrades = char.attack - Util.STARTING_ATTACK;
 			}
-			return base * (upgrades + 1);
+			return Util.BASE_ATTACK_UPGRADE_COST * (upgrades + 1);
 		}
 
 		private function getLOSCost():int {
-			var base:int = 30;
 			var upgrades:int = 0;
-			if(char) {
+			if (char) {
 				upgrades = char.los - Util.STARTING_LOS;
 			}
-			return base * (upgrades + 1);
+			return Util.BASE_LOS_UPGRADE_COST * (upgrades + 1);
 		}
 
 		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):Clickable {
