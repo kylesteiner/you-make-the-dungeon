@@ -17,7 +17,7 @@ package {
 	import tiles.*;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing the demo!\nClick here to return the the main menu."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing!\nClick here to return the the main menu."
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -1035,8 +1035,8 @@ package {
 										  NEXT_LEVEL_MESSAGE,
 										  Util.DEFAULT_FONT,
 										  Util.MEDIUM_FONT_SIZE));
-			//winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
-			//winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
+			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
 
 			var nC:Clickable = new Clickable(0, 0, onCompleteCallback, winBox);
 			addChild(nC);

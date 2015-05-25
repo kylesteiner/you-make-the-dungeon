@@ -14,7 +14,7 @@ package {
 	import cgs.user.CgsUser;
 	import cgs.user.CgsUserProperties;
 	import cgs.user.ICgsUser;
-	
+
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
@@ -36,32 +36,32 @@ package {
 			} catch (e:Error) {
 				callback(null);
 			}
-			
+
 			function onLoad(e:Event):void {
 				loader.removeEventListener(Event.COMPLETE, onLoad);
 				callback((e.target as URLLoader).data);
 			}
-			
+
 			function onError(e:IOErrorEvent):void {
 				loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
 				//Let the callback know we've failed with a null argument
 				callback(null);
 			}
 		}
-		
+
 		/**
 		 * Creates the logger given game data.
-		 * 
+		 *
 		 * gid, name, and skey should been provided to you and are unique to your game.
-		 * 
+		 *
 		 * The data object can be an arbitrary AS object, which will be
 		 * converted to JSON and stored with the pageload log.
-		 * 
+		 *
 		 * The system will also automatically log system information such
 		 * as their OS, language settings, etc.
-		 * 
+		 *
 		 * Returns the logger, which is available for immediate use.
-		 * 
+		 *
 		 * @param cid: The category id to use for this session. All logs will
 		 * have this cid attached, and the logs can be later be filtered by cid.
 		 * Usually, a cid denotes a "version" and is used to figure out which data
@@ -71,7 +71,7 @@ package {
 		public static function initialize(gid:int, name:String, skey:String, cid:int, data:Object, useDev:Boolean=true):Logger
 		{
 			if (gid <= 0 || name == null || skey == null) throw new ArgumentError("invalid game info");
-			
+
 			var logger:Logger = new Logger();
 
 			//The DOLOG_URL allows us to change a server to turn off logging for any individual game in case the game is pirated and hammers our servers
@@ -82,8 +82,8 @@ package {
 			var props:CgsUserProperties = new CgsUserProperties(skey, 0, name, gid, 1, cid, useDev ? CGSServerProps.DEVELOPMENT_SERVER : CGSServerProps.PRODUCTION_SERVER);
 			var user:ICgsUser = new CgsUser(logger.server);
 			logger.server.initializeUser(user, props);
-			
-			
+
+
 			var request:URLRequest = new URLRequest(DOLOG_URL);
 			request.method = "GET";
 			loadUrl(request, function(result:String):void {
@@ -93,7 +93,7 @@ package {
 					logger.logLevelStart(12,null)
 				}
 			});
-			
+
 			return logger;
 		}
 
