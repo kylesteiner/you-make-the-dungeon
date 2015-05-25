@@ -71,6 +71,7 @@ package {
 		private var currentEntityIndex:int;
 
 		/***** UI Elements *****/
+		private var hud:Sprite;
 		private var tileQuad:Quad; // Rect drawn for background of tile select
 		private var northToggle:Clickable;
 		private var southToggle:Clickable;
@@ -96,7 +97,7 @@ package {
 		private var deleteQuad:Quad;
 		private var deleteButton:Clickable;
 
-		private var entityFactory:EntityFactory;
+		public var entityFactory:EntityFactory;
 
 		/**********************************************************************************
 		 *  Intialization
@@ -133,10 +134,37 @@ package {
 			createUI();
 		}
 
+		public function updateHUD():void {
+			removeChild(hud);
+
+			tileBlock = new Sprite();
+			entityBlock = new Sprite();
+			addChild(tileBlock);
+			addChild(entityBlock);
+			currentImage = null;
+
+			directions = new Array(Util.DIRECTIONS.length);
+			baseImage = null;
+			currentTile = null;
+
+			entityList = buildEntityList();
+			entityDisplayList = new Array();
+			for(var i:int; i < entityList.length; i++) {
+				entityDisplayList.push(0);
+			}
+
+			currentEntity = null;
+			currentEntityIndex = -1;
+
+			hudState = STATE_NONE;
+
+			createUI();
+		}
+
 		public function buildEntityList():Array {
 			var entityData:Array;
 
-			var arrayLen:int = 2;
+			var arrayLen:int = 3;
 			var key:String;
 			for (key in entityMap) {
 				entityData = entityMap[key];
@@ -162,6 +190,8 @@ package {
 		}
 
 		public function createUI():void {
+			hud = new Sprite();
+
 			tileQuad = new Quad(Util.PIXELS_PER_TILE, Util.PIXELS_PER_TILE + SELECT_BUTTON_HEIGHT + SELECT_BUTTON_MARGIN, 0x000000);
 			tileQuad.x = LEFT;
 			tileQuad.y = TOP;
@@ -192,7 +222,6 @@ package {
 			tileSelectButton = new Clickable(tileQuad.x + (tileQuad.width - tileSelectQuad.width) / 2,
 											 tileQuad.y + tileQuad.height - SELECT_BUTTON_HEIGHT - 2*QUAD_BORDER_PIXELS,
 											 selectTile, tileSelectQuad);
-
 			/*toggleButtons = new Array();
 			nButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
 			sButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
@@ -251,22 +280,12 @@ package {
 			var entityImage:Image;
 
 			for(i = 0; i < entityList.length; i++) {
-				entityName = entityList[i][entityDisplayList[i]];
-				entityConstructor = entityMap[entityList[i][entityDisplayList[i]]][0];
-				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
-				entityCost = entityMap[entityList[i][entityDisplayList[i]]][2];
-				entityCategory = entityMap[entityList[i][entityDisplayList[i]]][3];
-
 				entityX = QUAD_BORDER_PIXELS + Util.PIXELS_PER_TILE * i + entityQuad.x;
 				entityY = QUAD_BORDER_PIXELS * 2;
-				entitySprite = entityConstructor().generateOverlay();
-				entityPopupButton = new Clickable(entityX, entityY, selectEntityClickable, entitySprite, entityTexture);
-				entityPopupButton.addParameter("index", i);
-				entityClickables.push(entityPopupButton);
 
-				var eQ:Quad = new Quad(entityPopupButton.width - 3 * HUD_MARGIN,
-									   entityPopupButton.height - 3 * HUD_MARGIN,
-									   Color.WHITE);
+				var eQ:Quad = new Quad(Util.PIXELS_PER_TILE - 3 * HUD_MARGIN,
+									Util.PIXELS_PER_TILE - 3 * HUD_MARGIN,
+									Color.WHITE);
 				eQ.x = entityX + (1.5) * HUD_MARGIN;
 				eQ.y = entityY + 2 * HUD_MARGIN;
 				entityColoredRegions.push(eQ);
@@ -276,13 +295,29 @@ package {
 				oQ.y = eQ.y - 1;
 				entityHighlights.push(oQ);
 
-				selectEntityTexture = textures[menuButtons[entityCategory]];
+				selectEntityTexture = textures[menuButtons[i]];
 				entityImage = new Image(selectEntityTexture);
-				selectEntityButton = new Clickable(entityX + (entityPopupButton.width - entityImage.width) / 2,
-				 								   entityY + entityPopupButton.height + SELECT_BUTTON_MARGIN - 2,
+				selectEntityButton = new Clickable(entityX + (Util.PIXELS_PER_TILE - entityImage.width) / 2,
+													entityY + Util.PIXELS_PER_TILE + SELECT_BUTTON_MARGIN - 2,
 													createPopupClickable, entityImage);
 				selectEntityButton.addParameter("index", i);
 				entitySelectButtons.push(selectEntityButton);
+
+				if (entityList[i].length == 0) {
+					continue;
+				}
+
+				entityName = entityList[i][entityDisplayList[i]];
+				entityConstructor = entityMap[entityList[i][entityDisplayList[i]]][0];
+				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
+				entityCost = entityMap[entityList[i][entityDisplayList[i]]][2];
+				entityCategory = entityMap[entityList[i][entityDisplayList[i]]][3];
+
+
+				entitySprite = entityConstructor().generateOverlay();
+				entityPopupButton = new Clickable(entityX, entityY, selectEntityClickable, entitySprite, entityTexture);
+				entityPopupButton.addParameter("index", i);
+				entityClickables.push(entityPopupButton);
 
 				//var entityGoldCost:Sprite = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
 				var entityGoldCost:Sprite = createGoldCost(entityCost);
@@ -302,36 +337,41 @@ package {
 										 deleteQuad.y + QUAD_BORDER_PIXELS,
 										 deleteClickable, null, textures[Util.ICON_DELETE]);
 
-			addChild(tileQuad);
-			addChild(interiorTQ);
+			hud.addChild(tileQuad);
+			hud.addChild(interiorTQ);
 
-			addChild(tileNWCorner);
-			addChild(tileNECorner);
-			addChild(tileSWCorner);
-			addChild(tileSECorner);
-			addChild(tileSelectButton);
+			hud.addChild(tileNWCorner);
+			hud.addChild(tileNECorner);
+			hud.addChild(tileSWCorner);
+			hud.addChild(tileSECorner);
+			hud.addChild(tileSelectButton);
 
-			addChild(northToggle);
-			addChild(southToggle);
-			addChild(eastToggle);
-			addChild(westToggle);
+			hud.addChild(northToggle);
+			hud.addChild(southToggle);
+			hud.addChild(eastToggle);
+			hud.addChild(westToggle);
 
-			addChild(tileGoldCost);
+			hud.addChild(tileGoldCost);
 
-			addChild(entityQuad);
-			addChild(interiorEQ);
+			hud.addChild(entityQuad);
+			hud.addChild(interiorEQ);
 
-			for(i = 0; i < entityClickables.length; i++) {
-				addChild(entityHighlights[i]);
-				addChild(entityColoredRegions[i]);
-				addChild(entityClickables[i]);
-				addChild(entitySelectButtons[i]);
-				addChild(entityGoldCosts[i]);
+			for (i = 0; i < entitySelectButtons.length; i++) {
+				hud.addChild(entityHighlights[i]);
+				hud.addChild(entityColoredRegions[i]);
+				hud.addChild(entitySelectButtons[i]);
 			}
 
-			addChild(deleteQuad);
-			addChild(interiorDQ);
-			addChild(deleteButton);
+			for (i = 0; i < entityClickables.length; i++) {
+				hud.addChild(entityClickables[i]);
+				hud.addChild(entityGoldCosts[i]);
+			}
+
+			hud.addChild(deleteQuad);
+			hud.addChild(interiorDQ);
+			hud.addChild(deleteButton);
+
+			addChild(hud);
 		}
 
 		public function updateUI():void {
@@ -347,7 +387,7 @@ package {
 		}
 
 		public function createPopup(index:int):void {
-			removeChild(popup);
+			hud.removeChild(popup);
 
 			popup = new Sprite();
 			popup.x = entityQuad.x;
@@ -358,6 +398,10 @@ package {
 			var cancelWidth:int = 16;
 			var entityWidth:int = Util.PIXELS_PER_TILE;
 			var entityHeight:int = Util.PIXELS_PER_TILE;
+
+			if (rows < 1) {
+				rows = 1;
+			}
 
 			var qWidth:int = QUAD_BORDER_PIXELS * 2 + HUD_MARGIN * (ENTITIES_PER_LINE + 1) + cancelWidth + ENTITIES_PER_LINE * entityWidth;
 			var qHeight:int = QUAD_BORDER_PIXELS * 2 + HUD_MARGIN * (rows + 1) + entityHeight * rows;
@@ -401,11 +445,11 @@ package {
 				popup.addChild(popupEntities[i]);
 			}
 
-			addChild(popup);
+			hud.addChild(popup);
 		}
 
 		public function closePopup():void {
-			removeChild(popup);
+			hud.removeChild(popup);
 			popup = null;
 		}
 
@@ -529,9 +573,9 @@ package {
 			//toggleButtons[direction].
 			selectTile(true);
 
-			removeChild(tileGoldCost);
+			hud.removeChild(tileGoldCost);
 			tileGoldCost = createTileGoldCost();
-			addChild(tileGoldCost);
+			hud.addChild(tileGoldCost);
 		}
 
 		public function toggleNorth():void {
@@ -653,7 +697,7 @@ package {
 				newCost.x = entityGoldCosts[i].x;
 				newCost.y = entityGoldCosts[i].y;
 				entityGoldCosts[i] = newCost;
-				addChild(entityGoldCosts[i]);
+				hud.addChild(entityGoldCosts[i]);
 			}
 		}
 	}

@@ -15,17 +15,20 @@ package entities {
         private var textures:Dictionary;
 
         public var entitySet:Dictionary;
+        public var masterSet:Dictionary;
+        public var entityText:Dictionary;
 
         public function EntityFactory(textures:Dictionary) {
             this.textures = textures;
-            this.entitySet = constructEntitySet();
+            this.masterSet = constructEntitySet();
+            this.entitySet = new Dictionary();
+            this.entityText = EntityDescriptions.setupDescriptions();
         }
 
-        public function updateFactory():void {
-            // Do some other update-thing here to update an
-            // internal resource of what strings are used.
-            // check for those strings in constructEntitySet
-            entitySet = constructEntitySet();
+        public function unlockTile(type:String):void {
+            if (masterSet[type] != null && entitySet[type] == null) {
+                entitySet[type] = masterSet[type];
+            }
         }
 
         public function constructEntitySet():Dictionary {

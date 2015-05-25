@@ -17,6 +17,7 @@ package {
 		public static const TUTORIAL_COMPLETE:String = "tutorial_complete";
 		public static const MOVE_CAMERA:String = "move_camera";
 		public static const CINEMATIC_COMPLETE:String = "cinematic_complete";
+		public static const UNLOCK_TILE:String = "unlock_tile";
 
 		public var x:int;
 		public var y:int;

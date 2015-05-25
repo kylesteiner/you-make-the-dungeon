@@ -10,9 +10,12 @@ package {
 	import starling.display.Image;
 	import starling.display.MovieClip;
 	import starling.display.Sprite;
+	import starling.display.Quad;
 	import starling.events.*;
 	import starling.text.TextField;
 	import starling.textures.Texture;
+	import starling.utils.Color;
+	import starling.utils.HAlign;
 
 	import entities.*;
 	import tiles.*;
@@ -22,6 +25,7 @@ package {
 		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
+		public static const TILE_UNLOCK_THRESHOLD:Number = 0.05;
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
 		public static const MAX_CAMERA_ACCEL:int = 3;
 
@@ -77,6 +81,7 @@ package {
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
+		private var tileUnlockPopup:Clickable;
 		private var tutorialHud:TutorialHUD;
 		private var cinematic:Cinematic;
 
@@ -85,6 +90,8 @@ package {
 
 		private var phaseBanner:Image;
 		private var phaseBannerTimer:Number;
+
+		private var tileUnlockTimer:Number;
 
 		private var cameraAccel:Number;
 		// Key -> Boolean representing which keys are being held down
@@ -167,6 +174,7 @@ package {
 			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
+			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
 		}
 
 		private function initializeFloorWorld():void {
@@ -523,6 +531,7 @@ package {
 
 			removeChild(endButton);
 			removeChild(runHud);
+			removeChild(tileUnlockPopup);
 
 			gameState = STATE_SUMMARY;
 			addChild(runSummary);
@@ -624,6 +633,10 @@ package {
 				}
 			}
 
+			if(tileUnlockPopup) {
+				tileUnlockTimer += event.passedTime;
+			}
+
 			removeChild(buildHud.currentImage);
 			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
 				addChild(buildHud.currentImage);
@@ -681,6 +694,10 @@ package {
 			// Click outside of shop (onblur)
 			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
 				removeChild(shopHud);
+			}
+
+			if (touch.phase == TouchPhase.BEGAN && tileUnlockPopup != null && tileUnlockTimer > TILE_UNLOCK_THRESHOLD) {
+				closeTileUnlock();
 			}
 
 			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {
@@ -966,7 +983,97 @@ package {
 			addChild(runButton);
 			addChild(shopButton);
 
-			mixer.play(Util.LEVEL_UP);
+			Util.mixer.play(Util.LEVEL_UP);
+		}
+
+		public function onTileUnlock(event:GameEvent):void {
+			removeChild(tileUnlockPopup);
+
+			if(event.gameData["type"] && event.gameData["entity"]) {
+				Util.mixer.play(Util.LEVEL_UP);
+
+				tileUnlockTimer = 0;
+
+				var reward:Reward = event.gameData["entity"];
+				if(reward.permanent) {
+					currentFloor.removedEntities.push(reward);
+				}
+				currentFloor.removeChild(reward);
+				currentFloor.entityGrid[reward.grid_x][reward.grid_y] = null;
+
+				var tileUnlockSprite:Sprite = new Sprite();
+				var outerQuad:Quad = new Quad(Util.STAGE_WIDTH / 2,
+											  Util.STAGE_HEIGHT / 2, Color.BLACK);
+				var innerQuad:Quad = new Quad(outerQuad.width - 4, outerQuad.height - 4, Color.WHITE);
+				innerQuad.x = outerQuad.x + 2;
+				innerQuad.y = outerQuad.y + 2;
+
+				var titleText:TextField = Util.defaultTextField(innerQuad.width, Util.LARGE_FONT_SIZE, "Tile Unlocked!", Util.LARGE_FONT_SIZE);
+				titleText.x = innerQuad.x + (innerQuad.width - titleText.width) / 2;
+				titleText.y = innerQuad.y;
+
+				var closeText:TextField = Util.defaultTextField(innerQuad.width, Util.SMALL_FONT_SIZE, "Click to continue", Util.SMALL_FONT_SIZE);
+				closeText.x = innerQuad.x + innerQuad.width - closeText.width;
+				closeText.y = innerQuad.y + innerQuad.height - closeText.height;
+
+				buildHud.entityFactory.unlockTile(event.gameData["type"]);
+				buildHud.updateHUD();
+
+				var unlockedTile:Array = buildHud.entityFactory.masterSet[event.gameData["type"]];
+				var newEntity:Entity = unlockedTile[0]();
+				var newEntitySprite:Sprite = new Sprite();
+				newEntitySprite.addChild(newEntity.img);
+				newEntitySprite.addChild(newEntity.generateOverlay());
+				newEntitySprite.scaleX = 2;
+				newEntitySprite.scaleY = 2;
+				newEntitySprite.x = innerQuad.x + Util.PIXELS_PER_TILE / 4;
+				newEntitySprite.y = innerQuad.y + (innerQuad.height / 4);
+
+				var newEntityTitle:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
+																	Util.MEDIUM_FONT_SIZE, buildHud.entityFactory.entityText[event.gameData["type"]][0]);
+				//newEntityTitle.autoScale = true;
+				newEntityTitle.hAlign = HAlign.LEFT;
+				newEntityTitle.x = newEntitySprite.x + newEntitySprite.width;
+				//newEntityTitle.y = titleText.y + titleText.height + Util.PIXELS_PER_TILE / 4;
+				newEntityTitle.y = newEntitySprite.y;
+
+				//var openSpace:int = innerQuad.height - titleText.height - newEntityTitle.height - (2 * Util.PIXELS_PER_TILE) / 4 - closeText.height;
+				var openSpace:int = innerQuad.height - (newEntitySprite.y - innerQuad.y) - closeText.height - newEntityTitle.height;
+
+				var newEntityText:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
+																	(openSpace * 2 / 3), newEntity.generateDescription());
+				newEntityText.autoScale = true;
+				newEntityText.hAlign = HAlign.LEFT;
+				newEntityText.x = newEntitySprite.x + newEntitySprite.width;
+				newEntityText.y = newEntityTitle.y + newEntityTitle.height;
+
+				var newEntityFlavor:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
+				 													  (openSpace / 3), buildHud.entityFactory.entityText[event.gameData["type"]][1]);
+				newEntityFlavor.autoScale = true;
+				newEntityFlavor.hAlign = HAlign.LEFT;
+				newEntityFlavor.x = newEntitySprite.x + newEntitySprite.width;
+				newEntityFlavor.y = newEntityText.y + newEntityText.height;
+
+				tileUnlockSprite.addChild(outerQuad);
+				tileUnlockSprite.addChild(innerQuad);
+				tileUnlockSprite.addChild(titleText);
+				tileUnlockSprite.addChild(newEntitySprite);
+				tileUnlockSprite.addChild(newEntityTitle);
+				tileUnlockSprite.addChild(newEntityText);
+				tileUnlockSprite.addChild(newEntityFlavor);
+				tileUnlockSprite.addChild(closeText);
+
+				tileUnlockPopup = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
+												(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
+												closeTileUnlock, tileUnlockSprite);
+			}
+
+			addChild(tileUnlockPopup);
+		}
+
+		public function closeTileUnlock():void {
+			removeChild(tileUnlockPopup);
+			tileUnlockPopup = null;
 		}
 	}
 }

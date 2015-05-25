@@ -36,7 +36,10 @@ package entities {
         }
 
         public function rewardTile(type:String):void {
-
+			var rewardDict:Dictionary = new Dictionary();
+			rewardDict["entity"] = this;
+			rewardDict["type"] = type;
+			dispatchEvent(new GameEvent(GameEvent.UNLOCK_TILE, -1, -1, rewardDict));
         }
 	}
 }
