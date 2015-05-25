@@ -361,6 +361,7 @@ package {
 			char.reset();
 
 			for each (var enemy:Enemy in activeEnemies) {
+				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				enemy.reset();
 				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
 			}
