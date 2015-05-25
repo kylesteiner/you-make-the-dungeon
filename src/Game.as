@@ -1,7 +1,6 @@
 package {
-	import entities.Enemy;
-	import entities.Entity;
 	import flash.media.*;
+	import flash.net.SharedObject;
 	import flash.ui.Mouse;
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
@@ -101,8 +100,11 @@ package {
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
 
+		private var saveGame:SharedObject;
+
 		public function Game() {
 			Mouse.hide();
+			saveGame = SharedObject.getLocal("saveGame");
 
 			var gid:uint = 115;
 			var gname:String = "cgs_gc_YouMakeTheDungeon";
@@ -156,7 +158,12 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-			gold = Util.STARTING_GOLD;
+
+			if (saveGame.size == 0) {
+				gold = Util.STARTING_GOLD;
+			} else {
+				gold = saveGame.data["gold"];
+			}
 
 			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
 
@@ -498,11 +505,9 @@ package {
 		}
 
 		public function resetFloor():void {
-			//logger.logAction(8, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-			//			     "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
-			//reset counters
+			saveGame.clear();
+			saveGame.data["gold"] = gold;
 			currentFloor.resetFloor();
-			//charHud.char = currentFloor.char
 			mixer.play(Util.TILE_REMOVE);
 		}
 
@@ -1037,7 +1042,7 @@ package {
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Util.mixer.play(Util.LEVEL_UP);
-				
+
 				tileUnlockTimer = 0;
 
 				var reward:Reward = event.gameData["entity"];
@@ -1112,8 +1117,8 @@ package {
 				tileUnlockPopup = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
 												(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
 												closeTileUnlock, tileUnlockSprite);
-				
-				
+
+
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
 					Util.logger.logAction(19, {
@@ -1133,7 +1138,7 @@ package {
 						"type":"staminaHeal",
 						"staminaRestored":tempS.stamina
 					});
-				} else { 
+				} else {
 					var tempH:Healing = newEntity as Healing;
 					Util.logger.logAction(19, {
 						"type":"healing",
