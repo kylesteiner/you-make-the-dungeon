@@ -104,7 +104,7 @@ package {
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
 		}
-		
+
 		private function startGame(event:Event):void {
 			Mouse.hide();
 
@@ -1041,7 +1041,7 @@ package {
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Util.mixer.play(Util.LEVEL_UP);
-				
+
 				tileUnlockTimer = 0;
 
 				var reward:Reward = event.gameData["entity"];
@@ -1069,8 +1069,8 @@ package {
 				buildHud.entityFactory.unlockTile(event.gameData["type"]);
 				buildHud.updateHUD();
 
-				var unlockedTile:Array = buildHud.entityFactory.masterSet[event.gameData["type"]];
-				var newEntity:Entity = unlockedTile[0]();
+				var unlockedTile:Dictionary = buildHud.entityFactory.masterSet[event.gameData["type"]];
+				var newEntity:Entity = unlockedTile["constructor"]();
 				var newEntitySprite:Sprite = new Sprite();
 				newEntitySprite.addChild(newEntity.img);
 				newEntitySprite.addChild(newEntity.generateOverlay());
@@ -1116,8 +1116,8 @@ package {
 				tileUnlockPopup = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
 												(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
 												closeTileUnlock, tileUnlockSprite);
-				
-				
+
+
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
 					Util.logger.logAction(19, {
@@ -1137,7 +1137,7 @@ package {
 						"type":"staminaHeal",
 						"staminaRestored":tempS.stamina
 					});
-				} else { 
+				} else {
 					var tempH:Healing = newEntity as Healing;
 					Util.logger.logAction(19, {
 						"type":"healing",

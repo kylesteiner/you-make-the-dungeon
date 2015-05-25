@@ -42,7 +42,10 @@ package {
 		// true if entity should be shown, false if tile is shown
 		//public var isEntityDisplay:Boolean;
 		public var hudState:String;
-		// maps strings to arrays
+		// maps strings to dictionaries
+		// "constructor", "texture", "cost", and "category" are the keys
+
+		// deprecated:
 		// array[0] is the constructor for the entity
 		// array[1] is the texture
 		// array[2] is the cost
@@ -77,12 +80,7 @@ package {
 		private var southToggle:Clickable;
 		private var eastToggle:Clickable;
 		private var westToggle:Clickable;
-		private var toggleButtons:Array;
 		private var toggleClickables:Array;
-		private var nButton:Quad;
-		private var sButton:Quad;
-		private var wButton:Quad;
-		private var eButton:Quad;
 		private var tileSelectButton:Clickable;
 		private var tileGoldCost:Sprite;
 
@@ -162,15 +160,13 @@ package {
 		}
 
 		public function buildEntityList():Array {
-			var entityData:Array;
+			var entityData:Dictionary;
 
 			var arrayLen:int = 3;
 			var key:String;
 			for (key in entityMap) {
 				entityData = entityMap[key];
-				if(entityData != null && entityData.length >= 4) {
-					arrayLen = entityData[3] > arrayLen ? entityData[3] : arrayLen;
-				}
+				arrayLen = entityData["category"] + 1 > arrayLen ? entityData["category"] + 1 : arrayLen;
 			}
 
 			var tempEL:Array = new Array();
@@ -181,9 +177,7 @@ package {
 
 			for (key in entityMap) {
 				entityData = entityMap[key];
-				if(entityData != null && entityData.length >= 4) {
-					tempEL[entityData[3]].push(key);
-				}
+				tempEL[entityData["category"]].push(key);
 			}
 
 			return tempEL;
@@ -222,22 +216,9 @@ package {
 			tileSelectButton = new Clickable(tileQuad.x + (tileQuad.width - tileSelectQuad.width) / 2,
 											 tileQuad.y + tileQuad.height - SELECT_BUTTON_HEIGHT - 2*QUAD_BORDER_PIXELS,
 											 selectTile, tileSelectQuad);
-			/*toggleButtons = new Array();
-			nButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
-			sButton = new Quad(Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.height, tileCornerSize, COLOR_FALSE);
-			eButton = new Quad(tileCornerSize, Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.width, COLOR_FALSE);
-			wButton = new Quad(tileCornerSize, Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - 2*tileNWCorner.width, COLOR_FALSE);
-			toggleButtons.push(nButton);
-			toggleButtons.push(sButton);
-			toggleButtons.push(eButton);
-			toggleButtons.push(wButton);*/
-			/*northToggle = new Clickable(tileNWCorner.x + tileNWCorner.width, tileNWCorner.y, toggleNorth, nButton);
-			southToggle = new Clickable(tileSWCorner.x + tileSWCorner.width, tileSWCorner.y, toggleSouth, sButton);
-			eastToggle = new Clickable(tileNECorner.x, tileNECorner.y + tileNWCorner.height, toggleEast, eButton);
-			westToggle = new Clickable(tileNWCorner.x, tileNWCorner.y + tileNWCorner.height, toggleWest, wButton);*/
+
 			toggleClickables = new Array();
 			var sample:Image = new Image(textures[Util.TILE_UP_ACTIVE]);
-			//northToggle = new Clickable(tileNWCorner.x + tileNWCorner.width, tileNWCorner.y, toggleNorth, null, textures[Util.TILE_UP_INACTIVE]);
 			northToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileNWCorner.y - 8, toggleNorth, null, textures[Util.TILE_UP_INACTIVE]);
 			southToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileSWCorner.y, toggleSouth, null, textures[Util.TILE_DOWN_INACTIVE]);
 			eastToggle = new Clickable(tileNECorner.x, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleEast, null, textures[Util.TILE_RIGHT_INACTIVE]);
@@ -260,11 +241,11 @@ package {
 
 			var menuButtons:Array = new Array(Util.ENEMY_MENU, Util.HEALING_MENU, Util.TRAP_MENU);
 
-			entityClickables = new Array();
-			entitySelectButtons = new Array();
-			entityGoldCosts = new Array();
-			entityHighlights = new Array();
-			entityColoredRegions = new Array();
+			entityClickables = new Array(entityList.length);
+			entitySelectButtons = new Array(entityList.length);
+			entityGoldCosts = new Array(entityList.length);
+			entityHighlights = new Array(entityList.length);
+			entityColoredRegions = new Array(entityList.length);
 			var i:int; var entityX:int; var entityY:int;
 			var entitySprite:Sprite;
 			var entityPopupButton:Clickable;
@@ -288,12 +269,12 @@ package {
 									Color.WHITE);
 				eQ.x = entityX + (1.5) * HUD_MARGIN;
 				eQ.y = entityY + 2 * HUD_MARGIN;
-				entityColoredRegions.push(eQ);
+				entityColoredRegions[i] = eQ;
 
 				var oQ:Quad = new Quad(eQ.width + 2, eQ.height + 2, Color.BLACK);
 				oQ.x = eQ.x - 1;
 				oQ.y = eQ.y - 1;
-				entityHighlights.push(oQ);
+				entityHighlights[i] = oQ;
 
 				selectEntityTexture = textures[menuButtons[i]];
 				entityImage = new Image(selectEntityTexture);
@@ -301,28 +282,28 @@ package {
 													entityY + Util.PIXELS_PER_TILE + SELECT_BUTTON_MARGIN - 2,
 													createPopupClickable, entityImage);
 				selectEntityButton.addParameter("index", i);
-				entitySelectButtons.push(selectEntityButton);
+				entitySelectButtons[i] = selectEntityButton;
 
 				if (entityList[i].length == 0) {
 					continue;
 				}
 
 				entityName = entityList[i][entityDisplayList[i]];
-				entityConstructor = entityMap[entityList[i][entityDisplayList[i]]][0];
-				entityTexture = entityMap[entityList[i][entityDisplayList[i]]][1];
-				entityCost = entityMap[entityList[i][entityDisplayList[i]]][2];
-				entityCategory = entityMap[entityList[i][entityDisplayList[i]]][3];
+				entityConstructor = entityMap[entityList[i][entityDisplayList[i]]]["constructor"];
+				entityTexture = entityMap[entityList[i][entityDisplayList[i]]]["texture"];
+				entityCost = entityMap[entityList[i][entityDisplayList[i]]]["cost"];
+				entityCategory = entityMap[entityList[i][entityDisplayList[i]]]["category"];
 
 				entitySprite = entityConstructor().generateOverlay();
 				entityPopupButton = new Clickable(entityX, entityY, selectEntityClickable, entitySprite, entityTexture);
 				entityPopupButton.addParameter("index", i);
-				entityClickables.push(entityPopupButton);
+				entityClickables[i] = entityPopupButton;
 
 				//var entityGoldCost:Sprite = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
 				var entityGoldCost:Sprite = createGoldCost(entityCost);
 				entityGoldCost.x = entityPopupButton.x + entityPopupButton.width - (3*entityGoldCost.width / 4);
 				entityGoldCost.y = -4;
-				entityGoldCosts.push(entityGoldCost);
+				entityGoldCosts[i] = entityGoldCost;
 			}
 
 			deleteQuad = new Quad(DELETE_BUTTON_SIZE, DELETE_BUTTON_SIZE, 0x000000);
@@ -380,9 +361,13 @@ package {
 
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
+				if (!entityClickables[i] || !entityList[i] || !entityDisplayList[i]) {
+					continue;
+				}
+
 				var selectEB:Clickable = entityClickables[i];
-				var selectOverlay:Sprite = entityMap[entityList[i][entityDisplayList[i]]][0]().generateOverlay();
-				selectEB.updateImage(selectOverlay, entityMap[entityList[i][entityDisplayList[i]]][1]);
+				var selectOverlay:Sprite = entityMap[entityList[i][entityDisplayList[i]]]["constructor"]().generateOverlay();
+				selectEB.updateImage(selectOverlay, entityMap[entityList[i][entityDisplayList[i]]]["texture"]);
 			}
 		}
 
@@ -423,15 +408,15 @@ package {
 				var entityX:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityColumn + 1) + entityWidth * entityColumn;
 				var entityY:int = QUAD_BORDER_PIXELS + HUD_MARGIN * (entityRow + 1) + entityHeight * entityRow;
 
-				var entitySprite:Sprite = entityMap[key][0]().generateOverlay();
-				var entityTexture:Texture = entityMap[key][1];
+				var entitySprite:Sprite = entityMap[key]["constructor"]().generateOverlay();
+				var entityTexture:Texture = entityMap[key]["texture"];
 				var renderEntity:Clickable = new Clickable(entityX, entityY, pageEntityClickable, entitySprite, entityTexture);
 
 				renderEntity.addParameter("index", index);
 				renderEntity.addParameter("change", i);
 				popupEntities.push(renderEntity);
 
-				var coinCost:Sprite = createGoldCost(entityMap[key][2]);
+				var coinCost:Sprite = createGoldCost(entityMap[key]["cost"]);
 				coinCost.x = entitySprite.x + entitySprite.width + (coinCost.width / 4);
 				//coinCost.y = -coinCost.height / 4;
 				entitySprite.addChild(coinCost);
@@ -486,7 +471,7 @@ package {
 			if (hudState == STATE_ENTITY) {
 				var catIndex:int = entityDisplayList[currentEntityIndex];
 				var entityKey:String = entityList[currentEntityIndex][catIndex];
-				return entityMap[entityKey][2];
+				return entityMap[entityKey]["cost"];
 			} else if(hudState == STATE_TILE) {
 				return getTileCost();
 			} else {
@@ -520,7 +505,7 @@ package {
 		public function buildEntityFromImage(currentTile:Tile):Entity {
 			var catIndex:int = entityDisplayList[currentEntityIndex];
 			var entityKey:String = entityList[currentEntityIndex][catIndex];
-			var entity:Entity = entityMap[entityKey][0](currentTile.grid_x, currentTile.grid_y);
+			var entity:Entity = entityMap[entityKey]["constructor"](currentTile.grid_x, currentTile.grid_y);
 			entity.cost = getCost();
 			entity.deletable = true;
 			return entity;
@@ -571,10 +556,6 @@ package {
 
 		public function toggleDirection(direction:int):void {
 			directions[direction] = !directions[direction];
-			//var imageString:String = directions[direction] ? Util.TILE_HUD_ACTIVE : Util.TILE_HUD_INACTIVE;
-			//toggleClickables[direction].updateImage(new Image(textures[imageString]));
-			//toggleButtons[direction].color = directions[direction] ? COLOR_TRUE : COLOR_FALSE;
-			//toggleButtons[direction].
 			selectTile(true);
 
 			hud.removeChild(tileGoldCost);
@@ -586,8 +567,6 @@ package {
 			toggleDirection(Util.NORTH);
 			var imageString:String = directions[Util.NORTH] ? Util.TILE_UP_ACTIVE : Util.TILE_UP_INACTIVE;
 			toggleClickables[Util.NORTH].updateImage(new Image(textures[imageString]));
-			//var imageString
-			//northToggle.updateImage(new Image())
 		}
 
 		public function toggleSouth():void {
@@ -634,7 +613,7 @@ package {
 				currentImage = null;
 				currentEntityIndex = -1;
 				hudState = STATE_NONE;
-			} else {
+			} else if (entityClickables[values["index"]] != null){
 				selectEntity(values["index"]);
 				currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
 				currentImage = new Image(currentEntity.texture);
@@ -648,7 +627,7 @@ package {
 		}
 
 		public function pageEntity(index:int, change:int):void {
-			if(entityDisplayList.length <= index || entityList[index].length <= change) {
+			if (entityDisplayList.length <= index || entityList[index].length <= change) {
 				return;
 			}
 
@@ -696,8 +675,12 @@ package {
 			var i:int;
 			var newCost:Sprite;
 			for(i = 0; i < entityGoldCosts.length; i++) {
+				if(!entityGoldCosts[i]) {
+					return;
+				}
+
 				removeChild(entityGoldCosts[i]);
-				newCost = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]][2]);
+				newCost = createGoldCost(entityMap[entityList[i][entityDisplayList[i]]]["cost"]);
 				newCost.x = entityGoldCosts[i].x;
 				newCost.y = entityGoldCosts[i].y;
 				entityGoldCosts[i] = newCost;
