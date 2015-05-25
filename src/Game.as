@@ -100,6 +100,10 @@ package {
 		private var cameraAccel:Number;
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
+		
+		// for action 21, logging hover info help
+		private var helping:Boolean;
+		private var timeHovered:Number;
 
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
@@ -131,6 +135,7 @@ package {
 
 			// for keeping track of how many tiles are placed before hitting reset
 			numberOfTilesPlaced = 0;
+			timeHovered = 0;
 
 			textures = Embed.setupTextures();
 			floors = Embed.setupFloors();
@@ -628,6 +633,10 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
+			
+			if (helping) {
+				timeHovered += event.passedTime;
+			}
 
 			cameraAccel += event.passedTime;
 			if(cameraAccel > MAX_CAMERA_ACCEL) {
@@ -755,8 +764,19 @@ package {
 				helpImage = new Image(textures[gameState == STATE_BUILD ? Util.BUILD_HELP : Util.RUN_HELP]);
 				helpImageSprite.addChild(helpImage);
 				addChild(helpImageSprite);
+				helping = true;
 			} else {
 				removeChild(helpImageSprite);
+				if (helping && gameState == STATE_BUILD || gameState == STATE_RUN) {
+					var state:String = gameState == STATE_BUILD ? "buildState" : "runState";
+					logger.logAction(21, {
+						"phaseHovered":state,
+						"timeHovered":timeHovered
+					});
+					timeHovered = 0;
+					helping = false;
+
+				}
 			}
 
 			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {
