@@ -141,6 +141,8 @@ package {
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
+			// Load gold from save before initializeFloorWorld because
+			// the gold hud is constructed in there and requires gold.
 			if (saveGame.size == 0) {
 				gold = Util.STARTING_GOLD;
 			} else {
@@ -149,6 +151,16 @@ package {
 
 			initializeFloorWorld();
 			initializeMenuWorld();
+
+			// Load the unlocked entities after initializeFloorWorld because
+			// the build hud needs to be initialized first.
+			if (saveGame.size != 0 && saveGame.data["unlocks"]) {
+				for (var i:int = 0; i < saveGame.data["unlocks"].length; i++) {
+					trace("retrieving unlock: " + saveGame.data["unlocks"][i]);
+					buildHud.entityFactory.unlockTile(saveGame.data["unlocks"][i]);
+				}
+				buildHud.updateHUD();
+			}
 
 			cursorReticle = new Image(textures[Util.CURSOR_RETICLE]);
 			cursorReticle.touchable = false;
@@ -587,6 +599,10 @@ package {
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
+			saveGame.data["unlocks"] = new Array();
+			for (var unlock:String in buildHud.entityFactory.entitySet) {
+				saveGame.data["unlocks"].push(unlock);
+			}
 			saveGame.flush();
 
 			addChild(runButton);
