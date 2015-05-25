@@ -109,6 +109,9 @@ package {
 
 		private var saveGame:SharedObject;
 
+		private var cid:int;
+		private var versionID:int;
+
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
 		}
@@ -124,7 +127,8 @@ package {
 			// this is the current version, we'll treat 0 as the debugging
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
-			var cid:int = 14;
+			versionID = 0;
+			cid = 14;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null, false);
 			Util.logger = logger;
@@ -471,7 +475,14 @@ package {
 			var logo:Clickable = new Clickable(0, 0, navToY8, new Image(textures[Util.Y8_LOGO]));
 			logo.x = Util.STAGE_WIDTH - logo.width - 4;
 			logo.y = 4;
-			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton, logo)));
+
+
+			var versionString:String = "v " + versionID + "." + cid;
+			var version:TextField = new TextField(48, 16, versionString, Util.DEFAULT_FONT, 16);
+			version.x = 4;
+			version.y = Util.STAGE_HEIGHT - version.height - 4;
+
+			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton, logo, version)));
 		}
 
 		public function navToY8():void {
