@@ -235,6 +235,8 @@ package {
 				}
 			}
 
+			removeFoggedLocationsInPath();
+
 			// Parse the entities and place them on the entityGrid.
 			var floorEntities:Array = floorData["entities"];
 			for (i = 0; i < floorEntities.length; i++) {
