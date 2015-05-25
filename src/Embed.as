@@ -76,6 +76,10 @@ package {
 		[Embed(source='assets/icons/medium/enemies_menu.png')] public static const enemy_menu:Class;
 		[Embed(source='assets/icons/medium/healing_menu.png')] public static const healing_menu:Class;
 		[Embed(source='assets/icons/medium/traps_menu.png')] public static const trap_menu:Class;
+		[Embed(source='assets/icons/medium/attack.png')] public static const icon_atk_med:Class;
+		[Embed(source='assets/icons/medium/health.png')] public static const icon_health_med:Class;
+		[Embed(source='assets/icons/medium/los.png')] public static const icon_los_med:Class;
+		[Embed(source='assets/icons/medium/stamina.png')] public static const icon_stamina_med:Class;
 
 		[Embed(source='assets/icons/slow_combat_lg.png')] public static const icon_fast_combat:Class;
 		[Embed(source='assets/icons/base_combat_lg.png')] public static const icon_slow_combat:Class;
@@ -223,9 +227,13 @@ package {
 			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
 			textures[Util.ICON_END] = Texture.fromBitmap(new icon_end(), true, false, 1);
 			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
+			textures[Util.ICON_ATK_MED] = Texture.fromBitmap(new icon_atk_med(), true, false, 1);
 			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
+			textures[Util.ICON_HEALTH_MED] = Texture.fromBitmap(new icon_health_med(), true, false, 1);
 			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
+			textures[Util.ICON_STAMINA_MED] = Texture.fromBitmap(new icon_stamina_med(), true, false, 1);
 			textures[Util.ICON_LOS] = Texture.fromBitmap(new icon_los(), true, false, 1);
+			textures[Util.ICON_LOS_MED] = Texture.fromBitmap(new icon_los_med(), true, false, 1);
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);

@@ -94,10 +94,10 @@ package {
 
 			shopItems = new Array();
 			itemCosts = new Array();
-			shopItems.push(displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), getHpCost(), incHP));
-			shopItems.push(displayShopItem(2, new Image(textures[Util.ICON_ATK]), getAttackCost(), incAtk));
-			shopItems.push(displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), getStaminaCost(), incStamina));
-			shopItems.push(displayShopItem(4, new Image(textures[Util.ICON_LOS]), getLOSCost(), incLos));
+			shopItems.push(displayShopItem(0, new Image(textures[Util.ICON_HEALTH_MED]), "Health", getHpCost(), incHP));
+			shopItems.push(displayShopItem(1, new Image(textures[Util.ICON_ATK_MED]), "Attack", getAttackCost(), incAtk));
+			shopItems.push(displayShopItem(2, new Image(textures[Util.ICON_STAMINA_MED]), "Stamina", getStaminaCost(), incStamina));
+			shopItems.push(displayShopItem(3, new Image(textures[Util.ICON_LOS_MED]), "Line of Sight", getLOSCost(), incLos));
 
 			for(i = 0; i < shopItems.length; i++) {
 				addChild(shopItems[i]);
@@ -136,20 +136,27 @@ package {
 			return Util.BASE_LOS_UPGRADE_COST * (upgrades + 1);
 		}
 
-		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):Clickable {
+		private function displayShopItem(position:int, image:Image, name:String, cost:int, callback:Function):Clickable {
 			var item:Clickable = new Clickable(300, 300, callback, null, textures[Util.SHOP_ITEM]);
 			item.addParameter("cost", cost);
-			item.x = x + 110 * position;
-			item.y = y + 100 + 100 * (position / 3);
+			item.x = 75 + 130 * position;
+			item.y = 125;
 
 			image.x = (item.width - image.width) / 2;
-			image.y = 20;
+			image.y = 75;
 			item.addChild(image);
 
 			var coin:Image = new Image(textures[Util.ICON_GOLD]);
 			coin.y = item.height - coin.height - 2;
 			//coin.touchable = false;
 			item.addChild(coin);
+
+			var upgrade:TextField = new TextField(item.width, 32, "Upgrade", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
+			item.addChild(upgrade);
+
+			var upgradeName:TextField = new TextField(item.width, 32, name, Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
+			upgradeName.y = 32;
+			item.addChild(upgradeName);
 
 			var itemCost:TextField = new TextField(item.width, coin.height, String(cost), Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
 			itemCost.y = coin.y;
