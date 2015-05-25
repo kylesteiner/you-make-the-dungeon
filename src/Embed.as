@@ -30,6 +30,7 @@ package {
 		//[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
 		[Embed(source='assets/entities/large/chest.png')] public static var entity_reward:Class;
+		[Embed(source='assets/entities/large/stamina_heal.png')] public static var entity_stamina_heal:Class;
 		//[Embed(source='assets/entities/large/hero.png')] public static var entity_hero:Class;
 		[Embed(source='assets/entities/large/new_key.png')] public static var entity_key:Class;
 		[Embed(source='assets/entities/large/enemy_fighter.png')] public static var entity_fighter:Class;
@@ -177,6 +178,7 @@ package {
 			//textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			//textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
+			textures[Util.STAMINA_HEAL] = Texture.fromBitmap(new entity_stamina_heal(), true, false, scale);
 			textures[Util.REWARD] = Texture.fromBitmap(new entity_reward(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
 			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);

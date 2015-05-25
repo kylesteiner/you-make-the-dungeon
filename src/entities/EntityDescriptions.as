@@ -14,6 +14,9 @@ package entities {
         public static const MODERATE_HEAL_NAME:String = "Medium Cake";
         public static const MODERATE_HEAL_FLAVOR:String = "Contains just enough fruit that you don't feel bad eating it.";
 
+        public static const LIGHT_STAMINA_HEAL_NAME:String = "Small Stamina Boost";
+        public static const LIGHT_STAMINA_HEAL_FLAVOR:String = "For a little extra pep in your step.";
+
         public static function setupDescriptions():Dictionary {
             var tDescriptions:Dictionary = new Dictionary();
 
@@ -36,6 +39,11 @@ package entities {
             moderateHealArray.push(MODERATE_HEAL_NAME);
             moderateHealArray.push(MODERATE_HEAL_FLAVOR);
             tDescriptions[EntityFactory.MODERATE_HEALING] = moderateHealArray;
+
+            var lightStaminaHealArray:Array = new Array();
+            lightStaminaHealArray.push(LIGHT_STAMINA_HEAL_NAME);
+            lightStaminaHealArray.push(LIGHT_STAMINA_HEAL_FLAVOR);
+            tDescriptions[EntityFactory.LIGHT_STAMINA_HEAL] = lightStaminaHealArray;
 
             return tDescriptions;
         }

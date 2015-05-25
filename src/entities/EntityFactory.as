@@ -9,6 +9,7 @@ package entities {
 
         public static const LIGHT_HEALING:String = "entity_light_healing";
         public static const MODERATE_HEALING:String = "entity_moderate_healing";
+        public static const LIGHT_STAMINA_HEAL:String = "entity_light_stamina_heal";
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
 
@@ -22,6 +23,8 @@ package entities {
             this.textures = textures;
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
+            unlockTile(FIGHTER);
+            //unlockTile(MODERATE_HEALING);
             this.entityText = EntityDescriptions.setupDescriptions();
         }
 
@@ -94,6 +97,13 @@ package entities {
             moderateHealing.push(HEALING_CATEGORY);
             healingDict[MODERATE_HEALING] = moderateHealing;
 
+            var lightStaminaHeal:Array = new Array();
+            lightStaminaHeal.push(constructLightStaminaHeal);
+            lightStaminaHeal.push(textures[Util.STAMINA_HEAL]);
+            lightStaminaHeal.push(Util.LIGHT_STAMINA_HEAL_COST);
+            lightStaminaHeal.push(HEALING_CATEGORY);
+            healingDict[LIGHT_STAMINA_HEAL] = lightStaminaHeal;
+
             return healingDict;
         }
 
@@ -113,6 +123,12 @@ package entities {
             var healing:int = 7;
 
             return new Healing(x, y, textures[Util.HEALING], healing);
+        }
+
+        public function constructLightStaminaHeal(x:int=0, y:int=0):StaminaHeal {
+            var stamina:int = 3;
+
+            return new StaminaHeal(x, y, textures[Util.STAMINA_HEAL], stamina);
         }
 
         public function constructFighter(x:int=0, y:int=0):Enemy {

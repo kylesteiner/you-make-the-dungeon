@@ -174,6 +174,7 @@ package {
 		public static const CHAR_COMBAT_ATTACK:String = "character_combat_attack";
 		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
 		public static const HEALING:String = "health";
+		public static const STAMINA_HEAL:String = "stamina_heal";
 		public static const REWARD:String = "reward";
 		public static const KEY:String = "key";
 		public static const ENEMY_COMBAT_IDLE:String = "enemy_combat_idle";
@@ -217,6 +218,7 @@ package {
 		public static const ENEMY_MAGE_COST:int = 60;
 		public static const LIGHT_HEALING_COST:int = 30;
 		public static const MODERATE_HEALING_COST:int = 65;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 40;
 
 		public static var logger:Logger;
 		public static var speed:int;
