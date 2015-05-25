@@ -159,14 +159,14 @@ package {
 		[Embed(source='assets/sfx/spend_gold.mp3')] public static const sfxGoldSpend:Class;
 		[Embed(source='assets/sfx/chest_open_lowhz.mp3')] public static const sfxReward:Class;
 
-		//[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
+		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
 		[Embed(source='assets/bgm/glow-in-the-dark.mp3')] public static const bgmGlowInTheDark:Class;
-		//[Embed(source='assets/bgm/lovers-walk.mp3')] public static const bgmLoversWalk:Class;
 		[Embed(source='assets/bgm/oriental-drift.mp3')] public static const bgmOrientalDrift:Class;
-
-		// Currently unused
-		//[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
+		[Embed(source='assets/bgm/snowfall.mp3')] public static const bgmSnowfall:Class;
+		[Embed(source='assets/bgm/seven_nation.mp3')] public static const bgmSevenNation:Class;
+		[Embed(source='assets/bgm/pearl_cavern.mp3')] public static const bgmPearlCavern:Class;
+		[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
 
 		public static function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
@@ -366,6 +366,11 @@ package {
 			tBgm.push(new bgmGentleThoughts());
 			tBgm.push(new bgmGlowInTheDark());
 			tBgm.push(new bgmOrientalDrift());
+			tBgm.push(new bgmDivingTurtle());
+			tBgm.push(new bgmWarmInterlude());
+			tBgm.push(new bgmSnowfall());
+			tBgm.push(new bgmSevenNation());
+			tBgm.push(new bgmPearlCavern());
 
 			return tBgm;
 		}
