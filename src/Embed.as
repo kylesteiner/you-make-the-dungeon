@@ -15,6 +15,8 @@ package {
 		[Embed(source='assets/backgrounds/shop_bg.png')] public static const shop_background:Class;
 		[Embed(source='assets/backgrounds/shop_item.png')] public static const shop_item:Class;
 
+		[Embed(source='assets/icons/y8_logo.png')] public static const y8_logo:Class;
+
 		[Embed(source='assets/backgrounds/run_phase.png')] public static const run_phase_banner:Class;
 		[Embed(source='assets/backgrounds/build_phase.png')] public static const build_phase_banner:Class;
 
@@ -276,6 +278,8 @@ package {
 			textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
 			textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
 			textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
+
+			textures[Util.Y8_LOGO] = Texture.fromEmbeddedAsset(y8_logo);
 			return textures;
 		}
 

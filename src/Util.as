@@ -206,6 +206,8 @@ package {
 		public static const GOLD_SPEND:String = "gold_spend";
 		public static const REWARD_COLLECT:String = "reward_collect";
 
+		public static const Y8_LOGO:String = "y8_logo";
+
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
 		public static const DICT_TRANSITION_INDEX:int = 2;

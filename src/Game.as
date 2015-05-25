@@ -5,6 +5,9 @@ package {
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.navigateToURL;
 
 	import starling.display.Image;
 	import starling.display.MovieClip;
@@ -464,7 +467,18 @@ package {
 					320,
 					createCredits,
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton)));
+
+			var logo:Clickable = new Clickable(0, 0, navToY8, new Image(textures[Util.Y8_LOGO]));
+			logo.x = Util.STAGE_WIDTH - logo.width - 4;
+			logo.y = 4;
+			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton, logo)));
+		}
+
+		public function navToY8():void {
+			var request:URLRequest = new URLRequest("http://www.y8.com");
+			request.method = URLRequestMethod.GET;
+			var target:String = "_blank";
+			navigateToURL(request, target);
 		}
 
 		public function createCredits():void {
