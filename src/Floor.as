@@ -168,9 +168,6 @@ package {
 				}
 			}
 
-			trace(floorData["character_start"]["x"]);
-			trace(floorData["character_start"]["y"]);
-
 			char = new Character(floorData["character_start"]["x"],
 								 floorData["character_start"]["y"],
 								 initialHp,

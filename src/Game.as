@@ -141,6 +141,12 @@ package {
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
+			if (saveGame.size == 0) {
+				gold = Util.STARTING_GOLD;
+			} else {
+				gold = saveGame.data["gold"];
+			}
+
 			initializeFloorWorld();
 			initializeMenuWorld();
 
@@ -158,12 +164,6 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-
-			if (saveGame.size == 0) {
-				gold = Util.STARTING_GOLD;
-			} else {
-				gold = saveGame.data["gold"];
-			}
 
 			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
 
@@ -223,7 +223,7 @@ package {
 			helpButton.x = runSpeedButton.x - helpButton.width - Util.UI_PADDING;
 			helpButton.y = runSpeedButton.y;
 
-			goldHud = new GoldHUD(Util.STARTING_GOLD, textures, mixer);
+			goldHud = new GoldHUD(gold, textures, mixer);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			goldHud.y = Util.UI_PADDING;
 
@@ -504,13 +504,6 @@ package {
 			sfxMuteButton.updateImage(null, textures[chosen]);
 		}
 
-		public function resetFloor():void {
-			saveGame.clear();
-			saveGame.data["gold"] = gold;
-			currentFloor.resetFloor();
-			mixer.play(Util.TILE_REMOVE);
-		}
-
 		public function runFloor():void {
 			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
 				return;
@@ -591,6 +584,10 @@ package {
 		public function returnToBuild():void {
 			removeChild(runSummary);
 			runSummary.reset();
+
+			saveGame.clear();
+			saveGame.data["gold"] = gold;
+			saveGame.flush();
 
 			addChild(runButton);
 
@@ -949,8 +946,9 @@ package {
 				});
 			}
 
-			runHud.goldCollected += addAmount; // add gold amount
 			gold += addAmount;
+			runSummary.goldCollected += addAmount;
+			runHud.goldCollected += addAmount;
 			goldHud.update(gold);
 		}
 
