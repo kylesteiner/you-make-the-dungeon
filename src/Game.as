@@ -109,9 +109,10 @@ package {
 		public static const SCORE_GOLD:int = 1;
 		public static const SCORE_DEATH:int = -100;
 		public static const SCORE_FINISH:int = 1000;
-		public static const SCORE_RUNS:int = -1;
+		public static const SCORE_RUNS:int = 2; // subtract 2^(runs / 20)
 		public static const SCORE_ENEMY:int = 10;
 		public static const SCORE_REWARD:int = 20;
+		public static const SCORE_ROOM_COMPLETE:int = 5;
 
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
@@ -423,7 +424,7 @@ package {
 
 		public function transitionToStart():void {
 			mindJoltScore += SCORE_FINISH;
-			mindJoltScore += currentFloor.totalRuns * SCORE_RUNS;
+			mindJoltScore -= Math.pow(SCORE_RUNS, (currentFloor.totalRuns / 20));
 			MindJoltAPI.service.submitScore(mindJoltScore, null, finishTransition);
 		}
 
@@ -570,6 +571,8 @@ package {
 			if(!event.gameData["completed"]) {
 				return;
 			}
+
+			mindJoltScore += SCORE_ROOM_COMPLETE;
 		}
 
 		public function endRun():void {
@@ -593,7 +596,7 @@ package {
 			});
 
 			mindJoltScore += runSummary.goldCollected * SCORE_GOLD;
-			mindJoltScore += rumSummary.enemiesDefeated * SCORE_ENEMY;
+			mindJoltScore += runSummary.enemiesDefeated * SCORE_ENEMY;
 
 			removeChild(endButton);
 			removeChild(runHud);
