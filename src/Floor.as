@@ -221,7 +221,11 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
+					var stationary:Boolean;
+					if (entity["stationary"]) {
+						stationary = entity["stationary"];
+					}
+					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					addChild(enemy);
 				} else if (entity["type"] == "healing") {
@@ -367,6 +371,7 @@ package {
 			char.reset();
 
 			for each (var enemy:Enemy in activeEnemies) {
+				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				enemy.reset();
 				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
 			}
