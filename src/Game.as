@@ -795,7 +795,7 @@ package {
 				helping = true;
 			} else {
 				removeChild(helpImageSprite);
-				if (helping && gameState == STATE_BUILD || gameState == STATE_RUN) {
+				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
 					var state:String = gameState == STATE_BUILD ? "buildState" : "runState";
 					logger.logAction(21, {
 						"phaseHovered":state,
