@@ -380,7 +380,9 @@ package {
 			addChild(helpButton);
 
 			addChild(buildHud);
-			addChild(tutorialHud);
+			if (gameState == STATE_TUTORIAL) {
+				addChild(tutorialHud);
+			}
 
 			mixer.play(Util.FLOOR_BEGIN);
 		}
