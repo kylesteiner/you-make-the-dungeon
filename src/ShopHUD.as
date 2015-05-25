@@ -17,6 +17,7 @@ package {
 		private var char:Character;
 		private var textures:Dictionary;
 
+		private var bg:Image;
 		private var goldHud:GoldHUD;
 		private var hpVal:TextField;
 		private var atkVal:TextField;
@@ -35,14 +36,15 @@ package {
 			this.goldHud = goldHud;
 			textures = textureDict;
 
-			var bg:Image = new Image(textures[Util.SHOP_BACKGROUND]);
-			bg.x = (Util.STAGE_WIDTH - bg.width) / 2;
-			bg.y = (Util.STAGE_HEIGHT - bg.height) / 2;
+			bg = new Image(textures[Util.SHOP_BACKGROUND]);
 			addChild(bg);
 
-			var closeShopButton:Clickable = new Clickable(0, 0, closeFunction, new TextField(250, 40, "CLOSE SHOP", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			closeShopButton.x = (Util.STAGE_WIDTH - closeShopButton.width) / 2;
-			closeShopButton.y = Util.STAGE_HEIGHT - (Util.STAGE_HEIGHT - height) / 2 - closeShopButton.height - SHOP_OUTER_PADDING;
+			x = (Util.STAGE_WIDTH - bg.width) / 2;
+			y = (Util.STAGE_HEIGHT - bg.height) / 2;
+
+			var closeShopButton:Clickable = new Clickable(0, 0, closeFunction, new TextField(bg.width, 40, "CLOSE SHOP", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
+			closeShopButton.x = 0;
+			closeShopButton.y = height - closeShopButton.height - SHOP_OUTER_PADDING;
 			addChild(closeShopButton);
 
 			shopItems = new Array();
@@ -56,22 +58,22 @@ package {
 
 		private function displayCharStats():void {
 			hpVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			hpVal.x = Util.STAGE_WIDTH / 5;
+			hpVal.x = width / 5;
 			var hpImg:Image = new Image(textures[Util.ICON_HEALTH]);
 			setupStat(hpVal, hpImg);
 
 			atkVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			atkVal.x = Util.STAGE_WIDTH / 5 * 2;
+			atkVal.x = width / 5 * 2;
 			var atkImg:Image = new Image(textures[Util.ICON_ATK]);
 			setupStat(atkVal, atkImg);
 
 			staminaVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			staminaVal.x = Util.STAGE_WIDTH / 5 * 3;
+			staminaVal.x = width / 5 * 3;
 			var staminaImg:Image = new Image(textures[Util.ICON_STAMINA]);
 			setupStat(staminaVal, staminaImg);
 
 			losVal = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			losVal.x = Util.STAGE_WIDTH / 5 * 4;
+			losVal.x = width / 5 * 4;
 			var losImg:Image = new Image(textures[Util.ICON_LOS]);
 			setupStat(losVal, losImg);
 		}
@@ -79,7 +81,7 @@ package {
 		private function setupStat(tf:TextField, i:Image):void {
 			tf.height = tf.textBounds.height;
 			tf.hAlign = HAlign.LEFT;
-			tf.y = (Util.STAGE_HEIGHT - height) / 2 + SHOP_OUTER_PADDING;
+			tf.y = SHOP_OUTER_PADDING;
 			i.x = tf.x - i.width;
 			i.y = tf.y + tf.height / 2 - i.height / 2;
 			addChild(tf);
@@ -139,16 +141,16 @@ package {
 		private function displayShopItem(position:int, image:Image, name:String, cost:int, callback:Function):Clickable {
 			var item:Clickable = new Clickable(300, 300, callback, null, textures[Util.SHOP_ITEM]);
 			item.addParameter("cost", cost);
-			item.x = 75 + 130 * position;
-			item.y = 125;
 
 			image.x = (item.width - image.width) / 2;
 			image.y = 75;
 			item.addChild(image);
 
+			item.x = 25 + 130 * position;
+			item.y = (height - item.height) / 2;
+
 			var coin:Image = new Image(textures[Util.ICON_GOLD]);
 			coin.y = item.height - coin.height - 2;
-			//coin.touchable = false;
 			item.addChild(coin);
 
 			var upgrade:TextField = new TextField(item.width, 32, "Upgrade", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
@@ -160,7 +162,6 @@ package {
 
 			var itemCost:TextField = new TextField(item.width, coin.height, String(cost), Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
 			itemCost.y = coin.y;
-			//itemCost.touchable = false;
 			item.addChild(itemCost);
 			itemCosts.push(itemCost);
 
