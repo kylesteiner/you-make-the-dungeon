@@ -1,7 +1,6 @@
 package {
-	import entities.Enemy;
-	import entities.Entity;
 	import flash.media.*;
+	import flash.net.SharedObject;
 	import flash.ui.Mouse;
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
@@ -105,12 +104,15 @@ package {
 		private var helping:Boolean;
 		private var timeHovered:Number;
 
+		private var saveGame:SharedObject;
+
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
 		}
 
 		private function startGame(event:Event):void {
 			Mouse.hide();
+			saveGame = SharedObject.getLocal("saveGame");
 
 			var gid:uint = 115;
 			var gname:String = "cgs_gc_YouMakeTheDungeon";
@@ -148,6 +150,8 @@ package {
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
+			gold = Util.STARTING_GOLD;
+
 			initializeFloorWorld();
 			initializeMenuWorld();
 
@@ -165,7 +169,6 @@ package {
 			createMainMenu();
 
 			combatSkip = false;
-			gold = Util.STARTING_GOLD;
 
 			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
 
@@ -225,7 +228,7 @@ package {
 			helpButton.x = runSpeedButton.x - helpButton.width - Util.UI_PADDING;
 			helpButton.y = runSpeedButton.y;
 
-			goldHud = new GoldHUD(Util.STARTING_GOLD, textures, mixer);
+			goldHud = new GoldHUD(gold, textures, mixer);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			goldHud.y = Util.UI_PADDING;
 
@@ -347,19 +350,6 @@ package {
 			addChild(sfxMuteButton);
 		}
 
-		public function switchToTransition(params:Object):void {
-			prepareSwap();
-			isMenu = false;
-
-			currentTransition = new Clickable(0, 0, switchToFloor, null, params["transition"]);
-			currentTransition.addParameter("floorData", params["floorData"]);
-			currentTransition.addParameter("initHealth", params["initHealth"]);
-			currentTransition.addParameter("initStamina", params["initStamina"]);
-			currentTransition.addParameter("initAttack", params["initAttack"]);
-			currentTransition.addParameter("initLos", params["initLos"]);
-			addChild(currentTransition);
-		}
-
 		public function switchToFloor(params:Object):void {
 			prepareSwap();
 			isMenu = false;
@@ -376,10 +366,6 @@ package {
 									 transitionToStart,
 									 mixer,
 									 runSummary);
-			//if (currentFloor.floorName == Util.FLOOR_8) {
-			//	currentFloor.altCallback = transitionToStart;
-			//}
-
 			logger.logLevelStart(1, {
 				"characterHP":currentFloor.char.maxHp,
 				"characterStamina":currentFloor.char.maxStamina,
@@ -397,20 +383,43 @@ package {
 			addChild(sfxMuteButton);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
-			//addChild(resetButton);
 			addChild(runButton);
 			addChild(goldHud);
 			addChild(shopButton);
 			addChild(helpButton);
-			//charHud = new CharHud(currentFloor.char, textures);
-			//addChild(charHud);
 
 			addChild(buildHud);
-			addChild(tutorialHud);
+			if (gameState == STATE_TUTORIAL) {
+				addChild(tutorialHud);
+			}
 
 			mixer.play(Util.FLOOR_BEGIN);
-			// gameState = STATE_BUILD; // need additional logic here if we have many tutorials
+		}
+
+		public function switchToNewFloor(params:Object):void {
+			// Clear save data and switch to floor.
 			gameState = STATE_TUTORIAL;
+			saveGame.clear();
+			switchToFloor(params);
+		}
+
+		public function switchToSavedFloor(params:Object):void {
+			// Do nothing if no saved game.
+			if (saveGame.size == 0) {
+				return;
+			}
+
+			gameState = STATE_BUILD;
+			// Load and set gold and build hud unlocks.
+			gold = saveGame.data["gold"];
+			if (saveGame.data["unlocks"]) {
+				for (var i:int = 0; i < saveGame.data["unlocks"].length; i++) {
+					trace("retrieving unlock: " + saveGame.data["unlocks"][i]);
+					buildHud.entityFactory.unlockTile(saveGame.data["unlocks"][i]);
+				}
+				buildHud.updateHUD();
+			}
+			switchToFloor(params);
 		}
 
 		public function transitionToStart():void {
@@ -427,22 +436,35 @@ package {
 			var startGame:Clickable = new Clickable(
 					256,
 					192,
-					switchToFloor,
+					switchToNewFloor,
 					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
 					null);
-			//startGame.addParameter("transition", transitions[Util.MAIN_FLOOR]);
 			startGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
 			startGame.addParameter("initHealth", Util.STARTING_HEALTH);
 			startGame.addParameter("initStamina", Util.STARTING_STAMINA);
 			startGame.addParameter("initAttack", Util.STARTING_ATTACK);
 			startGame.addParameter("initLos", Util.STARTING_LOS);
 
+
+			var continueGame:Clickable = new Clickable(
+					256,
+					256,
+					switchToSavedFloor,
+					new TextField(128, 40, "CONTINUE", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE, saveGame.size != 0 ? 0x000000 : 0x696969),
+					null);
+			continueGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
+			continueGame.addParameter("initHealth", Util.STARTING_HEALTH);
+			continueGame.addParameter("initStamina", Util.STARTING_STAMINA);
+			continueGame.addParameter("initAttack", Util.STARTING_ATTACK);
+			continueGame.addParameter("initLos", Util.STARTING_LOS);
+
+
 			var creditsButton:Clickable = new Clickable(
 					256,
-					256,
+					320,
 					createCredits,
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startGame, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton)));
 		}
 
 		public function createCredits():void {
@@ -504,15 +526,6 @@ package {
 
 			var chosen:String = mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
 			sfxMuteButton.updateImage(null, textures[chosen]);
-		}
-
-		public function resetFloor():void {
-			//logger.logAction(8, { "numberOfTiles":numberOfTilesPlaced, "AvaliableTileSpots":(currentFloor.gridHeight * currentFloor.gridWidth - currentFloor.preplacedTiles),
-			//			     "EmptyTilesPlaced":emptyTiles, "MonsterTilesPlaced":enemyTiles, "HealthTilesPlaced":healingTiles} );
-			//reset counters
-			currentFloor.resetFloor();
-			//charHud.char = currentFloor.char
-			mixer.play(Util.TILE_REMOVE);
 		}
 
 		public function runFloor():void {
@@ -593,6 +606,14 @@ package {
 		public function returnToBuild():void {
 			removeChild(runSummary);
 			runSummary.reset();
+
+			saveGame.clear();
+			saveGame.data["gold"] = gold;
+			saveGame.data["unlocks"] = new Array();
+			for (var unlock:String in buildHud.entityFactory.entitySet) {
+				saveGame.data["unlocks"].push(unlock);
+			}
+			saveGame.flush();
 
 			addChild(runButton);
 
@@ -966,8 +987,9 @@ package {
 				});
 			}
 
-			runHud.goldCollected += addAmount; // add gold amount
 			gold += addAmount;
+			runSummary.goldCollected += addAmount;
+			runHud.goldCollected += addAmount;
 			goldHud.update(gold);
 		}
 
