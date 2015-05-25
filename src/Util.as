@@ -93,9 +93,13 @@ package {
 		public static const ICON_RUN:String = "icon_run";
 		public static const ICON_END:String = "icon_end";
 		public static const ICON_ATK:String = "icon_attack";
+		public static const ICON_ATK_MED:String = "icon_attack_med";
 		public static const ICON_HEALTH:String = "icon_health";
+		public static const ICON_HEALTH_MED:String = "icon_health_med";
 		public static const ICON_STAMINA:String = "icon_stamina";
+		public static const ICON_STAMINA_MED:String = "icon_stamina_med";
 		public static const ICON_LOS:String = "icon_los";
+		public static const ICON_LOS_MED:String = "icon_los_med";
 		public static const ICON_GOLD:String = "icon_gold";
 		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
