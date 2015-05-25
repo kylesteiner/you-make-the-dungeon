@@ -216,15 +216,15 @@ package {
 		// Build costs
 		public static const BASE_TILE_COST:int = 2;
 		public static const REFUND_PERCENT:int = 50;
-		public static const ENEMY_FIGHTER_COST:int = 10;
+		public static const ENEMY_FIGHTER_COST:int = 20;
 		public static const ENEMY_MAGE_COST:int = 40;
-		public static const LIGHT_HEALING_COST:int = 10;
-		public static const MODERATE_HEALING_COST:int = 25;
-		public static const LIGHT_STAMINA_HEAL_COST:int = 10;
+		public static const LIGHT_HEALING_COST:int = 20;
+		public static const MODERATE_HEALING_COST:int = 40;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
 
 		// Upgrade costs
-		public static const BASE_HP_UPGRADE_COST:int = 5;
-		public static const BASE_STAMINA_UPGRADE_COST:int = 5;
+		public static const BASE_HP_UPGRADE_COST:int = 6;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 6;
 		public static const BASE_ATTACK_UPGRADE_COST:int = 10;
 		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
