@@ -12,7 +12,6 @@ w/a/s/d - move camera
 ## Floor Data
 
 Floor data is stored in JSON files. Here is an example of a floor and its structure.
-
 ```
 {
 	"floor_name": "main_floor",
@@ -74,6 +73,43 @@ Floor data is stored in JSON files. Here is an example of a floor and its struct
 			"texture": "door",
 			"key": "door",
 			"prereqs": ["key"]
+		}
+	],
+	"temporary_entities": [
+		{
+			"type": "enemy",
+			"x": 2,
+			"y": 5,
+			"texture": "monster_2",
+			"hp": 10,
+			"attack": 4,
+			"reward": 20
+		}
+	]
+	"rooms": [
+		{
+			"name": 'first_room",
+			"callback": "roomcb_none",
+			"walls": [
+				{
+					"x": 3,
+					"y":, 4
+				},
+				{
+					"x": 2,
+					"y", 4
+				},
+				{
+					"x": 3,
+					"y": 5
+				}
+			],
+			"spaces": [
+				{
+					"x": 2,
+					"y": 5
+				}
+			]
 		}
 	]
 }

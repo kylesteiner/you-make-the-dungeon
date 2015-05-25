@@ -3,9 +3,8 @@
 
 package {
 	import flash.ui.Keyboard;
-	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import mx.utils.StringUtil;
+	import flash.geom.Point;
 
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -17,7 +16,7 @@ package {
 	import tiles.*;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nClick here for next floor."
+		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing the demo!\nClick here to return the the main menu."
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -47,16 +46,18 @@ package {
 
 		// Entities that have been removed in by character actions the run phase
 		// but need to be replaced after the run phase.
-		private var removedEntities:Array;
+		public var removedEntities:Array;
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
-		private var nextFloor:String;
-		private var nextTransition:String;
 		private var onCompleteCallback:Function;
 		public var altCallback:Function;
+
+		// Room metadata and control flow
+		public var rooms:RoomSet;
+		public var roomFunctions:Dictionary;
 
 		// Assets.
 		private var textures:Dictionary;
@@ -116,8 +117,6 @@ package {
 			// Parse the floor layout information from the JSON file.
 			var floorData:Object = JSON.parse(floorDataString);
 			floorName = floorData["floor_name"];
-			nextFloor = "LOL PLACEHOLDER";
-			nextTransition = "LOL ALSO PLACEHOLDER";
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
@@ -172,7 +171,6 @@ package {
 				tType = tile["type"];
 				tX = tile["x"];
 				tY = tile["y"];
-
 				// Build the String referring to the texture.
 				// Final portion of each string needs to have
 				// escape characters stripped off. This will cause
@@ -223,7 +221,11 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
+					var stationary:Boolean;
+					if (entity["stationary"]) {
+						stationary = entity["stationary"];
+					}
+					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					addChild(enemy);
 				} else if (entity["type"] == "healing") {
@@ -238,6 +240,18 @@ package {
 					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
 					addChild(obj);
+				} else if (entity["type"] == "reward") {
+					var callback:String = entity["function"];
+					var param:String = entity["parameter"];
+					var permanent:Boolean = entity["permanent"];
+					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], permanent, callback, param);
+					entityGrid[tX][tY] = rewardTile;
+					addChild(rewardTile);
+				} else if (entity["type"] == "stamina_heal") {
+					var stamina:int = entity["stamina"];
+					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, textures[textureName], stamina);
+					entityGrid[tX][tY] = staminaHeal;
+					addChild(staminaHeal);
 				}
 
 				if (fogGrid[tX][tY]) {
@@ -245,18 +259,27 @@ package {
 				}
 			}
 
+			roomFunctions = new Dictionary();
+			//roomFunctions[Util.ROOMCB_NONE] = SOME FUNCTION
+			rooms = new RoomSet(floorData["rooms"], roomFunctions);
+
 			highlightedLocations = new Array(gridWidth);
 			for (i = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
+
+			addChild(char);
+			addChild(rooms);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
+			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
+			addEventListener(GameEvent.STAMINA_HEALED, onStaminaHeal);
 			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -283,6 +306,7 @@ package {
 
 		public function toggleRun(gameState:String):void {
 			char.toggleRunUI();
+			pressedKeys = new Array();
 
 			// Ensure that the character and all enemies are higher in the
 			// display order than the tiles.
@@ -293,9 +317,6 @@ package {
 				addChild(enemy);
 			}
 
-			// Currently populates grid twice for every run and
-			// also bumps up total runs twice which is ambiguous behavior.
-			// Just means rate of gold increase is doubled which is probably fine.
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -306,8 +327,12 @@ package {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
 
-					if(grid[x][y] && !(char.grid_x == x && char.grid_y == y) && gameState == Game.STATE_RUN) {
-						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, totalRuns));
+					if (grid[x][y]
+						&& !(grid[x][y] is ImpassableTile)
+						&& !fogGrid[x][y]
+						&& !(char.grid_x == x && char.grid_y == y)
+						&& gameState == Game.STATE_RUN) {
+						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], 1);
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
 					}
@@ -346,6 +371,7 @@ package {
 			char.reset();
 
 			for each (var enemy:Enemy in activeEnemies) {
+				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				enemy.reset();
 				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
 			}
@@ -372,7 +398,6 @@ package {
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int;
-
 			var radius:int = char.los;
 
 			for (x = i - radius; x <= i + radius; x++) {
@@ -420,6 +445,25 @@ package {
 				   !(tile is ExitTile) &&
 				   !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
+		}
+
+		public function updateRunSpeed():void {
+			char.speed = Util.speed;
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					if (entityGrid[x][y] is Enemy) {
+						var enemy:Enemy = entityGrid[x][y] as Enemy;
+						enemy.speed = Util.speed;
+					}
+				}
+			}
+
+			for (var i:int = 0; i < removedEntities.length; i++) {
+				if (removedEntities[i] is Enemy) {
+					var removedEnemy:Enemy = removedEntities[i] as Enemy;
+					removedEnemy.speed = Util.speed;
+				}
+			}
 		}
 
 		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {
@@ -576,6 +620,10 @@ package {
 
 			if (char.moving) {
 				return;
+			}
+
+			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed) {
+				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
 			}
 
 			for each (keyCode in pressedKeys) {
@@ -766,6 +814,7 @@ package {
 			if (!entity) {
 				return;
 			}
+
 			entity.handleChar(char);
 		}
 
@@ -789,8 +838,11 @@ package {
 										  NEXT_LEVEL_MESSAGE,
 										  Util.DEFAULT_FONT,
 										  Util.MEDIUM_FONT_SIZE));
-			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
-			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+			//winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
+			//winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
+
+			var nC:Clickable = new Clickable(0, 0, onCompleteCallback, winBox);
+			addChild(nC);
 		}
 
 		// Called after the character defeats an enemy entity.
@@ -833,6 +885,30 @@ package {
 			removeChild(heal);
 
 			runSummary.amountHealed += char.hp - preHealth;
+		}
+
+		private function onStaminaHeal(event:GameEvent):void {
+			var staminaHeal:StaminaHeal = entityGrid[event.x][event.y];
+			removedEntities.push(staminaHeal);
+			entityGrid[event.x][event.y] = null;
+			removeChild(staminaHeal);
+		}
+
+		private function onRoomReveal(event:GameEvent):void {
+			mixer.play(Util.COMBAT_FAILURE);
+
+			if(!event.gameData["revealed"]) {
+				return;
+			}
+
+			var coords:Array = event.gameData["revealed"];
+			var point:Point;
+			for each(point in coords) {
+				if(fogGrid[point.x][point.y]) {
+					removeChild(fogGrid[point.x][point.y]);
+					fogGrid[point.x][point.y] = false;
+				}
+			}
 		}
 	}
 }

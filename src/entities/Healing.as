@@ -45,5 +45,9 @@ package entities {
 
 			return base;
 		}
+
+		override public function generateDescription():String {
+			return "Heals " + health + " health.";
+		}
 	}
 }

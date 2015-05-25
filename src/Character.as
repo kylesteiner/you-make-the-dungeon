@@ -13,7 +13,6 @@ package {
 	// Class representing the player character.
 	public class Character extends Sprite {
 		public static const BASE_HP:int = 5;
-		public static const PIXELS_PER_FRAME:int = 4;
 
 		public var grid_x:int;
 		public var grid_y:int;
@@ -41,6 +40,7 @@ package {
 		public var attackText:TextField;
 
 		public var los:int;
+		public var speed:int;
 
 		public function Character(g_x:int,
 								  g_y:int,
@@ -69,6 +69,7 @@ package {
 			currentAnimation.play();
 
 			los = lineOfSight;
+			speed = Util.speed;
 
 			runState = false;
 
@@ -86,6 +87,8 @@ package {
 
 
 		public function reset():void {
+			moving = false;
+			inCombat = false;
 			hp = maxHp;
 			stamina = maxStamina;
 			grid_x = initialX;
@@ -155,16 +158,16 @@ package {
 
 			if (moving) {
 				if (x > destX) {
-					x -= PIXELS_PER_FRAME;
+					x -= speed;
 				}
 				if (x < destX) {
-					x += PIXELS_PER_FRAME;
+					x += speed;
 				}
 				if (y > destY) {
-					y -= PIXELS_PER_FRAME;
+					y -= speed;
 				}
 				if (y < destY) {
-					y += PIXELS_PER_FRAME;
+					y += speed;
 				}
 
 				if (x == destX && y == destY && moving) {

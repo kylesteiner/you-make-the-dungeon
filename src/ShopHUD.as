@@ -24,6 +24,7 @@ package {
 		private var losVal:TextField;
 
 		private var shopItems:Array;
+		private var itemCosts:Array;
 
 		/**********************************************************************************
 		 *  Intialization
@@ -44,8 +45,13 @@ package {
 			closeShopButton.y = Util.STAGE_HEIGHT - (Util.STAGE_HEIGHT - height) / 2 - closeShopButton.height - SHOP_OUTER_PADDING;
 			addChild(closeShopButton);
 
+			shopItems = new Array();
+			itemCosts = new Array();
+
 			displayCharStats();
 			displayShopItems();
+
+			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		}
 
 		private function displayCharStats():void {
@@ -81,18 +87,64 @@ package {
 		}
 
 		private function displayShopItems():void {
-			displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), 100, incHP);
-			displayShopItem(2, new Image(textures[Util.ICON_ATK]), 200, incAtk);
-			displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), 300, incStamina);
-			displayShopItem(4, new Image(textures[Util.ICON_LOS]), 400, incLos);
+			var i:int;
+			for(i = 0; i < shopItems.length; i++) {
+				removeChild(shopItems[i]);
+			}
+
+			shopItems = new Array();
+			itemCosts = new Array();
+			shopItems.push(displayShopItem(1, new Image(textures[Util.ICON_HEALTH]), getHpCost(), incHP));
+			shopItems.push(displayShopItem(2, new Image(textures[Util.ICON_ATK]), getAttackCost(), incAtk));
+			shopItems.push(displayShopItem(3, new Image(textures[Util.ICON_STAMINA]), getStaminaCost(), incStamina));
+			shopItems.push(displayShopItem(4, new Image(textures[Util.ICON_LOS]), getLOSCost(), incLos));
+
+			for(i = 0; i < shopItems.length; i++) {
+				addChild(shopItems[i]);
+			}
 		}
 
-		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):void {
+		private function getHpCost():int {
+			var base:int = 15;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.maxHp - Util.STARTING_HEALTH;
+			}
+			return base + upgrades;
+		}
+
+		private function getStaminaCost():int {
+			var base:int = 10;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.maxStamina - Util.STARTING_STAMINA;
+			}
+			return base + upgrades;
+		}
+
+		private function getAttackCost():int {
+			var base:int = 20;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.attack - Util.STARTING_ATTACK;
+			}
+			return base * (upgrades + 1);
+		}
+
+		private function getLOSCost():int {
+			var base:int = 30;
+			var upgrades:int = 0;
+			if(char) {
+				upgrades = char.los - Util.STARTING_LOS;
+			}
+			return base * (upgrades + 1);
+		}
+
+		private function displayShopItem(position:int, image:Image, cost:int, callback:Function):Clickable {
 			var item:Clickable = new Clickable(300, 300, callback, null, textures[Util.SHOP_ITEM]);
 			item.addParameter("cost", cost);
 			item.x = x + 110 * position;
 			item.y = y + 100 + 100 * (position / 3);
-			addChild(item);
 
 			image.x = (item.width - image.width) / 2;
 			image.y = 20;
@@ -100,11 +152,16 @@ package {
 
 			var coin:Image = new Image(textures[Util.ICON_GOLD]);
 			coin.y = item.height - coin.height - 2;
+			//coin.touchable = false;
 			item.addChild(coin);
 
 			var itemCost:TextField = new TextField(item.width, coin.height, String(cost), Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
 			itemCost.y = coin.y;
+			//itemCost.touchable = false;
 			item.addChild(itemCost);
+			itemCosts.push(itemCost);
+
+			return item;
 		}
 
 		/**********************************************************************************
@@ -113,34 +170,34 @@ package {
 
 		public function incHP(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setHP(char.maxHp + 5);
+				setHP(char.maxHp + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterHP":char.maxHp,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
 
 		public function incAtk(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setAtk(char.attack + 5);
+				setAtk(char.attack + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterAttack":char.attack,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
 
 		public function incStamina(params:Dictionary):void {
 			if (spend(params["cost"])) {
-				setStamina(char.maxStamina + 5);
+				setStamina(char.maxStamina + 1);
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterStamina":char.maxStamina,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
 
@@ -150,8 +207,8 @@ package {
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterLOS":char.los,
-					"upgradeAmount":5
-				})
+					"upgradeAmount":1
+				});
 			}
 		}
 
@@ -198,6 +255,23 @@ package {
 		private function setLos(val:int):void {
 			char.los = val;
 			losVal.text = String(char.los);
+		}
+
+		private function onEnterFrame(event:EnterFrameEvent):void {
+			var i:int;
+			var newCost:int;
+			var shopButton:Clickable;
+			for (i = 0; i < shopItems.length; i++) {
+				newCost = getHpCost();
+				newCost = i == 1 ? getAttackCost() : newCost;
+				newCost = i == 2 ? getStaminaCost() : newCost;
+				newCost = i == 3 ? getLOSCost() : newCost;
+
+				shopButton = shopItems[i];
+				shopButton.parameters["cost"] = newCost;
+
+				itemCosts[i].text = newCost.toString();
+			}
 		}
 	}
 }
