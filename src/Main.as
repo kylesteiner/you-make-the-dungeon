@@ -21,9 +21,9 @@ package {
 		private var lastChange:Number;
 
 		public function Main() {
+			stop();
 			MindJoltAPI.service.connect("05L6E95R1EEAY0JS", this);
 			MindJoltAPI.ad.showPreGameAd({clip:this});
-			stop();
 			loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
 			loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
 			loadTexts = new Array();

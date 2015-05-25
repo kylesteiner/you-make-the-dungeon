@@ -433,7 +433,7 @@ package {
 
 		public function transitionToStart():void {
 			mindJoltScore += SCORE_FINISH;
-			mindJoltScore -= Math.pow(SCORE_RUNS, (currentFloor.totalRuns / 20));
+			mindJoltScore -= Math.pow(SCORE_RUNS, (currentFloor.totalRuns / 60));
 			MindJoltAPI.service.submitScore(mindJoltScore, null, finishTransition);
 		}
 
