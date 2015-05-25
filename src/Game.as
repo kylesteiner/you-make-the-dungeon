@@ -125,7 +125,7 @@ package {
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
 			versionID = 0;
-			cid = 10;
+			cid = 15;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null, false);
 			Util.logger = logger;
