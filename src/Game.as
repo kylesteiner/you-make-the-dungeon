@@ -141,26 +141,10 @@ package {
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
-			// Load gold from save before initializeFloorWorld because
-			// the gold hud is constructed in there and requires gold.
-			if (saveGame.size == 0) {
-				gold = Util.STARTING_GOLD;
-			} else {
-				gold = saveGame.data["gold"];
-			}
+			gold = Util.STARTING_GOLD;
 
 			initializeFloorWorld();
 			initializeMenuWorld();
-
-			// Load the unlocked entities after initializeFloorWorld because
-			// the build hud needs to be initialized first.
-			if (saveGame.size != 0 && saveGame.data["unlocks"]) {
-				for (var i:int = 0; i < saveGame.data["unlocks"].length; i++) {
-					trace("retrieving unlock: " + saveGame.data["unlocks"][i]);
-					buildHud.entityFactory.unlockTile(saveGame.data["unlocks"][i]);
-				}
-				buildHud.updateHUD();
-			}
 
 			cursorReticle = new Image(textures[Util.CURSOR_RETICLE]);
 			cursorReticle.touchable = false;
@@ -357,19 +341,6 @@ package {
 			addChild(sfxMuteButton);
 		}
 
-		public function switchToTransition(params:Object):void {
-			prepareSwap();
-			isMenu = false;
-
-			currentTransition = new Clickable(0, 0, switchToFloor, null, params["transition"]);
-			currentTransition.addParameter("floorData", params["floorData"]);
-			currentTransition.addParameter("initHealth", params["initHealth"]);
-			currentTransition.addParameter("initStamina", params["initStamina"]);
-			currentTransition.addParameter("initAttack", params["initAttack"]);
-			currentTransition.addParameter("initLos", params["initLos"]);
-			addChild(currentTransition);
-		}
-
 		public function switchToFloor(params:Object):void {
 			prepareSwap();
 			isMenu = false;
@@ -386,10 +357,6 @@ package {
 									 transitionToStart,
 									 mixer,
 									 runSummary);
-			//if (currentFloor.floorName == Util.FLOOR_8) {
-			//	currentFloor.altCallback = transitionToStart;
-			//}
-
 			logger.logLevelStart(1, {
 				"characterHP":currentFloor.char.maxHp,
 				"characterStamina":currentFloor.char.maxStamina,
@@ -407,20 +374,43 @@ package {
 			addChild(sfxMuteButton);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
-			//addChild(resetButton);
 			addChild(runButton);
 			addChild(goldHud);
 			addChild(shopButton);
 			addChild(helpButton);
-			//charHud = new CharHud(currentFloor.char, textures);
-			//addChild(charHud);
 
 			addChild(buildHud);
 			addChild(tutorialHud);
 
 			mixer.play(Util.FLOOR_BEGIN);
-			// gameState = STATE_BUILD; // need additional logic here if we have many tutorials
+		}
+
+		public function switchToNewFloor(params:Object):void {
+			// Clear save data and switch to floor.
 			gameState = STATE_TUTORIAL;
+			gold = Util.STARTING_GOLD;
+			buildHud.entityFactory = new EntityFactory(textures);
+			saveGame.clear();
+			switchToFloor(params);
+		}
+
+		public function switchToSavedFloor(params:Object):void {
+			// Do nothing if no saved game.
+			if (saveGame.size == 0) {
+				return;
+			}
+
+			gameState = STATE_BUILD;
+			// Load and set gold and build hud unlocks.
+			gold = saveGame.data["gold"];
+			if (saveGame.data["unlocks"]) {
+				for (var i:int = 0; i < saveGame.data["unlocks"].length; i++) {
+					trace("retrieving unlock: " + saveGame.data["unlocks"][i]);
+					buildHud.entityFactory.unlockTile(saveGame.data["unlocks"][i]);
+				}
+				buildHud.updateHUD();
+			}
+			switchToFloor(params);
 		}
 
 		public function transitionToStart():void {
@@ -437,22 +427,35 @@ package {
 			var startGame:Clickable = new Clickable(
 					256,
 					192,
-					switchToFloor,
+					switchToNewFloor,
 					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
 					null);
-			//startGame.addParameter("transition", transitions[Util.MAIN_FLOOR]);
 			startGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
 			startGame.addParameter("initHealth", Util.STARTING_HEALTH);
 			startGame.addParameter("initStamina", Util.STARTING_STAMINA);
 			startGame.addParameter("initAttack", Util.STARTING_ATTACK);
 			startGame.addParameter("initLos", Util.STARTING_LOS);
 
+
+			var continueGame:Clickable = new Clickable(
+					256,
+					256,
+					switchToSavedFloor,
+					new TextField(128, 40, "CONTINUE", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE, saveGame.size != 0 ? 0x000000 : 0x696969),
+					null);
+			continueGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
+			continueGame.addParameter("initHealth", Util.STARTING_HEALTH);
+			continueGame.addParameter("initStamina", Util.STARTING_STAMINA);
+			continueGame.addParameter("initAttack", Util.STARTING_ATTACK);
+			continueGame.addParameter("initLos", Util.STARTING_LOS);
+
+
 			var creditsButton:Clickable = new Clickable(
 					256,
-					256,
+					320,
 					createCredits,
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startGame, creditsButton)));
+			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton)));
 		}
 
 		public function createCredits():void {
