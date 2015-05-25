@@ -44,12 +44,6 @@ package {
 		public var hudState:String;
 		// maps strings to dictionaries
 		// "constructor", "texture", "cost", and "category" are the keys
-
-		// deprecated:
-		// array[0] is the constructor for the entity
-		// array[1] is the texture
-		// array[2] is the cost
-		// array[3] is the category (int)
 		private var entityMap:Dictionary;
 
 		/***** Tile Block *****/

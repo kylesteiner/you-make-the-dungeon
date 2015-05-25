@@ -41,17 +41,14 @@ package entities {
 
             var key:String;
             for (key in enemyDict) {
-                //keyS = String(key);
                 entityDict[key] = enemyDict[key];
             }
 
             for (key in healingDict) {
-                //keyS = String(key);
                 entityDict[key] = healingDict[key];
             }
 
             for (key in trapDict) {
-                //keyS = String(key);
                 entityDict[key] = trapDict[key];
             }
 
@@ -66,22 +63,13 @@ package entities {
             fighter["texture"] = textures[Util.ENEMY_FIGHTER];
             fighter["cost"] = Util.ENEMY_FIGHTER_COST;
             fighter["category"] = ENEMY_CATEGORY;
-            /*fighter.push(constructFighter);
-            fighter.push(textures[Util.ENEMY_FIGHTER]);
-            fighter.push(Util.ENEMY_FIGHTER_COST);
-            fighter.push(ENEMY_CATEGORY);*/
             enemyDict[FIGHTER] = fighter;
 
-            //var mage:Array = new Array();
             var mage:Dictionary = new Dictionary();
             mage["constructor"] = constructMage;
             mage["texture"] = textures[Util.ENEMY_MAGE];
             mage["cost"] = Util.ENEMY_MAGE_COST;
             mage["category"] = ENEMY_CATEGORY;
-            /*mage.push(constructMage);
-            mage.push(textures[Util.ENEMY_MAGE]);
-            mage.push(Util.ENEMY_MAGE_COST);
-            mage.push(ENEMY_CATEGORY);*/
             enemyDict[MAGE] = mage;
 
             return enemyDict;
@@ -90,11 +78,6 @@ package entities {
         public function constructHealingEntities():Dictionary {
             var healingDict:Dictionary = new Dictionary();
 
-            /*var lightHealing:Array = new Array();
-            lightHealing.push(constructLightHealing);
-            lightHealing.push(textures[Util.HEALING]);
-            lightHealing.push(Util.LIGHT_HEALING_COST);
-            lightHealing.push(HEALING_CATEGORY);*/
             var lightHealing:Dictionary = new Dictionary();
             lightHealing["constructor"] = constructLightHealing;
             lightHealing["texture"] = textures[Util.HEALING];
@@ -102,11 +85,6 @@ package entities {
             lightHealing["category"] = HEALING_CATEGORY;
             healingDict[LIGHT_HEALING] = lightHealing;
 
-            /*var moderateHealing:Array = new Array();
-            moderateHealing.push(constructModerateHealing);
-            moderateHealing.push(textures[Util.HEALING]);
-            moderateHealing.push(Util.MODERATE_HEALING_COST);
-            moderateHealing.push(HEALING_CATEGORY);*/
             var moderateHealing:Dictionary = new Dictionary();
             moderateHealing["constructor"] = constructModerateHealing;
             moderateHealing["texture"] = textures[Util.HEALING];
@@ -114,11 +92,6 @@ package entities {
             moderateHealing["category"] = HEALING_CATEGORY;
             healingDict[MODERATE_HEALING] = moderateHealing;
 
-            /*var lightStaminaHeal:Array = new Array();
-            lightStaminaHeal.push(constructLightStaminaHeal);
-            lightStaminaHeal.push(textures[Util.STAMINA_HEAL]);
-            lightStaminaHeal.push(Util.LIGHT_STAMINA_HEAL_COST);
-            lightStaminaHeal.push(HEALING_CATEGORY);*/
             var lightStaminaHeal:Dictionary = new Dictionary();
             lightStaminaHeal["constructor"] = constructLightStaminaHeal;
             lightStaminaHeal["texture"] = textures[Util.STAMINA_HEAL];
