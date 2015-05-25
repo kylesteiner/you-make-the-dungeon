@@ -451,6 +451,11 @@ package {
 
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
+			if (currentFloor) {
+				Util.logger.logAction(15, {
+					"buttonClicked":"BGM Mute"
+				});
+			}
 
 			var chosen:String = mixer.playing ? Util.ICON_BGM_PLAY : Util.ICON_BGM_MUTE;
 			bgmMuteButton.updateImage(null, textures[chosen]);
@@ -458,6 +463,11 @@ package {
 
 		public function toggleSFXMute():void {
 			mixer.toggleSFXMute();
+			if (currentFloor) {
+				Util.logger.logAction(15, {
+					"buttonClicked":"SFX Mute"
+				});
+			}
 
 			var chosen:String = mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
 			sfxMuteButton.updateImage(null, textures[chosen]);
@@ -481,6 +491,8 @@ package {
 				"numberOfTiles":numberOfTilesPlaced,
 				"numberOfEntitiesPlaced":entitiesPlaced
 			});
+			numberOfTilesPlaced = 0;
+			entitiesPlaced = 0;
 			removeChild(runButton);
 			currentFloor.clearHighlightedLocations();
 			removeChild(buildHud.currentImage);
@@ -506,7 +518,7 @@ package {
 		private function onRoomComplete(event:GameEvent):void {
 			mixer.play(Util.COMBAT_SUCCESS);
 
-			if(!event["completed"]) {
+			if(!event.gameData["completed"]) {
 				return;
 			}
 		}
@@ -521,11 +533,12 @@ package {
 				reason = "endRunButton";
 			}
 			logger.logAction(8, {
-				"goldEarned":runHud.goldCollected,
+				"goldEarned":runSummary.goldCollected,
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp,
-				"tilesVisited": runHud.tilesVisited,
-				"enemiesDefeated":runHud.enemiesDefeated,
+				"tilesVisited": runSummary.distanceTraveled,
+				"enemiesDefeated":runSummary.enemiesDefeated,
+				"damageTaken":runSummary.damageTaken,
 				"reason":reason
 			});
 

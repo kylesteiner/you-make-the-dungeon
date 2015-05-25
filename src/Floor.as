@@ -892,7 +892,7 @@ package {
 		private function onRoomReveal(event:GameEvent):void {
 			mixer.play(Util.COMBAT_FAILURE);
 
-			if(!event["revealed"]) {
+			if(!event.gameData["revealed"]) {
 				return;
 			}
 
