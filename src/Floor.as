@@ -394,6 +394,45 @@ package {
 			}
 		}
 
+		/************************************************************************************************************
+		 * FOG
+		 ************************************************************************************************************/
+		
+		public function removeFoggedLocationsInPath():void {
+			var x:int; var y:int; var start:Tile; var visited:Array; var available:Array;
+
+			start = getEntry();
+
+			// Build visited grid
+			visited = new Array(gridWidth);
+			for (x = 0; x < gridWidth; x++) {
+				visited[x] = new Array(gridHeight);
+				for (y = 0; y < gridHeight; y++) {
+					visited[x][y] = false;
+				}
+			}
+			removeFoggedLocationsInPathHelper(start.grid_x, start.grid_y, visited);
+		}
+		
+		private function removeFoggedLocationsInPathHelper(x:int, y:int, visited:Array):void {
+			if (!visited[x][y] && grid[x][y] && !(grid[x][y] is ImpassableTile)) {
+				visited[x][y] = true;
+				removeFoggedLocations(x, y);
+				if (x + 1 < gridWidth) {
+					removeFoggedLocationsInPathHelper(x + 1, y, visited);
+				}
+				if (x - 1 >= 0) {
+					removeFoggedLocationsInPathHelper(x - 1, y, visited);
+				}
+				if (y + 1 < gridHeight) {
+					removeFoggedLocationsInPathHelper(x, y + 1, visited);
+				}
+				if (y - 1 >= 0) {
+					removeFoggedLocationsInPathHelper(x, y - 1, visited);
+				}
+			}
+		}
+		
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
@@ -417,6 +456,10 @@ package {
 			}
 		}
 
+		/************************************************************************************************************
+		 * TILE HIGHLIGHTING
+		 ************************************************************************************************************/
+		
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
 			var x:int; var y:int; var addBool:Boolean;
@@ -445,25 +488,6 @@ package {
 				   !(tile is ExitTile) &&
 				   !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
-		}
-
-		public function updateRunSpeed():void {
-			char.speed = Util.speed;
-			for (var x:int = 0; x < gridWidth; x++) {
-				for (var y:int = 0; y < gridHeight; y++) {
-					if (entityGrid[x][y] is Enemy) {
-						var enemy:Enemy = entityGrid[x][y] as Enemy;
-						enemy.speed = Util.speed;
-					}
-				}
-			}
-
-			for (var i:int = 0; i < removedEntities.length; i++) {
-				if (removedEntities[i] is Enemy) {
-					var removedEnemy:Enemy = removedEntities[i] as Enemy;
-					removedEnemy.speed = Util.speed;
-				}
-			}
 		}
 
 		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {
@@ -504,18 +528,9 @@ package {
 
 		// Returned an array of tiles on the grid that the player can move the selected tile to.
 		private function getAllowedLocations(directions:Array):Array {
-			var x:int; var y:int; var start_x:int; var start_y:int; var visited:Array; var available:Array;
+			var x:int; var y:int; var start:Tile; var visited:Array; var available:Array;
 
-			// Find entry tile
-			OuterLoop: for (x = 0; x < grid.length; x++) {
-				for (y = 0; y < grid[x].length; y++) {
-					if (grid[x][y] is EntryTile) {
-						start_x = x;
-						start_y = y;
-						break OuterLoop;
-					}
-				}
-			}
+			start = getEntry();
 
 			// Build visited & available grids
 			available = new Array(gridWidth);
@@ -524,11 +539,11 @@ package {
 				available[x] = new Array(gridHeight);
 				visited[x] = new Array(gridHeight);
 				for (y = 0; y < gridHeight; y++) {
-					available[x][y] = false;;
+					available[x][y] = false;
 					visited[x][y] = false;
 				}
 			}
-			getAllowedLocationsHelper(start_x, start_y, directions, visited, available, -1);
+			getAllowedLocationsHelper(start.grid_x, start.grid_y, directions, visited, available, -1);
 			return available;
 		}
 
@@ -564,6 +579,29 @@ package {
 				}
 				if (y - 1 >= 0 && grid[x][y].north) {
 					getAllowedLocationsHelper(x, y - 1, directions, visited, available, Util.SOUTH);
+				}
+			}
+		}
+		
+		/************************************************************************************************************
+		 * END OF TILE HIGHLIGHTING
+		 ************************************************************************************************************/
+		
+		public function updateRunSpeed():void {
+			char.speed = Util.speed;
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					if (entityGrid[x][y] is Enemy) {
+						var enemy:Enemy = entityGrid[x][y] as Enemy;
+						enemy.speed = Util.speed;
+					}
+				}
+			}
+
+			for (var i:int = 0; i < removedEntities.length; i++) {
+				if (removedEntities[i] is Enemy) {
+					var removedEnemy:Enemy = removedEntities[i] as Enemy;
+					removedEnemy.speed = Util.speed;
 				}
 			}
 		}

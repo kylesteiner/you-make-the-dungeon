@@ -206,6 +206,7 @@ package {
 					"upgradeAmount":1
 				});
 			}
+			
 		}
 
 		/**********************************************************************************
@@ -251,6 +252,7 @@ package {
 		private function setLos(val:int):void {
 			char.los = val;
 			losVal.text = String(char.los);
+			dispatchEvent(new GameEvent(GameEvent.CHARACTER_LOS_CHANGE, 0, 0));
 		}
 
 		private function onEnterFrame(event:EnterFrameEvent):void {

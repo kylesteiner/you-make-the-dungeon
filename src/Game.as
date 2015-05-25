@@ -179,6 +179,7 @@ package {
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.CHARACTER_LOS_CHANGE, onLosChange);
 		}
 
 		private function initializeFloorWorld():void {
@@ -803,22 +804,7 @@ package {
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
 					currentFloor.rooms.addTile(newTile);
-					currentFloor.fogGrid[newTile.grid_x][newTile.grid_y] = false;
-					currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y);
-					// check if we placed the tile next to any preplaced tiles, and if we did, remove
-					// the fogs for those as well. (it's so ugly D:)
-					if (newTile.grid_x + 1 < currentFloor.grid.length && currentFloor.grid[newTile.grid_x + 1][newTile.grid_y]) {
-						currentFloor.removeFoggedLocations(newTile.grid_x + 1, newTile.grid_y);
-					}
-					if (newTile.grid_x - 1 >= 0 && currentFloor.grid[newTile.grid_x - 1][newTile.grid_y]) {
-						currentFloor.removeFoggedLocations(newTile.grid_x - 1, newTile.grid_y);
-					}
-					if (newTile.grid_y + 1 < currentFloor.grid[newTile.grid_x].length && currentFloor.grid[newTile.grid_x][newTile.grid_y + 1]) {
-						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y + 1);
-					}
-					if (newTile.grid_y - 1 >= 0 && currentFloor.grid[newTile.grid_x][newTile.grid_y - 1]) {
-						currentFloor.removeFoggedLocations(newTile.grid_x, newTile.grid_y - 1);
-					}
+					currentFloor.removeFoggedLocationsInPath();
 					numberOfTilesPlaced++;
 					logger.logAction(1, {
 						"goldSpent": cost,
@@ -841,8 +827,6 @@ package {
 					// Player correctly placed the entity. Add it to the grid.
 					newEntity = buildHud.buildEntityFromImage(currentTile);
 					currentFloor.entityGrid[newEntity.grid_x][newEntity.grid_y] = newEntity;
-					trace(newEntity.grid_x);
-					trace(newEntity.grid_y);
 					currentFloor.addChild(newEntity);
 					if (newEntity is Enemy) {
 						currentFloor.activeEnemies.push(newEntity);
@@ -1164,6 +1148,10 @@ package {
 		public function closeTileUnlock():void {
 			removeChild(tileUnlockPopup);
 			tileUnlockPopup = null;
+		}
+
+		private function onLosChange(event:GameEvent):void {
+			currentFloor.removeFoggedLocationsInPath();
 		}
 	}
 }
