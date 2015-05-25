@@ -121,7 +121,7 @@ package {
 			// this is the current version, we'll treat 0 as the debugging
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
-			var cid:int = 0;
+			var cid:int = 10;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null, false);
 			Util.logger = logger;
