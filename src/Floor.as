@@ -944,8 +944,6 @@ package {
 		}
 
 		private function onRoomReveal(event:GameEvent):void {
-			mixer.play(Util.COMBAT_FAILURE);
-
 			if(!event.gameData["revealed"]) {
 				return;
 			}

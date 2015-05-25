@@ -100,7 +100,7 @@ package {
 		private var cameraAccel:Number;
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
-		
+
 		// for action 21, logging hover info help
 		private var helping:Boolean;
 		private var timeHovered:Number;
@@ -551,8 +551,6 @@ package {
 		}
 
 		private function onRoomComplete(event:GameEvent):void {
-			mixer.play(Util.COMBAT_SUCCESS);
-
 			if(!event.gameData["completed"]) {
 				return;
 			}
@@ -633,7 +631,7 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
-			
+
 			if (helping) {
 				timeHovered += event.passedTime;
 			}
