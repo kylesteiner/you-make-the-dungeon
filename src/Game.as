@@ -451,6 +451,11 @@ package {
 
 		public function toggleBgmMute():void {
 			mixer.togglePlay();
+			if (currentFloor) {
+				Util.logger.logAction(15, {
+					"buttonClicked":"BGM Mute"
+				});
+			}
 
 			var chosen:String = mixer.playing ? Util.ICON_BGM_PLAY : Util.ICON_BGM_MUTE;
 			bgmMuteButton.updateImage(null, textures[chosen]);
@@ -458,6 +463,11 @@ package {
 
 		public function toggleSFXMute():void {
 			mixer.toggleSFXMute();
+			if (currentFloor) {
+				Util.logger.logAction(15, {
+					"buttonClicked":"SFX Mute"
+				});
+			}
 
 			var chosen:String = mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
 			sfxMuteButton.updateImage(null, textures[chosen]);
