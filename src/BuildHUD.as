@@ -313,7 +313,6 @@ package {
 				entityCost = entityMap[entityList[i][entityDisplayList[i]]][2];
 				entityCategory = entityMap[entityList[i][entityDisplayList[i]]][3];
 
-
 				entitySprite = entityConstructor().generateOverlay();
 				entityPopupButton = new Clickable(entityX, entityY, selectEntityClickable, entitySprite, entityTexture);
 				entityPopupButton.addParameter("index", i);
@@ -363,8 +362,13 @@ package {
 			}
 
 			for (i = 0; i < entityClickables.length; i++) {
-				hud.addChild(entityClickables[i]);
-				hud.addChild(entityGoldCosts[i]);
+				if(entityClickables[i]) {
+					hud.addChild(entityClickables[i]);
+				}
+
+				if(entityGoldCosts[i]) {
+					hud.addChild(entityGoldCosts[i]);
+				}
 			}
 
 			hud.addChild(deleteQuad);

@@ -1031,7 +1031,7 @@ package {
 
 				var newEntityTitle:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
 																	Util.MEDIUM_FONT_SIZE, buildHud.entityFactory.entityText[event.gameData["type"]][0]);
-				//newEntityTitle.autoScale = true;
+				newEntityTitle.autoScale = true;
 				newEntityTitle.hAlign = HAlign.LEFT;
 				newEntityTitle.x = newEntitySprite.x + newEntitySprite.width;
 				//newEntityTitle.y = titleText.y + titleText.height + Util.PIXELS_PER_TILE / 4;

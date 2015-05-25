@@ -243,6 +243,11 @@ package {
 					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], permanent, callback, param);
 					entityGrid[tX][tY] = rewardTile;
 					addChild(rewardTile);
+				} else if (entity["type"] == "stamina_heal") {
+					var stamina:int = entity["stamina"];
+					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, textures[textureName], stamina);
+					entityGrid[tX][tY] = staminaHeal;
+					addChild(staminaHeal);
 				}
 
 				if (fogGrid[tX][tY]) {
@@ -270,6 +275,7 @@ package {
 			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
+			addEventListener(GameEvent.STAMINA_HEALED, onStaminaHeal);
 			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -874,6 +880,13 @@ package {
 			removeChild(heal);
 
 			runSummary.amountHealed += char.hp - preHealth;
+		}
+
+		private function onStaminaHeal(event:GameEvent):void {
+			var staminaHeal:StaminaHeal = entityGrid[event.x][event.y];
+			removedEntities.push(staminaHeal);
+			entityGrid[event.x][event.y] = null;
+			removeChild(staminaHeal);
 		}
 
 		private function onRoomReveal(event:GameEvent):void {

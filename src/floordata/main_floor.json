@@ -219,6 +219,24 @@
 			"y": 12,
 			"edges": ["n", "s", "e"]
 		},
+		{
+			"type": "empty",
+			"x": 24,
+			"y": 9,
+			"edges": ["s", "w"]
+		},
+		{
+			"type": "empty",
+			"x": 17,
+			"y": 7,
+			"edges": ["s", "e"]
+		},
+		{
+			"type": "empty",
+			"x": 11,
+			"y": 3,
+			"edges": ["n", "s", "e", "w"]
+		},
 		{"type": "none", "x": 9, "y": 0, "edges": []},
 		{"type": "none", "x": 10, "y": 0, "edges": []},
 		{"type": "none", "x": 11, "y": 0, "edges": []},
@@ -630,6 +648,20 @@
 			"texture": "health",
 			"health": 8
 		},
+		{
+			"type": "stamina_heal",
+			"x": 17,
+			"y": 7,
+			"texture": "stamina_heal",
+			"stamina": 3
+		},
+		{
+			"type": "stamina_heal",
+			"x": 11,
+			"y": 23,
+			"texture": "stamina_heal",
+			"stamina": 3
+		},
 		{"type": "reward", "x": 3, "y": 3, "texture": "reward", "function": "gold", "parameter": "100", "permanent": true},
 		{"type": "reward", "x": 27, "y": 2, "texture": "reward", "function": "gold", "parameter": "100", "permanent": true},
 		{"type": "reward", "x": 19, "y": 14, "texture": "reward", "function": "gold", "parameter": "30", "permanent": true},
@@ -640,7 +672,8 @@
 		{"type": "reward", "x": 13, "y": 15, "texture": "reward", "function": "tile", "parameter": "entity_fighter", "permanent": false},
 		{"type": "reward", "x": 14, "y": 10, "texture": "reward", "function": "tile", "parameter": "entity_light_healing", "permanent": false},
 		{"type": "reward", "x": 5, "y": 12, "texture": "reward", "function": "tile", "parameter": "entity_moderate_healing", "permanent": false},
-		{"type": "reward", "x": 14, "y": 19, "texture": "reward", "function": "tile", "parameter": "entity_mage", "permanent": false}
+		{"type": "reward", "x": 14, "y": 19, "texture": "reward", "function": "tile", "parameter": "entity_mage", "permanent": false},
+		{"type": "reward", "x": 24, "y": 9, "texture": "reward", "function": "tile", "parameter": "entity_light_stamina_heal", "permanent": false}
 	],
 	"temporary_entities": [
 
