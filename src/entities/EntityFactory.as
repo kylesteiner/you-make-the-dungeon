@@ -23,7 +23,7 @@ package entities {
             this.textures = textures;
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
-            unlockTile(FIGHTER);
+            //unlockTile(FIGHTER);
             //unlockTile(MODERATE_HEALING);
             this.entityText = EntityDescriptions.setupDescriptions();
         }
