@@ -20,6 +20,7 @@ package {
 		public static const CINEMATIC_COMPLETE:String = "cinematic_complete";
 		public static const UNLOCK_TILE:String = "unlock_tile";
 		public static const CHARACTER_LOS_CHANGE:String = "character_los_change";
+		public static const GAIN_SCORE:String = "gain_score";
 
 		public var x:int;
 		public var y:int;

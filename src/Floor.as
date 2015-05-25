@@ -76,7 +76,7 @@ package {
 		public var runSummary:Summary;
 		private var preHealth:int;
 
-		private var totalRuns:int;
+		public var totalRuns:int;
 		private var lastStateSeen:String;
 
 		// grid: The initial layout of the floor.

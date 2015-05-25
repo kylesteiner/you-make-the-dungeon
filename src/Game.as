@@ -100,10 +100,18 @@ package {
 		private var cameraAccel:Number;
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
-		
+
 		// for action 21, logging hover info help
 		private var helping:Boolean;
 		private var timeHovered:Number;
+
+		private var mindJoltScore:int;
+		public static const SCORE_GOLD:int = 1;
+		public static const SCORE_DEATH:int = -100;
+		public static const SCORE_FINISH:int = 1000;
+		public static const SCORE_RUNS:int = -1;
+		public static const SCORE_ENEMY:int = 10;
+		public static const SCORE_REWARD:int = 20;
 
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
@@ -414,6 +422,12 @@ package {
 		}
 
 		public function transitionToStart():void {
+			mindJoltScore += SCORE_FINISH;
+			mindJoltScore += currentFloor.totalRuns * SCORE_RUNS;
+			MindJoltAPI.service.submitScore(mindJoltScore, null, finishTransition);
+		}
+
+		public function finishTransition():void {
 			createMainMenu();
 		}
 
@@ -564,6 +578,7 @@ package {
 				reason = "staminaExpended";
 			} else if (currentFloor.char.hp <= 0) {
 				reason = "healthExpended";
+				mindJoltScore += SCORE_DEATH;
 			} else {
 				reason = "endRunButton";
 			}
@@ -576,6 +591,9 @@ package {
 				"damageTaken":runSummary.damageTaken,
 				"reason":reason
 			});
+
+			mindJoltScore += runSummary.goldCollected * SCORE_GOLD;
+			mindJoltScore += rumSummary.enemiesDefeated * SCORE_ENEMY;
 
 			removeChild(endButton);
 			removeChild(runHud);
@@ -633,7 +651,7 @@ package {
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
 			cursorAnim.advanceTime(event.passedTime);
-			
+
 			if (helping) {
 				timeHovered += event.passedTime;
 			}
@@ -1058,6 +1076,8 @@ package {
 
 		public function onTileUnlock(event:GameEvent):void {
 			removeChild(tileUnlockPopup);
+
+			mindJoltScore += SCORE_REWARD;
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Util.mixer.play(Util.LEVEL_UP);

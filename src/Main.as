@@ -7,6 +7,7 @@ package {
 	import flash.utils.getQualifiedClassName;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import MindJoltAPI;
 
 	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
@@ -20,6 +21,8 @@ package {
 		private var lastChange:Number;
 
 		public function Main() {
+			MindJoltAPI.service.connect("05L6E95R1EEAY0JS", this);
+			MindJoltAPI.ad.showPreGameAd({clip:this});
 			stop();
 			loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
 			loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
