@@ -36,6 +36,10 @@ package entities {
 			return new Sprite();
 		}
 
+		public function generateDescription():String {
+			return "default description";
+		}
+
 		// Override if the state of the entity needs to be reset between runs.
 		public function reset():void {}
 	}

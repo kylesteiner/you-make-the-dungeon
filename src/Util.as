@@ -56,6 +56,8 @@ package {
 		public static const SHOP_ITEM:String = "shop_item";
 		public static const RUN_BANNER:String = "run_banner";
 		public static const BUILD_BANNER:String = "build_banner";
+		public static const RUN_HELP:String = "run_help";
+		public static const BUILD_HELP:String = "build_help";
 
 		public static const TILE_E:String = "tile_e";
 		public static const TILE_EW:String = "tile_ew";
@@ -91,9 +93,13 @@ package {
 		public static const ICON_RUN:String = "icon_run";
 		public static const ICON_END:String = "icon_end";
 		public static const ICON_ATK:String = "icon_attack";
+		public static const ICON_ATK_MED:String = "icon_attack_med";
 		public static const ICON_HEALTH:String = "icon_health";
+		public static const ICON_HEALTH_MED:String = "icon_health_med";
 		public static const ICON_STAMINA:String = "icon_stamina";
+		public static const ICON_STAMINA_MED:String = "icon_stamina_med";
 		public static const ICON_LOS:String = "icon_los";
+		public static const ICON_LOS_MED:String = "icon_los_med";
 		public static const ICON_GOLD:String = "icon_gold";
 		public static const ICON_DELETE:String = "icon_delete";
 		public static const ICON_SHOP:String = "icon_shop";
@@ -106,17 +112,25 @@ package {
 		public static const ICON_SLOW_COMBAT:String = "icon_slow_combat";
 		public static const ICON_FAST_RUN:String = "icon_fast_run";
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
+		public static const ICON_HELP:String = "icon_help";
+
+		public static const ENEMY_MENU:String = "enemy_menu";
+		public static const HEALING_MENU:String = "healing_menu";
+		public static const TRAP_MENU:String = "trap_menu";
 
 		public static const TILE_HUD:String = "tile_hud";
 		public static const CHAR_HUD:String = "char_hud";
 
-		public static const MUTE_KEY:int = Keyboard.M;
+		public static const BGM_MUTE_KEY:int = Keyboard.M;
+		public static const SFX_MUTE_KEY:int = Keyboard.COMMA;
 		public static const COMBAT_SKIP_KEY:int = Keyboard.K;
+		public static const SPEED_TOGGLE_KEY:int = Keyboard.J;
 		public static const UP_KEY:int = Keyboard.W;
 		public static const LEFT_KEY:int = Keyboard.A;
 		public static const RIGHT_KEY:int = Keyboard.D;
 		public static const DOWN_KEY:int = Keyboard.S;
 		public static const TUTORIAL_SKIP_KEY:int = Keyboard.G;
+		public static const CHANGE_PHASE_KEY:int = Keyboard.SPACE;
 
 		// if we want to use arrow keys, here are the relevant char codes:
 		// up: 38		left: 37
@@ -134,7 +148,10 @@ package {
 		public static const FLOOR_9:String = "floor9";
 		public static const FLOOR_10:String = "floor10";
 		public static const FLOOR_11:String = "floor11";
-		public static const MAIN_FLOOR:String = "main_floor"
+		public static const MAIN_FLOOR:String = "main_floor";
+
+		// Room callbacks
+		public static const ROOMCB_NONE:String = "roomcb_none";
 
 		public static const TUTORIAL_NEA:String = "tutorial_nea";
 		public static const TUTORIAL_EXIT:String = "tutorial_exit"
@@ -142,7 +159,15 @@ package {
 		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"
 		public static const TUTORIAL_KEYS:String = "tutorial_keys"
-		public static const TUTORIAL_UI:String = "tutorial_ui"
+
+		public static const TILE_UP_ACTIVE:String = "tile_up_active";
+		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
+		public static const TILE_DOWN_ACTIVE:String = "tile_down_active";
+		public static const TILE_DOWN_INACTIVE:String = "tile_down_inactive";
+		public static const TILE_RIGHT_ACTIVE:String = "tile_right_active";
+		public static const TILE_RIGHT_INACTIVE:String = "tile_right_inactive";
+		public static const TILE_LEFT_ACTIVE:String = "tile_left_active";
+		public static const TILE_LEFT_INACTIVE:String = "tile_left_inactive";
 
 		public static const COMBAT_BG:String = "combat_bg";
 		public static const COMBAT_SHADOW:String = "combat_shadow";
@@ -155,6 +180,8 @@ package {
 		public static const CHAR_COMBAT_ATTACK:String = "character_combat_attack";
 		public static const CHAR_COMBAT_FAINT:String = "character_combat_faint";
 		public static const HEALING:String = "health";
+		public static const STAMINA_HEAL:String = "stamina_heal";
+		public static const REWARD:String = "reward";
 		public static const KEY:String = "key";
 		public static const ENEMY_COMBAT_IDLE:String = "enemy_combat_idle";
 		public static const ENEMY_COMBAT_ATTACK:String = "enemy_combat_attack";
@@ -176,6 +203,8 @@ package {
 		public static const SFX_ATTACK:String = "sfx_attack";
 		public static const TILE_REMOVE:String = "tile_remove";
 		public static const COIN_COLLECT:String = "coin_collect";
+		public static const GOLD_SPEND:String = "gold_spend";
+		public static const REWARD_COLLECT:String = "reward_collect";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -184,19 +213,28 @@ package {
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_XP:int = 0;
 		public static const STARTING_HEALTH:int = 5;
-		public static const STARTING_STAMINA:int = 5; // high for debug purposes
-		public static const STARTING_GOLD:int = 60; // high for debug purposes
+		public static const STARTING_STAMINA:int = 5;
+		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
-		// Costs go here
-		public static const BASE_TILE_COST:int = 5;
+		// Build costs
+		public static const BASE_TILE_COST:int = 2;
 		public static const REFUND_PERCENT:int = 50;
 		public static const ENEMY_FIGHTER_COST:int = 20;
-		public static const ENEMY_MAGE_COST:int = 50;
-		public static const HEALING_COST:int = 15;
+		public static const ENEMY_MAGE_COST:int = 40;
+		public static const LIGHT_HEALING_COST:int = 20;
+		public static const MODERATE_HEALING_COST:int = 40;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
+
+		// Upgrade costs
+		public static const BASE_HP_UPGRADE_COST:int = 6;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 6;
+		public static const BASE_ATTACK_UPGRADE_COST:int = 10;
+		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
 		public static var logger:Logger;
 		public static var speed:int;
+		public static var mixer:Mixer;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

@@ -3,9 +3,8 @@
 
 package {
 	import flash.ui.Keyboard;
-	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import mx.utils.StringUtil;
+	import flash.geom.Point;
 
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -47,7 +46,7 @@ package {
 
 		// Entities that have been removed in by character actions the run phase
 		// but need to be replaced after the run phase.
-		private var removedEntities:Array;
+		public var removedEntities:Array;
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
 
@@ -55,6 +54,10 @@ package {
 		private var floorFiles:Dictionary;
 		private var onCompleteCallback:Function;
 		public var altCallback:Function;
+
+		// Room metadata and control flow
+		public var rooms:RoomSet;
+		public var roomFunctions:Dictionary;
 
 		// Assets.
 		private var textures:Dictionary;
@@ -74,6 +77,7 @@ package {
 		private var preHealth:int;
 
 		private var totalRuns:int;
+		private var lastStateSeen:String;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -168,7 +172,6 @@ package {
 				tType = tile["type"];
 				tX = tile["x"];
 				tY = tile["y"];
-
 				// Build the String referring to the texture.
 				// Final portion of each string needs to have
 				// escape characters stripped off. This will cause
@@ -219,7 +222,11 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward);
+					var stationary:Boolean;
+					if (entity["stationary"]) {
+						stationary = entity["stationary"];
+					}
+					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					addChild(enemy);
 				} else if (entity["type"] == "healing") {
@@ -234,6 +241,18 @@ package {
 					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
 					addChild(obj);
+				} else if (entity["type"] == "reward") {
+					var callback:String = entity["function"];
+					var param:String = entity["parameter"];
+					var permanent:Boolean = entity["permanent"];
+					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], permanent, callback, param);
+					entityGrid[tX][tY] = rewardTile;
+					addChild(rewardTile);
+				} else if (entity["type"] == "stamina_heal") {
+					var stamina:int = entity["stamina"];
+					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, textures[textureName], stamina);
+					entityGrid[tX][tY] = staminaHeal;
+					addChild(staminaHeal);
 				}
 
 				if (fogGrid[tX][tY]) {
@@ -241,20 +260,27 @@ package {
 				}
 			}
 
+			roomFunctions = new Dictionary();
+			//roomFunctions[Util.ROOMCB_NONE] = SOME FUNCTION
+			rooms = new RoomSet(floorData["rooms"], roomFunctions);
+
 			highlightedLocations = new Array(gridWidth);
 			for (i = 0; i < gridWidth; i++) {
 				highlightedLocations[i] = new Array(gridHeight);
 			}
 
 			addChild(char);
+			addChild(rooms);
 
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
+			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
+			addEventListener(GameEvent.STAMINA_HEALED, onStaminaHeal);
 			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -280,7 +306,14 @@ package {
 		}
 
 		public function toggleRun(gameState:String):void {
+			if(gameState == lastStateSeen) {
+				return;
+			}
+
+			lastStateSeen = gameState;
+
 			char.toggleRunUI();
+			pressedKeys = new Array();
 
 			// Ensure that the character and all enemies are higher in the
 			// display order than the tiles.
@@ -306,40 +339,11 @@ package {
 						&& !fogGrid[x][y]
 						&& !(char.grid_x == x && char.grid_y == y)
 						&& gameState == Game.STATE_RUN) {
-						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], Util.randomRange(1, 1 + totalRuns / 15));
+						goldSprite = new Coin(x, y, textures[Util.ICON_GOLD], 1);
 						goldGrid[x][y] = goldSprite;
 						addChild(goldSprite);
 					}
 				}
-			}
-
-			// Temporary rewards code
-			if(goldGrid[3][3]) {
-				goldGrid[3][3].gold = 100;
-			}
-
-			if(goldGrid[2][27]) {
-				goldGrid[2][27].gold = 100;
-			}
-
-			if(goldGrid[14][19]) {
-				goldGrid[14][19].gold = 30;
-			}
-
-			if(goldGrid[16][1]) {
-				goldGrid[16][1].gold = 100;
-			}
-
-			if(goldGrid[19][9]) {
-				goldGrid[19][9].gold = 50;
-			}
-
-			if(goldGrid[26][24]) {
-				goldGrid[26][24].gold = 100;
-			}
-
-			if(goldGrid[28][3]) {
-				goldGrid[28][3].gold = 75;
 			}
 		}
 
@@ -374,6 +378,7 @@ package {
 			char.reset();
 
 			for each (var enemy:Enemy in activeEnemies) {
+				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				enemy.reset();
 				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
 			}
@@ -396,11 +401,49 @@ package {
 			}
 		}
 
+		/************************************************************************************************************
+		 * FOG
+		 ************************************************************************************************************/
+
+		public function removeFoggedLocationsInPath():void {
+			var x:int; var y:int; var start:Tile; var visited:Array; var available:Array;
+
+			start = getEntry();
+
+			// Build visited grid
+			visited = new Array(gridWidth);
+			for (x = 0; x < gridWidth; x++) {
+				visited[x] = new Array(gridHeight);
+				for (y = 0; y < gridHeight; y++) {
+					visited[x][y] = false;
+				}
+			}
+			removeFoggedLocationsInPathHelper(start.grid_x, start.grid_y, visited);
+		}
+
+		private function removeFoggedLocationsInPathHelper(x:int, y:int, visited:Array):void {
+			if (!visited[x][y] && grid[x][y] && !(grid[x][y] is ImpassableTile)) {
+				visited[x][y] = true;
+				removeFoggedLocations(x, y);
+				if (x + 1 < gridWidth) {
+					removeFoggedLocationsInPathHelper(x + 1, y, visited);
+				}
+				if (x - 1 >= 0) {
+					removeFoggedLocationsInPathHelper(x - 1, y, visited);
+				}
+				if (y + 1 < gridHeight) {
+					removeFoggedLocationsInPathHelper(x, y + 1, visited);
+				}
+				if (y - 1 >= 0) {
+					removeFoggedLocationsInPathHelper(x, y - 1, visited);
+				}
+			}
+		}
+
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int;
-
 			var radius:int = char.los;
 
 			for (x = i - radius; x <= i + radius; x++) {
@@ -419,6 +462,10 @@ package {
 				}
 			}
 		}
+
+		/************************************************************************************************************
+		 * TILE HIGHLIGHTING
+		 ************************************************************************************************************/
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
@@ -448,25 +495,6 @@ package {
 				   !(tile is ExitTile) &&
 				   !(tile is ImpassableTile) &&
 				   !entityGrid[tile.grid_x][tile.grid_y];
-		}
-
-		public function updateRunSpeed():void {
-			char.speed = Util.speed;
-			for (var x:int = 0; x < gridWidth; x++) {
-				for (var y:int = 0; y < gridHeight; y++) {
-					if (entityGrid[x][y] is Enemy) {
-						var enemy:Enemy = entityGrid[x][y] as Enemy;
-						enemy.speed = Util.speed;
-					}
-				}
-			}
-
-			for (var i:int = 0; i < removedEntities.length; i++) {
-				if (removedEntities[i] is Enemy) {
-					var removedEnemy:Enemy = removedEntities[i] as Enemy;
-					removedEnemy.speed = Util.speed;
-				}
-			}
 		}
 
 		private function addRemoveHighlight(x:int, y:int, hudState:String, add:Boolean):void {
@@ -507,18 +535,9 @@ package {
 
 		// Returned an array of tiles on the grid that the player can move the selected tile to.
 		private function getAllowedLocations(directions:Array):Array {
-			var x:int; var y:int; var start_x:int; var start_y:int; var visited:Array; var available:Array;
+			var x:int; var y:int; var start:Tile; var visited:Array; var available:Array;
 
-			// Find entry tile
-			OuterLoop: for (x = 0; x < grid.length; x++) {
-				for (y = 0; y < grid[x].length; y++) {
-					if (grid[x][y] is EntryTile) {
-						start_x = x;
-						start_y = y;
-						break OuterLoop;
-					}
-				}
-			}
+			start = getEntry();
 
 			// Build visited & available grids
 			available = new Array(gridWidth);
@@ -527,11 +546,11 @@ package {
 				available[x] = new Array(gridHeight);
 				visited[x] = new Array(gridHeight);
 				for (y = 0; y < gridHeight; y++) {
-					available[x][y] = false;;
+					available[x][y] = false;
 					visited[x][y] = false;
 				}
 			}
-			getAllowedLocationsHelper(start_x, start_y, directions, visited, available, -1);
+			getAllowedLocationsHelper(start.grid_x, start.grid_y, directions, visited, available, -1);
 			return available;
 		}
 
@@ -567,6 +586,29 @@ package {
 				}
 				if (y - 1 >= 0 && grid[x][y].north) {
 					getAllowedLocationsHelper(x, y - 1, directions, visited, available, Util.SOUTH);
+				}
+			}
+		}
+
+		/************************************************************************************************************
+		 * END OF TILE HIGHLIGHTING
+		 ************************************************************************************************************/
+
+		public function updateRunSpeed():void {
+			char.speed = Util.speed;
+			for (var x:int = 0; x < gridWidth; x++) {
+				for (var y:int = 0; y < gridHeight; y++) {
+					if (entityGrid[x][y] is Enemy) {
+						var enemy:Enemy = entityGrid[x][y] as Enemy;
+						enemy.speed = Util.speed;
+					}
+				}
+			}
+
+			for (var i:int = 0; i < removedEntities.length; i++) {
+				if (removedEntities[i] is Enemy) {
+					var removedEnemy:Enemy = removedEntities[i] as Enemy;
+					removedEnemy.speed = Util.speed;
 				}
 			}
 		}
@@ -823,12 +865,12 @@ package {
 
 		// Event handler for when a character arrives at an exit tile.
 		private function onCharExited(e:GameEvent):void {
-			/*if (Util.logger) {
+			if (Util.logger) {
 				Util.logger.logLevelEnd({
 					"characterHpRemaining":char.hp,
 					"characterMaxHP":char.maxHp
 				});
-			}*/
+			}
 			completed = true;
 
 			mixer.play(Util.FLOOR_COMPLETE);
@@ -888,6 +930,35 @@ package {
 			removeChild(heal);
 
 			runSummary.amountHealed += char.hp - preHealth;
+		}
+
+		private function onStaminaHeal(event:GameEvent):void {
+			var staminaHeal:StaminaHeal = entityGrid[event.x][event.y];
+			removedEntities.push(staminaHeal);
+			entityGrid[event.x][event.y] = null;
+			removeChild(staminaHeal);
+			Util.logger.logAction(14, {
+				"staminaHealed":staminaHeal.stamina,
+				"newCharacterStamina":char.stamina
+			});
+		}
+
+		private function onRoomReveal(event:GameEvent):void {
+			mixer.play(Util.COMBAT_FAILURE);
+
+			if(!event.gameData["revealed"]) {
+				return;
+			}
+
+			var coords:Array = event.gameData["revealed"];
+			var point:Point;
+			for each(point in coords) {
+				if(fogGrid[point.x][point.y]) {
+					removeChild(fogGrid[point.x][point.y]);
+					fogGrid[point.x][point.y] = false;
+				}
+			}
+			Util.logger.logAction(7, { } );
 		}
 	}
 }
