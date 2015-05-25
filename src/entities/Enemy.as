@@ -124,6 +124,10 @@ package entities {
 			return base;
 		}
 
+		override public function generateDescription():String {
+			return "Health: " + maxHp + "\nAttack: " + attack + "\nGold: " + reward;
+		}
+
 		// Reset the monsters to their initial positions.
 		override public function reset():void {
 			moving = false;

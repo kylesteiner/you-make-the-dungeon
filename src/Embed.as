@@ -18,6 +18,9 @@ package {
 		[Embed(source='assets/backgrounds/run_phase.png')] public static const run_phase_banner:Class;
 		[Embed(source='assets/backgrounds/build_phase.png')] public static const build_phase_banner:Class;
 
+		[Embed(source='assets/backgrounds/run_help.png')] public static const run_help:Class;
+		[Embed(source='assets/backgrounds/build_help.png')] public static const build_help:Class;
+
 		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
 		//[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
@@ -29,6 +32,8 @@ package {
 
 		//[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
+		[Embed(source='assets/entities/large/chest.png')] public static var entity_reward:Class;
+		[Embed(source='assets/entities/large/stamina_heal.png')] public static var entity_stamina_heal:Class;
 		//[Embed(source='assets/entities/large/hero.png')] public static var entity_hero:Class;
 		[Embed(source='assets/entities/large/new_key.png')] public static var entity_key:Class;
 		[Embed(source='assets/entities/large/enemy_fighter.png')] public static var entity_fighter:Class;
@@ -40,12 +45,21 @@ package {
 		[Embed(source='assets/animations/cursor/cursor_small.png')] public static const icon_cursor:Class;
 		[Embed(source='assets/animations/cursor/cursor_small_2.png')] public static const icon_cursor_2:Class;
 
+		[Embed(source='assets/buttons/24x24/tile_up_active.png')] public static const tile_up_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_up_inactive.png')] public static const tile_up_inactive:Class;
+		[Embed(source='assets/buttons/24x24/tile_down_active.png')] public static const tile_down_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_down_inactive.png')] public static const tile_down_inactive:Class;
+		[Embed(source='assets/buttons/24x24/tile_right_active.png')] public static const tile_right_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_right_inactive.png')] public static const tile_right_inactive:Class;
+		[Embed(source='assets/buttons/24x24/tile_left_active.png')] public static const tile_left_active:Class;
+		[Embed(source='assets/buttons/24x24/tile_left_inactive.png')] public static const tile_left_inactive:Class;
+
 		[Embed(source='assets/icons/medium/mute_bgm.png')] public static const icon_mute_bgm:Class;
 		[Embed(source='assets/icons/medium/mute_sfx.png')] public static const icon_mute_sfx:Class;
-		[Embed(source='assets/icons/sfx_play.png')] public static const icon_sfx_playing:Class;
-		[Embed(source='assets/icons/sfx_mute.png')] public static const icon_sfx_muted:Class;
-		[Embed(source='assets/icons/bgm_play.png')] public static const icon_bgm_playing:Class;
-		[Embed(source='assets/icons/bgm_mute.png')] public static const icon_bgm_muted:Class;
+		[Embed(source='assets/icons/sfx_play_lg.png')] public static const icon_sfx_playing:Class;
+		[Embed(source='assets/icons/sfx_mute_lg.png')] public static const icon_sfx_muted:Class;
+		[Embed(source='assets/icons/bgm_play_lg.png')] public static const icon_bgm_playing:Class;
+		[Embed(source='assets/icons/bgm_mute_lg.png')] public static const icon_bgm_muted:Class;
 		[Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
 		[Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
@@ -56,12 +70,21 @@ package {
 		[Embed(source='assets/icons/los.png')] public static const icon_los:Class;
 		[Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
+		[Embed(source='assets/icons/help_lg.png')] public static const icon_help:Class;
 		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
 
-		[Embed(source='assets/icons/slow_combat.png')] public static const icon_fast_combat:Class;
-		[Embed(source='assets/icons/base_combat.png')] public static const icon_slow_combat:Class;
-		[Embed(source='assets/icons/red_run.png')] public static const icon_fast_run:Class;
-		[Embed(source='assets/icons/slow_run.png')] public static const icon_slow_run:Class;
+		[Embed(source='assets/icons/medium/enemies_menu.png')] public static const enemy_menu:Class;
+		[Embed(source='assets/icons/medium/healing_menu.png')] public static const healing_menu:Class;
+		[Embed(source='assets/icons/medium/traps_menu.png')] public static const trap_menu:Class;
+		[Embed(source='assets/icons/medium/attack.png')] public static const icon_atk_med:Class;
+		[Embed(source='assets/icons/medium/health.png')] public static const icon_health_med:Class;
+		[Embed(source='assets/icons/medium/los.png')] public static const icon_los_med:Class;
+		[Embed(source='assets/icons/medium/stamina.png')] public static const icon_stamina_med:Class;
+
+		[Embed(source='assets/icons/slow_combat_lg.png')] public static const icon_fast_combat:Class;
+		[Embed(source='assets/icons/base_combat_lg.png')] public static const icon_slow_combat:Class;
+		[Embed(source='assets/icons/red_run_lg.png')] public static const icon_fast_run:Class;
+		[Embed(source='assets/icons/slow_run_lg.png')] public static const icon_slow_run:Class;
 
 		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
 		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
@@ -82,26 +105,12 @@ package {
 
 		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
-		//[Embed(source='assets/transitions/floor0.png')] public static const transitions0:Class;
-		//[Embed(source='assets/transitions/floor1.png')] public static const transitions1:Class;
-		//[Embed(source='assets/transitions/floor2.png')] public static const transitions2:Class;
-		//[Embed(source='assets/transitions/floor3.png')] public static const transitions3:Class;
-		//[Embed(source='assets/transitions/floor4.png')] public static const transitions4:Class;
-		//[Embed(source='assets/transitions/floor5.png')] public static const transitions5:Class;
-		//[Embed(source='assets/transitions/floor6.png')] public static const transitions6:Class;
-		//[Embed(source='assets/transitions/floor7.png')] public static const transitions7:Class;
-		//[Embed(source='assets/transitions/floor8.png')] public static const transitions8:Class;
-		//[Embed(source='assets/transitions/floor9.png')] public static const transitions9:Class;
-		//[Embed(source='assets/transitions/floor_final.png')] public static const transitionsFinal:Class;
-		//[Embed(source='assets/transitions/floor_final_exp.png')] public static const transitionsFinalExp:Class;
-
 		[Embed(source='assets/tutorials/tutorial_nea.png')] public static const tutorial_nea:Class;
 		[Embed(source='assets/tutorials/tutorial_exit.png')] public static const tutorial_exit:Class;
 		[Embed(source='assets/tutorials/tutorial_gold.png')] public static const tutorial_gold:Class;
 		[Embed(source='assets/tutorials/tutorial_adventurers.png')] public static const tutorial_adventurers:Class;
 		[Embed(source='assets/tutorials/tutorial_spend.png')] public static const tutorial_spend:Class;
 		[Embed(source='assets/tutorials/tutorial_keys.png')] public static const tutorial_keys:Class;
-		[Embed(source='assets/tutorials/tutorial_ui.png')] public static const tutorial_ui:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -131,10 +140,10 @@ package {
 		[Embed(source='assets/animations/mage/idle/mage_idle_1.png')] public static const enemyMageCombatIdleAnim1:Class;
 		[Embed(source='assets/animations/mage/idle/mage_idle_2.png')] public static const enemyMageCombatIdleAnim2:Class;
 
-		[Embed(source='assets/animations/generic/attack/attack_0.png')] public static const genericAttackAnim0:Class;
-		[Embed(source='assets/animations/generic/attack/attack_1.png')] public static const genericAttackAnim1:Class;
-		[Embed(source='assets/animations/generic/attack/attack_2.png')] public static const genericAttackAnim2:Class;
-		[Embed(source='assets/animations/generic/attack/attack_3.png')] public static const genericAttackAnim3:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_0.png')] public static const genericAttackAnim0:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_1.png')] public static const genericAttackAnim1:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim2:Class;
+		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim3:Class;
 
 		[Embed(source='assets/sfx/floor_complete_new.mp3')] public static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] public static const sfxTileMove:Class;
@@ -147,15 +156,17 @@ package {
 		[Embed(source='assets/sfx/level_up.mp3')] public static const sfxLevelUp:Class;
 		[Embed(source='assets/sfx/attack.mp3')] public static const sfxAttack:Class;
 		[Embed(source='assets/sfx/coin_collect.mp3')] public static const sfxCoinCollect:Class;
+		[Embed(source='assets/sfx/spend_gold.mp3')] public static const sfxGoldSpend:Class;
+		[Embed(source='assets/sfx/chest_open_lowhz.mp3')] public static const sfxReward:Class;
 
-		//[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
+		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
 		[Embed(source='assets/bgm/glow-in-the-dark.mp3')] public static const bgmGlowInTheDark:Class;
-		//[Embed(source='assets/bgm/lovers-walk.mp3')] public static const bgmLoversWalk:Class;
 		[Embed(source='assets/bgm/oriental-drift.mp3')] public static const bgmOrientalDrift:Class;
-
-		// Currently unused
-		//[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
+		[Embed(source='assets/bgm/snowfall.mp3')] public static const bgmSnowfall:Class;
+		[Embed(source='assets/bgm/seven_nation.mp3')] public static const bgmSevenNation:Class;
+		[Embed(source='assets/bgm/pearl_cavern.mp3')] public static const bgmPearlCavern:Class;
+		[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
 
 		public static function setupTextures():Dictionary {
 			var textures:Dictionary = new Dictionary();
@@ -170,10 +181,14 @@ package {
 			textures[Util.SHOP_ITEM] = Texture.fromEmbeddedAsset(shop_item);
 			textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
 			textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
+			textures[Util.RUN_HELP] = Texture.fromEmbeddedAsset(run_help);
+			textures[Util.BUILD_HELP] = Texture.fromEmbeddedAsset(build_help);
 
 			//textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			//textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
+			textures[Util.STAMINA_HEAL] = Texture.fromBitmap(new entity_stamina_heal(), true, false, scale);
+			textures[Util.REWARD] = Texture.fromBitmap(new entity_reward(), true, false, scale);
 			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
 			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
 			textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
@@ -212,12 +227,20 @@ package {
 			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
 			textures[Util.ICON_END] = Texture.fromBitmap(new icon_end(), true, false, 1);
 			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
+			textures[Util.ICON_ATK_MED] = Texture.fromBitmap(new icon_atk_med(), true, false, 1);
 			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
+			textures[Util.ICON_HEALTH_MED] = Texture.fromBitmap(new icon_health_med(), true, false, 1);
 			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
+			textures[Util.ICON_STAMINA_MED] = Texture.fromBitmap(new icon_stamina_med(), true, false, 1);
 			textures[Util.ICON_LOS] = Texture.fromBitmap(new icon_los(), true, false, 1);
+			textures[Util.ICON_LOS_MED] = Texture.fromBitmap(new icon_los_med(), true, false, 1);
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
+
+			textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
+			textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);
+			textures[Util.TRAP_MENU] = Texture.fromBitmap(new trap_menu(), true, false, 1);
 
 			textures[Util.ICON_SFX_PLAY] = Texture.fromEmbeddedAsset(icon_sfx_playing);
 			textures[Util.ICON_SFX_MUTE] = Texture.fromEmbeddedAsset(icon_sfx_muted);
@@ -228,8 +251,18 @@ package {
 			textures[Util.ICON_SLOW_COMBAT] = Texture.fromEmbeddedAsset(icon_slow_combat);
 			textures[Util.ICON_FAST_RUN] = Texture.fromEmbeddedAsset(icon_fast_run);
 			textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
+			textures[Util.ICON_HELP] = Texture.fromBitmap(new icon_help(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
+			textures[Util.TILE_UP_ACTIVE] = Texture.fromEmbeddedAsset(tile_up_active);
+			textures[Util.TILE_UP_INACTIVE] = Texture.fromEmbeddedAsset(tile_up_inactive);
+			textures[Util.TILE_DOWN_ACTIVE] = Texture.fromEmbeddedAsset(tile_down_active);
+			textures[Util.TILE_DOWN_INACTIVE] = Texture.fromEmbeddedAsset(tile_down_inactive);
+			textures[Util.TILE_RIGHT_ACTIVE] = Texture.fromEmbeddedAsset(tile_right_active);
+			textures[Util.TILE_RIGHT_INACTIVE] = Texture.fromEmbeddedAsset(tile_right_inactive);
+			textures[Util.TILE_LEFT_ACTIVE] = Texture.fromEmbeddedAsset(tile_left_active);
+			textures[Util.TILE_LEFT_INACTIVE] = Texture.fromEmbeddedAsset(tile_left_inactive);
+
 			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 
 			textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
@@ -243,7 +276,6 @@ package {
 			textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
 			textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
 			textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
-			textures[Util.TUTORIAL_UI] = Texture.fromEmbeddedAsset(tutorial_ui);
 			return textures;
 		}
 
@@ -328,18 +360,17 @@ package {
 			return tFloors;
 		}
 
-		/*public static function setupTransitions():Dictionary {
-			var transitions:Dictionary = new Dictionary();
-			transitions[Util.MAIN_FLOOR] = Texture.fromEmbeddedAsset(transitions1);
-			return transitions;
-		}*/
-
 		public static function setupBGM():Array {
 			var tBgm:Array = new Array();
 
 			tBgm.push(new bgmGentleThoughts());
 			tBgm.push(new bgmGlowInTheDark());
 			tBgm.push(new bgmOrientalDrift());
+			tBgm.push(new bgmDivingTurtle());
+			tBgm.push(new bgmWarmInterlude());
+			tBgm.push(new bgmSnowfall());
+			tBgm.push(new bgmSevenNation());
+			tBgm.push(new bgmPearlCavern());
 
 			return tBgm;
 		}
@@ -358,6 +389,8 @@ package {
 			tSfx[Util.SFX_ATTACK] = new sfxAttack();
 			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
 			tSfx[Util.COIN_COLLECT] = new sfxCoinCollect();
+			tSfx[Util.GOLD_SPEND] = new sfxGoldSpend();
+			tSfx[Util.REWARD_COLLECT] = new sfxReward();
 
 			return tSfx;
 		}

@@ -87,6 +87,8 @@ package {
 
 
 		public function reset():void {
+			moving = false;
+			inCombat = false;
 			hp = maxHp;
 			stamina = maxStamina;
 			grid_x = initialX;

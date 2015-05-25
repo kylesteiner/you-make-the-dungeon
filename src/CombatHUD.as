@@ -195,7 +195,9 @@ package {
 
             if(attackAnimation) {
                 attackAnimation.advanceTime(e.passedTime);
-                addChild(attackAnimation);
+                if(!attackAnimation.isComplete) {
+                    addChild(attackAnimation);
+                }
             }
 
             charHealthText.text = char.hp + " / " + char.maxHp;
@@ -355,8 +357,8 @@ package {
                         mixer.play(Util.COMBAT_SUCCESS);
                     }
 
-                    xpText = createXpText(enemy.reward);
-                    addChild(xpText);
+                    //xpText = createXpText(enemy.reward);
+                    //addChild(xpText);
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();

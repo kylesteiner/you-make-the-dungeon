@@ -47,6 +47,7 @@ package {
         }
 
         public function togglePlay():void {
+
             if(playing) {
                 player.stop();
                 playing = false;
