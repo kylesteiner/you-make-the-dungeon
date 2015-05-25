@@ -4,6 +4,7 @@ package {
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 
 	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
@@ -24,7 +25,7 @@ package {
 			this.graphics.clear();
 			this.graphics.beginFill(0xcccccc);
 			this.graphics.drawRect(0, (this.stage.stageHeight - PROGRESS_BAR_HEIGHT) / 2,
-				this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
+  									   this.stage.stageWidth * event.bytesLoaded / event.bytesTotal, PROGRESS_BAR_HEIGHT);
 			this.graphics.endFill();
 		}
 
@@ -32,7 +33,7 @@ package {
 			graphics.clear();
 			gotoAndStop(2);
 
-			var RootType:Class = getDefinitionByName("src.Game") as Class;
+			var RootType:Class = getDefinitionByName(getQualifiedClassName(new Game())) as Class;
 			var StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
 			//_starling = new Starling(Game, stage);
 			_starling = new StarlingType(RootType, stage);
