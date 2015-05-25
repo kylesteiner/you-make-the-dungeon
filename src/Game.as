@@ -506,7 +506,7 @@ package {
 		private function onRoomComplete(event:GameEvent):void {
 			mixer.play(Util.COMBAT_SUCCESS);
 
-			if(!event["completed"]) {
+			if(!event.gameData["completed"]) {
 				return;
 			}
 		}
