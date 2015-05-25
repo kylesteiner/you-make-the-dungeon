@@ -121,7 +121,7 @@ package {
 			// for our own testing.
 			var cid:int = 0;
 
-			logger = Logger.initialize(gid, gname, skey, cid, null);
+			logger = Logger.initialize(gid, gname, skey, cid, null, false);
 			Util.logger = logger;
 
 			Util.speed = Util.SPEED_SLOW;
