@@ -491,6 +491,8 @@ package {
 				"numberOfTiles":numberOfTilesPlaced,
 				"numberOfEntitiesPlaced":entitiesPlaced
 			});
+			numberOfTilesPlaced = 0;
+			entitiesPlaced = 0;
 			removeChild(runButton);
 			currentFloor.clearHighlightedLocations();
 			removeChild(buildHud.currentImage);
@@ -531,11 +533,12 @@ package {
 				reason = "endRunButton";
 			}
 			logger.logAction(8, {
-				"goldEarned":runHud.goldCollected,
+				"goldEarned":runSummary.goldCollected,
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp,
-				"tilesVisited": runHud.tilesVisited,
-				"enemiesDefeated":runHud.enemiesDefeated,
+				"tilesVisited": runSummary.distanceTraveled,
+				"enemiesDefeated":runSummary.enemiesDefeated,
+				"damageTaken":runSummary.damageTaken,
 				"reason":reason
 			});
 
