@@ -596,7 +596,8 @@
 			"texture": "enemy_fighter",
 			"hp": 15,
 			"attack": 2,
-			"reward": 50
+			"reward": 50,
+			"stationary": true
 		},
 		{
 			"type": "enemy",
@@ -605,7 +606,8 @@
 			"texture": "enemy_fighter",
 			"hp": 22,
 			"attack": 1,
-			"reward": 50
+			"reward": 50,
+			"stationary": true
 		},
 		{
 			"type": "enemy",
@@ -614,7 +616,8 @@
 			"texture": "enemy_mage",
 			"hp": 9,
 			"attack": 1,
-			"reward": 100
+			"reward": 100,
+			"stationary": true
 		},
 		{
 			"type": "enemy",
@@ -623,7 +626,8 @@
 			"texture": "enemy_mage",
 			"hp": 8,
 			"attack": 5,
-			"reward": 60
+			"reward": 60,
+			"stationary": true
 		},
 		{
 			"type": "enemy",
@@ -632,7 +636,8 @@
 			"texture": "enemy_mage",
 			"hp": 15,
 			"attack": 3,
-			"reward": 100
+			"reward": 100,
+			"stationary": true
 		},
 		{
 			"type": "healing",
