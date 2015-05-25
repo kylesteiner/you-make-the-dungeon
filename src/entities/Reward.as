@@ -9,6 +9,7 @@ package entities {
 	public class Reward extends Entity {
         public var parameter:String;
         public var reward:Function
+		public var rewardName:String;
         public var permanent:Boolean;
 
 		public function Reward(g_x:int, g_y:int, texture:Texture, permanent:Boolean, rewardFunction:String, rewardParameter:String) {
@@ -16,6 +17,7 @@ package entities {
             this.parameter = rewardParameter;
             this.permanent = permanent;
 
+			rewardName = rewardFunction;
             if (rewardFunction == "gold") {
                 reward = rewardGold;
             } else if (rewardFunction == "tile") {
