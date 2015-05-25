@@ -187,7 +187,6 @@ package {
 			// Parse the tiles and place them on the grid.
 			var floorTiles:Array = floorData["tiles"];
 			preplacedTiles = floorTiles.length;
-			var en:EntryTile;
 			for (i = 0; i < floorTiles.length; i++) {
 				var tile:Object = floorTiles[i];
 
@@ -205,25 +204,19 @@ package {
 				tTexture = textures[Util.getTextureString(tN, tS, tE, tW)];
 				tDeletable = tile["deletable"];
 
-
-				var ex:ExitTile;
 				if (tile["type"] == "empty") {
 					var t:Tile = new Tile(tX, tY, tN, tS, tE, tW, tTexture);
 					grid[tX][tY] = t;
 					t.deletable = tDeletable;
-					//addChild(t);
 				} else if (tile["type"] == "entry") {
-					en = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
+					var en:EntryTile = new EntryTile(tX, tY, tN, tS, tE, tW, tTexture);
 					grid[tX][tY] = en;
 					en.deletable = tDeletable;
-					addChild(en);
-					removeChild(fogGrid[tX][tY]);
-					fogGrid[tX][tY] = null;
-					//removeFoggedLocations(tX, tY);
 				} else if (tile["type"] == "exit") {
-					ex = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
+					var ex:ExitTile = new ExitTile(tX, tY, tN, tS, tE, tW, tTexture);
 					grid[tX][tY] = ex;
 					ex.deletable = tDeletable;
+					// Special case: remove fog manually from exit tile
 					addChild(ex);
 					removeChild(fogGrid[tX][tY]);
 					fogGrid[tX][tY] = null;
@@ -231,17 +224,8 @@ package {
 					var im:ImpassableTile = new ImpassableTile(tX, tY, textures[Util.TILE_NONE]);
 					grid[tX][tY] = im;
 					im.deletable = tDeletable;
-					//addChild(im);
-				}
-
-
-
-				if (fogGrid[tX][tY]) {
-					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
 				}
 			}
-
-
 
 			// Parse the entities and place them on the entityGrid.
 			var floorEntities:Array = floorData["entities"];
@@ -263,42 +247,29 @@ package {
 					var enemy:Enemy = new Enemy(tX, tY, textureName, textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					enemy.deletable = tDeletable;
-					//addChild(enemy);
 				} else if (entity["type"] == "healing") {
 					var health:int = entity["health"];
 					var healing:Healing = new Healing(tX, tY, textures[textureName], health);
 					entityGrid[tX][tY] = healing;
 					healing.deletable = tDeletable;
-					//addChild(healing);
 				} else if (entity["type"] == "objective") {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
 					var obj:Objective = new Objective(tX, tY, textures[textureName], key, prereqs);
 					entityGrid[tX][tY] = obj;
 					objectiveState[key] = false;
-					//addChild(obj);
 				} else if (entity["type"] == "reward") {
 					var callback:String = entity["function"];
 					var param:String = entity["parameter"];
 					var permanent:Boolean = entity["permanent"];
 					var rewardTile:Reward = new Reward(tX, tY, textures[textureName], permanent, callback, param);
 					entityGrid[tX][tY] = rewardTile;
-					//addChild(rewardTile);
 				} else if (entity["type"] == "stamina_heal") {
 					var stamina:int = entity["stamina"];
 					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, textures[textureName], stamina);
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
-					//addChild(staminaHeal);
 				}
-
-				if (fogGrid[tX][tY]) {
-					setChildIndex(fogGrid[tX][tY], numChildren - 1); // Move fog tile to front
-				}
-			}
-
-			if(en) {
-				removeFoggedLocations(en.grid_x, en.grid_y);
 			}
 
 			removeFoggedLocationsInPath();
