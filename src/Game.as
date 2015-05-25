@@ -48,6 +48,9 @@ package {
 		private var endButton:Clickable;
 		private var combatSpeedButton:Clickable;
 		private var runSpeedButton:Clickable;
+		private var helpButton:Sprite;
+		private var helpImageSprite:Sprite;
+		private var helpImage:Image;
 
 		//private var charHud:CharHud;
 		private var mixer:Mixer;
@@ -196,6 +199,21 @@ package {
 			runSpeedButton.x = combatSpeedButton.x - runSpeedButton.width - Util.UI_PADDING;
 			runSpeedButton.y = combatSpeedButton.y;
 
+			helpImageSprite = new Sprite();
+			helpImageSprite.x = -6;
+			helpImageSprite.y = -48;
+			var helpQuad:Quad = new Quad(Util.STAGE_WIDTH*2, Util.STAGE_HEIGHT*2, Color.WHITE);
+			helpQuad.alpha = 0.7;
+			helpImageSprite.addChild(helpQuad);
+			helpButton = new Sprite();
+			var helpButtonQuad:Quad = new Quad(32, 32, Color.WHITE);
+			helpButtonQuad.alpha = 0;
+			helpButton.addChild(helpButtonQuad);
+			var helpButtonImage:Image = new Image(textures[Util.ICON_HELP]);
+			helpButton.addChild(helpButtonImage);
+			helpButton.x = runSpeedButton.x - helpButton.width - Util.UI_PADDING;
+			helpButton.y = runSpeedButton.y;
+
 			goldHud = new GoldHUD(Util.STARTING_GOLD, textures, mixer);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			goldHud.y = Util.UI_PADDING;
@@ -302,6 +320,8 @@ package {
 				removeChild(runHud);
 				removeChild(combatSpeedButton);
 				removeChild(runSpeedButton);
+				removeChild(helpButton);
+				removeChild(helpImageSprite);
 			}
 		}
 
@@ -370,6 +390,7 @@ package {
 			addChild(runButton);
 			addChild(goldHud);
 			addChild(shopButton);
+			addChild(helpButton);
 			//charHud = new CharHud(currentFloor.char, textures);
 			//addChild(charHud);
 
@@ -711,6 +732,22 @@ package {
 
 			if (touch.phase == TouchPhase.BEGAN && tileUnlockPopup != null && tileUnlockTimer > TILE_UNLOCK_THRESHOLD) {
 				closeTileUnlock();
+			}
+
+			var isTouchHelpButton:Boolean;
+			var touchX:int = touch.globalX;
+			var touchY:int = touch.globalY;
+			if (touchX >= helpButton.x && touchX < helpButton.x + helpButton.width &&
+				touchY >= helpButton.y && touchY < helpButton.y + helpButton.height) {
+				isTouchHelpButton = true;
+			}
+			if (isTouchHelpButton && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
+				helpImageSprite.removeChild(helpImage);
+				helpImage = new Image(textures[gameState == STATE_BUILD ? Util.BUILD_HELP : Util.RUN_HELP]);
+				helpImageSprite.addChild(helpImage);
+				addChild(helpImageSprite);
+			} else {
+				removeChild(helpImageSprite);
 			}
 
 			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {

@@ -27,7 +27,6 @@ package {
             tutorialOrder.push(Util.TUTORIAL_ADVENTURERS);
             tutorialOrder.push(Util.TUTORIAL_SPEND);
             tutorialOrder.push(Util.TUTORIAL_KEYS);
-            tutorialOrder.push(Util.TUTORIAL_UI);
 
             blackQuad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
             blackQuad.alpha = 0.7;

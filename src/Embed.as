@@ -18,6 +18,9 @@ package {
 		[Embed(source='assets/backgrounds/run_phase.png')] public static const run_phase_banner:Class;
 		[Embed(source='assets/backgrounds/build_phase.png')] public static const build_phase_banner:Class;
 
+		[Embed(source='assets/backgrounds/run_help.png')] public static const run_help:Class;
+		[Embed(source='assets/backgrounds/build_help.png')] public static const build_help:Class;
+
 		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
 		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
 		//[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
@@ -67,6 +70,7 @@ package {
 		[Embed(source='assets/icons/los.png')] public static const icon_los:Class;
 		[Embed(source='assets/icons/gold.png')] public static const icon_gold:Class;
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
+		[Embed(source='assets/icons/help_lg.png')] public static const icon_help:Class;
 		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
 
 		[Embed(source='assets/icons/medium/enemies_menu.png')] public static const enemy_menu:Class;
@@ -103,7 +107,6 @@ package {
 		[Embed(source='assets/tutorials/tutorial_adventurers.png')] public static const tutorial_adventurers:Class;
 		[Embed(source='assets/tutorials/tutorial_spend.png')] public static const tutorial_spend:Class;
 		[Embed(source='assets/tutorials/tutorial_keys.png')] public static const tutorial_keys:Class;
-		[Embed(source='assets/tutorials/tutorial_ui.png')] public static const tutorial_ui:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -174,6 +177,8 @@ package {
 			textures[Util.SHOP_ITEM] = Texture.fromEmbeddedAsset(shop_item);
 			textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
 			textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
+			textures[Util.RUN_HELP] = Texture.fromEmbeddedAsset(run_help);
+			textures[Util.BUILD_HELP] = Texture.fromEmbeddedAsset(build_help);
 
 			//textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			//textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
@@ -224,6 +229,7 @@ package {
 			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
 			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
+
 			textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
 			textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);
 			textures[Util.TRAP_MENU] = Texture.fromBitmap(new trap_menu(), true, false, 1);
@@ -237,6 +243,7 @@ package {
 			textures[Util.ICON_SLOW_COMBAT] = Texture.fromEmbeddedAsset(icon_slow_combat);
 			textures[Util.ICON_FAST_RUN] = Texture.fromEmbeddedAsset(icon_fast_run);
 			textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
+			textures[Util.ICON_HELP] = Texture.fromBitmap(new icon_help(), true, false, 1);
 
 			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			textures[Util.TILE_UP_ACTIVE] = Texture.fromEmbeddedAsset(tile_up_active);
@@ -261,7 +268,6 @@ package {
 			textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
 			textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
 			textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
-			textures[Util.TUTORIAL_UI] = Texture.fromEmbeddedAsset(tutorial_ui);
 			return textures;
 		}
 
