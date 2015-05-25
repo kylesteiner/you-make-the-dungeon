@@ -24,6 +24,7 @@ package {
 	{
 		private var server:ICgsServerApi;
 		private var levelStartTime:Number;
+		private var canLog:Boolean;
 
 		private static function loadUrl(req:URLRequest, callback:Function):void {
 			var loader:URLLoader = new URLLoader();
@@ -114,6 +115,7 @@ package {
 				trace("Logging quest with dqid: " + q.dqid);
 			});
 			levelStartTime = new Date().time;
+			canLog = true;
 		}
 
 		/**
@@ -125,6 +127,9 @@ package {
 		 */
 		public function logAction(aid:int, data:Object):void
 		{
+			if(!canLog) {
+				return;
+			}
 			if (aid <= 0) throw new ArgumentError("aid must be positive");
 			var action:QuestAction = new QuestAction(aid, new Date().time - levelStartTime);
 			action.setDetail(data);
@@ -140,6 +145,7 @@ package {
 		public function logLevelEnd(data:Object):void
 		{
 			server.logQuestEnd(data);
+			canLog = false;
 		}
 	}
 }
