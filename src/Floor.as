@@ -77,6 +77,7 @@ package {
 		private var preHealth:int;
 
 		private var totalRuns:int;
+		private var lastStateSeen:String;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -305,6 +306,12 @@ package {
 		}
 
 		public function toggleRun(gameState:String):void {
+			if(gameState == lastStateSeen) {
+				return;
+			}
+
+			lastStateSeen = gameState;
+
 			char.toggleRunUI();
 			pressedKeys = new Array();
 
@@ -397,7 +404,7 @@ package {
 		/************************************************************************************************************
 		 * FOG
 		 ************************************************************************************************************/
-		
+
 		public function removeFoggedLocationsInPath():void {
 			var x:int; var y:int; var start:Tile; var visited:Array; var available:Array;
 
@@ -413,7 +420,7 @@ package {
 			}
 			removeFoggedLocationsInPathHelper(start.grid_x, start.grid_y, visited);
 		}
-		
+
 		private function removeFoggedLocationsInPathHelper(x:int, y:int, visited:Array):void {
 			if (!visited[x][y] && grid[x][y] && !(grid[x][y] is ImpassableTile)) {
 				visited[x][y] = true;
@@ -432,7 +439,7 @@ package {
 				}
 			}
 		}
-		
+
 		// given an i and j (x and y) [position on the grid], removes the fogged locations around it
 		// does 2 in each direction, and one in every diagonal direction
 		public function removeFoggedLocations(i:int, j:int):void {
@@ -459,7 +466,7 @@ package {
 		/************************************************************************************************************
 		 * TILE HIGHLIGHTING
 		 ************************************************************************************************************/
-		
+
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
 			var x:int; var y:int; var addBool:Boolean;
@@ -582,11 +589,11 @@ package {
 				}
 			}
 		}
-		
+
 		/************************************************************************************************************
 		 * END OF TILE HIGHLIGHTING
 		 ************************************************************************************************************/
-		
+
 		public function updateRunSpeed():void {
 			char.speed = Util.speed;
 			for (var x:int = 0; x < gridWidth; x++) {
