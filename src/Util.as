@@ -210,17 +210,23 @@ package {
 		public static const STARTING_XP:int = 0;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 60;
+		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
-		// Costs go here
-		public static const BASE_TILE_COST:int = 5;
+		// Build costs
+		public static const BASE_TILE_COST:int = 2;
 		public static const REFUND_PERCENT:int = 50;
-		public static const ENEMY_FIGHTER_COST:int = 40;
-		public static const ENEMY_MAGE_COST:int = 60;
-		public static const LIGHT_HEALING_COST:int = 30;
-		public static const MODERATE_HEALING_COST:int = 65;
-		public static const LIGHT_STAMINA_HEAL_COST:int = 40;
+		public static const ENEMY_FIGHTER_COST:int = 20;
+		public static const ENEMY_MAGE_COST:int = 40;
+		public static const LIGHT_HEALING_COST:int = 20;
+		public static const MODERATE_HEALING_COST:int = 40;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
+
+		// Upgrade costs
+		public static const BASE_HP_UPGRADE_COST:int = 6;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 6;
+		public static const BASE_ATTACK_UPGRADE_COST:int = 10;
+		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
 		public static var logger:Logger;
 		public static var speed:int;
