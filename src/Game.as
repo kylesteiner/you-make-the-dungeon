@@ -106,6 +106,9 @@ package {
 
 		private var saveGame:SharedObject;
 
+		private var cid:int;
+		private var versionID:int;
+
 		public function Game() {
 			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
 		}
@@ -121,7 +124,8 @@ package {
 			// this is the current version, we'll treat 0 as the debugging
 			// version, and change this for each iteration on, back to 0
 			// for our own testing.
-			var cid:int = 0;
+			versionID = 0;
+			cid = 0;
 
 			logger = Logger.initialize(gid, gname, skey, cid, null, false);
 			Util.logger = logger;
@@ -464,7 +468,12 @@ package {
 					320,
 					createCredits,
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton)));
+
+			var versionString:String = "v " + versionID + "." + cid;
+			var version:TextField = new TextField(48, 16, versionString, Util.DEFAULT_FONT, 16);
+			version.x = 4;
+			version.y = Util.STAGE_HEIGHT - version.height - 4;
+			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton, version)));
 		}
 
 		public function createCredits():void {
@@ -786,7 +795,7 @@ package {
 				helping = true;
 			} else {
 				removeChild(helpImageSprite);
-				if (helping && gameState == STATE_BUILD || gameState == STATE_RUN) {
+				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
 					var state:String = gameState == STATE_BUILD ? "buildState" : "runState";
 					logger.logAction(21, {
 						"phaseHovered":state,
