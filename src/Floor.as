@@ -104,17 +104,14 @@ package {
 			this.animations = animations;
 			this.runSummary = runSummary;
 
+			this.initialHp = initialHp;
+			this.initialStamina = initialStamina;
+			this.initialAttack = initialAttack;
+			initialLoS = initialLineOfSight;
+
 			if (saveGame.size != 0) {
-				initialHp = saveGame.data["hp"];
-				initialStamina = saveGame.data["stamina"];
-				initialAttack = saveGame.data["attack"];
-				initialLoS = saveGame.data["los"];
 				totalRuns = saveGame.data["totalRuns"];
 			} else {
-				this.initialHp = initialHp;
-				this.initialStamina = initialStamina;
-				this.initialAttack = initialAttack;
-				initialLoS = initialLineOfSight;
 				totalRuns = 0;
 			}
 

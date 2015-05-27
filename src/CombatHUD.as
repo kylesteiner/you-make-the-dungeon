@@ -46,8 +46,6 @@ package {
 
         private var mixer:Mixer;
 
-        private var logger:Logger;
-
         private var charRetreating:Boolean;
         private var enemyRetreating:Boolean;
 
@@ -72,21 +70,16 @@ package {
                                c:Character,
                                e:Enemy,
                                skip:Boolean,
-                               soundMixer:Mixer,
-                               dataLogger:Logger) {
+                               soundMixer:Mixer) {
             super();
             char = c;
             enemy = e;
             textures = textureDict;
             animations = animDict;
             mixer = soundMixer;
-            logger = dataLogger;
 
             touchable = false;
             skipping = skip;
-
-            //e.state.hp = 10;
-            //char.hp = 10;
 
             setStage();
 

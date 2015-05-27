@@ -1,7 +1,5 @@
 package {
-	import flash.media.*;
 	import flash.net.SharedObject;
-	import flash.ui.Mouse;
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -20,15 +18,18 @@ package {
 	import tiles.*;
 
 	public class Game extends Sprite {
-		public static const FLOOR_FAIL_TEXT:String = "Nea was defeated!\nClick here to continue building.";
-		public static const LEVEL_UP_TEXT:String = "Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
+		public static const FLOOR_FAIL_TEXT:String =
+				"Nea was defeated!\nClick here to continue building.";
+		public static const LEVEL_UP_TEXT:String =
+				"Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
+
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
 		public static const TILE_UNLOCK_THRESHOLD:Number = 0.05;
+
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
 		public static const MAX_CAMERA_ACCEL:int = 3;
 
-		public static const STATE_MENU:String = "game_menu";
 		public static const STATE_BUILD:String = "game_build";
 		public static const STATE_RUN:String = "game_run";
 		public static const STATE_COMBAT:String = "game_combat";
@@ -37,12 +38,11 @@ package {
 		public static const STATE_SUMMARY:String = "game_summary";
 		public static const STATE_CINEMATIC:String = "game_cinematic";
 
-		private var cursorAnim:MovieClip;
-		private var cursorReticle:Image;
-		private var cursorHighlight:Image;
+		private var textures:Dictionary;  // Map String -> Texture
+		private var floors:Dictionary; // Map String -> String
+		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
+
 		private var shopButton:Clickable;
-		private var bgmMuteButton:Clickable;
-		private var sfxMuteButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var combatSpeedButton:Clickable;
@@ -51,26 +51,17 @@ package {
 		private var helpImageSprite:Sprite;
 		private var helpImage:Image;
 
-		//private var charHud:CharHud;
+		private var bgmMuteButton:Clickable;
+		private var sfxMuteButton:Clickable;
 		private var mixer:Mixer;
-		private var textures:Dictionary;  // Map String -> Texture. See util.as.
-		private var floors:Dictionary; // Map String -> String
-		//private var transitions:Dictionary; // Map String -> Texture
-		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
 
-		private var sfx:Dictionary; // Map String -> SFX
-		private var bgm:Array;
+		private var cursorHighlight:Image;
+		private var cursorAnim:MovieClip;
+		private var cursorReticle:Image;
 
-		private var staticBackgroundImage:Image;
 		private var world:Sprite;
-		private var menuWorld:Sprite;
 		private var currentFloor:Floor;
-		private var currentTransition:Clickable;
-		private var currentMenu:Menu;
-		private var isMenu:Boolean; // probably need to change to state;
-		private var messageToPlayer:Clickable;
 
-		public var logger:Logger;
 		private var numberOfTilesPlaced:int;
 		private var entitiesPlaced:int;
 		private var goldSpent:int;
@@ -106,113 +97,135 @@ package {
 
 		private var saveGame:SharedObject;
 
-		private var cid:int;
-		private var versionID:int;
-
-		public function Game() {
-			this.addEventListener(Event.ADDED_TO_STAGE, startGame);
-		}
-
-		private function startGame(event:Event):void {
-			Mouse.hide();
+		public function Game(fromSave:Boolean,
+							 textures:Dictionary,
+							 animations:Dictionary,
+							 floors:Dictionary,
+							 mixer:Mixer,
+							 sfxMuteButton:Clickable,
+							 bgmMuteButton:Clickable,
+							 cursorReticle:Image,
+							 cursorAnim:MovieClip) {
+			super();
 			saveGame = SharedObject.getLocal("saveGame");
+			this.textures = textures;
+			this.animations = animations;
+			this.floors = floors;
+			this.mixer = mixer;
+			this.sfxMuteButton = sfxMuteButton;
+			this.bgmMuteButton = bgmMuteButton;
+			this.cursorReticle = cursorReticle;
+			this.cursorAnim = cursorAnim;
 
-			var gid:uint = 115;
-			var gname:String = "cgs_gc_YouMakeTheDungeon";
-			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
-
-			// this is the current version, we'll treat 0 as the debugging
-			// version, and change this for each iteration on, back to 0
-			// for our own testing.
-			versionID = 0;
-			cid = 0;
-
-			logger = Logger.initialize(gid, gname, skey, cid, null, false);
-			Util.logger = logger;
-
-			Util.speed = Util.SPEED_SLOW;
-
-			sfx = Embed.setupSFX();
-			bgm = Embed.setupBGM();
-
-			mixer = new Mixer(bgm, sfx);
-			addChild(mixer);
-			Util.mixer = mixer;
-
-			// for keeping track of how many tiles are placed before hitting reset
+			// Log variables
 			numberOfTilesPlaced = 0;
 			timeHovered = 0;
-
-			textures = Embed.setupTextures();
-			floors = Embed.setupFloors();
-			//transitions = Embed.setupTransitions();
-			animations = Embed.setupAnimations();
-
-			staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
-			addChild(staticBackgroundImage);
 
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
-			gold = Util.STARTING_GOLD;
-
-			initializeFloorWorld();
-			initializeMenuWorld();
-
-			cursorReticle = new Image(textures[Util.CURSOR_RETICLE]);
-			cursorReticle.touchable = false;
-			addChild(cursorReticle);
-
-			cursorAnim = new MovieClip(animations[Util.ICON_CURSOR][Util.ICON_CURSOR], Util.ANIM_FPS);
-			cursorAnim.loop = true;
-			cursorAnim.play();
-			cursorAnim.touchable = false;
-			addChild(cursorAnim);
-
-			isMenu = false;
-			createMainMenu();
-
+			gameState = fromSave ? STATE_BUILD : STATE_TUTORIAL;
+			gold = fromSave ? saveGame.data["gold"] : Util.STARTING_GOLD;
+			Util.speed = Util.SPEED_SLOW;
 			combatSkip = false;
 
-			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
+			initializeWorld(fromSave);
+			initializeUI();
 
-			// Make sure the cursor stays on the top level of the drawtree.
+			addChild(world);
+			addChild(sfxMuteButton);
+			addChild(bgmMuteButton);
+			addChild(combatSpeedButton);
+			addChild(runSpeedButton);
+			addChild(runButton);
+			addChild(goldHud);
+			addChild(shopButton);
+			addChild(helpButton);
+			addChild(buildHud);
+			if (gameState == STATE_TUTORIAL) {
+				addChild(tutorialHud);
+			}
+
+			// Update build hud with unlocks if loading from save.
+			if (fromSave) {
+				if (saveGame.data["unlocks"]) {
+					for (var i:int = 0; i < saveGame.data["unlocks"].length; i++) {
+						buildHud.entityFactory.unlockTile(saveGame.data["unlocks"][i]);
+					}
+					buildHud.updateHUD();
+				}
+			}
+
+			centerWorldOnCharacter();
+
+			Util.logger.logLevelStart(1, {
+				"characterHP": currentFloor.char.maxHp,
+				"characterStamina": currentFloor.char.maxStamina,
+				"characterAttack": currentFloor.char.attack
+			});
+
+			mixer.play(Util.FLOOR_BEGIN);
+
+			// Game loop event.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
 
+			// Input events.
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			addEventListener(TouchEvent.TOUCH, onMouseEvent);
-			addEventListener(GameEvent.ENTERED_COMBAT, startCombat);
 
+			// Combat animation events.
 			addEventListener(AnimationEvent.CHAR_DIED, onCombatFailure);
 			addEventListener(AnimationEvent.ENEMY_DIED, onCombatSuccess);
 
-			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
-			addEventListener(GameEvent.COMPLETE_ROOM, onRoomComplete);
+			// Game events.
 			addEventListener(GameEvent.BUILD_HUD_IMAGE_CHANGE, clearBuildHUDImage);
+			addEventListener(GameEvent.COMPLETE_ROOM, onRoomComplete);
+			addEventListener(GameEvent.CHARACTER_LOS_CHANGE, onLosChange);
+			addEventListener(GameEvent.ENTERED_COMBAT, startCombat);
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
+			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
+			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+
+			// Tutorial-specific game events.
 			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
-			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
-			addEventListener(GameEvent.CHARACTER_LOS_CHANGE, onLosChange);
 		}
 
-		private function initializeFloorWorld():void {
+		private function initializeWorld(fromSave:Boolean):void {
 			world = new Sprite();
 
-			sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_SFX_PLAY]);
-			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
-			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
+			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
+			cursorHighlight.touchable = false;
 
-			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_BGM_PLAY]);
-			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
-			bgmMuteButton.y = sfxMuteButton.y;
+			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
 
+			var health:int = fromSave ? saveGame["hp"] : Util.STARTING_HEALTH;
+			var stamina:int = fromSave ? saveGame["stamina"] : Util.STARTING_STAMINA;
+			var attack:int = fromSave ? saveGame["attack"] : Util.STARTING_ATTACK;
+			var los:int = fromSave ? saveGame["los"] : Util.STARTING_LOS;
+
+			currentFloor = new Floor(floors[Util.MAIN_FLOOR],
+									 textures,
+									 animations,
+									 health,
+									 stamina,
+									 attack,
+									 los,
+									 floors,
+									 returnToMenu,
+									 mixer,
+									 runSummary);
+
+			world.addChild(cursorHighlight);
+			world.addChild(currentFloor);
+		}
+
+		private function initializeUI():void {
 			combatSpeedButton = new Clickable(0, 0, toggleCombatSpeed, null, textures[Util.ICON_SLOW_COMBAT]);
 			combatSpeedButton.x = bgmMuteButton.x - combatSpeedButton.width - Util.UI_PADDING;
 			combatSpeedButton.y = Util.STAGE_HEIGHT - combatSpeedButton.height - Util.UI_PADDING;
-
 			runSpeedButton = new Clickable(0, 0, toggleRunSpeed, null, textures[Util.ICON_SLOW_RUN]);
 			runSpeedButton.x = combatSpeedButton.x - runSpeedButton.width - Util.UI_PADDING;
 			runSpeedButton.y = combatSpeedButton.y;
@@ -260,15 +273,10 @@ package {
 			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
 			buildHud = new BuildHUD(textures);
 			tutorialHud = new TutorialHUD(textures);
-
-			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
-			cursorHighlight.touchable = false;
-			world.addChild(cursorHighlight);
 		}
 
-		private function initializeMenuWorld():void {
-			menuWorld = new Sprite();
-			menuWorld.addChild(new Image(textures[Util.GRID_BACKGROUND]));
+		private function returnToMenu():void {
+			dispatchEvent(new MenuEvent(MenuEvent.EXIT));
 		}
 
 		private function startCombat(e:GameEvent):void {
@@ -277,8 +285,7 @@ package {
 										  currentFloor.char,
 										  currentFloor.entityGrid[e.x][e.y],
 										  combatSkip,
-										  mixer,
-										  logger);
+										  mixer);
 			addChild(currentCombat);
 		}
 
@@ -293,7 +300,7 @@ package {
 		private function onCombatFailure(event:AnimationEvent):void {
 			removeChild(currentCombat);
 
-			logger.logAction(4, {
+			Util.logger.logAction(4, {
 				"characterAttack":event.character.attack,
 				"enemyAttack":event.enemy.attack,
 				"enemyHealthLeft":event.enemy.hp
@@ -302,179 +309,13 @@ package {
 			endRun();
 		}
 
-		private function prepareSwap():void {
-			if(isMenu) {
-				removeChild(menuWorld);
-				removeChild(currentMenu);
-			} else {
-				world.removeChild(currentFloor);
-				while (world.numChildren > 0) {
-					world.removeChildAt(0);
-				}
-				removeChild(world);
-				removeChild(messageToPlayer);
-				// mute button should always be present
-				removeChild(currentTransition);
-				removeChild(runButton);
-				removeChild(endButton);
-				removeChild(buildHud);
-				removeChild(goldHud);
-				removeChild(runHud);
-				removeChild(combatSpeedButton);
-				removeChild(runSpeedButton);
-				removeChild(helpButton);
-				removeChild(helpImageSprite);
-			}
-		}
-
-		public function switchToMenu(newMenu:Menu):void {
-			prepareSwap();
-
-			isMenu = true;
-			gameState = STATE_MENU;
-			currentMenu = newMenu;
-			addChild(currentMenu);
-			addChild(bgmMuteButton);
-			addChild(sfxMuteButton);
-		}
-
-		public function switchToFloor(params:Object):void {
-			prepareSwap();
-			isMenu = false;
-
-			var nextFloorData:Array = new Array();
-			currentFloor = new Floor(params["floorData"],
-									 textures,
-									 animations,
-									 params["initHealth"],
-									 params["initStamina"],
-									 params["initAttack"],
-									 params["initLos"],
-									 floors,
-									 transitionToStart,
-									 mixer,
-									 runSummary);
-			logger.logLevelStart(1, {
-				"characterHP":currentFloor.char.maxHp,
-				"characterStamina":currentFloor.char.maxStamina,
-				"characterAttack":currentFloor.char.attack
-			});
-
-			world.addChild(currentFloor);
-			world.addChild(cursorHighlight);
-
-			centerWorldOnCharacter();
-
-			addChild(world);
-			// mute button should always be on top
-			addChild(bgmMuteButton);
-			addChild(sfxMuteButton);
-			addChild(combatSpeedButton);
-			addChild(runSpeedButton);
-			addChild(runButton);
-			addChild(goldHud);
-			addChild(shopButton);
-			addChild(helpButton);
-
-			addChild(buildHud);
-			if (gameState == STATE_TUTORIAL) {
-				addChild(tutorialHud);
-			}
-
-			mixer.play(Util.FLOOR_BEGIN);
-		}
-
-		public function switchToNewFloor(params:Object):void {
-			// Clear save data and switch to floor.
-			gameState = STATE_TUTORIAL;
-			saveGame.clear();
-			switchToFloor(params);
-		}
-
-		public function switchToSavedFloor(params:Object):void {
-			// Do nothing if no saved game.
-			if (saveGame.size == 0) {
-				return;
-			}
-
-			gameState = STATE_BUILD;
-			// Load and set gold and build hud unlocks.
-			gold = saveGame.data["gold"];
-			if (saveGame.data["unlocks"]) {
-				for (var i:int = 0; i < saveGame.data["unlocks"].length; i++) {
-					trace("retrieving unlock: " + saveGame.data["unlocks"][i]);
-					buildHud.entityFactory.unlockTile(saveGame.data["unlocks"][i]);
-				}
-				buildHud.updateHUD();
-			}
-			switchToFloor(params);
-		}
-
-		public function transitionToStart():void {
-			createMainMenu();
-		}
-
-		public function createMainMenu():void {
-			var titleField:TextField = new TextField(512, 80, "You Make The Dungeon", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
-			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
-			titleField.y = 32 + titleField.height / 2;
-
-			floors = Embed.setupFloors();
-
-			var startGame:Clickable = new Clickable(
-					256,
-					192,
-					switchToNewFloor,
-					new TextField(128, 40, "START", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE),
-					null);
-			startGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
-			startGame.addParameter("initHealth", Util.STARTING_HEALTH);
-			startGame.addParameter("initStamina", Util.STARTING_STAMINA);
-			startGame.addParameter("initAttack", Util.STARTING_ATTACK);
-			startGame.addParameter("initLos", Util.STARTING_LOS);
-
-
-			var continueGame:Clickable = new Clickable(
-					256,
-					256,
-					switchToSavedFloor,
-					new TextField(128, 40, "CONTINUE", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE, saveGame.size != 0 ? 0x000000 : 0x696969),
-					null);
-			continueGame.addParameter("floorData", floors[Util.MAIN_FLOOR]);
-			continueGame.addParameter("initHealth", Util.STARTING_HEALTH);
-			continueGame.addParameter("initStamina", Util.STARTING_STAMINA);
-			continueGame.addParameter("initAttack", Util.STARTING_ATTACK);
-			continueGame.addParameter("initLos", Util.STARTING_LOS);
-
-
-			var creditsButton:Clickable = new Clickable(
-					256,
-					320,
-					createCredits,
-					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-
-			var versionString:String = "v " + versionID + "." + cid;
-			var version:TextField = new TextField(48, 16, versionString, Util.DEFAULT_FONT, 16);
-			version.x = 4;
-			version.y = Util.STAGE_HEIGHT - version.height - 4;
-			switchToMenu(new Menu(new Array(titleField, startGame, continueGame, creditsButton, version)));
-		}
-
-		public function createCredits():void {
-			var startButton:Clickable = new Clickable(256, 128, createMainMenu, new TextField(128, 40, "BACK", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			var creditsLine:TextField = new TextField(384, 256, "THANKS TO LOUISA FAN FOR THE GAME ART.\nWe'll get the other sources later.", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
-			creditsLine.x = startButton.x + (startButton.width - creditsLine.width) / 2;
-			creditsLine.y = startButton.y + startButton.height;
-			switchToMenu(new Menu(new Array(startButton, creditsLine)));
-		}
-
 		public function openShopHUD():void {
 			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
 				return;
 			}
 
 			if (getChildIndex(shopHud) == -1) {
-				logger.logAction(13, { } );
+				Util.logger.logAction(13, { } );
 				shopHud.update(currentFloor.char, gold);
 				addChild(shopHud);
 				buildHud.deselect();
@@ -497,58 +338,36 @@ package {
 			addChild(phaseBanner);
 		}
 
-		public function toggleBgmMute():void {
-			mixer.togglePlay();
-			if (currentFloor) {
-				Util.logger.logAction(15, {
-					"buttonClicked":"BGM Mute"
-				});
-			}
-
-			var chosen:String = mixer.playing ? Util.ICON_BGM_PLAY : Util.ICON_BGM_MUTE;
-			bgmMuteButton.updateImage(null, textures[chosen]);
-		}
-
-		public function toggleSFXMute():void {
-			mixer.toggleSFXMute();
-			if (currentFloor) {
-				Util.logger.logAction(15, {
-					"buttonClicked":"SFX Mute"
-				});
-			}
-
-			var chosen:String = mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
-			sfxMuteButton.updateImage(null, textures[chosen]);
-		}
-
 		public function runFloor():void {
 			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
 				return;
 			}
 
-			logger.logAction(3, {
+			Util.logger.logAction(3, {
 				"numberOfTiles":numberOfTilesPlaced,
 				"numberOfEntitiesPlaced":entitiesPlaced,
 				"goldSpent":goldSpent
 			});
+
 			goldSpent = 0;
 			numberOfTilesPlaced = 0;
 			entitiesPlaced = 0;
-			removeChild(runButton);
+
 			currentFloor.clearHighlightedLocations();
-			removeChild(buildHud.currentImage);
 			buildHud.deselect();
+
+			removeChild(runButton);
+			removeChild(buildHud.currentImage);
 			removeChild(buildHud);
 			removeChild(shopHud);
 			removeChild(shopButton);
 
 			addChild(endButton);
-
-			runHud.startRun();
 			addChild(runHud);
 			gameState = STATE_RUN;
-			currentFloor.toggleRun(gameState);
 
+			runHud.startRun();
+			currentFloor.toggleRun(gameState);
 			constructPhaseBanner();
 		}
 
@@ -571,7 +390,7 @@ package {
 			} else {
 				reason = "endRunButton";
 			}
-			logger.logAction(8, {
+			Util.logger.logAction(8, {
 				"goldEarned":runSummary.goldCollected,
 				"staminaLeft": currentFloor.char.stamina,
 				"healthLeft": currentFloor.char.hp,
@@ -641,8 +460,6 @@ package {
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
-			cursorAnim.advanceTime(event.passedTime);
-
 			if (helping) {
 				timeHovered += event.passedTime;
 			}
@@ -703,9 +520,6 @@ package {
 				addChild(buildHud.currentImage);
 			}
 
-			addChild(cursorReticle);
-			addChild(cursorAnim);
-
 			if(gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
@@ -714,7 +528,6 @@ package {
 
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
-
 			if(!touch) {
 				return;
 			}
@@ -723,12 +536,6 @@ package {
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
 			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
-
-			// TODO: make it so cursorAnim can move outside of the world
-			cursorReticle.x = touch.globalX - cursorReticle.width / 2;
-			cursorReticle.y = touch.globalY - cursorReticle.height / 2 - 2;
-			cursorAnim.x = touch.globalX + Util.CURSOR_OFFSET_X;
-			cursorAnim.y = touch.globalY + Util.CURSOR_OFFSET_Y;
 
 			// Manage build hud display and current image
 			showBuildHudImage = touch.isTouching(currentFloor);
@@ -778,7 +585,7 @@ package {
 				removeChild(helpImageSprite);
 				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
 					var state:String = gameState == STATE_BUILD ? "buildState" : "runState";
-					logger.logAction(21, {
+					Util.logger.logAction(21, {
 						"phaseHovered":state,
 						"timeHovered":timeHovered
 					});
@@ -839,7 +646,7 @@ package {
 					currentFloor.rooms.addTile(newTile);
 					currentFloor.removeFoggedLocationsInPath();
 					numberOfTilesPlaced++;
-					logger.logAction(1, {
+					Util.logger.logAction(1, {
 						"goldSpent": cost,
 						"northOpen":newTile.north,
 						"southOpen":newTile.south,
@@ -866,7 +673,7 @@ package {
 						type = "enemy";
 					}
 					mixer.play(Util.TILE_MOVE);
-					logger.logAction(18, {
+					Util.logger.logAction(18, {
 						"cost":cost,
 						"entityPlaced":type
 					});
@@ -887,10 +694,10 @@ package {
 			// a floor is loaded, and not cause flash errors
 			pressedKeys[event.keyCode] = true;
 			if (event.keyCode == Util.BGM_MUTE_KEY) {
-				toggleBgmMute();
+				bgmMuteButton.onClick();
 			}
 			if (event.keyCode == Util.SFX_MUTE_KEY) {
-				toggleSFXMute();
+				sfxMuteButton.onClick();
 			}
 			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
 				if (gameState == STATE_BUILD) {
@@ -965,7 +772,7 @@ package {
 				}
 				currentFloor.removeChild(reward);
 				currentFloor.entityGrid[reward.grid_x][reward.grid_y] = null;
-				logger.logAction(19, {
+				Util.logger.logAction(19, {
 					"type":"gold",
 					"goldEarned":addAmount
 				});
