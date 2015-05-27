@@ -300,21 +300,6 @@ package {
 			});
 
 			endRun();
-
-			// Short circuiting enemy death to end run page
-			/*var alertBox:Sprite = new Sprite();
-			var alertPopup:Image = new Image(textures[Util.POPUP_BACKGROUND])
-			alertBox.addChild(alertPopup);
-			alertBox.addChild(new TextField(alertPopup.width, alertPopup.height, FLOOR_FAIL_TEXT, Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE));
-			alertBox.x = (Util.STAGE_WIDTH - alertBox.width) / 2 - this.parent.x;
-			alertBox.y = (Util.STAGE_HEIGHT - alertBox.height) / 2 - this.parent.y;
-
-			messageToPlayer = new Clickable(0, 0, function():void {
-				removeChild(messageToPlayer);
-				endRun();
-			},  alertBox);
-
-			addChild(messageToPlayer);*/
 		}
 
 		private function prepareSwap():void {
@@ -332,7 +317,6 @@ package {
 				removeChild(currentTransition);
 				removeChild(runButton);
 				removeChild(endButton);
-				//removeChild(charHud);
 				removeChild(buildHud);
 				removeChild(goldHud);
 				removeChild(runHud);
@@ -631,11 +615,8 @@ package {
 			addChild(shopButton);
 
 			gameState = STATE_BUILD;
-			//currentFloor.toggleRun(gameState);
 			currentFloor.resetFloor();
-
 			centerWorldOnCharacter();
-
 			constructPhaseBanner(false); // happens after the summary dialog box
 		}
 
@@ -905,15 +886,12 @@ package {
 			// to ensure that they can't move the world around until
 			// a floor is loaded, and not cause flash errors
 			pressedKeys[event.keyCode] = true;
-
 			if (event.keyCode == Util.BGM_MUTE_KEY) {
 				toggleBgmMute();
 			}
-
 			if (event.keyCode == Util.SFX_MUTE_KEY) {
 				toggleSFXMute();
 			}
-
 			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
 				if (gameState == STATE_BUILD) {
 					runFloor();
@@ -923,7 +901,6 @@ package {
 					returnToBuild();
 				}
 			}
-
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				//combatSkip = !combatSkip;
 				toggleCombatSpeed();
@@ -933,7 +910,6 @@ package {
 					}
 				}
 			}
-
 			if (event.keyCode == Util.SPEED_TOGGLE_KEY) {
 				toggleRunSpeed();
 			}
@@ -971,7 +947,6 @@ package {
 			// Get coin entity from floor
 			// Remove coin entity from floor
 			// Add amount to gold
-			// TODO: Add gold population code to floor
 			var addAmount:int = 0;
 			if (event.x >= 0 && event.x < currentFloor.gridWidth &&
 			    event.y >= 0 && event.y < currentFloor.gridHeight) { // if floor tile has gold
@@ -1164,8 +1139,8 @@ package {
 
 				tileUnlockPopup = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
 												(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
-												closeTileUnlock, tileUnlockSprite);
-
+												closeTileUnlock,
+												tileUnlockSprite);
 
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
