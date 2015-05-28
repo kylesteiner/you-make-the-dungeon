@@ -1,8 +1,6 @@
 package entities {
     // Creates pre-set entities for the game
-	import entities.traps.FireTrap;
-	import entities.traps.ShockTrap;
-	import entities.traps.Trap;
+		import entities.traps.*;
     import flash.utils.Dictionary;
 
     public class EntityFactory {
@@ -15,9 +13,9 @@ package entities {
         public static const LIGHT_STAMINA_HEAL:String = "entity_light_stamina_heal";
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
-		public static const BASIC_TRAP:String = "basic_Trap";
-		public static const FIRE_TRAP:String = "fire_trap";
-		public static const SHOCK_TRAP:String = "shock_trap";
+				public static const BASIC_TRAP:String = "basic_Trap";
+				public static const FLAME_TRAP:String = "flame_trap";
+				public static const SHOCK_TRAP:String = "shock_trap";
 
         public var entitySet:Dictionary;
         public var masterSet:Dictionary;
@@ -108,24 +106,24 @@ package entities {
         public function constructTrapEntities():Dictionary {
             var trapDict:Dictionary = new Dictionary();
 
-			var basicTrap:Dictionary = new Dictionary();
-			basicTrap["constructor"] = constructBasicTrap;
+						var basicTrap:Dictionary = new Dictionary();
+						basicTrap["constructor"] = constructBasicTrap;
             basicTrap["texture"] = Assets.textures[Util.BASIC_TRAP];
             basicTrap["cost"] = Util.BASIC_TRAP_COST;
             basicTrap["category"] = TRAP_CATEGORY;
             trapDict[BASIC_TRAP] = basicTrap;
 
-			var fireTrap:Dictionary = new Dictionary();
-			fireTrap["constructor"] = constructFireTrap;
-            fireTrap["texture"] = Assets.textures[Util.FIRE_TRAP];
-            fireTrap["cost"] = Util.FIRE_TRAP_COST;
-            fireTrap["category"] = TRAP_CATEGORY;
-            trapDict[FIRE_TRAP] = fireTrap;
+						var flameTrap:Dictionary = new Dictionary();
+						flameTrap["constructor"] = constructFlameTrap;
+            flameTrap["texture"] = Assets.textures[Util.FLAME_TRAP];
+            flameTrap["cost"] = Util.FLAME_TRAP_COST;
+            flameTrap["category"] = TRAP_CATEGORY;
+            trapDict[FLAME_TRAP] = flameTrap;
 
-			var shockTrap:Dictionary = new Dictionary();
-			shockTrap["constructor"] = constructShockTrap;
+						var shockTrap:Dictionary = new Dictionary();
+						shockTrap["constructor"] = constructShockTrap;
             shockTrap["texture"] = Assets.textures[Util.SHOCK_TRAP];
-			shockTrap["cost"] = Util.SHOCK_TRAP_COST;
+						shockTrap["cost"] = Util.SHOCK_TRAP_COST;
             shockTrap["category"] = TRAP_CATEGORY;
             trapDict[SHOCK_TRAP] = shockTrap;
 
@@ -170,8 +168,8 @@ package entities {
 			return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], 0);
 		}
 
-		public function constructFireTrap():Trap {
-			return new FireTrap(0, 0, Assets.textures[Util.FIRE_TRAP], 0);
+		public function constructFlameTrap():Trap {
+			return new FlameTrap(0, 0, Assets.textures[Util.FLAME_TRAP], 0);
 		}
 
 		public function constructShockTrap():Trap {

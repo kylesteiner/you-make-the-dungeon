@@ -189,7 +189,7 @@ package {
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
 		public static const BASIC_TRAP:String = "basic_string";
-		public static const FIRE_TRAP:String = "fire_trap";
+		public static const FLAME_TRAP:String = "flame_trap";
 		public static const SHOCK_TRAP:String = "shock_trap";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
@@ -228,7 +228,7 @@ package {
 		public static const MODERATE_HEALING_COST:int = 40;
 		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
 		public static const BASIC_TRAP_COST:int = 5;
-		public static const FIRE_TRAP_COST:int = 5;
+		public static const FLAME_TRAP_COST:int = 5;
 		public static const SHOCK_TRAP_COST:int = 5;
 
 		// Upgrade costs

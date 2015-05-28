@@ -30,14 +30,17 @@ package {
 		[Embed(source='assets/effects/large/hl_delete.png')] public static var hl_delete:Class;
 		[Embed(source='assets/effects/large/hl_entity.png')] public static var hl_entity:Class;
 
-		//[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
-		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
-		[Embed(source='assets/entities/large/chest.png')] public static var entity_reward:Class;
-		[Embed(source='assets/entities/large/stamina_heal.png')] public static var entity_stamina_heal:Class;
-		//[Embed(source='assets/entities/large/hero.png')] public static var entity_hero:Class;
-		[Embed(source='assets/entities/large/new_key.png')] public static var entity_key:Class;
-		[Embed(source='assets/entities/large/enemy_fighter.png')] public static var entity_fighter:Class;
-		[Embed(source='assets/entities/large/enemy_mage.png')] public static var entity_mage:Class;
+		//[Embed(source='assets/entities/door.png')] public static var entity_door:Class;
+		[Embed(source='assets/entities/new_healing.png')] public static var entity_healing:Class;
+		[Embed(source='assets/entities/chest.png')] public static var entity_reward:Class;
+		[Embed(source='assets/entities/stamina_heal.png')] public static var entity_stamina_heal:Class;
+		//[Embed(source='assets/entities/hero.png')] public static var entity_hero:Class;
+		[Embed(source='assets/entities/new_key.png')] public static var entity_key:Class;
+		[Embed(source='assets/entities/enemy_fighter.png')] public static var entity_fighter:Class;
+		[Embed(source='assets/entities/enemy_mage.png')] public static var entity_mage:Class;
+		[Embed(source='assets/entities/trap_basic.png')] public static var trap_basic:Class;
+		[Embed(source='assets/entities/trap_flame.png')] public static var trap_flame:Class;
+		[Embed(source='assets/entities/trap_shock.png')] public static var trap_shock:Class;
 
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] public static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] public static const league_font:Class;
