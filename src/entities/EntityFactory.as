@@ -1,6 +1,6 @@
 package entities {
-	// Creates pre-set entities for the game
-	import entities.traps.*;
+    // Creates pre-set entities for the game
+    import entities.traps.*;
     import flash.utils.Dictionary;
 
     public class EntityFactory {
@@ -8,20 +8,20 @@ package entities {
         public static const HEALING_CATEGORY:int = 1;
         public static const TRAP_CATEGORY:int = 2;
 
-		public static const LIGHT_HEALING:String = "entity_light_healing";
-		public static const MODERATE_HEALING:String = "entity_moderate_healing";
+        public static const LIGHT_HEALING:String = "entity_light_healing";
+        public static const MODERATE_HEALING:String = "entity_moderate_healing";
         public static const LIGHT_STAMINA_HEAL:String = "entity_light_stamina_heal";
         public static const FIGHTER:String = "entity_fighter";
-		public static const MAGE:String = "entity_mage";
-		public static const BASIC_TRAP:String = "basic_Trap";
-		public static const FLAME_TRAP:String = "flame_trap";
-		public static const SHOCK_TRAP:String = "shock_trap";
+        public static const MAGE:String = "entity_mage";
+        public static const BASIC_TRAP:String = "basic_Trap";
+        public static const FLAME_TRAP:String = "flame_trap";
+        public static const SHOCK_TRAP:String = "shock_trap";
 
         public var entitySet:Dictionary;
         public var masterSet:Dictionary;
         public var entityText:Dictionary;
 
-		public function EntityFactory() {
+        public function EntityFactory() {
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
@@ -106,26 +106,26 @@ package entities {
         public function constructTrapEntities():Dictionary {
             var trapDict:Dictionary = new Dictionary();
 
-			var basicTrap:Dictionary = new Dictionary();
-			basicTrap["constructor"] = constructBasicTrap;
+            var basicTrap:Dictionary = new Dictionary();
+            basicTrap["constructor"] = constructBasicTrap;
             basicTrap["texture"] = Assets.textures[Util.BASIC_TRAP];
             basicTrap["cost"] = Util.BASIC_TRAP_COST;
             basicTrap["category"] = TRAP_CATEGORY;
             trapDict[BASIC_TRAP] = basicTrap;
 
-			var flameTrap:Dictionary = new Dictionary();
-			flameTrap["constructor"] = constructFlameTrap;
+            var flameTrap:Dictionary = new Dictionary();
+            flameTrap["constructor"] = constructFlameTrap;
             flameTrap["texture"] = Assets.textures[Util.FLAME_TRAP];
             flameTrap["cost"] = Util.FLAME_TRAP_COST;
             flameTrap["category"] = TRAP_CATEGORY;
             trapDict[FLAME_TRAP] = flameTrap;
 
-			var shockTrap:Dictionary = new Dictionary();
-			shockTrap["constructor"] = constructShockTrap;
+            var shockTrap:Dictionary = new Dictionary();
+            shockTrap["constructor"] = constructShockTrap;
             shockTrap["texture"] = Assets.textures[Util.SHOCK_TRAP];
-			shockTrap["cost"] = Util.SHOCK_TRAP_COST;
-			shockTrap["category"] = TRAP_CATEGORY;
-			trapDict[SHOCK_TRAP] = shockTrap;
+            shockTrap["cost"] = Util.SHOCK_TRAP_COST;
+            shockTrap["category"] = TRAP_CATEGORY;
+            trapDict[SHOCK_TRAP] = shockTrap;
 
             return trapDict;
         }
@@ -164,16 +164,16 @@ package entities {
             return new Enemy(x, y, Util.ENEMY_MAGE, Assets.textures[Util.ENEMY_MAGE], hp, atk, reward);
         }
 
-		public function constructBasicTrap():Trap {
-			return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], 0);
-		}
+        public function constructBasicTrap():Trap {
+            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], 0);
+        }
 
-		public function constructFlameTrap():Trap {
-			return new FlameTrap(0, 0, Assets.textures[Util.FLAME_TRAP], 0);
-		}
+        public function constructFlameTrap():Trap {
+            return new FlameTrap(0, 0, Assets.textures[Util.FLAME_TRAP], 0);
+        }
 
-		public function constructShockTrap():Trap {
-			return new ShockTrap(0, 0, Assets.textures[Util.SHOCK_TRAP], 0);
-		}
+        public function constructShockTrap():Trap {
+            return new ShockTrap(0, 0, Assets.textures[Util.SHOCK_TRAP], 0);
+        }
     }
 }
