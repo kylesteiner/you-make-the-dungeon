@@ -34,8 +34,7 @@ package {
                                 yPos:int,
                                 onClick:Function,
                                 baseDisplay:DisplayObject = null,
-                                baseTexture:Texture = null,
-								textures:Dictionary = null) {
+                                baseTexture:Texture = null) {
 			super(xPos, yPos, onClick, baseDisplay, baseTexture);
 
 			amountHealed = 0;
@@ -47,7 +46,7 @@ package {
 			complete = new TextField(560, 64, "Run Completed", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
 			addChild(complete);
 
-			goldImage = new Image(textures[Util.ICON_GOLD]);
+			goldImage = new Image(Assets.textures[Util.ICON_GOLD]);
 			goldImage.x = 30;
 			goldImage.y = 64;
 			addChild(goldImage);
@@ -58,7 +57,7 @@ package {
 			goldField.hAlign = HAlign.LEFT;
 			addChild(goldField);
 
-			enemiesImage = new Image(textures[Util.ICON_ATK]);
+			enemiesImage = new Image(Assets.textures[Util.ICON_ATK]);
 			enemiesImage.x = 30;
 			enemiesImage.y = 112;
 			addChild(enemiesImage);
@@ -69,7 +68,7 @@ package {
 			enemiesField.hAlign = HAlign.LEFT;
 			addChild(enemiesField);
 
-			distanceImage = new Image(textures[Util.ICON_STAMINA]);
+			distanceImage = new Image(Assets.textures[Util.ICON_STAMINA]);
 			distanceImage.x = 30;
 			distanceImage.y = 160;
 			addChild(distanceImage);
@@ -80,7 +79,7 @@ package {
 			distanceField.hAlign = HAlign.LEFT;
 			addChild(distanceField);
 
-			damageImage = new Image(textures[Util.ICON_ATK]);
+			damageImage = new Image(Assets.textures[Util.ICON_ATK]);
 			damageImage.x = 30;
 			damageImage.y = 208;
 			addChild(damageImage);
@@ -91,7 +90,7 @@ package {
 			damageField.hAlign = HAlign.LEFT;
 			addChild(damageField);
 
-			healImage = new Image(textures[Util.ICON_HEALTH]);
+			healImage = new Image(Assets.textures[Util.ICON_HEALTH]);
 			healImage.x = 30
 			healImage.y = 256;
 			addChild(healImage);

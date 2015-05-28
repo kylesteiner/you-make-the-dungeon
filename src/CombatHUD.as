@@ -14,8 +14,6 @@ package {
     public class CombatHUD extends Sprite {
         private var char:Character;
         private var enemy:Enemy;
-        private var textures:Dictionary;
-        private var animations:Dictionary;
 
         private var charAnim:MovieClip;
         private var enemyAnim:MovieClip;
@@ -44,10 +42,6 @@ package {
 
         private var background:Image;
 
-        private var mixer:Mixer;
-
-        private var logger:Logger;
-
         private var charRetreating:Boolean;
         private var enemyRetreating:Boolean;
 
@@ -67,26 +61,13 @@ package {
 
         public static const ACCEL_TIME:int = 100;
 
-        public function CombatHUD(textureDict:Dictionary,
-                               animDict:Dictionary,
-                               c:Character,
-                               e:Enemy,
-                               skip:Boolean,
-                               soundMixer:Mixer,
-                               dataLogger:Logger) {
+        public function CombatHUD(c:Character, e:Enemy, skip:Boolean) {
             super();
             char = c;
             enemy = e;
-            textures = textureDict;
-            animations = animDict;
-            mixer = soundMixer;
-            logger = dataLogger;
 
             touchable = false;
             skipping = skip;
-
-            //e.state.hp = 10;
-            //char.hp = 10;
 
             setStage();
 
@@ -110,23 +91,23 @@ package {
         }
 
         public function setStage():void {
-            background = new Image(textures[Util.COMBAT_BG]);
+            background = new Image(Assets.textures[Util.COMBAT_BG]);
             background.x = 0;
             background.y = 0;
             background.alpha = Util.COMBAT_ALPHA;
             addChild(background);
 
-            charShadow = new Image(textures[Util.COMBAT_SHADOW]);
+            charShadow = new Image(Assets.textures[Util.COMBAT_SHADOW]);
             charShadow.x = CHAR_X - (charShadow.width / 2);
             charShadow.y = CHAR_Y - charShadow.height;
             addChild(charShadow);
 
-            enemyShadow = new Image(textures[Util.COMBAT_SHADOW]);
+            enemyShadow = new Image(Assets.textures[Util.COMBAT_SHADOW]);
             enemyShadow.x = ENEMY_X - (charShadow.width / 2);
             enemyShadow.y = ENEMY_Y - charShadow.height;
             addChild(enemyShadow);
 
-            charHealthImage = new Image(textures[Util.ICON_HEALTH]);
+            charHealthImage = new Image(Assets.textures[Util.ICON_HEALTH]);
             charHealthImage.x = charShadow.x;
             charHealthImage.y = CHAR_Y;
             addChild(charHealthImage);
@@ -136,7 +117,7 @@ package {
             charHealthText.y = charHealthImage.y;
             addChild(charHealthText);
 
-            charAttackImage = new Image(textures[Util.ICON_ATK]);
+            charAttackImage = new Image(Assets.textures[Util.ICON_ATK]);
             charAttackImage.x = charShadow.x;
             charAttackImage.y = CHAR_Y + charHealthImage.height;
             addChild(charAttackImage);
@@ -146,12 +127,12 @@ package {
             charAttackText.y = charAttackImage.y;
             addChild(charAttackText);
 
-            enemyHealthImage = new Image(textures[Util.ICON_HEALTH]);
+            enemyHealthImage = new Image(Assets.textures[Util.ICON_HEALTH]);
             enemyHealthImage.x = enemyShadow.x;
             enemyHealthImage.y = ENEMY_Y;
             addChild(enemyHealthImage);
 
-            enemyAttackImage = new Image(textures[Util.ICON_ATK]);
+            enemyAttackImage = new Image(Assets.textures[Util.ICON_ATK]);
             enemyAttackImage.x = enemyShadow.x;
             enemyAttackImage.y = ENEMY_Y + enemyHealthImage.height;
             addChild(enemyAttackImage);
@@ -166,7 +147,7 @@ package {
             enemyAttackText.y = enemyAttackImage.y;
             addChild(enemyAttackText);
 
-            /*charAnim = new MovieClip(animations[Util.CHARACTER][Util.CHAR_COMBAT_IDLE], Util.ANIM_FPS);
+            /*charAnim = new MovieClip(Assets.animations[Util.CHARACTER][Util.CHAR_COMBAT_IDLE], Util.ANIM_FPS);
             charAnim.x = CHAR_X - (charAnim.width / 2);
             charAnim.y = CHAR_Y - (charAnim.height / 2);
             charAnim.loop = true;
@@ -249,7 +230,7 @@ package {
 
         public function setCharAnim(animationString:String):void {
             removeChild(charAnim);
-            charAnim = new MovieClip(animations[Util.CHARACTER][animationString], Util.ANIM_FPS);
+            charAnim = new MovieClip(Assets.animations[Util.CHARACTER][animationString], Util.ANIM_FPS);
             charAnim.x = CHAR_X - (charAnim.width / 2);
             charAnim.y = CHAR_Y - charAnim.height;
             charAnim.loop = false;
@@ -277,7 +258,7 @@ package {
         public function setEnemyAnim(animationString:String):void {
             removeChild(enemyAnim);
             // TODO: fix animations with new entities
-            enemyAnim = new MovieClip(animations[enemy.enemyName][animationString], Util.ANIM_FPS);
+            enemyAnim = new MovieClip(Assets.animations[enemy.enemyName][animationString], Util.ANIM_FPS);
             enemyAnim.x = ENEMY_X - (enemyAnim.width / 2);
             enemyAnim.y = ENEMY_Y - enemyAnim.height;
             enemyAnim.loop = false;
@@ -303,7 +284,7 @@ package {
         }
 
         public function createAttackAnimation(anim:MovieClip, flip:Boolean=false):void {
-            attackAnimation = new MovieClip(animations[Util.GENERIC_ATTACK][Util.GENERIC_ATTACK], Util.ANIM_FPS * 5);
+            attackAnimation = new MovieClip(Assets.animations[Util.GENERIC_ATTACK][Util.GENERIC_ATTACK], Util.ANIM_FPS * 5);
             attackAnimation.loop = false;
             attackAnimation.scaleX = anim.width / attackAnimation.width;
             attackAnimation.scaleY = attackAnimation.scaleX;
@@ -329,12 +310,12 @@ package {
                 if(char.hp <= 0) {
                     setCharFaint();
 
-                    mixer.play(Util.COMBAT_FAILURE);
+                    Assets.mixer.play(Util.COMBAT_FAILURE);
                     // Do something to fire floor-failure event
                 } else {
                     // Character's turn to attack
                     setCharAttack();
-                    mixer.play(Util.SFX_ATTACK);
+                    Assets.mixer.play(Util.SFX_ATTACK);
                     Combat.charAttacksEnemy(char, enemy);
 
                     enemyDamagedText = createDamageText(enemyAnim, char.attack);
@@ -354,7 +335,7 @@ package {
                     setEnemyFaint();
 
                     if(!skipping) {
-                        mixer.play(Util.COMBAT_SUCCESS);
+                        Assets.mixer.play(Util.COMBAT_SUCCESS);
                     }
 
                     //xpText = createXpText(enemy.reward);
@@ -362,7 +343,7 @@ package {
                 } else {
                     // Enemy's turn to attack
                     setEnemyAttack();
-                    mixer.play(Util.SFX_ATTACK);
+                    Assets.mixer.play(Util.SFX_ATTACK);
                     Combat.enemyAttacksChar(char, enemy);
 
                     charDamagedText = createDamageText(charAnim, enemy.attack);
