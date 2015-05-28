@@ -4,6 +4,8 @@
 import json, sys
 from datetime import datetime
 
+INACTIVITY_LIMIT = 30000 #time in milliseconds that we consider inactve (i.e. 30 seconds)
+
 if len(sys.argv) < 2:
     print "enter json file"
     sys.exit(0)
