@@ -211,7 +211,6 @@ package {
 		public static const DICT_TRANSITION_INDEX:int = 2;
 
 		public static const STARTING_ATTACK:int = 1;
-		public static const STARTING_XP:int = 0;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
 		public static const STARTING_GOLD:int = 20;
@@ -234,7 +233,6 @@ package {
 
 		public static var logger:Logger;
 		public static var speed:int;
-		public static var mixer:Mixer;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;

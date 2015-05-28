@@ -18,19 +18,15 @@ package {
         private var goldText:TextField;
         private var goldQuad:Quad;
         private var goldQuadInterior:Quad;
-        private var mixer:Mixer;
-        private var textures:Dictionary;
         private var goldChangeTexts:Array;
 
-        public function GoldHUD(gold:int, textureDict:Dictionary, soundMixer:Mixer) {
-            textures = textureDict;
-            mixer = soundMixer;
+        public function GoldHUD(gold:int) {
             this.gold = gold;
             goldChangeTexts = new Array();
 
             hud = new Sprite();
 
-            goldImage = new Image(textureDict[Util.ICON_GOLD]);
+            goldImage = new Image(Assets.textures[Util.ICON_GOLD]);
             goldImage.x = BORDER;
             goldText = new TextField(64, Util.MEDIUM_FONT_SIZE, gold.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             goldText.x = goldImage.width + goldImage.x;
@@ -62,7 +58,7 @@ package {
                 modifier = "-";
             }
 
-            mixer.play(soundString);
+            Assets.mixer.play(soundString);
 
             var newGoldChange:TextField = Util.defaultTextField(goldText.width, Util.MEDIUM_FONT_SIZE, modifier + Math.abs(this.gold - gold));
             newGoldChange.color = textColor;

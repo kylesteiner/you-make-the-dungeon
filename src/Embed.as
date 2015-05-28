@@ -168,126 +168,125 @@ package {
 		[Embed(source='assets/bgm/pearl_cavern.mp3')] public static const bgmPearlCavern:Class;
 		[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
 
-		public static function setupTextures():Dictionary {
-			var textures:Dictionary = new Dictionary();
+		public static function setupTextures():void {
+			Assets.textures = new Dictionary();
 			var scale:int = Util.REAL_TILE_SIZE / Util.PIXELS_PER_TILE;
-			textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
-			textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
-			textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
-			textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
-			textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
-			textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
-			textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
-			textures[Util.SHOP_ITEM] = Texture.fromEmbeddedAsset(shop_item);
-			textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
-			textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
-			textures[Util.RUN_HELP] = Texture.fromEmbeddedAsset(run_help);
-			textures[Util.BUILD_HELP] = Texture.fromEmbeddedAsset(build_help);
+			Assets.textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
+			Assets.textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
+			Assets.textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
+			Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
+			Assets.textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
+			Assets.textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
+			Assets.textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
+			Assets.textures[Util.SHOP_ITEM] = Texture.fromEmbeddedAsset(shop_item);
+			Assets.textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
+			Assets.textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
+			Assets.textures[Util.RUN_HELP] = Texture.fromEmbeddedAsset(run_help);
+			Assets.textures[Util.BUILD_HELP] = Texture.fromEmbeddedAsset(build_help);
 
-			//textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
-			//textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
-			textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
-			textures[Util.STAMINA_HEAL] = Texture.fromBitmap(new entity_stamina_heal(), true, false, scale);
-			textures[Util.REWARD] = Texture.fromBitmap(new entity_reward(), true, false, scale);
-			textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
-			textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
-			textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			//Assets.textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
+			//Assets.textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
+			Assets.textures[Util.HEALING] = Texture.fromBitmap(new entity_healing(), true, false, scale);
+			Assets.textures[Util.STAMINA_HEAL] = Texture.fromBitmap(new entity_stamina_heal(), true, false, scale);
+			Assets.textures[Util.REWARD] = Texture.fromBitmap(new entity_reward(), true, false, scale);
+			Assets.textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
+			Assets.textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
+			Assets.textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
 
-			textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
-			textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
-			textures[Util.TILE_N] = Texture.fromBitmap(new tile_n(), true, false, scale);
-			textures[Util.TILE_NE] = Texture.fromBitmap(new tile_ne(), true, false, scale);
-			textures[Util.TILE_NEW] = Texture.fromBitmap(new tile_new(), true, false, scale);
-			textures[Util.TILE_NONE] = Texture.fromBitmap(new tile_none(), true, false, scale);
-			textures[Util.TILE_NS] = Texture.fromBitmap(new tile_ns(), true, false, scale);
-			textures[Util.TILE_NSE] = Texture.fromBitmap(new tile_nse(), true, false, scale);
-			textures[Util.TILE_NSEW] = Texture.fromBitmap(new tile_nsew(), true, false, scale);
-			textures[Util.TILE_NSW] = Texture.fromBitmap(new tile_nsw(), true, false, scale);
-			textures[Util.TILE_NW] = Texture.fromBitmap(new tile_nw(), true, false, scale);
-			textures[Util.TILE_S] = Texture.fromBitmap(new tile_s(), true, false, scale);
-			textures[Util.TILE_SE] = Texture.fromBitmap(new tile_se(), true, false, scale);
-			textures[Util.TILE_SEW] = Texture.fromBitmap(new tile_sew(), true, false, scale);
-			textures[Util.TILE_SW] = Texture.fromBitmap(new tile_sw(), true, false, scale);
-			textures[Util.TILE_W] = Texture.fromBitmap(new tile_w(), true, false, scale);
+			Assets.textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
+			Assets.textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
+			Assets.textures[Util.TILE_N] = Texture.fromBitmap(new tile_n(), true, false, scale);
+			Assets.textures[Util.TILE_NE] = Texture.fromBitmap(new tile_ne(), true, false, scale);
+			Assets.textures[Util.TILE_NEW] = Texture.fromBitmap(new tile_new(), true, false, scale);
+			Assets.textures[Util.TILE_NONE] = Texture.fromBitmap(new tile_none(), true, false, scale);
+			Assets.textures[Util.TILE_NS] = Texture.fromBitmap(new tile_ns(), true, false, scale);
+			Assets.textures[Util.TILE_NSE] = Texture.fromBitmap(new tile_nse(), true, false, scale);
+			Assets.textures[Util.TILE_NSEW] = Texture.fromBitmap(new tile_nsew(), true, false, scale);
+			Assets.textures[Util.TILE_NSW] = Texture.fromBitmap(new tile_nsw(), true, false, scale);
+			Assets.textures[Util.TILE_NW] = Texture.fromBitmap(new tile_nw(), true, false, scale);
+			Assets.textures[Util.TILE_S] = Texture.fromBitmap(new tile_s(), true, false, scale);
+			Assets.textures[Util.TILE_SE] = Texture.fromBitmap(new tile_se(), true, false, scale);
+			Assets.textures[Util.TILE_SEW] = Texture.fromBitmap(new tile_sew(), true, false, scale);
+			Assets.textures[Util.TILE_SW] = Texture.fromBitmap(new tile_sw(), true, false, scale);
+			Assets.textures[Util.TILE_W] = Texture.fromBitmap(new tile_w(), true, false, scale);
 
-			textures[Util.TILE_FOG] = Texture.fromBitmap(new fog(), true, false, scale);
-			//textures[Util.TILE_HL_Y] = Texture.fromBitmap(new hl_yellow(), true, false, scale);
-			//textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
-			//textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
-			textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
-			textures[Util.TILE_HL_TILE] = Texture.fromBitmap(new hl_tile(), true, false, scale);
-			textures[Util.TILE_HL_DEL] = Texture.fromBitmap(new hl_delete(), true, false, scale);
-			textures[Util.TILE_HL_ENTITY] = Texture.fromBitmap(new hl_entity(), true, false, scale);
+			Assets.textures[Util.TILE_FOG] = Texture.fromBitmap(new fog(), true, false, scale);
+			//Assets.textures[Util.TILE_HL_Y] = Texture.fromBitmap(new hl_yellow(), true, false, scale);
+			//Assets.textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
+			//Assets.textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
+			Assets.textures[Util.TILE_HL_B] = Texture.fromBitmap(new hl_blue(), true, false, scale);
+			Assets.textures[Util.TILE_HL_TILE] = Texture.fromBitmap(new hl_tile(), true, false, scale);
+			Assets.textures[Util.TILE_HL_DEL] = Texture.fromBitmap(new hl_delete(), true, false, scale);
+			Assets.textures[Util.TILE_HL_ENTITY] = Texture.fromBitmap(new hl_entity(), true, false, scale);
 
 			// WARNING: ICONS ARE NOT SCALED LIKE THE TILES
-			textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
-			textures[Util.ICON_MUTE_BGM] =  Texture.fromBitmap(new icon_mute_bgm(), true, false, 1);
-			textures[Util.ICON_MUTE_SFX] = Texture.fromBitmap(new icon_mute_sfx(), true, false, 1);
-			textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, 1);
-			textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
-			textures[Util.ICON_END] = Texture.fromBitmap(new icon_end(), true, false, 1);
-			textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
-			textures[Util.ICON_ATK_MED] = Texture.fromBitmap(new icon_atk_med(), true, false, 1);
-			textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
-			textures[Util.ICON_HEALTH_MED] = Texture.fromBitmap(new icon_health_med(), true, false, 1);
-			textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
-			textures[Util.ICON_STAMINA_MED] = Texture.fromBitmap(new icon_stamina_med(), true, false, 1);
-			textures[Util.ICON_LOS] = Texture.fromBitmap(new icon_los(), true, false, 1);
-			textures[Util.ICON_LOS_MED] = Texture.fromBitmap(new icon_los_med(), true, false, 1);
-			textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
-			textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
-			textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
+			Assets.textures[Util.ICON_CURSOR] = Texture.fromBitmap(new icon_cursor(), true, false, 1);
+			Assets.textures[Util.ICON_MUTE_BGM] =  Texture.fromBitmap(new icon_mute_bgm(), true, false, 1);
+			Assets.textures[Util.ICON_MUTE_SFX] = Texture.fromBitmap(new icon_mute_sfx(), true, false, 1);
+			Assets.textures[Util.ICON_RESET] = Texture.fromBitmap(new icon_reset(), true, false, 1);
+			Assets.textures[Util.ICON_RUN] = Texture.fromBitmap(new icon_run(), true, false, 1);
+			Assets.textures[Util.ICON_END] = Texture.fromBitmap(new icon_end(), true, false, 1);
+			Assets.textures[Util.ICON_ATK] = Texture.fromBitmap(new icon_atk(), true, false, 1);
+			Assets.textures[Util.ICON_ATK_MED] = Texture.fromBitmap(new icon_atk_med(), true, false, 1);
+			Assets.textures[Util.ICON_HEALTH] = Texture.fromBitmap(new icon_health(), true, false, 1);
+			Assets.textures[Util.ICON_HEALTH_MED] = Texture.fromBitmap(new icon_health_med(), true, false, 1);
+			Assets.textures[Util.ICON_STAMINA] = Texture.fromBitmap(new icon_stamina(), true, false, 1);
+			Assets.textures[Util.ICON_STAMINA_MED] = Texture.fromBitmap(new icon_stamina_med(), true, false, 1);
+			Assets.textures[Util.ICON_LOS] = Texture.fromBitmap(new icon_los(), true, false, 1);
+			Assets.textures[Util.ICON_LOS_MED] = Texture.fromBitmap(new icon_los_med(), true, false, 1);
+			Assets.textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
+			Assets.textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
+			Assets.textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
 
-			textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
-			textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);
-			textures[Util.TRAP_MENU] = Texture.fromBitmap(new trap_menu(), true, false, 1);
+			Assets.textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
+			Assets.textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);
+			Assets.textures[Util.TRAP_MENU] = Texture.fromBitmap(new trap_menu(), true, false, 1);
 
-			textures[Util.ICON_SFX_PLAY] = Texture.fromEmbeddedAsset(icon_sfx_playing);
-			textures[Util.ICON_SFX_MUTE] = Texture.fromEmbeddedAsset(icon_sfx_muted);
-			textures[Util.ICON_BGM_PLAY] = Texture.fromEmbeddedAsset(icon_bgm_playing);
-			textures[Util.ICON_BGM_MUTE] = Texture.fromEmbeddedAsset(icon_bgm_muted);
+			Assets.textures[Util.ICON_SFX_PLAY] = Texture.fromEmbeddedAsset(icon_sfx_playing);
+			Assets.textures[Util.ICON_SFX_MUTE] = Texture.fromEmbeddedAsset(icon_sfx_muted);
+			Assets.textures[Util.ICON_BGM_PLAY] = Texture.fromEmbeddedAsset(icon_bgm_playing);
+			Assets.textures[Util.ICON_BGM_MUTE] = Texture.fromEmbeddedAsset(icon_bgm_muted);
 
-			textures[Util.ICON_FAST_COMBAT] = Texture.fromEmbeddedAsset(icon_fast_combat);
-			textures[Util.ICON_SLOW_COMBAT] = Texture.fromEmbeddedAsset(icon_slow_combat);
-			textures[Util.ICON_FAST_RUN] = Texture.fromEmbeddedAsset(icon_fast_run);
-			textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
-			textures[Util.ICON_HELP] = Texture.fromBitmap(new icon_help(), true, false, 1);
+			Assets.textures[Util.ICON_FAST_COMBAT] = Texture.fromEmbeddedAsset(icon_fast_combat);
+			Assets.textures[Util.ICON_SLOW_COMBAT] = Texture.fromEmbeddedAsset(icon_slow_combat);
+			Assets.textures[Util.ICON_FAST_RUN] = Texture.fromEmbeddedAsset(icon_fast_run);
+			Assets.textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
+			Assets.textures[Util.ICON_HELP] = Texture.fromBitmap(new icon_help(), true, false, 1);
 
-			textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
-			textures[Util.TILE_UP_ACTIVE] = Texture.fromEmbeddedAsset(tile_up_active);
-			textures[Util.TILE_UP_INACTIVE] = Texture.fromEmbeddedAsset(tile_up_inactive);
-			textures[Util.TILE_DOWN_ACTIVE] = Texture.fromEmbeddedAsset(tile_down_active);
-			textures[Util.TILE_DOWN_INACTIVE] = Texture.fromEmbeddedAsset(tile_down_inactive);
-			textures[Util.TILE_RIGHT_ACTIVE] = Texture.fromEmbeddedAsset(tile_right_active);
-			textures[Util.TILE_RIGHT_INACTIVE] = Texture.fromEmbeddedAsset(tile_right_inactive);
-			textures[Util.TILE_LEFT_ACTIVE] = Texture.fromEmbeddedAsset(tile_left_active);
-			textures[Util.TILE_LEFT_INACTIVE] = Texture.fromEmbeddedAsset(tile_left_inactive);
+			Assets.textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
+			Assets.textures[Util.TILE_UP_ACTIVE] = Texture.fromEmbeddedAsset(tile_up_active);
+			Assets.textures[Util.TILE_UP_INACTIVE] = Texture.fromEmbeddedAsset(tile_up_inactive);
+			Assets.textures[Util.TILE_DOWN_ACTIVE] = Texture.fromEmbeddedAsset(tile_down_active);
+			Assets.textures[Util.TILE_DOWN_INACTIVE] = Texture.fromEmbeddedAsset(tile_down_inactive);
+			Assets.textures[Util.TILE_RIGHT_ACTIVE] = Texture.fromEmbeddedAsset(tile_right_active);
+			Assets.textures[Util.TILE_RIGHT_INACTIVE] = Texture.fromEmbeddedAsset(tile_right_inactive);
+			Assets.textures[Util.TILE_LEFT_ACTIVE] = Texture.fromEmbeddedAsset(tile_left_active);
+			Assets.textures[Util.TILE_LEFT_INACTIVE] = Texture.fromEmbeddedAsset(tile_left_inactive);
 
-			textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
+			Assets.textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 
-			textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
-			textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
+			Assets.textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
+			Assets.textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
 
-			textures[Util.CURSOR_RETICLE] = Texture.fromEmbeddedAsset(cursor_reticle);
+			Assets.textures[Util.CURSOR_RETICLE] = Texture.fromEmbeddedAsset(cursor_reticle);
 
-			textures[Util.TUTORIAL_NEA] = Texture.fromEmbeddedAsset(tutorial_nea);
-			textures[Util.TUTORIAL_EXIT] = Texture.fromEmbeddedAsset(tutorial_exit);
-			textures[Util.TUTORIAL_GOLD] = Texture.fromEmbeddedAsset(tutorial_gold);
-			textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
-			textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
-			textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
-			return textures;
+			Assets.textures[Util.TUTORIAL_NEA] = Texture.fromEmbeddedAsset(tutorial_nea);
+			Assets.textures[Util.TUTORIAL_EXIT] = Texture.fromEmbeddedAsset(tutorial_exit);
+			Assets.textures[Util.TUTORIAL_GOLD] = Texture.fromEmbeddedAsset(tutorial_gold);
+			Assets.textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
+			Assets.textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
+			Assets.textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
 		}
 
-		public static function setupAnimations():Dictionary {
-			var tAnimations:Dictionary = new Dictionary();
+		public static function setupAnimations():void {
+			Assets.animations = new Dictionary();
 
 			var cursorDict:Dictionary = new Dictionary();
 			var cursorVector:Vector.<Texture> = new Vector.<Texture>();
 			cursorVector.push(Texture.fromEmbeddedAsset(icon_cursor));
 			cursorVector.push(Texture.fromEmbeddedAsset(icon_cursor_2));
 			cursorDict[Util.ICON_CURSOR] = cursorVector;
-			tAnimations[Util.ICON_CURSOR] = cursorDict;
+			Assets.animations[Util.ICON_CURSOR] = cursorDict;
 
 			var genericDict:Dictionary = new Dictionary();
 			var genericVector:Vector.<Texture> = new Vector.<Texture>();
@@ -296,7 +295,7 @@ package {
 			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim2));
 			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim3));
 			genericDict[Util.GENERIC_ATTACK] = genericVector;
-			tAnimations[Util.GENERIC_ATTACK] = genericDict;
+			Assets.animations[Util.GENERIC_ATTACK] = genericDict;
 
 			var charDict:Dictionary = new Dictionary();
 			var charVector:Vector.<Texture> = new Vector.<Texture>();
@@ -325,7 +324,7 @@ package {
 			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim0));
 			charCombatFaintVector.push(Texture.fromEmbeddedAsset(charCombatFaintAnim1));
 			charDict[Util.CHAR_COMBAT_FAINT] = charCombatFaintVector;
-			tAnimations[Util.CHARACTER] = charDict;
+			Assets.animations[Util.CHARACTER] = charDict;
 
 			var fighterDict:Dictionary = new Dictionary();
 			var fighterVector:Vector.<Texture> = new Vector.<Texture>();
@@ -337,7 +336,7 @@ package {
 			var fighterFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			fighterFaintVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
 			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
-			tAnimations[Util.ENEMY_FIGHTER] = fighterDict;
+			Assets.animations[Util.ENEMY_FIGHTER] = fighterDict;
 
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
@@ -349,15 +348,12 @@ package {
 			var mageFaintVector:Vector.<Texture> = new Vector.<Texture>();
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
-			tAnimations[Util.ENEMY_MAGE] = mageDict;
-
-			return tAnimations;
+			Assets.animations[Util.ENEMY_MAGE] = mageDict;
 		}
 
-		public static function setupFloors():Dictionary {
-			var tFloors:Dictionary = new Dictionary();
-			tFloors[Util.MAIN_FLOOR] = (new mainFloor() as ByteArray).toString();
-			return tFloors;
+		public static function setupFloors():void {
+			Assets.floors = new Dictionary();
+			Assets.floors[Util.MAIN_FLOOR] = (new mainFloor() as ByteArray).toString();
 		}
 
 		public static function setupBGM():Array {

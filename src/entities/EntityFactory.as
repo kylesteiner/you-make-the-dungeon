@@ -13,14 +13,11 @@ package entities {
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
 
-        private var textures:Dictionary;
-
         public var entitySet:Dictionary;
         public var masterSet:Dictionary;
         public var entityText:Dictionary;
 
-        public function EntityFactory(textures:Dictionary) {
-            this.textures = textures;
+        public function EntityFactory() {
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
@@ -60,14 +57,14 @@ package entities {
 
             var fighter:Dictionary = new Dictionary();
             fighter["constructor"] = constructFighter;
-            fighter["texture"] = textures[Util.ENEMY_FIGHTER];
+            fighter["texture"] = Assets.textures[Util.ENEMY_FIGHTER];
             fighter["cost"] = Util.ENEMY_FIGHTER_COST;
             fighter["category"] = ENEMY_CATEGORY;
             enemyDict[FIGHTER] = fighter;
 
             var mage:Dictionary = new Dictionary();
             mage["constructor"] = constructMage;
-            mage["texture"] = textures[Util.ENEMY_MAGE];
+            mage["texture"] = Assets.textures[Util.ENEMY_MAGE];
             mage["cost"] = Util.ENEMY_MAGE_COST;
             mage["category"] = ENEMY_CATEGORY;
             enemyDict[MAGE] = mage;
@@ -80,21 +77,21 @@ package entities {
 
             var lightHealing:Dictionary = new Dictionary();
             lightHealing["constructor"] = constructLightHealing;
-            lightHealing["texture"] = textures[Util.HEALING];
+            lightHealing["texture"] = Assets.textures[Util.HEALING];
             lightHealing["cost"] = Util.LIGHT_HEALING_COST;
             lightHealing["category"] = HEALING_CATEGORY;
             healingDict[LIGHT_HEALING] = lightHealing;
 
             var moderateHealing:Dictionary = new Dictionary();
             moderateHealing["constructor"] = constructModerateHealing;
-            moderateHealing["texture"] = textures[Util.HEALING];
+            moderateHealing["texture"] = Assets.textures[Util.HEALING];
             moderateHealing["cost"] = Util.MODERATE_HEALING_COST;
             moderateHealing["category"] = HEALING_CATEGORY;
             healingDict[MODERATE_HEALING] = moderateHealing;
 
             var lightStaminaHeal:Dictionary = new Dictionary();
             lightStaminaHeal["constructor"] = constructLightStaminaHeal;
-            lightStaminaHeal["texture"] = textures[Util.STAMINA_HEAL];
+            lightStaminaHeal["texture"] = Assets.textures[Util.STAMINA_HEAL];
             lightStaminaHeal["cost"] = Util.LIGHT_STAMINA_HEAL_COST;
             lightStaminaHeal["category"] = HEALING_CATEGORY;
             healingDict[LIGHT_STAMINA_HEAL] = lightStaminaHeal;
@@ -111,19 +108,19 @@ package entities {
         public function constructLightHealing(x:int=0, y:int=0):Healing {
             var healing:int = 3;
 
-            return new Healing(x, y, textures[Util.HEALING], healing);
+            return new Healing(x, y, Assets.textures[Util.HEALING], healing);
         }
 
         public function constructModerateHealing(x:int=0, y:int=0):Healing {
             var healing:int = 7;
 
-            return new Healing(x, y, textures[Util.HEALING], healing);
+            return new Healing(x, y, Assets.textures[Util.HEALING], healing);
         }
 
         public function constructLightStaminaHeal(x:int=0, y:int=0):StaminaHeal {
             var stamina:int = 3;
 
-            return new StaminaHeal(x, y, textures[Util.STAMINA_HEAL], stamina);
+            return new StaminaHeal(x, y, Assets.textures[Util.STAMINA_HEAL], stamina);
         }
 
         public function constructFighter(x:int=0, y:int=0):Enemy {
@@ -131,7 +128,7 @@ package entities {
             var atk:int = 1;
             var reward:int = 7;
 
-            return new Enemy(x, y, Util.ENEMY_FIGHTER, textures[Util.ENEMY_FIGHTER], hp, atk, reward);
+            return new Enemy(x, y, Util.ENEMY_FIGHTER, Assets.textures[Util.ENEMY_FIGHTER], hp, atk, reward);
         }
 
         public function constructMage(x:int=0, y:int=0):Enemy {
@@ -139,7 +136,7 @@ package entities {
             var atk:int = 3;
             var reward:int = 18;
 
-            return new Enemy(x, y, Util.ENEMY_MAGE, textures[Util.ENEMY_MAGE], hp, atk, reward);
+            return new Enemy(x, y, Util.ENEMY_MAGE, Assets.textures[Util.ENEMY_MAGE], hp, atk, reward);
         }
     }
 }

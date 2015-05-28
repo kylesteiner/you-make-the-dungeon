@@ -14,11 +14,7 @@ package {
         public var blackQuad:Quad;
         public var timeAccrued:Number;
 
-        private var textures:Dictionary;
-
-        public function TutorialHUD(textureDict:Dictionary) {
-            textures = textureDict;
-
+        public function TutorialHUD() {
             tutorialIndex = 0;
             tutorialOrder = new Array();
             tutorialOrder.push(Util.TUTORIAL_NEA);
@@ -31,7 +27,7 @@ package {
             blackQuad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
             blackQuad.alpha = 0.7;
 
-            tutorialImage = new Image(textures[tutorialOrder[tutorialIndex]]);
+            tutorialImage = new Image(Assets.textures[tutorialOrder[tutorialIndex]]);
 
             timeAccrued = 0;
 
@@ -48,7 +44,7 @@ package {
             timeAccrued = 0;
             tutorialIndex += 1;
             if(tutorialIndex < tutorialOrder.length) {
-                tutorialImage = new Image(textures[tutorialOrder[tutorialIndex]]);
+                tutorialImage = new Image(Assets.textures[tutorialOrder[tutorialIndex]]);
                 addChild(tutorialImage);
             } else {
                 dispatchEvent(new GameEvent(GameEvent.TUTORIAL_COMPLETE, 0, 0));

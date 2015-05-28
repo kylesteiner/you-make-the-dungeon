@@ -15,7 +15,6 @@ package {
 
 		public var gold:int;
 		private var char:Character;
-		private var textures:Dictionary;
 
 		private var bg:Image;
 		private var goldHud:GoldHUD;
@@ -31,12 +30,11 @@ package {
 		 *  Intialization
 		 **********************************************************************************/
 
-		public function ShopHUD(goldHud:GoldHUD, closeFunction:Function, textureDict:Dictionary) {
+		public function ShopHUD(goldHud:GoldHUD, closeFunction:Function) {
 			super();
 			this.goldHud = goldHud;
-			textures = textureDict;
 
-			bg = new Image(textures[Util.SHOP_BACKGROUND]);
+			bg = new Image(Assets.textures[Util.SHOP_BACKGROUND]);
 			addChild(bg);
 
 			x = (Util.STAGE_WIDTH - bg.width) / 2;
@@ -59,22 +57,22 @@ package {
 		private function displayCharStats():void {
 			hpVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			hpVal.x = width / 5;
-			var hpImg:Image = new Image(textures[Util.ICON_HEALTH]);
+			var hpImg:Image = new Image(Assets.textures[Util.ICON_HEALTH]);
 			setupStat(hpVal, hpImg);
 
 			atkVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			atkVal.x = width / 5 * 2;
-			var atkImg:Image = new Image(textures[Util.ICON_ATK]);
+			var atkImg:Image = new Image(Assets.textures[Util.ICON_ATK]);
 			setupStat(atkVal, atkImg);
 
 			staminaVal = new TextField(100, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			staminaVal.x = width / 5 * 3;
-			var staminaImg:Image = new Image(textures[Util.ICON_STAMINA]);
+			var staminaImg:Image = new Image(Assets.textures[Util.ICON_STAMINA]);
 			setupStat(staminaVal, staminaImg);
 
 			losVal = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			losVal.x = width / 5 * 4;
-			var losImg:Image = new Image(textures[Util.ICON_LOS]);
+			var losImg:Image = new Image(Assets.textures[Util.ICON_LOS]);
 			setupStat(losVal, losImg);
 		}
 
@@ -96,10 +94,10 @@ package {
 
 			shopItems = new Array();
 			itemCosts = new Array();
-			shopItems.push(displayShopItem(0, new Image(textures[Util.ICON_HEALTH_MED]), "Health", getHpCost(), incHP));
-			shopItems.push(displayShopItem(1, new Image(textures[Util.ICON_ATK_MED]), "Attack", getAttackCost(), incAtk));
-			shopItems.push(displayShopItem(2, new Image(textures[Util.ICON_STAMINA_MED]), "Stamina", getStaminaCost(), incStamina));
-			shopItems.push(displayShopItem(3, new Image(textures[Util.ICON_LOS_MED]), "Line of Sight", getLOSCost(), incLos));
+			shopItems.push(displayShopItem(0, new Image(Assets.textures[Util.ICON_HEALTH_MED]), "Health", getHpCost(), incHP));
+			shopItems.push(displayShopItem(1, new Image(Assets.textures[Util.ICON_ATK_MED]), "Attack", getAttackCost(), incAtk));
+			shopItems.push(displayShopItem(2, new Image(Assets.textures[Util.ICON_STAMINA_MED]), "Stamina", getStaminaCost(), incStamina));
+			shopItems.push(displayShopItem(3, new Image(Assets.textures[Util.ICON_LOS_MED]), "Line of Sight", getLOSCost(), incLos));
 
 			for(i = 0; i < shopItems.length; i++) {
 				addChild(shopItems[i]);
@@ -139,7 +137,7 @@ package {
 		}
 
 		private function displayShopItem(position:int, image:Image, name:String, cost:int, callback:Function):Clickable {
-			var item:Clickable = new Clickable(300, 300, callback, null, textures[Util.SHOP_ITEM]);
+			var item:Clickable = new Clickable(300, 300, callback, null, Assets.textures[Util.SHOP_ITEM]);
 			item.addParameter("cost", cost);
 
 			image.x = (item.width - image.width) / 2;
@@ -149,7 +147,7 @@ package {
 			item.x = 25 + 130 * position;
 			item.y = (height - item.height) / 2;
 
-			var coin:Image = new Image(textures[Util.ICON_GOLD]);
+			var coin:Image = new Image(Assets.textures[Util.ICON_GOLD]);
 			coin.y = item.height - coin.height - 2;
 			item.addChild(coin);
 
@@ -214,7 +212,7 @@ package {
 					"upgradeAmount":1
 				});
 			}
-			
+
 		}
 
 		/**********************************************************************************
