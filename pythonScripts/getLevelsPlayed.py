@@ -12,7 +12,7 @@ f = open(sys.argv[1]);
 players = json.loads(f.read())
 
 print "Number of players: %d" % len(players) 
-
+overallListLevels = [0] * 8;
 for player in players: 
     print ""
     print "Player: %s" % player['uid']
@@ -25,5 +25,12 @@ for player in players:
     index = 0
     for level in listLevels:
    		print "level %d played %d times" % ((index + 1), level)
+                if level is not 0:
+                    overallListLevels[index] += 1
    		index += 1
     print "\tAverage levels per visit: %d" % (len(player['levels']) / len(player['pageloads']))
+
+print "overall results:"
+for level in overallListLevels:
+    print level
+
