@@ -26,7 +26,7 @@ package entities {
 		}
 
 		override public function handleChar(c:Character):void {
-            Util.mixer.play(Util.REWARD_COLLECT);
+            Assets.mixer.play(Util.REWARD_COLLECT);
             reward(parameter);
 		}
 

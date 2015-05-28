@@ -30,8 +30,6 @@ package {
 		public static const STATE_DELETE:String = "state_delete";
 		public static const STATE_NONE:String = "state_none";
 
-		private var textures:Dictionary;
-
 		/***** Overall HUD *****/
 		// sprites that contain the tile and entity selection
 		// will be used when we have real textures
@@ -95,10 +93,9 @@ package {
 		 *  Intialization
 		 **********************************************************************************/
 
-		public function BuildHUD(textureDict:Dictionary) {
+		public function BuildHUD() {
 			super();
-			this.entityFactory = new EntityFactory(textureDict);
-			this.textures = textureDict;
+			this.entityFactory = new EntityFactory();
 
 			tileBlock = new Sprite();
 			entityBlock = new Sprite();
@@ -212,11 +209,11 @@ package {
 											 selectTile, tileSelectQuad);
 
 			toggleClickables = new Array();
-			var sample:Image = new Image(textures[Util.TILE_UP_ACTIVE]);
-			northToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileNWCorner.y - 8, toggleNorth, null, textures[Util.TILE_UP_INACTIVE]);
-			southToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileSWCorner.y, toggleSouth, null, textures[Util.TILE_DOWN_INACTIVE]);
-			eastToggle = new Clickable(tileNECorner.x, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleEast, null, textures[Util.TILE_RIGHT_INACTIVE]);
-			westToggle = new Clickable(tileNWCorner.x - 8, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleWest, null, textures[Util.TILE_LEFT_INACTIVE]);
+			var sample:Image = new Image(Assets.textures[Util.TILE_UP_ACTIVE]);
+			northToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileNWCorner.y - 8, toggleNorth, null, Assets.textures[Util.TILE_UP_INACTIVE]);
+			southToggle = new Clickable(interiorTQ.x + (interiorTQ.width - sample.width) / 2, tileSWCorner.y, toggleSouth, null, Assets.textures[Util.TILE_DOWN_INACTIVE]);
+			eastToggle = new Clickable(tileNECorner.x, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleEast, null, Assets.textures[Util.TILE_RIGHT_INACTIVE]);
+			westToggle = new Clickable(tileNWCorner.x - 8, interiorTQ.y + (Util.PIXELS_PER_TILE - 2*QUAD_BORDER_PIXELS - sample.height) / 2, toggleWest, null, Assets.textures[Util.TILE_LEFT_INACTIVE]);
 			toggleClickables.push(northToggle);
 			toggleClickables.push(southToggle);
 			toggleClickables.push(eastToggle);
@@ -270,7 +267,7 @@ package {
 				oQ.y = eQ.y - 1;
 				entityHighlights[i] = oQ;
 
-				selectEntityTexture = textures[menuButtons[i]];
+				selectEntityTexture = Assets.textures[menuButtons[i]];
 				entityImage = new Image(selectEntityTexture);
 				selectEntityButton = new Clickable(entityX + (Util.PIXELS_PER_TILE - entityImage.width) / 2,
 													entityY + Util.PIXELS_PER_TILE + SELECT_BUTTON_MARGIN - 2,
@@ -309,7 +306,7 @@ package {
 			interiorDQ.y = deleteQuad.y + QUAD_BORDER_PIXELS;
 			deleteButton = new Clickable(deleteQuad.x + QUAD_BORDER_PIXELS,
 										 deleteQuad.y + QUAD_BORDER_PIXELS,
-										 deleteClickable, null, textures[Util.ICON_DELETE]);
+										 deleteClickable, null, Assets.textures[Util.ICON_DELETE]);
 
 			hud.addChild(tileQuad);
 			hud.addChild(interiorTQ);
@@ -508,7 +505,7 @@ package {
 		public function deleteClickable():void {
 			deselect();
 			hudState = STATE_DELETE;
-			currentImage = new Image(textures[Util.ICON_DELETE]);
+			currentImage = new Image(Assets.textures[Util.ICON_DELETE]);
 			currentImage.touchable = false;
 			closePopup();
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
@@ -532,7 +529,7 @@ package {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 
 			if(hudState != STATE_TILE || toggle) {
-				var tileTexture:Texture = textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
+				var tileTexture:Texture = Assets.textures[Util.getTextureString(directions[Util.NORTH], directions[Util.SOUTH], directions[Util.EAST], directions[Util.WEST])];
 				currentTile = new Image(tileTexture);
 				currentImage = new Image(tileTexture);
 				currentImage.touchable = false;
@@ -560,25 +557,25 @@ package {
 		public function toggleNorth():void {
 			toggleDirection(Util.NORTH);
 			var imageString:String = directions[Util.NORTH] ? Util.TILE_UP_ACTIVE : Util.TILE_UP_INACTIVE;
-			toggleClickables[Util.NORTH].updateImage(new Image(textures[imageString]));
+			toggleClickables[Util.NORTH].updateImage(new Image(Assets.textures[imageString]));
 		}
 
 		public function toggleSouth():void {
 			toggleDirection(Util.SOUTH);
 			var imageString:String = directions[Util.SOUTH] ? Util.TILE_DOWN_ACTIVE : Util.TILE_DOWN_INACTIVE;
-			toggleClickables[Util.SOUTH].updateImage(new Image(textures[imageString]));
+			toggleClickables[Util.SOUTH].updateImage(new Image(Assets.textures[imageString]));
 		}
 
 		public function toggleEast():void {
 			toggleDirection(Util.EAST);
 			var imageString:String = directions[Util.EAST] ? Util.TILE_RIGHT_ACTIVE : Util.TILE_RIGHT_INACTIVE;
-			toggleClickables[Util.EAST].updateImage(new Image(textures[imageString]));
+			toggleClickables[Util.EAST].updateImage(new Image(Assets.textures[imageString]));
 		}
 
 		public function toggleWest():void {
 			toggleDirection(Util.WEST);
 			var imageString:String = directions[Util.WEST] ? Util.TILE_LEFT_ACTIVE : Util.TILE_LEFT_INACTIVE;
-			toggleClickables[Util.WEST].updateImage(new Image(textures[imageString]));
+			toggleClickables[Util.WEST].updateImage(new Image(Assets.textures[imageString]));
 		}
 
 		public function getTileCost():int {
@@ -646,7 +643,7 @@ package {
 		public function createGoldCost(cost:int):Sprite {
 			var base:Sprite = new Sprite();
 
-			var goldImage:Image = new Image(textures[Util.ICON_GOLD]);
+			var goldImage:Image = new Image(Assets.textures[Util.ICON_GOLD]);
 			var costText:TextField = new TextField(goldImage.width, goldImage.height, cost.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			costText.autoScale = true;
 

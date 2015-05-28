@@ -38,10 +38,6 @@ package {
 		public static const STATE_SUMMARY:String = "game_summary";
 		public static const STATE_CINEMATIC:String = "game_cinematic";
 
-		private var textures:Dictionary;  // Map String -> Texture
-		private var floors:Dictionary; // Map String -> String
-		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
-
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
@@ -53,11 +49,8 @@ package {
 
 		private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
-		private var mixer:Mixer;
 
 		private var cursorHighlight:Image;
-		private var cursorAnim:MovieClip;
-		private var cursorReticle:Image;
 
 		private var world:Sprite;
 		private var currentFloor:Floor;
@@ -98,24 +91,12 @@ package {
 		private var saveGame:SharedObject;
 
 		public function Game(fromSave:Boolean,
-							 textures:Dictionary,
-							 animations:Dictionary,
-							 floors:Dictionary,
-							 mixer:Mixer,
 							 sfxMuteButton:Clickable,
-							 bgmMuteButton:Clickable,
-							 cursorReticle:Image,
-							 cursorAnim:MovieClip) {
+							 bgmMuteButton:Clickable) {
 			super();
 			saveGame = SharedObject.getLocal("saveGame");
-			this.textures = textures;
-			this.animations = animations;
-			this.floors = floors;
-			this.mixer = mixer;
 			this.sfxMuteButton = sfxMuteButton;
 			this.bgmMuteButton = bgmMuteButton;
-			this.cursorReticle = cursorReticle;
-			this.cursorAnim = cursorAnim;
 
 			// Log variables
 			numberOfTilesPlaced = 0;
@@ -164,7 +145,7 @@ package {
 				"characterAttack": currentFloor.char.attack
 			});
 
-			mixer.play(Util.FLOOR_BEGIN);
+			Assets.mixer.play(Util.FLOOR_BEGIN);
 
 			// Game loop event.
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onFrameBegin);
@@ -196,26 +177,22 @@ package {
 		private function initializeWorld(fromSave:Boolean):void {
 			world = new Sprite();
 
-			cursorHighlight = new Image(textures[Util.TILE_HL_B]);
+			cursorHighlight = new Image(Assets.textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
 
-			runSummary = new Summary(40, 40, returnToBuild, null, textures[Util.SHOP_BACKGROUND], textures);
+			runSummary = new Summary(40, 40, returnToBuild, null, Assets.textures[Util.SHOP_BACKGROUND]);
 
 			var health:int = fromSave ? saveGame["hp"] : Util.STARTING_HEALTH;
 			var stamina:int = fromSave ? saveGame["stamina"] : Util.STARTING_STAMINA;
 			var attack:int = fromSave ? saveGame["attack"] : Util.STARTING_ATTACK;
 			var los:int = fromSave ? saveGame["los"] : Util.STARTING_LOS;
 
-			currentFloor = new Floor(floors[Util.MAIN_FLOOR],
-									 textures,
-									 animations,
+			currentFloor = new Floor(Assets.floors[Util.MAIN_FLOOR],
 									 health,
 									 stamina,
 									 attack,
 									 los,
-									 floors,
 									 returnToMenu,
-									 mixer,
 									 runSummary);
 
 			world.addChild(cursorHighlight);
@@ -223,10 +200,10 @@ package {
 		}
 
 		private function initializeUI():void {
-			combatSpeedButton = new Clickable(0, 0, toggleCombatSpeed, null, textures[Util.ICON_SLOW_COMBAT]);
+			combatSpeedButton = new Clickable(0, 0, toggleCombatSpeed, null, Assets.textures[Util.ICON_SLOW_COMBAT]);
 			combatSpeedButton.x = bgmMuteButton.x - combatSpeedButton.width - Util.UI_PADDING;
 			combatSpeedButton.y = Util.STAGE_HEIGHT - combatSpeedButton.height - Util.UI_PADDING;
-			runSpeedButton = new Clickable(0, 0, toggleRunSpeed, null, textures[Util.ICON_SLOW_RUN]);
+			runSpeedButton = new Clickable(0, 0, toggleRunSpeed, null, Assets.textures[Util.ICON_SLOW_RUN]);
 			runSpeedButton.x = combatSpeedButton.x - runSpeedButton.width - Util.UI_PADDING;
 			runSpeedButton.y = combatSpeedButton.y;
 
@@ -240,12 +217,12 @@ package {
 			var helpButtonQuad:Quad = new Quad(32, 32, Color.WHITE);
 			helpButtonQuad.alpha = 0;
 			helpButton.addChild(helpButtonQuad);
-			var helpButtonImage:Image = new Image(textures[Util.ICON_HELP]);
+			var helpButtonImage:Image = new Image(Assets.textures[Util.ICON_HELP]);
 			helpButton.addChild(helpButtonImage);
 			helpButton.x = runSpeedButton.x - helpButton.width - Util.UI_PADDING;
 			helpButton.y = runSpeedButton.y;
 
-			goldHud = new GoldHUD(gold, textures, mixer);
+			goldHud = new GoldHUD(gold);
 			goldHud.x = Util.STAGE_WIDTH - goldHud.width;
 			goldHud.y = Util.UI_PADDING;
 
@@ -253,12 +230,12 @@ package {
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
 									  runFloor,
 									  null,
-									  textures[Util.ICON_RUN]);
+									  Assets.textures[Util.ICON_RUN]);
 			runButton.x = goldHud.x - runButton.width - Util.UI_PADDING;
 			runButton.y = Util.UI_PADDING;
 
-			shopHud = new ShopHUD(goldHud, closeShopHUD, textures);
-			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, textures[Util.ICON_SHOP]);
+			shopHud = new ShopHUD(goldHud, closeShopHUD);
+			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, Assets.textures[Util.ICON_SHOP]);
 			shopButton.x = runButton.x - shopButton.width - Util.UI_PADDING
 			shopButton.y = Util.UI_PADDING;
 
@@ -266,13 +243,13 @@ package {
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
 									  endRunButton,
 									  null,
-									  textures[Util.ICON_END]);
+									  Assets.textures[Util.ICON_END]);
 			endButton.x = runButton.x;
 			endButton.y = runButton.y;
 
-			runHud = new RunHUD(textures); // textures not needed for now but maybe in future
-			buildHud = new BuildHUD(textures);
-			tutorialHud = new TutorialHUD(textures);
+			runHud = new RunHUD(); // textures not needed for now but maybe in future
+			buildHud = new BuildHUD();
+			tutorialHud = new TutorialHUD();
 		}
 
 		private function returnToMenu():void {
@@ -280,12 +257,9 @@ package {
 		}
 
 		private function startCombat(e:GameEvent):void {
-			currentCombat = new CombatHUD(textures,
-										  animations,
-										  currentFloor.char,
+			currentCombat = new CombatHUD(currentFloor.char,
 										  currentFloor.entityGrid[e.x][e.y],
-										  combatSkip,
-										  mixer);
+										  combatSkip);
 			addChild(currentCombat);
 		}
 
@@ -332,7 +306,7 @@ package {
 
 		public function constructPhaseBanner(run:Boolean = true):void {
 			removeChild(phaseBanner);
-			phaseBanner = new Image(textures[run ? Util.RUN_BANNER : Util.BUILD_BANNER]);
+			phaseBanner = new Image(Assets.textures[run ? Util.RUN_BANNER : Util.BUILD_BANNER]);
 			phaseBanner.y = (Util.STAGE_HEIGHT - phaseBanner.height) / 2;
 			phaseBannerTimer = 0;
 			addChild(phaseBanner);
@@ -577,7 +551,7 @@ package {
 			}
 			if (isTouchHelpButton && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
 				helpImageSprite.removeChild(helpImage);
-				helpImage = new Image(textures[gameState == STATE_BUILD ? Util.BUILD_HELP : Util.RUN_HELP]);
+				helpImage = new Image(Assets.textures[gameState == STATE_BUILD ? Util.BUILD_HELP : Util.RUN_HELP]);
 				helpImageSprite.addChild(helpImage);
 				addChild(helpImageSprite);
 				helping = true;
@@ -630,9 +604,9 @@ package {
 					gold += refund;
 					goldSpent -= refund;
 					goldHud.update(gold);
-					mixer.play(Util.TILE_REMOVE);
+					Assets.mixer.play(Util.TILE_REMOVE);
 				} else {
-					mixer.play(Util.TILE_FAILURE);
+					Assets.mixer.play(Util.TILE_FAILURE);
 				}
 			} else if (buildHud.hudState == BuildHUD.STATE_TILE) {
 				newTile = buildHud.buildTileFromImage(world.x, world.y);
@@ -654,9 +628,9 @@ package {
 						"westOpen":newTile.west
 					});
 					goldSpent += cost;
-					mixer.play(Util.TILE_MOVE);
+					Assets.mixer.play(Util.TILE_MOVE);
 				} else {
-					mixer.play(Util.TILE_FAILURE);
+					Assets.mixer.play(Util.TILE_FAILURE);
 				}
 			} else if (buildHud.hudState == BuildHUD.STATE_ENTITY) {
 				cost = buildHud.getCost();
@@ -672,7 +646,7 @@ package {
 						currentFloor.activeEnemies.push(newEntity);
 						type = "enemy";
 					}
-					mixer.play(Util.TILE_MOVE);
+					Assets.mixer.play(Util.TILE_MOVE);
 					Util.logger.logAction(18, {
 						"cost":cost,
 						"entityPlaced":type
@@ -680,7 +654,7 @@ package {
 					goldSpent += cost;
 					entitiesPlaced++;
 				} else {
-					mixer.play(Util.TILE_FAILURE);
+					Assets.mixer.play(Util.TILE_FAILURE);
 				}
 			}
 		}
@@ -792,7 +766,7 @@ package {
 			runPhaseSpeed = !runPhaseSpeed;
 
 			var chosen:String = runPhaseSpeed ? Util.ICON_FAST_RUN : Util.ICON_SLOW_RUN;
-			runSpeedButton.updateImage(null, textures[chosen]);
+			runSpeedButton.updateImage(null, Assets.textures[chosen]);
 
 			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
 			currentFloor.updateRunSpeed();
@@ -806,7 +780,7 @@ package {
 			combatSkip = !combatSkip;
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
-			combatSpeedButton.updateImage(null, textures[chosen]);
+			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
 		}
 
 		public function onTutorialComplete(event:GameEvent):void {
@@ -864,14 +838,14 @@ package {
 			addChild(runButton);
 			addChild(shopButton);
 
-			Util.mixer.play(Util.LEVEL_UP);
+			Assets.mixer.play(Util.LEVEL_UP);
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
 			removeChild(tileUnlockPopup);
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
-				Util.mixer.play(Util.LEVEL_UP);
+				Assets.mixer.play(Util.LEVEL_UP);
 
 				tileUnlockTimer = 0;
 

@@ -24,11 +24,7 @@ package {
         public var tilesVisited:int;
         public var enemiesDefeated:int;
 
-        private var textures:Dictionary;
-
-        public function RunHUD(textureDict:Dictionary) {
-            textures = textureDict;
-
+        public function RunHUD() {
             hud = new Sprite();
 
             healthBar = new Quad(HEALTH_BAR_WIDTH, Util.STAGE_HEIGHT, HEALTH_BAR_COLOR); // (x, y) = (0, 0)
@@ -38,11 +34,11 @@ package {
             staminaBar.x = healthBar.width;
             hud.addChild(staminaBar);
 
-            healthIcon = new Image(textures[Util.ICON_HEALTH]);
+            healthIcon = new Image(Assets.textures[Util.ICON_HEALTH]);
             healthIcon.y = Util.STAGE_HEIGHT - healthIcon.height;
             hud.addChild(healthIcon);
 
-            staminaIcon = new Image(textures[Util.ICON_STAMINA]);
+            staminaIcon = new Image(Assets.textures[Util.ICON_STAMINA]);
             staminaIcon.y = Util.STAGE_HEIGHT - staminaIcon.height;
             staminaIcon.x = healthBar.width;
             hud.addChild(staminaIcon);

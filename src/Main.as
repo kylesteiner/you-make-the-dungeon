@@ -15,11 +15,6 @@ package {
         private var game:Game;
         private var credits:Credits;
 
-        // Assets
-        private var textures:Dictionary;  // Map String -> Texture
-		private var floors:Dictionary; // Map String -> String
-		private var animations:Dictionary; // Map String -> Dictionary<String, Vector<Texture>>
-
         // Logger
         private var cid:int;
         private var versionID:int;
@@ -32,9 +27,6 @@ package {
         private var staticBackgroundImage:Image;
 
         // Sound
-        private var bgm:Array;
-        private var sfx:Dictionary; // Map String -> SFX
-        private var mixer:Mixer;
         private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
 
@@ -43,16 +35,16 @@ package {
         }
         public function initialize():void {
             // Set up asset dictionaries.
-            textures = Embed.setupTextures();
-			floors = Embed.setupFloors();
-			animations = Embed.setupAnimations();
+            Embed.setupTextures();
+			Embed.setupFloors();
+			Embed.setupAnimations();
 
             // Initialize the custom cursor.
             Mouse.hide();
-            cursorReticle = new Image(textures[Util.CURSOR_RETICLE]);
+            cursorReticle = new Image(Assets.textures[Util.CURSOR_RETICLE]);
 			cursorReticle.touchable = false;
 			addChild(cursorReticle);
-			cursorAnim = new MovieClip(animations[Util.ICON_CURSOR][Util.ICON_CURSOR], Util.ANIM_FPS);
+			cursorAnim = new MovieClip(Assets.animations[Util.ICON_CURSOR][Util.ICON_CURSOR], Util.ANIM_FPS);
 			cursorAnim.loop = true;
 			cursorAnim.play();
 			cursorAnim.touchable = false;
@@ -69,21 +61,20 @@ package {
 			Util.logger = Logger.initialize(gid, gname, skey, cid, null, false);
 
             // Initialize sound assets and mixer.
-            sfx = Embed.setupSFX();
-			bgm = Embed.setupBGM();
-			mixer = new Mixer(bgm, sfx);
-			addChild(mixer);
-			Util.mixer = mixer;
+            var sfx:Dictionary = Embed.setupSFX();
+			var bgm:Array = Embed.setupBGM();
+			Assets.mixer = new Mixer(bgm, sfx);
+			addChild(Assets.mixer);
 
             // Initialize sound controls.
-            sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, textures[Util.ICON_SFX_PLAY]);
+            sfxMuteButton = new Clickable(0, 0, toggleSFXMute, null, Assets.textures[Util.ICON_SFX_PLAY]);
 			sfxMuteButton.x = Util.STAGE_WIDTH - sfxMuteButton.width - Util.UI_PADDING;
 			sfxMuteButton.y = Util.STAGE_HEIGHT - sfxMuteButton.height - Util.UI_PADDING;
-			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, textures[Util.ICON_BGM_PLAY]);
+			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, Assets.textures[Util.ICON_BGM_PLAY]);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
-            staticBackgroundImage = new Image(textures[Util.STATIC_BACKGROUND]);
+            staticBackgroundImage = new Image(Assets.textures[Util.STATIC_BACKGROUND]);
 			addChild(staticBackgroundImage);
 
             // Display the main menu.
@@ -102,7 +93,7 @@ package {
         // Switches from the menu to the game.
         public function startGame(fromSave:Boolean):void {
             removeChild(menu);
-            game = new Game(fromSave, textures, animations, floors, mixer, sfxMuteButton, bgmMuteButton, cursorReticle, cursorAnim);
+            game = new Game(fromSave, sfxMuteButton, bgmMuteButton);
             addChild(game);
         }
 
@@ -124,21 +115,21 @@ package {
 
         // Sound controls.
         public function toggleBgmMute():void {
-			mixer.togglePlay();
+			Assets.mixer.togglePlay();
 			Util.logger.logAction(15, {
 				"buttonClicked":"BGM Mute"
 			});
-			var chosen:String = mixer.playing ? Util.ICON_BGM_PLAY : Util.ICON_BGM_MUTE;
-			bgmMuteButton.updateImage(null, textures[chosen]);
+			var chosen:String = Assets.mixer.playing ? Util.ICON_BGM_PLAY : Util.ICON_BGM_MUTE;
+			bgmMuteButton.updateImage(null, Assets.textures[chosen]);
 		}
 
 		public function toggleSFXMute():void {
-			mixer.toggleSFXMute();
+			Assets.mixer.toggleSFXMute();
 			Util.logger.logAction(15, {
 				"buttonClicked":"SFX Mute"
 			});
-			var chosen:String = mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
-			sfxMuteButton.updateImage(null, textures[chosen]);
+			var chosen:String = Assets.mixer.sfxMuted ? Util.ICON_SFX_MUTE : Util.ICON_SFX_PLAY;
+			sfxMuteButton.updateImage(null, Assets.textures[chosen]);
 		}
 
         public function onEnterFrame(event:EnterFrameEvent):void {

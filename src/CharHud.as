@@ -28,16 +28,16 @@ package {
 			char = currentChar;
 			textures = textureDict;
 
-			var image:Image = new Image(textures[Util.CHAR_HUD]);
+			var image:Image = new Image(Assets.textures[Util.CHAR_HUD]);
 			x = Util.STAGE_WIDTH - image.width - 2;
 			y = Util.STAGE_HEIGHT - image.height - 2;
 			addChild(image);
 
-			health = new Image(textures[Util.ICON_HEALTH]);
+			health = new Image(Assets.textures[Util.ICON_HEALTH]);
 			health.y = image.height / 4;
 			addChild(health);
 
-			attack = new Image(textures[Util.ICON_ATK]);
+			attack = new Image(Assets.textures[Util.ICON_ATK]);
 			attack.y = image.height / 2;
 			addChild(attack);
 
