@@ -8,14 +8,9 @@ package entities.traps {
 	import entities.*;
 
 	public class FlameTrap extends Trap {
-		
-		public function FlameTrap(g_x:int,
-								 g_y:int,
-								 texture:Texture,
-								 damage:int) {
+
+		public function FlameTrap(g_x:int, g_y:int, texture:Texture, damage:int) {
 			super(g_x, g_y, texture, damage);
 		}
-
 	}
-
 }

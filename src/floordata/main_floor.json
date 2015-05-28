@@ -113,6 +113,12 @@
 		},
 		{
 			"type": "empty",
+			"x": 15,
+			"y": 13,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
 			"x": 11,
 			"y": 18,
 			"edges": ["n", "s"]
@@ -351,6 +357,13 @@
 		{"type": "none", "x": 23, "y": 22, "edges": []}
 	],
 	"entities": [
+		{
+			"type": "enemy",
+			"x": 9,
+			"y": 7,
+			"texture": "trap_shock",
+			"damage": 5
+		},
 		{
 			"type": "enemy",
 			"x": 9,
