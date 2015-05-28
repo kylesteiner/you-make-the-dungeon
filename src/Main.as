@@ -39,6 +39,9 @@ package {
 		private var sfxMuteButton:Clickable;
 
         public function Main() {
+            addEventListener(Event.ADDED_TO_STAGE, initialize);
+        }
+        public function initialize():void {
             // Set up asset dictionaries.
             textures = Embed.setupTextures();
 			floors = Embed.setupFloors();
