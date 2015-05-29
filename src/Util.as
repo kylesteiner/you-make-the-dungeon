@@ -188,7 +188,7 @@ package {
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
-		public static const BASIC_TRAP:String = "basic_string";
+		public static const BASIC_TRAP:String = "basic_trap";
 		public static const FLAME_TRAP:String = "flame_trap";
 		public static const SHOCK_TRAP:String = "shock_trap";
 
@@ -216,7 +216,7 @@ package {
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 20;
+		public static const STARTING_GOLD:int = 1000;//20;
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs

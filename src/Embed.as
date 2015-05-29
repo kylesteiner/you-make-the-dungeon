@@ -38,9 +38,9 @@ package {
 		[Embed(source='assets/entities/new_key.png')] public static var entity_key:Class;
 		[Embed(source='assets/entities/enemy_fighter.png')] public static var entity_fighter:Class;
 		[Embed(source='assets/entities/enemy_mage.png')] public static var entity_mage:Class;
-		[Embed(source='assets/entities/trap_basic.png')] public static var trap_basic:Class;
-		[Embed(source='assets/entities/trap_flame.png')] public static var trap_flame:Class;
-		[Embed(source='assets/entities/trap_shock.png')] public static var trap_shock:Class;
+		[Embed(source='assets/entities/trap_basic.png')] public static var basic_trap:Class;
+		[Embed(source='assets/entities/trap_flame.png')] public static var flame_trap:Class;
+		[Embed(source='assets/entities/trap_shock.png')] public static var shock_trap:Class;
 
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] public static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] public static const league_font:Class;
@@ -195,6 +195,9 @@ package {
 			Assets.textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
 			Assets.textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
 			Assets.textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			Assets.textures[Util.BASIC_TRAP] = Texture.fromBitmap(new basic_trap(), true, false, scale);
+			Assets.textures[Util.FLAME_TRAP] = Texture.fromBitmap(new flame_trap(), true, false, scale);
+			Assets.textures[Util.SHOCK_TRAP] = Texture.fromBitmap(new shock_trap(), true, false, scale);
 
 			Assets.textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
 			Assets.textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);

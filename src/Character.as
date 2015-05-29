@@ -113,7 +113,6 @@ package {
 		// continuously over many frames. Once the character arrives at the tile
 		// an event is passed to floor.
 		public function move(direction:int):void {
-			trace("character.move(" + direction + ")");
 			if (moving || inCombat) {
 				return;
 			}

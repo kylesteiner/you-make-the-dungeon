@@ -932,10 +932,6 @@ package {
 						"enemyReward":temp.reward,
 						"enemyName":temp.enemyName
 					});
-					trace(temp.hp);
-					trace(newEntity.cost);
-					trace(temp.reward);
-					trace(temp.attack);
 				} else if (newEntity is StaminaHeal) {
 					var tempS:StaminaHeal = newEntity as StaminaHeal;
 					Util.logger.logAction(19, {

@@ -9,17 +9,12 @@ package entities.traps {
 
 	public class Trap extends Entity {
 		public var damage:int;
-		public var reward:int;
 
 		public function Trap(g_x:int, g_y:int, texture:Texture, damage:int) {
 			super(g_x, g_y, texture);
 			this.damage = damage;
 
 			addOverlay();
-		}
-
-		override public function handleChar(c:Character):void {
-			// TODO
 		}
 
 		override public function generateOverlay():Sprite {
@@ -35,6 +30,10 @@ package entities.traps {
 			base.addChild(damageText);
 
 			return base;
+		}
+		
+		override public function generateDescription():String {
+			return "Damage: " + damage;
 		}
 	}
 }

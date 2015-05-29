@@ -13,7 +13,7 @@ package entities {
         public static const LIGHT_STAMINA_HEAL:String = "entity_light_stamina_heal";
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
-        public static const BASIC_TRAP:String = "basic_Trap";
+        public static const BASIC_TRAP:String = "basic_trap";
         public static const FLAME_TRAP:String = "flame_trap";
         public static const SHOCK_TRAP:String = "shock_trap";
 
@@ -165,15 +165,21 @@ package entities {
         }
 
         public function constructBasicTrap():Trap {
-            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], 0);
+			var damage:int = 5;
+			
+            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], damage);
         }
 
         public function constructFlameTrap():Trap {
-            return new FlameTrap(0, 0, Assets.textures[Util.FLAME_TRAP], 0);
+           	var damage:int = 5;
+			
+			return new FlameTrap(0, 0, Assets.textures[Util.FLAME_TRAP], damage);
         }
 
         public function constructShockTrap():Trap {
-            return new ShockTrap(0, 0, Assets.textures[Util.SHOCK_TRAP], 0);
+    		var damage:int = 5;
+			
+			return new ShockTrap(0, 0, Assets.textures[Util.SHOCK_TRAP], damage);
         }
     }
 }

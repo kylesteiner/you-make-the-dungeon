@@ -2,6 +2,7 @@
 // Stores the state of a single floor.
 
 package {
+	import entities.traps.Trap;
 	import flash.net.SharedObject;
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
@@ -14,6 +15,7 @@ package {
 	import starling.textures.Texture;
 
 	import entities.*;
+	import entities.traps.*;
 	import tiles.*;
 
 	public class Floor extends Sprite {
@@ -254,6 +256,11 @@ package {
 					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, Assets.textures[textureName], stamina);
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
+				} else if (entity["type"] == "basic_trap") {
+					var damage:int = entity["damage"];
+					var basicTrap:Trap = new Trap(tX, tY, Assets.textures[textureName], damage);
+					entityGrid[tX][tY] = basicTrap;
+					basicTrap.deletable = tDeletable;
 				}
 			}
 
@@ -274,6 +281,7 @@ package {
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			addEventListener(GameEvent.ACTIVATE_TRAP, onActivateTrap);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
@@ -864,28 +872,32 @@ package {
 				if (enemy.grid_y > 0
 					&& grid[enemy.grid_x][enemy.grid_y-1]
 					&& grid[enemy.grid_x][enemy.grid_y-1].south
-					&& entityGrid[enemy.grid_x][enemy.grid_y-1] == null) {
+					&& (entityGrid[enemy.grid_x][enemy.grid_y-1] == null
+					|| entityGrid[enemy.grid_x][enemy.grid_y-1] is Trap)) {
 					possibleDirections.push(Util.NORTH);
 				}
 				// South
 				if (enemy.grid_y < gridHeight - 1
 					&& grid[enemy.grid_x][enemy.grid_y+1]
 					&& grid[enemy.grid_x][enemy.grid_y+1].north
-					&& entityGrid[enemy.grid_x][enemy.grid_y+1] == null) {
+					&& (entityGrid[enemy.grid_x][enemy.grid_y+1] == null
+					|| entityGrid[enemy.grid_x][enemy.grid_y+1] is Trap)) {
 					possibleDirections.push(Util.SOUTH);
 				}
 				// East
 				if (enemy.grid_x < gridWidth - 1
 					&& grid[enemy.grid_x+1][enemy.grid_y]
 					&& grid[enemy.grid_x+1][enemy.grid_y].west
-					&& entityGrid[enemy.grid_x+1][enemy.grid_y] == null) {
+					&& (entityGrid[enemy.grid_x+1][enemy.grid_y] == null
+					|| entityGrid[enemy.grid_x+1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.EAST);
 				}
 				// West
 				if (enemy.grid_x > 0
 					&& grid[enemy.grid_x-1][enemy.grid_y]
 					&& grid[enemy.grid_x-1][enemy.grid_y].east
-					&& entityGrid[enemy.grid_x-1][enemy.grid_y] == null) {
+					&& (entityGrid[enemy.grid_x-1][enemy.grid_y] == null
+					|| entityGrid[enemy.grid_x-1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.WEST);
 				}
 
@@ -920,25 +932,41 @@ package {
 					continue;
 				}
 
-				// Move the entity's position in the entityGrid.
+				// Command the enemy to move.
 				entityGrid[enemy.grid_x][enemy.grid_y] = null;
+				var new_x:int; var new_y:int;
 				switch (direction) {
 					case Util.NORTH:
-						entityGrid[enemy.grid_x][enemy.grid_y - 1] = enemy;
+						new_x = enemy.grid_x;
+						new_y = enemy.grid_y - 1;
 						break;
 					case Util.SOUTH:
-						entityGrid[enemy.grid_x][enemy.grid_y + 1] = enemy;
+						new_x = enemy.grid_x;
+						new_y = enemy.grid_y + 1;
 						break;
 					case Util.EAST:
-						entityGrid[enemy.grid_x + 1][enemy.grid_y] = enemy;
+						new_x = enemy.grid_x + 1;
+						new_y = enemy.grid_y;
 						break;
 					case Util.WEST:
-						entityGrid[enemy.grid_x - 1][enemy.grid_y] = enemy;
+						new_x = enemy.grid_x - 1;
+						new_y = enemy.grid_y;
 						break;
 				}
-				// Command the enemy to move.
+				if (entityGrid[new_x][new_y] is Trap) {
+					enemy.trap = entityGrid[new_x][new_y];
+				}
+				entityGrid[new_x][new_y] = enemy;
 				enemy.move(direction);
 			}
+		}
+		
+		private function killEnemy(enemy:Enemy):void {
+			removeEnemyFromActive(enemy);
+			removedEntities.push(enemy);
+			entityGrid[enemy.grid_x][enemy.grid_y] = null;
+			removeChild(enemy); 
+			runSummary.enemiesDefeated++;
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -1020,11 +1048,9 @@ package {
 
 		// Called after the character defeats an enemy entity.
 		public function onCombatSuccess(enemy:Enemy):void {
-			removeEnemyFromActive(enemy);
-			removedEntities.push(enemy);
-			entityGrid[enemy.grid_x][enemy.grid_y] = null;
-			removeChild(enemy);
+			killEnemy(enemy);
 			char.inCombat = false;
+			runSummary.damageTaken += preHealth - char.hp;
 			Util.logger.logAction(17, {
 				"characterHealthLeft":char.hp,
 				"characterHealthMax":char.maxHp,
@@ -1035,9 +1061,6 @@ package {
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
-
-			runSummary.enemiesDefeated++;
-			runSummary.damageTaken += preHealth - char.hp;
 		}
 
 		// Called when the character moves into an objective tile. Updates
@@ -1085,6 +1108,25 @@ package {
 				}
 			}
 			Util.logger.logAction(7, { } );
+		}
+		
+		private function onActivateTrap(e:GameEvent):void {
+			var trap:Trap = e.gameData["trap"];
+			var enemies:Array = new Array();
+			if (trap is FlameTrap) {
+				
+			} else if (trap is ShockTrap) {
+				
+			} else {
+				enemies.push(entityGrid[e.x][e.y]);
+			}
+			
+			for each (var enemy:Enemy in enemies) {
+				enemy.hp -= trap.damage;
+				if (enemy.hp <= 0) {
+					killEnemy(enemy);
+				}
+			}
 		}
 	}
 }

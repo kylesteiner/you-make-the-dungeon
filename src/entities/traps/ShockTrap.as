@@ -1,4 +1,5 @@
 package entities.traps {
+	import entities.traps.Trap;
 	import starling.textures.Texture;
 	import starling.display.Sprite;
 	import starling.events.Event;
