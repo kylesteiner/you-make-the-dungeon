@@ -733,6 +733,9 @@ package {
 			    event.y >= 0 && event.y < currentFloor.gridHeight) { // if floor tile has gold
 				var coin:Coin = currentFloor.goldGrid[event.x][event.y];
 				addAmount += coin.gold;
+				Util.logger.logAction(22, {
+					"goldEarned":coin.gold
+				});
 				runHud.tilesVisited += 1;
 				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
 				currentFloor.goldGrid[event.x][event.y] = null;
