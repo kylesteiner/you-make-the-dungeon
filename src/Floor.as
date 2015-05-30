@@ -1116,6 +1116,7 @@ package {
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
 			if (trap.type == "flame") {
+				Assets.mixer.play(Util.SFX_FLAME_TRAP);
 				// Damage radius from epicenter
 				for (i = trap.radius * -1; i <= trap.radius; i++) {
 					for (j = trap.radius * -1; j <= trap.radius; j++) {
@@ -1126,6 +1127,7 @@ package {
 					}
 				}
 			} else if (trap.type == "shock") {
+				Assets.mixer.play(Util.SFX_SHOCK_TRAP);
 				// Damage in line from epicenter
 				for (i = trap.radius * -1; i <= trap.radius; i++) {
 					entity = entityGrid[e.x + i][e.y];
@@ -1138,6 +1140,7 @@ package {
 					}
 				}
 			} else if (trap.type == "basic") {
+				Assets.mixer.play(Util.SFX_BASIC_TRAP);
 				enemies.push(entityGrid[e.x][e.y]);
 			}
 			

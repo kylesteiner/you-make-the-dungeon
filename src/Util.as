@@ -208,6 +208,9 @@ package {
 		public static const COIN_COLLECT:String = "coin_collect";
 		public static const GOLD_SPEND:String = "gold_spend";
 		public static const REWARD_COLLECT:String = "reward_collect";
+		public static const SFX_BASIC_TRAP:String = "sfx_basic_trap";
+		public static const SFX_FLAME_TRAP:String = "sfx_flame_trap";
+		public static const SFX_SHOCK_TRAP:String = "sfx_shock_trap";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -216,7 +219,7 @@ package {
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 1000;//20;
+		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs

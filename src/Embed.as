@@ -161,6 +161,9 @@ package {
 		[Embed(source='assets/sfx/coin_collect.mp3')] public static const sfxCoinCollect:Class;
 		[Embed(source='assets/sfx/spend_gold.mp3')] public static const sfxGoldSpend:Class;
 		[Embed(source='assets/sfx/chest_open_lowhz.mp3')] public static const sfxReward:Class;
+		[Embed(source='assets/sfx/basic_trap.mp3')] public static const sfxBasicTrap:Class;
+		[Embed(source='assets/sfx/flame_trap.mp3')] public static const sfxFlameTrap:Class;
+		[Embed(source='assets/sfx/shock_trap.mp3')] public static const sfxShockTrap:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
@@ -393,6 +396,9 @@ package {
 			tSfx[Util.COIN_COLLECT] = new sfxCoinCollect();
 			tSfx[Util.GOLD_SPEND] = new sfxGoldSpend();
 			tSfx[Util.REWARD_COLLECT] = new sfxReward();
+			tSfx[Util.SFX_BASIC_TRAP] = new sfxBasicTrap();
+			tSfx[Util.SFX_FLAME_TRAP] = new sfxFlameTrap();
+			tSfx[Util.SFX_SHOCK_TRAP] = new sfxShockTrap();
 
 			return tSfx;
 		}
