@@ -964,6 +964,11 @@ package {
 			gold += e.gameData["reward"];
 			runSummary.goldCollected += e.gameData["reward"];
 			goldHud.update(gold);
+			
+			runSummary.damageTaken += e.gameData["damage"];
+			if (currentFloor.char.hp <= 0) {
+				endRun();
+			}
 		}
 	}
 }

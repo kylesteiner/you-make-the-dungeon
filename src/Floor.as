@@ -1125,6 +1125,9 @@ package {
 						if (entity is Enemy) {
 							enemies.push(entity);
 						}
+						if (char.grid_x == e.x + i && char.grid_y == e.y + j) {
+							char.hp -= trap.damage;
+						}
 					}
 				}
 			} else if (trap.type == "shock") {
@@ -1139,6 +1142,10 @@ package {
 					entity = entityGrid[e.x][e.y + i];
 					if (entity is Enemy) {
 						enemies.push(entity);
+					}
+					if ((char.grid_x == e.x + i && char.grid_y == e.y) ||
+						(char.grid_x == e.x && char.grid_y == e.y + i)) {
+						char.hp -= trap.damage;
 					}
 				}
 			} else if (trap.type == "basic") {
@@ -1157,6 +1164,7 @@ package {
 			}
 			var eventData:Dictionary = new Dictionary();
 			eventData["reward"] = reward;
+			eventData["damage"] = trap.damage;
 			dispatchEvent(new GameEvent(GameEvent.GET_TRAP_REWARD, e.x, e.y, eventData));
 			removedEntities.push(trap);
 			removeChild(trap);
