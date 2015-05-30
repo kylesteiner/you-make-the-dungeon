@@ -333,6 +333,12 @@ package {
 			removeChild(runButton);
 			removeChild(buildHud.currentImage);
 			removeChild(buildHud);
+			
+			// to account for the case where they click run, and the hud is still open
+			if (getChildIndex(shopHud) != -1) {
+				goldSpent += gold - shopHud.gold;
+				gold = shopHud.gold;
+			}
 			removeChild(shopHud);
 			removeChild(shopButton);
 
