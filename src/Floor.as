@@ -965,7 +965,7 @@ package {
 			removeEnemyFromActive(enemy);
 			removedEntities.push(enemy);
 			entityGrid[enemy.grid_x][enemy.grid_y] = null;
-			removeChild(enemy); 
+			removeChild(enemy);
 			runSummary.enemiesDefeated++;
 		}
 
@@ -1109,10 +1109,10 @@ package {
 			}
 			Util.logger.logAction(7, { } );
 		}
-		
+
 		private function onActivateTrap(e:GameEvent):void {
 			var i:int; var j:int; var entity:Entity;
-			
+
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
 			if (trap.type == "flame") {
@@ -1120,6 +1120,7 @@ package {
 				// Damage radius from epicenter
 				for (i = trap.radius * -1; i <= trap.radius; i++) {
 					for (j = trap.radius * -1; j <= trap.radius; j++) {
+						// FLAME ANIMATION HERE
 						entity = entityGrid[e.x + i][e.y + j];
 						if (entity is Enemy) {
 							enemies.push(entity);
@@ -1130,6 +1131,7 @@ package {
 				Assets.mixer.play(Util.SFX_SHOCK_TRAP);
 				// Damage in line from epicenter
 				for (i = trap.radius * -1; i <= trap.radius; i++) {
+					// SHOCK ANIMATION HERE
 					entity = entityGrid[e.x + i][e.y];
 					if (entity is Enemy) {
 						enemies.push(entity);
@@ -1140,16 +1142,22 @@ package {
 					}
 				}
 			} else if (trap.type == "basic") {
+				// BASIC ANIMATION HERE
 				Assets.mixer.play(Util.SFX_BASIC_TRAP);
 				enemies.push(entityGrid[e.x][e.y]);
 			}
-			
+
+			var reward:int = 0;
 			for each (var enemy:Enemy in enemies) {
 				enemy.hp -= trap.damage;
 				if (enemy.hp <= 0) {
+					reward += enemy.reward;
 					killEnemy(enemy);
 				}
 			}
+			var eventData:Dictionary = new Dictionary();
+			eventData["reward"] = reward;
+			dispatchEvent(new GameEvent(GameEvent.GET_TRAP_REWARD, e.x, e.y, eventData));
 			removedEntities.push(trap);
 			removeChild(trap);
 		}

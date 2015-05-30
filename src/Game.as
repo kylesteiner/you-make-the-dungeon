@@ -167,6 +167,7 @@ package {
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
@@ -957,6 +958,12 @@ package {
 
 		private function onLosChange(event:GameEvent):void {
 			currentFloor.removeFoggedLocationsInPath();
+		}
+		
+		private function onGetTrapReward(e:GameEvent):void {
+			gold += e.gameData["reward"];
+			runSummary.goldCollected += e.gameData["reward"];
+			goldHud.update(gold);
 		}
 	}
 }
