@@ -358,11 +358,13 @@
 	],
 	"entities": [
 		{
-			"type": "basic_trap",
+			"type": "trap",
 			"x": 15,
 			"y": 13,
-			"texture": "basic_trap",
-			"damage": 5
+			"texture": "shock_trap",
+			"damage": 5,
+			"radius": 3,
+			"trap": "shock"
 		},
 		{
 			"type": "enemy",

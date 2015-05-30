@@ -1,6 +1,5 @@
 package entities {
     // Creates pre-set entities for the game
-    import entities.traps.*;
     import flash.utils.Dictionary;
 
     public class EntityFactory {
@@ -166,20 +165,25 @@ package entities {
 
         public function constructBasicTrap():Trap {
 			var damage:int = 5;
-			
-            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], damage);
+			var type:String = "basic";
+
+            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], type, damage);
         }
 
         public function constructFlameTrap():Trap {
            	var damage:int = 5;
-			
-			return new FlameTrap(0, 0, Assets.textures[Util.FLAME_TRAP], damage);
+			var radius:int = 3;
+			var type:String = "flame";
+
+			return new Trap(0, 0, Assets.textures[Util.FLAME_TRAP], type, damage, radius);
         }
 
         public function constructShockTrap():Trap {
     		var damage:int = 5;
-			
-			return new ShockTrap(0, 0, Assets.textures[Util.SHOCK_TRAP], damage);
+			var radius:int = 3;
+			var type:String = "shock";
+
+			return new Trap(0, 0, Assets.textures[Util.SHOCK_TRAP], type, damage, radius);
         }
     }
 }

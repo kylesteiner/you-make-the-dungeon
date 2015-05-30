@@ -25,7 +25,7 @@ package entities {
 			addChild(img);
 		}
 
-		public function handleChar(c:Character):void { }
+		public function handleChar(c:Character):void {}
 
 		public function addOverlay():void {
 			overlaySprite = generateOverlay();

@@ -2,7 +2,6 @@
 // Stores the state of a single floor.
 
 package {
-	import entities.traps.Trap;
 	import flash.net.SharedObject;
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
@@ -15,7 +14,6 @@ package {
 	import starling.textures.Texture;
 
 	import entities.*;
-	import entities.traps.*;
 	import tiles.*;
 
 	public class Floor extends Sprite {
@@ -256,11 +254,13 @@ package {
 					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, Assets.textures[textureName], stamina);
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
-				} else if (entity["type"] == "basic_trap") {
+				} else if (entity["type"] == "trap") {
+					var trapType:String = entity["trap"];
 					var damage:int = entity["damage"];
-					var basicTrap:Trap = new Trap(tX, tY, Assets.textures[textureName], damage);
-					entityGrid[tX][tY] = basicTrap;
-					basicTrap.deletable = tDeletable;
+					var radius:int = entity["radius"];
+					var trap:Trap = new Trap(tX, tY, Assets.textures[textureName], trapType, damage, radius);
+					entityGrid[tX][tY] = trap;
+					trap.deletable = tDeletable;
 				}
 			}
 
@@ -1111,13 +1111,33 @@ package {
 		}
 		
 		private function onActivateTrap(e:GameEvent):void {
+			var i:int; var j:int; var entity:Entity;
+			
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
-			if (trap is FlameTrap) {
-				
-			} else if (trap is ShockTrap) {
-				
-			} else {
+			if (trap.type == "flame") {
+				// Damage radius from epicenter
+				for (i = trap.radius * -1; i <= trap.radius; i++) {
+					for (j = trap.radius * -1; j <= trap.radius; j++) {
+						entity = entityGrid[e.x + i][e.y + j];
+						if (entity is Enemy) {
+							enemies.push(entity);
+						}
+					}
+				}
+			} else if (trap.type == "shock") {
+				// Damage in line from epicenter
+				for (i = trap.radius * -1; i <= trap.radius; i++) {
+					entity = entityGrid[e.x + i][e.y];
+					if (entity is Enemy) {
+						enemies.push(entity);
+					}
+					entity = entityGrid[e.x][e.y + i];
+					if (entity is Enemy) {
+						enemies.push(entity);
+					}
+				}
+			} else if (trap.type == "basic") {
 				enemies.push(entityGrid[e.x][e.y]);
 			}
 			
@@ -1127,6 +1147,8 @@ package {
 					killEnemy(enemy);
 				}
 			}
+			removedEntities.push(trap);
+			removeChild(trap);
 		}
 	}
 }

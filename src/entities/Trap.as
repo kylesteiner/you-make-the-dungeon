@@ -1,4 +1,4 @@
-package entities.traps {
+package entities {
 	import starling.textures.Texture;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -8,11 +8,15 @@ package entities.traps {
 	import entities.*;
 
 	public class Trap extends Entity {
+		public var type:String;
 		public var damage:int;
+		public var radius:int;
 
-		public function Trap(g_x:int, g_y:int, texture:Texture, damage:int) {
+		public function Trap(g_x:int, g_y:int, texture:Texture, type:String, damage:int, radius:int=0) {
 			super(g_x, g_y, texture);
+			this.type = type;
 			this.damage = damage;
+			this.radius = radius;
 
 			addOverlay();
 		}

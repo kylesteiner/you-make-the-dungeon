@@ -3,7 +3,7 @@ package {
 	import flash.utils.Dictionary;
 
 	public class GameEvent extends Event {
-		public static const ARRIVED_AT_TILE:String = "char_arrived_at_tile";
+		public static const ARRIVED_AT_TILE:String = "arrived_at_tile";
         public static const ARRIVED_AT_EXIT:String = "arrived_at_exit";
 		public static const ENTERED_COMBAT:String = "entered_combat";
 		public static const HEALED:String = "healed";

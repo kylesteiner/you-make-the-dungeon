@@ -7,7 +7,6 @@ package entities {
 	import starling.text.TextField;
 	import starling.utils.Color;
 	import Util;
-	import entities.traps.*;
 
 	public class Enemy extends Entity {
 		public var maxHp:int;
