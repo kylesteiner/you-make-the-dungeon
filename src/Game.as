@@ -105,16 +105,16 @@ package {
 		private var timeHovered:Number;
 
 		private var saveGame:SharedObject;
-		
+
 		private var onSummary:Boolean;
-		
+
 		// for keeping track of scores
 		// best per run
 		private var bestRunGoldEarned:int;
 		private var bestRunDistance:int;
 		private var bestRunEnemiesDefeated:int;
 		//private var bestRunTrapsUsed;
-		
+
 		// overall stats
 		private var overallGoldEarned:int;
 		private var overallDistance:int;
@@ -148,13 +148,13 @@ package {
 			gold = fromSave ? saveGame.data["gold"] : Util.STARTING_GOLD;
 			Util.speed = Util.SPEED_SLOW;
 			combatSkip = false;
-			
+
 			// setting up scores and stats
 			bestRunGoldEarned = fromSave ? saveGame.data["bestRunGoldEarned"] : 0;
 			bestRunDistance = fromSave ? saveGame.data["bestRunDistance"] : 0;
 			bestRunEnemiesDefeated = fromSave ? saveGame.data["bestRunEnemiesDefeated"] : 0;
 			//bestRunTrapsUsed = fromSave ? saveGame.data["bestRunTrapsUsed"] : 0;
-			
+
 			overallGoldEarned = fromSave ? saveGame.data["overallGoldEarned"] : 0;
 			overallDistance = fromSave ? saveGame.data["overallDistance"] : 0;
 			overallEnemiesDefeated = fromSave ? saveGame.data["overallEnemiesDefeated"] : 0;
@@ -378,13 +378,12 @@ package {
 													 Util.DEFAULT_FONT,
 													 Util.SMALL_FONT_SIZE);
 			healthText.x = 185;
-			healthText.y = 25;
 			var staminaText:TextField = new TextField(300, 96,
 													  STAMINA_TUTORIAL_TEXT,
 													  Util.DEFAULT_FONT,
 													  Util.SMALL_FONT_SIZE);
 			staminaText.x = 205;
-			staminaText.y = 150;
+			staminaText.y = 125;
 			var healthStaminaShadow:Image = new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
 			healthStaminaShadow.alpha = 0.7;
 			var healthStaminaOverlay:TutorialOverlay = new TutorialOverlay(
@@ -469,7 +468,7 @@ package {
 				"numberOfEntitiesPlaced":entitiesPlaced,
 				"goldSpent":goldSpent
 			});
-			
+
 			// set up saving before running floor as well.
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -477,22 +476,22 @@ package {
 			for (var unlock:String in buildHud.entityFactory.entitySet) {
 				saveGame.data["unlocks"].push(unlock);
 			}
-			
+
 			// insert score stuff here yet again
 			saveGame.data["bestRunGoldEarned"] = bestRunGoldEarned;
 			saveGame.data["bestRunDistance"] = bestRunDistance;
 			saveGame.data["bestRunEnemiesDefeated"] = bestRunEnemiesDefeated;
-			
+
 			saveGame.data["overallGoldEarned"] = overallGoldEarned;
 			saveGame.data["overallDistance"] = overallDistance;
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			overallTilesPlaced += numberOfTilesPlaced;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			overallGoldSpent += goldSpent;
-			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
-			
+			saveGame.data["overallGoldSpent"] = overallGoldSpent;
+
 			saveGame.flush();
-			
+
 			currentFloor.save();
 
 			goldSpent = 0;
@@ -579,7 +578,7 @@ package {
 			for (var unlock:String in buildHud.entityFactory.entitySet) {
 				saveGame.data["unlocks"].push(unlock);
 			}
-			
+
 			// insert score stuff here (for run based stuff)
 			saveGame.data["bestRunGoldEarned"] = Math.max(bestRunGoldEarned, runSummary.goldCollected);
 			bestRunGoldEarned = saveGame.data["bestRunGoldEarned"];
@@ -587,7 +586,7 @@ package {
 			bestRunDistance = saveGame.data["bestRunDistance"];
 			saveGame.data["bestRunEnemiesDefeated"] = Math.max(bestRunEnemiesDefeated, runSummary.enemiesDefeated);
 			bestRunEnemiesDefeated = saveGame.data["bestRunEnemiesDefeated"];
-			
+
 			overallGoldEarned += runSummary.goldCollected;
 			saveGame.data["overallGoldEarned"] = overallGoldEarned;
 			overallDistance += runSummary.distanceTraveled;
@@ -595,10 +594,10 @@ package {
 			overallEnemiesDefeated += runSummary.enemiesDefeated;
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
-			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
-			
+			saveGame.data["overallGoldSpent"] = overallGoldSpent;
+
 			saveGame.flush();
-			
+
 			runSummary.reset();
 
 			addChild(runButton);
@@ -1201,12 +1200,12 @@ package {
 		private function onLosChange(event:GameEvent):void {
 			currentFloor.removeFoggedLocationsInPath();
 		}
-		
+
 		private function onGetTrapReward(e:GameEvent):void {
 			gold += e.gameData["reward"];
 			runSummary.goldCollected += e.gameData["reward"];
 			goldHud.update(gold);
-			
+
 			runSummary.damageTaken += e.gameData["damage"];
 			if (currentFloor.char.hp <= 0) {
 				endRun();
