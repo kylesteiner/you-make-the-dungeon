@@ -1,4 +1,5 @@
 package {
+	import cgs.fractionVisualization.fractionAnimators.strip.StripCompareSizeAnimator;
     import flash.ui.Mouse;
     import flash.utils.Dictionary;
 
@@ -14,6 +15,7 @@ package {
         private var menu:Menu;
         private var game:Game;
         private var credits:Credits;
+		private var scores:Scores;
 
         // Logger
         private var cid:int;
@@ -88,6 +90,7 @@ package {
             addEventListener(MenuEvent.CONTINUE_GAME, function():void { startGame(true); });
             addEventListener(MenuEvent.EXIT, returnToMenu);
             addEventListener(MenuEvent.CREDITS, displayCredits);
+			addEventListener(MenuEvent.SCORES, displayScores);
         }
 
         // Switches from the menu to the game.
@@ -112,6 +115,12 @@ package {
             credits = new Credits();
             addChild(credits);
         }
+		
+		public function displayScores():void {
+			removeChild(menu);
+			scores = new Scores();
+			addChild(scores);
+		}
 
         // Sound controls.
         public function toggleBgmMute():void {

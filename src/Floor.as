@@ -414,7 +414,7 @@ package {
 		}
 
 		// Saves the game state in the saveGame.data shared object.
-		private function save():void {
+		public function save():void {
 			saveGame.data["floor_name"] = floorName;
 			saveGame.data["floor_dimensions"] = new Object();
 			saveGame.data["floor_dimensions"]["width"] = gridWidth;

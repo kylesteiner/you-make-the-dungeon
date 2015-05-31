@@ -375,6 +375,8 @@ package {
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
 			
 			saveGame.flush();
+			
+			currentFloor.save();
 
 			goldSpent = 0;
 			numberOfTilesPlaced = 0;
