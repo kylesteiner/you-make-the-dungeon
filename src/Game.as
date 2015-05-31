@@ -182,10 +182,10 @@ package {
 
 			runSummary = new Summary(40, 40, returnToBuild, null, Assets.textures[Util.SHOP_BACKGROUND]);
 
-			var health:int = fromSave ? saveGame["hp"] : Util.STARTING_HEALTH;
-			var stamina:int = fromSave ? saveGame["stamina"] : Util.STARTING_STAMINA;
-			var attack:int = fromSave ? saveGame["attack"] : Util.STARTING_ATTACK;
-			var los:int = fromSave ? saveGame["los"] : Util.STARTING_LOS;
+			var health:int = fromSave ? saveGame.data["hp"] : Util.STARTING_HEALTH;
+			var stamina:int = fromSave ? saveGame.data["stamina"] : Util.STARTING_STAMINA;
+			var attack:int = fromSave ? saveGame.data["attack"] : Util.STARTING_ATTACK;
+			var los:int = fromSave ? saveGame.data["los"] : Util.STARTING_LOS;
 
 			currentFloor = new Floor(Assets.floors[Util.MAIN_FLOOR],
 									 health,
