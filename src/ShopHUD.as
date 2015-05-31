@@ -25,7 +25,7 @@ package {
 
 		private var shopItems:Array;
 		private var itemCosts:Array;
-		
+
 		// for help with determining gold spent
 		// per phase
 		private var spentGold:int;
@@ -238,6 +238,8 @@ package {
 
 		private function spend(goldSpent:int):Boolean {
 			if (gold - goldSpent < 0) {
+				// Cannot purchase item
+				goldHud.setFlash();
 				return false;
 			} else {
 				gold -= goldSpent;
