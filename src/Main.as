@@ -15,6 +15,7 @@ package {
         private var menu:Menu;
         private var game:Game;
         private var credits:Credits;
+		private var detailedCredits:DetailedCredits;
 		private var scores:Scores;
 
         // Logger
@@ -90,6 +91,7 @@ package {
             addEventListener(MenuEvent.CONTINUE_GAME, function():void { startGame(true); });
             addEventListener(MenuEvent.EXIT, returnToMenu);
             addEventListener(MenuEvent.CREDITS, displayCredits);
+			addEventListener(MenuEvent.DETAILED_CREDITS, displayDetailedCredits);
 			addEventListener(MenuEvent.SCORES, displayScores);
         }
 
@@ -113,10 +115,17 @@ package {
         // Switches from the credits to the menu.
         public function displayCredits():void {
             removeChild(menu);
+			removeChild(detailedCredits);
             credits = new Credits();
             addChild(credits);
         }
-		
+
+		public function displayDetailedCredits():void {
+			removeChild(credits);
+			detailedCredits = new DetailedCredits();
+			addChild(detailedCredits);
+		}
+
 		public function displayScores():void {
 			removeChild(menu);
 			scores = new Scores();
