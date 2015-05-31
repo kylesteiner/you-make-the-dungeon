@@ -31,12 +31,11 @@ package {
 			loadTexts.push("Earmarking gold expenditures...");
 			loadTexts.push("Training mages...");
 			loadTexts.push("Stashing loot...");
-			loadTexts.push("Waiting for dust to accumulate...");
+			loadTexts.push("Accumulating dust...");
 			loadTexts.push("Composing music...");
-			loadTexts.push("Looking to the Muses for inspiration...");
 			loadTexts.push("Writing thesis...");
 			loadTexts.push("And on the seventh day...");
-			loadTexts.push("Spreading rumors about the dungeon...");
+			loadTexts.push("Spreading rumors...");
 			loadTexts.push("Lobbying adventurer's guild...");
 			loadTexts.push("Enumerating tiles...");
 			loadTexts.push("Hiring minions...");
