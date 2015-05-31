@@ -29,6 +29,7 @@ package {
 				"Place the tile on one of the green highlighted spots.";
 		public static const RUN_TUTORIAL_TEXT:String =
 				"Click here when\nyou're done building.";
+		public static const MOVE_TUTORIAL_TEXT:String = "To move Nea";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -106,6 +107,7 @@ package {
 		private var cinematic:Cinematic;
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
+		private var runTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -314,9 +316,9 @@ package {
 			runText.x = 440;
 			runText.y = 148;
 			var runOverlay:TutorialOverlay = new TutorialOverlay(
-				runText,
-				new Image(Assets.textures[Util.TUTORIAL_RUN]),
-				false);
+					runText,
+					new Image(Assets.textures[Util.TUTORIAL_RUN]),
+					false);
 
 			buildTutorialOverlays.push(buildhudOverlay);
 			buildTutorialOverlays.push(placeOverlay);
@@ -324,6 +326,21 @@ package {
 
 			buildTutorial = new TutorialSequence(onBuildTutorialComplete,
 												 buildTutorialOverlays);
+
+			//--------- RUN TUTORIAL ---------//
+			var runTutorialOverlays:Array = new Array();
+			var controlsText:TextField = new TextField(Util.STAGE_WIDTH, 64,
+													   MOVE_TUTORIAL_TEXT,
+													   Util.DEFAULT_FONT,
+													   Util.MEDIUM_FONT_SIZE);
+			controlsText.y = 260;
+			var controlsOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_KEYS]),
+					Util.getTransparentQuad());
+			controlsOverlay.addChild(controlsText);
+			runTutorialOverlays.push(controlsOverlay);
+			runTutorial = new TutorialSequence(onRunTutorialComplete,
+											   runTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -391,10 +408,6 @@ package {
 				return;
 			}
 
-			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
-				buildTutorial.next();
-			}
-
 			Util.logger.logAction(3, {
 				"numberOfTiles":numberOfTilesPlaced,
 				"numberOfEntitiesPlaced":entitiesPlaced,
@@ -423,6 +436,10 @@ package {
 			addChild(endButton);
 			addChild(runHud);
 			gameState = STATE_RUN;
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				buildTutorial.next();
+			}
 
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
@@ -727,7 +744,7 @@ package {
 
 					// If we are in the build tutorial, advance to the next part.
 					if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
-						tutorialState = null;
+						tutorialState = TUTORIAL_WAITING_FOR_RUN;
 						buildTutorial.next();
 					}
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
@@ -943,6 +960,12 @@ package {
 
 		public function onBuildTutorialComplete():void {
 			removeChild(buildTutorial);
+			addChild(runTutorial);
+			return;
+		}
+
+		public function onRunTutorialComplete():void {
+			removeChild(runTutorial);
 			return;
 		}
 
