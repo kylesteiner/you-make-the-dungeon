@@ -27,6 +27,7 @@ package {
 		public static const CURSOR_OFFSET_Y:int = -14;
 
 		public static const DEFAULT_FONT:String = "Bebas";
+		public static const SECONDARY_FONT:String = "Fertigo";
 		public static const LARGE_FONT_SIZE:int = 48;
 		public static const MEDIUM_FONT_SIZE:int = 32;
 		public static const SMALL_FONT_SIZE:int = 24;
