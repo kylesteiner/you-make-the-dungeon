@@ -37,7 +37,7 @@ package {
 		public static const SHOP_TUTORIAL_TEXT:String =
 				"Click here to upgrade Nea's stats.";
 		public static const ENTITY_TUTORIAL_TEXT:String =
-				"Click up here to buy and place an\nenemy, health/stamina pickup, or traps.";
+				"Click up here to buy and place an enemy, health boost, stamina boost, or trap.";
 		public static const ENTITY_DROPDOWN_TUTORIAL_TEXT:String =
 				"Click the buttons to see other choices.";
 		public static const DELETE_TUTORIAL_TEXT:String =
