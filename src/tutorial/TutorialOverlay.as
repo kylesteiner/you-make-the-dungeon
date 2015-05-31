@@ -26,11 +26,11 @@ package tutorial {
 			this.touchable = touchable;
 
 			if (touchable) {
-				var click:TextField = new TextField(175, 50,
-													"Click to continue",
+				var click:TextField = new TextField(250, 50,
+													"Click anywhere to continue",
 													Util.DEFAULT_FONT,
 													Util.SMALL_FONT_SIZE);
-				click.x = Util.STAGE_WIDTH - 175;
+				click.x = Util.STAGE_WIDTH - 250;
 				click.y = Util.STAGE_HEIGHT - 50;
 				addChild(click);
 			}

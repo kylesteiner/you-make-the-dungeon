@@ -9,7 +9,7 @@ package {
     public class GoldHUD extends Sprite {
         public static const BORDER:int = 2;
         public static const MOVE_SPEED:int = 2;
-        public static const COLOR_SPEND:uint = Color.BLACK;
+        public static const COLOR_SPEND:uint = Color.RED;
         public static const COLOR_EARN:uint = Color.YELLOW;
         public static const BORDER_COLOR:uint = Color.BLACK;
         public static const INTERIOR_COLOR:uint = Color.WHITE;

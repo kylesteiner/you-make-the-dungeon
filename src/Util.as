@@ -115,6 +115,11 @@ package {
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
 		public static const ICON_HELP:String = "icon_help";
 
+		public static const HEALTH_PURCHASE:String = "health_purchase";
+		public static const ATTACK_PURCHASE:String = "attack_purchase";
+		public static const STAMINA_PURCHASE:String = "stamina_purchase";
+		public static const LOS_PURCHASE:String = "los_purchase";
+
 		public static const ENEMY_MENU:String = "enemy_menu";
 		public static const HEALING_MENU:String = "healing_menu";
 		public static const TRAP_MENU:String = "trap_menu";

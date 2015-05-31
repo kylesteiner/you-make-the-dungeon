@@ -21,6 +21,8 @@ package {
 		private var shopItems:Dictionary; // clickables
 		private var shopPrices:Dictionary; // textfields
 
+		private var goldCosts:Dictionary;
+
 		public var char:Character;
 
 		/**********************************************************************************
@@ -30,22 +32,94 @@ package {
 		public function ShopHUD() {
 			super();
 
-			var bg:Image = new Image(Assets.textures[Util.SHOP_BACKGROUND]);
-			addChild(bg);
-
-			x = Util.STAGE_WIDTH - width;
-			y = (Util.STAGE_HEIGHT - height) / 2;
+			//var bg:Image = new Image(Assets.textures[Util.SHOP_BACKGROUND]);
+			//addChild(bg);
 
 			charStats = new Dictionary();
 			shopItems = new Dictionary();
 			shopPrices = new Dictionary();
+			goldCosts = new Dictionary();
 
-			displayStat(0, HP, Assets.textures[Util.ICON_HEALTH], getHpCost());
-			displayStat(1, ATTACK, Assets.textures[Util.ICON_ATK], getAttackCost());
-			displayStat(2, STAMINA, Assets.textures[Util.ICON_STAMINA], getStaminaCost());
-			displayStat(3, LOS, Assets.textures[Util.ICON_LOS], getLOSCost());
+			displayShop();
+
+			//displayStat(0, HP, Assets.textures[Util.ICON_HEALTH], getHpCost());
+			//displayStat(1, ATTACK, Assets.textures[Util.ICON_ATK], getAttackCost());
+			//displayStat(2, STAMINA, Assets.textures[Util.ICON_STAMINA], getStaminaCost());
+			//displayStat(3, LOS, Assets.textures[Util.ICON_LOS], getLOSCost());
+
+			x = Util.STAGE_WIDTH - width - 4;
+			y = (Util.STAGE_HEIGHT - height) / 2;
 
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
+		}
+
+		private function displayShop():void {
+			shopItems[HP] = new Clickable(0, 0, clickUpgrade, null, Assets.textures[Util.HEALTH_PURCHASE]);
+			shopItems[HP].addParameter("type", HP);
+			shopItems[HP].addParameter("cost", getHpCost());
+
+			shopItems[ATTACK] = new Clickable(0, shopItems[HP].y + shopItems[HP].height, clickUpgrade, null, Assets.textures[Util.ATTACK_PURCHASE]);
+			shopItems[ATTACK].addParameter("type", ATTACK);
+			shopItems[ATTACK].addParameter("cost", getAttackCost());
+
+			shopItems[STAMINA] = new Clickable(0, shopItems[ATTACK].y + shopItems[ATTACK].height, clickUpgrade, null, Assets.textures[Util.STAMINA_PURCHASE]);
+			shopItems[STAMINA].addParameter("type", STAMINA);
+			shopItems[STAMINA].addParameter("cost", getStaminaCost());
+
+			shopItems[LOS] = new Clickable(0, shopItems[STAMINA].y + shopItems[STAMINA].height, clickUpgrade, null, Assets.textures[Util.LOS_PURCHASE]);
+			shopItems[LOS].addParameter("type", LOS);
+			shopItems[LOS].addParameter("cost", getLOSCost());
+
+			charStats[HP] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
+			charStats[HP].x = shopItems[HP].x + shopItems[HP].width - charStats[HP].width;
+			charStats[HP].y = shopItems[HP].y + 4;
+			charStats[HP].autoScale = true;
+
+			charStats[ATTACK] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
+			charStats[ATTACK].x = shopItems[ATTACK].x + shopItems[ATTACK].width - charStats[ATTACK].width;
+			charStats[ATTACK].y = shopItems[ATTACK].y + 4;
+			charStats[ATTACK].autoScale = true;
+
+			charStats[STAMINA] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
+			charStats[STAMINA].x = shopItems[STAMINA].x + shopItems[STAMINA].width - charStats[STAMINA].width;
+			charStats[STAMINA].y = shopItems[STAMINA].y + 4;
+			charStats[STAMINA].autoScale = true;
+
+			charStats[LOS] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
+			charStats[LOS].x = shopItems[LOS].x + shopItems[LOS].width - charStats[LOS].width;
+			charStats[LOS].y = shopItems[LOS].y + 4;
+			charStats[LOS].autoScale = true;
+
+			shopPrices[HP] = createGoldCost(getHpCost(), HP);
+			shopPrices[HP].x = shopItems[HP].x + 10;
+			shopPrices[HP].y = shopItems[HP].y - 4;
+
+			shopPrices[ATTACK] = createGoldCost(getAttackCost(), ATTACK);
+			shopPrices[ATTACK].x = shopItems[ATTACK].x + 10;
+			shopPrices[ATTACK].y = shopItems[ATTACK].y - 4;
+
+			shopPrices[STAMINA] = createGoldCost(getStaminaCost(), STAMINA);
+			shopPrices[STAMINA].x = shopItems[STAMINA].x + 10;
+			shopPrices[STAMINA].y = shopItems[STAMINA].y - 4;
+
+			shopPrices[LOS] = createGoldCost(getLOSCost(), LOS);
+			shopPrices[LOS].x = shopItems[LOS].x + 10;
+			shopPrices[LOS].y = shopItems[LOS].y - 4;
+
+			addChild(shopItems[HP]);
+			addChild(shopItems[ATTACK]);
+			addChild(shopItems[STAMINA]);
+			addChild(shopItems[LOS]);
+
+			addChild(charStats[HP]);
+			addChild(charStats[ATTACK]);
+			addChild(charStats[STAMINA]);
+			addChild(charStats[LOS]);
+
+			addChild(shopPrices[HP]);
+			addChild(shopPrices[ATTACK]);
+			addChild(shopPrices[STAMINA]);
+			addChild(shopPrices[LOS]);
 		}
 
 		private function displayStat(position:int, type:String, icon:Texture, cost:int):void {
@@ -114,22 +188,24 @@ package {
 
 			return item;
 		}
-		
+
 		private function clickUpgrade(params:Dictionary):void {
 			dispatchEvent(new GameEvent(GameEvent.SHOP_SPEND, 0, 0, params));
 		}
-		
+
 		private function createGoldCost(cost:int, type:String):Sprite {
 			var base:Sprite = new Sprite();
 
 			var goldImage:Image = new Image(Assets.textures[Util.ICON_GOLD]);
 			var costText:TextField = new TextField(goldImage.width, goldImage.height, cost.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			costText.autoScale = true;
-			shopPrices[type] = costText;
+			//shopPrices[type] = costText;
 
 			base.addChild(goldImage);
 			base.addChild(costText);
 			base.touchable = false;
+			base.scaleX = 0.6;
+			base.scaleY = 0.6;
 
 			return base;
 		}
@@ -206,9 +282,11 @@ package {
 			if (!char) {
 				return;
 			}
+
 			var i:int;
 			var newCost:int;
 			var shopButton:Clickable;
+			var oldCost:Sprite;
 			for (var item:String in shopItems) {
 				newCost = getHpCost();
 				newCost = item == ATTACK ? getAttackCost() : newCost;
@@ -216,7 +294,12 @@ package {
 				newCost = item == LOS ? getLOSCost() : newCost;
 
 				shopItems[item].parameters["cost"] = newCost;
-				shopPrices[item].text = String(newCost);
+				removeChild(shopPrices[item]);
+				oldCost = shopPrices[item];
+				shopPrices[item] = createGoldCost(newCost, item);
+				shopPrices[item].x = oldCost.x;
+				shopPrices[item].y = oldCost.y;
+				addChild(shopPrices[item]);
 			}
 			setHP(char.maxHp);
 			setAtk(char.attack);

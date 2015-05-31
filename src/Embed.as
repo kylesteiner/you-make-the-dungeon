@@ -6,8 +6,8 @@ package {
 	public class Embed {
 		[Embed(source='assets/backgrounds/background.png')] public static var grid_background:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] public static var static_background:Class;
-		[Embed(source='assets/backgrounds/tutorial_shifted.png')] public static const tutorial_hud:Class;
-		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
+		//[Embed(source='assets/backgrounds/tutorial_shifted.png')] public static const tutorial_hud:Class;
+		//[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
 		[Embed(source='assets/backgrounds/summary_bg.png')] public static const summary_background:Class;
@@ -124,8 +124,8 @@ package {
 		[Embed(source='assets/tutorials/keys.png')] public static const tutorial_keys:Class;
 		[Embed(source='assets/tutorials/health_stamina_arrows.png')] public static const tutorial_health_stamina_arrows:Class;
 		[Embed(source='assets/tutorials/health_stamina_shadow.png')] public static const tutorial_health_stamina_shadow:Class;
-		[Embed(source='assets/tutorials/shop_arrow.png')] public static const tutorial_shop_arrow:Class;
-		[Embed(source='assets/tutorials/shop_shadow.png')] public static const tutorial_shop_shadow:Class;
+		[Embed(source='assets/tutorials/shop_arrow_new.png')] public static const tutorial_shop_arrow:Class;
+		[Embed(source='assets/tutorials/shop_shadow_new.png')] public static const tutorial_shop_shadow:Class;
 		[Embed(source='assets/tutorials/entity_arrows.png')] public static const tutorial_entity_arrows:Class;
 		[Embed(source='assets/tutorials/entity_shadow.png')] public static const tutorial_entity_shadow:Class;
 		[Embed(source='assets/tutorials/delete_arrow.png')] public static const tutorial_delete_arrow:Class;
@@ -200,6 +200,11 @@ package {
 
 		[Embed(source='assets/animations/traps/basic/basic_0.png')] public static const basicTrapAnim0:Class;
 
+		[Embed(source='assets/icons/medium/health_purchase.png')] public static const health_purchase:Class;
+		[Embed(source='assets/icons/medium/attack_purchase.png')] public static const attack_purchase:Class;
+		[Embed(source='assets/icons/medium/stamina_purchase.png')] public static const stamina_purchase:Class;
+		[Embed(source='assets/icons/medium/los_purchase.png')] public static const los_purchase:Class;
+
 		[Embed(source='assets/sfx/floor_complete_new.mp3')] public static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] public static const sfxTileMove:Class;
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
@@ -233,9 +238,9 @@ package {
 			var scale:int = Util.REAL_TILE_SIZE / Util.PIXELS_PER_TILE;
 			Assets.textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
 			Assets.textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
-			Assets.textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
-			Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
-			Assets.textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
+			//Assets.textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
+			//Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
+			//Assets.textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
 			Assets.textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
 			Assets.textures[Util.SUMMARY_BACKGROUND] = Texture.fromEmbeddedAsset(summary_background);
 			Assets.textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
@@ -305,6 +310,11 @@ package {
 			Assets.textures[Util.ICON_LOS_MED] = Texture.fromBitmap(new icon_los_med(), true, false, 1);
 			Assets.textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			Assets.textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
+
+			Assets.textures[Util.HEALTH_PURCHASE] = Texture.fromBitmap(new health_purchase(), true, false, 1);
+			Assets.textures[Util.ATTACK_PURCHASE] = Texture.fromBitmap(new attack_purchase(), true, false, 1);
+			Assets.textures[Util.STAMINA_PURCHASE] = Texture.fromBitmap(new stamina_purchase(), true, false, 1);
+			Assets.textures[Util.LOS_PURCHASE] = Texture.fromBitmap(new los_purchase(), true, false, 1);
 
 			Assets.textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
 			Assets.textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);

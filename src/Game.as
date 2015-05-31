@@ -31,7 +31,7 @@ package {
 				"Click here when\nyou're done building.";
 		public static const MOVE_TUTORIAL_TEXT:String = "To move Nea";
 		public static const HEALTH_TUTORIAL_TEXT:String =
-				"This is Nea's health. Nea loses health when fighting monsters."
+				"This is Nea's health. Nea loses health when fighting adventurers."
 		public static const STAMINA_TUTORIAL_TEXT:String =
 				"This is Nea's stamina. Nea can move until she runs out of stamina."
 		public static const SHOP_TUTORIAL_TEXT:String =
@@ -438,18 +438,19 @@ package {
 					deleteShadow);
 			deleteOverlay.addChild(deleteText);
 
-			var shopText:TextField = new TextField(300, 100,
+			var shopText:TextField = new TextField(180, 100,
 												   SHOP_TUTORIAL_TEXT,
 												   Util.DEFAULT_FONT,
 												   Util.MEDIUM_FONT_SIZE);
 			shopText.x = 290;
-			shopText.y = 210;
+			shopText.y = 190;
+			shopText.autoScale = true;
 			var shopShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SHOP_SHADOW]);
 			shopShadow.alpha = 0.7;
 			var shopOverlay:TutorialOverlay = new TutorialOverlay(
 					new Image(Assets.textures[Util.TUTORIAL_SHOP_ARROW]),
 					shopShadow,
-					false);
+					true);
 			shopOverlay.addChild(shopText);
 
 			secondBuildTutorialOverlays.push(deleteOverlay);
@@ -550,13 +551,13 @@ package {
 		}
 
 		public function onShopSpend(e:GameEvent):void {
-			
+
 			/* todo:put these somewhere
 			 * secondBuildTutorial.next();
 			 * if (unlockedFirstEntity && !entityTutorialDisplayed) {
 				addChild(entityTutorial);
 			}*/
-			
+
 			var cost:int = e.gameData["cost"];
 			if (gold - cost < 0) {
 				// Cannot purchase item
@@ -696,6 +697,8 @@ package {
 			if (buildHud.directions[Util.EAST]) {
 				buildHud.toggleEast();
 			}
+
+			buildHud.deselect();
 
 			gameState = STATE_SUMMARY;
 			bestRunGoldEarned = Math.max(bestRunGoldEarned, runSummary.goldCollected);
