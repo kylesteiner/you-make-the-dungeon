@@ -1071,6 +1071,9 @@ package {
 		// objectiveState to mark the tile as visited.
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
+			if (obj.key.indexOf(Util.DOOR) >= 0) {
+				Assets.mixer.play(Util.DOOR_OPEN);
+			}
 			objectiveState[obj.key] = true;
 			entityGrid[e.x][e.y] = null;
 			removeChild(obj);
@@ -1115,12 +1118,12 @@ package {
 
 		private function onActivateTrap(e:GameEvent):void {
 			var i:int; var j:int; var entity:Entity;
-			
+
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
 			var affectedTiles:Array = trap.generateDamageRadius();
 			Assets.mixer.play(trap.triggerSound);
-			
+
 			Util.logger.logAction(23, {
 				"type":trap.type,
 				"radius":trap.radius,
