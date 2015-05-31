@@ -176,7 +176,6 @@ package {
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
-			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 		}
 
 		private function initializeWorld(fromSave:Boolean):void {
@@ -790,10 +789,8 @@ package {
 
 		public function onIntroComplete():void {
 			removeChild(intro);
-			gameState = STATE_BUILD;
-		}
 
-		public function playOpeningCinematic():void {
+			// Set up cinematic to show exit
 			var commands:Array = new Array();
 
 			var moveToExit:Dictionary = new Dictionary();
@@ -819,21 +816,15 @@ package {
 			commands.push(moveToStart);
 			commands.push(waitAtStart);
 
-			cinematic = new Cinematic(world.x, world.y, Util.CAMERA_SHIFT * 3, commands);
-			addChild(cinematic);
-
 			removeChild(buildHud);
 			removeChild(runButton);
 			removeChild(goldHud);
 			removeChild(shopButton);
+
+			playCinematic(commands, onIntroCinematicComplete);
 		}
 
-		public function onMoveCamera(event:GameEvent):void {
-			world.x += event.x;
-			world.y += event.y;
-		}
-
-		public function onCinematicComplete(event:GameEvent):void {
+		public function onIntroCinematicComplete():void {
 			gameState = STATE_BUILD;
 			removeChild(cinematic);
 			centerWorldOnCharacter();
@@ -843,6 +834,20 @@ package {
 			addChild(shopButton);
 
 			Assets.mixer.play(Util.LEVEL_UP);
+		}
+
+		public function playCinematic(commands:Array, onComplete:Function):void {
+			cinematic = new Cinematic(world.x,
+									  world.y,
+									  Util.CAMERA_SHIFT * 3,
+									  commands,
+									  onComplete);
+			addChild(cinematic);
+		}
+
+		public function onMoveCamera(event:GameEvent):void {
+			world.x += event.x;
+			world.y += event.y;
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
