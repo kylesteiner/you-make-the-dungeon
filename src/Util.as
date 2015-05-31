@@ -2,9 +2,9 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
-	import Logger;
-	import starling.text.TextField;
 	import flash.ui.Keyboard;
+	import starling.display.Quad;
+	import starling.text.TextField;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -148,6 +148,11 @@ package {
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"
 		public static const TUTORIAL_KEYS:String = "tutorial_keys"
 
+		public static const TUTORIAL_BUILDHUD_ARROW:String = "tutorial_buildhud_arrow";
+		public static const TUTORIAL_BUILDHUD_SHADOW:String = "tutorial_buildhud_shadow";
+		public static const TUTORIAL_PLACE_SHADOW:String = "tutorial_place_shadow";
+		public static const TUTORIAL_RUN:String = "tutorial_run";
+
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
 		public static const TILE_DOWN_ACTIVE:String = "tile_down_active";
@@ -290,6 +295,12 @@ package {
 
 		public static function defaultTextField(width:int, height:int, initialText:String, size:int = Util.MEDIUM_FONT_SIZE):TextField {
 			return new TextField(width, height, initialText, Util.DEFAULT_FONT, size);
+		}
+
+		public static function getTransparentQuad():Quad {
+			var q:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
+			q.alpha = 0.7;
+			return q;
 		}
 	}
 }

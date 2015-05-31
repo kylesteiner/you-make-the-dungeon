@@ -1,4 +1,4 @@
-package {
+package tutorial {
     import starling.display.*;
     import starling.events.*;
 
@@ -17,7 +17,13 @@ package {
         public var iX:int;
         public var iY:int;
 
-        public function Cinematic(startX:int, startY:int, speed:int, commands:Array) {
+        private var onComplete:Function;
+
+        public function Cinematic(startX:int,
+                                  startY:int,
+                                  speed:int,
+                                  commands:Array,
+                                  onComplete:Function) {
             super();
 
             timeElapsed = 0;
@@ -26,6 +32,7 @@ package {
             iX = startX;
             iY = startY;
             this.speed = speed;
+            this.onComplete = onComplete;
 
             var i:int;
             for(i = 0; i < commands.length; i++) {
@@ -60,7 +67,7 @@ package {
             }
 
             if (command == COMMAND_NONE) {
-                dispatchEvent(new GameEvent(GameEvent.CINEMATIC_COMPLETE, 0, 0));
+                onComplete();
             } else if (command == COMMAND_WAIT && timeElapsed > commandArguments["timeToWait"]) {
                 fireNextCommand();
             } else if (command == COMMAND_MOVE &&
@@ -72,8 +79,8 @@ package {
         }
 
         public function onKeyDown(event:KeyboardEvent):void {
-            if(event.keyCode == Util.TUTORIAL_SKIP_KEY) {
-                dispatchEvent(new GameEvent(GameEvent.CINEMATIC_COMPLETE, 0, 0));
+            if (event.keyCode == Util.TUTORIAL_SKIP_KEY) {
+                onComplete();
             }
         }
 

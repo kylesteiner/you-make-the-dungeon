@@ -64,11 +64,6 @@ package {
 		public var rooms:RoomSet;
 		public var roomFunctions:Dictionary;
 
-		// Tutorial UI elements.
-		public var tutorialImage:Image;
-		private var tutorialDisplaying:Boolean;
-		private var originalTutorialDisplaying:Boolean;
-
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
 
@@ -291,25 +286,6 @@ package {
 			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-		}
-
-		public function removeTutorial():void {
-			if(tutorialImage) {
-				removeChild(tutorialImage);
-				tutorialDisplaying = false;
-			}
-		}
-
-		public function shiftTutorialX(value:int):void {
-			if (tutorialImage) {
-				tutorialImage.x += value;
-			}
-		}
-
-		public function shiftTutorialY(value:int):void {
-			if (tutorialImage) {
-				tutorialImage.y += value;
-			}
 		}
 
 		public function toggleRun(gameState:String):void {
@@ -803,10 +779,6 @@ package {
 		}
 
 		private function onEnterFrame(e:Event):void {
-			if(tutorialImage && tutorialDisplaying) {
-				addChild(tutorialImage);
-			}
-
 			var keyCode:uint;
 			var cgx:int; var cgy:int;
 			var charTile:Tile; var nextTile:Tile;
