@@ -26,7 +26,7 @@ package {
 		//[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
 		//[Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
 		//[Embed(source='assets/effects/large/hl_yellow.png')] public static var hl_yellow:Class;
-		[Embed(source='assets/effects/large/hl_tile.png')] public static var hl_tile:Class;
+		[Embed(source='assets/effects/large/hl_tile_full.png')] public static var hl_tile:Class;
 		[Embed(source='assets/effects/large/hl_delete.png')] public static var hl_delete:Class;
 		[Embed(source='assets/effects/large/hl_entity.png')] public static var hl_entity:Class;
 
