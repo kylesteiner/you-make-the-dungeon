@@ -147,6 +147,23 @@ package {
 		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim2:Class;
 		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim3:Class;
 
+		[Embed(source='assets/animations/traps/flame/flame_0.png')] public static const flameTrapAnim0:Class;
+		[Embed(source='assets/animations/traps/flame/flame_1.png')] public static const flameTrapAnim1:Class;
+		[Embed(source='assets/animations/traps/flame/flame_2.png')] public static const flameTrapAnim2:Class;
+		[Embed(source='assets/animations/traps/flame/flame_3.png')] public static const flameTrapAnim3:Class;
+		[Embed(source='assets/animations/traps/flame/flame_4.png')] public static const flameTrapAnim4:Class;
+		[Embed(source='assets/animations/traps/flame/flame_5.png')] public static const flameTrapAnim5:Class;
+		[Embed(source='assets/animations/traps/flame/flame_6.png')] public static const flameTrapAnim6:Class;
+		[Embed(source='assets/animations/traps/flame/flame_7.png')] public static const flameTrapAnim7:Class;
+		[Embed(source='assets/animations/traps/flame/flame_8.png')] public static const flameTrapAnim8:Class;
+		[Embed(source='assets/animations/traps/flame/flame_9.png')] public static const flameTrapAnim9:Class;
+		[Embed(source='assets/animations/traps/flame/flame_10.png')] public static const flameTrapAnim10:Class;
+		[Embed(source='assets/animations/traps/flame/flame_11.png')] public static const flameTrapAnim11:Class;
+		[Embed(source='assets/animations/traps/flame/flame_12.png')] public static const flameTrapAnim12:Class;
+		[Embed(source='assets/animations/traps/flame/flame_13.png')] public static const flameTrapAnim13:Class;
+		[Embed(source='assets/animations/traps/flame/flame_14.png')] public static const flameTrapAnim14:Class;
+		[Embed(source='assets/animations/traps/flame/flame_15.png')] public static const flameTrapAnim15:Class;
+
 		[Embed(source='assets/sfx/floor_complete_new.mp3')] public static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] public static const sfxTileMove:Class;
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
@@ -373,7 +390,22 @@ package {
 			trapDict[Util.SHOCK_TRAP] = shockVector;
 
 			var flameVector:Vector.<Texture> = new Vector.<Texture>();
-			flameVector.push(Texture.fromEmbeddedAsset(flame_trap));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim0));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim1));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim2));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim3));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim4));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim5));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim6));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim7));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim8));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim9));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim10));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim11));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim12));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim13));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim14));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim15));
 			trapDict[Util.FLAME_TRAP] = flameVector;
 
 			Assets.animations[Util.TRAPS] = trapDict;

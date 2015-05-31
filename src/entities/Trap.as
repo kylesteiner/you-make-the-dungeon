@@ -128,7 +128,7 @@ package entities {
 			var px:int; var py:int;
 			for (px = grid_x - radius; px <= grid_x + radius; px++) {
 				for (py = grid_y - radius; py <= grid_y + radius; py++) {
-					if (px + py > radius) {
+					if (Math.abs(px - grid_x) + Math.abs(py - grid_y) > radius) {
 						continue;
 					}
 
