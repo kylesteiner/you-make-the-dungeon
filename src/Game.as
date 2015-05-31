@@ -68,7 +68,6 @@ package {
 		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
 		public static const TUTORIAL_WAITING_FOR_SPEED:String = "waiting_for_speed";
 
-		private var shopButton:Clickable;
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var combatSpeedButton:Clickable;
@@ -195,7 +194,7 @@ package {
 			addChild(runSpeedButton);
 			addChild(runButton);
 			addChild(goldHud);
-			addChild(shopButton);
+			addChild(shopHud);
 			addChild(helpButton);
 			addChild(buildHud);
 			if (gameState == STATE_TUTORIAL) {
@@ -240,6 +239,7 @@ package {
 			addEventListener(GameEvent.CHARACTER_LOS_CHANGE, onLosChange);
 			addEventListener(GameEvent.ENTERED_COMBAT, startCombat);
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
+			addEventListener(GameEvent.SHOP_SPEND, onShopSpend);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
@@ -255,7 +255,7 @@ package {
 			cursorHighlight = new Image(Assets.textures[Util.TILE_HL_B]);
 			cursorHighlight.touchable = false;
 
-			runSummary = new Summary(40, 40, returnToBuild, null, Assets.textures[Util.SHOP_BACKGROUND]);
+			runSummary = new Summary(40, 40, returnToBuild, null, Assets.textures[Util.SUMMARY_BACKGROUND]);
 
 			var health:int = fromSave ? saveGame.data["hp"] : Util.STARTING_HEALTH;
 			var stamina:int = fromSave ? saveGame.data["stamina"] : Util.STARTING_STAMINA;
@@ -308,10 +308,8 @@ package {
 			runButton.x = goldHud.x - runButton.width - Util.UI_PADDING;
 			runButton.y = Util.UI_PADDING;
 
-			shopHud = new ShopHUD(goldHud, closeShopHUD);
-			shopButton = new Clickable(goldHud.x, goldHud.height, openShopHUD, null, Assets.textures[Util.ICON_SHOP]);
-			shopButton.x = runButton.x - shopButton.width - Util.UI_PADDING
-			shopButton.y = Util.UI_PADDING;
+			shopHud = new ShopHUD();
+			shopHud.char = currentFloor.char;
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
@@ -551,31 +549,25 @@ package {
 			endRun();
 		}
 
-		public function openShopHUD():void {
-			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+		public function onShopSpend(e:GameEvent):void {
+			
+			/* todo:put these somewhere
+			 * secondBuildTutorial.next();
+			 * if (unlockedFirstEntity && !entityTutorialDisplayed) {
+				addChild(entityTutorial);
+			}*/
+			
+			var cost:int = e.gameData["cost"];
+			if (gold - cost < 0) {
+				// Cannot purchase item
+				goldHud.setFlash();
 				return;
 			}
 
-			secondBuildTutorial.next();
-
-			if (getChildIndex(shopHud) == -1) {
-				Util.logger.logAction(13, { } );
-				shopHud.update(currentFloor.char, gold);
-				addChild(shopHud);
-				buildHud.deselect();
-			}
-		}
-
-		public function closeShopHUD():void {
-			if (getChildIndex(shopHud) != -1) {
-				goldSpent += gold - shopHud.gold;
-				gold = shopHud.gold;
-				removeChild(shopHud);
-			}
-
-			if (unlockedFirstEntity && !entityTutorialDisplayed) {
-				addChild(entityTutorial);
-			}
+			gold -= cost;
+			goldSpent += cost;
+			goldHud.update(gold);
+			shopHud.incStat(e.gameData["type"], cost);
 		}
 
 		public function constructPhaseBanner(run:Boolean = true):void {
@@ -631,11 +623,7 @@ package {
 
 			removeChild(runButton);
 			removeChild(buildHud);
-
-			// to account for the case where they click run, and the hud is still open
-			closeShopHUD();
 			removeChild(shopHud);
-			removeChild(shopButton);
 
 			addChild(endButton);
 			addChild(runHud);
@@ -761,7 +749,7 @@ package {
 
 			buildHud.updateUI();
 			addChild(buildHud);
-			addChild(shopButton);
+			addChild(shopHud);
 
 			gameState = STATE_BUILD;
 			currentFloor.resetFloor();
@@ -914,12 +902,6 @@ package {
 					tutorialState = TUTORIAL_WAITING_FOR_PLACE;
 					buildTutorial.next();
 				}
-			}
-
-
-			// Click outside of shop (onblur)
-			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
-				removeChild(shopHud);
 			}
 
 			if (touch.phase == TouchPhase.BEGAN && popupManager.popup is Clickable) {
@@ -1220,7 +1202,7 @@ package {
 			removeChild(buildHud);
 			removeChild(runButton);
 			removeChild(goldHud);
-			removeChild(shopButton);
+			removeChild(shopHud);
 
 			playCinematic(commands, onIntroCinematicComplete);
 		}
@@ -1235,7 +1217,7 @@ package {
 			addChild(buildHud);
 			addChild(goldHud);
 			addChild(runButton);
-			addChild(shopButton);
+			addChild(shopHud);
 
 			addChild(buildTutorial);
 			Assets.mixer.play(Util.LEVEL_UP);

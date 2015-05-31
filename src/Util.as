@@ -53,6 +53,7 @@ package {
 		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
 		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
 		public static const POPUP_BACKGROUND:String = "popup_background";
+		public static const SUMMARY_BACKGROUND:String = "summary_background";
 		public static const SHOP_BACKGROUND:String = "shop_background";
 		public static const SHOP_ITEM:String = "shop_item";
 		public static const RUN_BANNER:String = "run_banner";
@@ -103,7 +104,6 @@ package {
 		public static const ICON_LOS_MED:String = "icon_los_med";
 		public static const ICON_GOLD:String = "icon_gold";
 		public static const ICON_DELETE:String = "icon_delete";
-		public static const ICON_SHOP:String = "icon_shop";
 		public static const CURSOR_RETICLE:String = "cursor_reticle";
 		public static const ICON_SFX_PLAY:String = "sfx_play";
 		public static const ICON_SFX_MUTE:String = "sfx_mute";
@@ -118,9 +118,6 @@ package {
 		public static const ENEMY_MENU:String = "enemy_menu";
 		public static const HEALING_MENU:String = "healing_menu";
 		public static const TRAP_MENU:String = "trap_menu";
-
-		public static const TILE_HUD:String = "tile_hud";
-		public static const CHAR_HUD:String = "char_hud";
 
 		public static const BGM_MUTE_KEY:int = Keyboard.M;
 		public static const SFX_MUTE_KEY:int = Keyboard.COMMA;
