@@ -139,6 +139,7 @@ package entities {
 			x = initialX;
 			y = initialY;
 			hp = maxHp;
+			addOverlay();
 		}
 
 		// Animate movement between tiles.
@@ -163,7 +164,7 @@ package entities {
 						var eventData:Dictionary = new Dictionary();
 						eventData["trap"] = trap;
 						dispatchEvent(new GameEvent(GameEvent.ACTIVATE_TRAP, grid_x, grid_y, eventData));
-						trap = null;	
+						trap = null;
 					}
 				}
 			}

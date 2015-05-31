@@ -42,6 +42,8 @@ package entities {
 		}
 
 		// Override if the state of the entity needs to be reset between runs.
-		public function reset():void {}
+		public function reset():void {
+			addOverlay();
+		}
 	}
 }

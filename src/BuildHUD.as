@@ -88,6 +88,8 @@ package {
 		private var interiorDeleteQuad:Quad;
 		private var deleteButton:Clickable;
 
+		private var lastPopupValue:int;
+
 		public var entityFactory:EntityFactory;
 
 		/**********************************************************************************
@@ -118,6 +120,7 @@ package {
 
 			currentEntity = null;
 			currentEntityIndex = -1;
+			lastPopupValue = -1;
 
 			hudState = STATE_NONE;
 
@@ -365,7 +368,12 @@ package {
 		}
 
 		public function createPopupClickable(values:Dictionary):void {
-			createPopup(values["index"]);
+			if (lastPopupValue == values["index"]) {
+				closePopup();
+			} else {
+				lastPopupValue = values["index"];
+				createPopup(values["index"]);
+			}
 		}
 
 		public function createPopup(index:int):void {
@@ -433,6 +441,7 @@ package {
 		public function closePopup():void {
 			hud.removeChild(popup);
 			popup = null;
+			lastPopupValue = -1;
 		}
 
 		public function updateSelectButtons():void {
