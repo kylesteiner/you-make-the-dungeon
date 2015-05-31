@@ -17,7 +17,7 @@ package {
 		public static const UI_PADDING:int = 8;
 		public static const BORDER_PIXELS:Number = (1.0 / 16.0);
 		public static const BUTTON_SPACING:int = (1.0 / 8.0);
-		public static const CAMERA_SHIFT:int = 4; // in pixels
+		public static const CAMERA_SHIFT:int = 8; // in pixels
 		// can update to pixels once tile movement is tied down
 		public static const ANIM_FPS:int = 2;
 		public static const VISITED_ALPHA:Number = 0.4;
@@ -231,7 +231,7 @@ package {
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs
-		public static const BASE_TILE_COST:int = 2;
+		public static const BASE_TILE_COST:int = 1;
 		public static const REFUND_PERCENT:int = 50;
 		public static const ENEMY_FIGHTER_COST:int = 20;
 		public static const ENEMY_MAGE_COST:int = 30;
