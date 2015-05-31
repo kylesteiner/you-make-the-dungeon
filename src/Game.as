@@ -563,8 +563,7 @@ package {
 				addChild(helpImageSprite);
 				helping = true;
 			} else {
-				removeChild(helpImageSprite);
-				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
+				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN) && timeHovered >= 1) {
 					var state:String = gameState == STATE_BUILD ? "buildState" : "runState";
 					Util.logger.logAction(21, {
 						"phaseHovered":state,
@@ -572,7 +571,7 @@ package {
 					});
 					timeHovered = 0;
 					helping = false;
-
+					removeChild(helpImageSprite);
 				}
 			}
 
