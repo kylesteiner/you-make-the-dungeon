@@ -115,6 +115,7 @@ package {
 		[Embed(source='assets/tutorials/build_hud_arrow.png')] public static const tutorial_buildhud_arrow:Class;
 		[Embed(source='assets/tutorials/build_hud_shadow.png')] public static const tutorial_buildhud_shadow:Class;
 		[Embed(source='assets/tutorials/place_shadow.png')] public static const tutorial_place_shadow:Class;
+		[Embed(source='assets/tutorials/run.png')] public static const tutorial_run:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -284,6 +285,7 @@ package {
 			Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW] = Texture.fromEmbeddedAsset(tutorial_buildhud_shadow);
 			Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW] = Texture.fromEmbeddedAsset(tutorial_buildhud_arrow);
 			Assets.textures[Util.TUTORIAL_PLACE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_place_shadow);
+			Assets.textures[Util.TUTORIAL_RUN] = Texture.fromEmbeddedAsset(tutorial_run);
 		}
 
 		public static function setupAnimations():void {

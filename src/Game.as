@@ -27,6 +27,8 @@ package {
 				"Buy tiles to make a path for Nea.\nClick the arrows to choose the tile walls.";
 		public static const PLACE_TUTORIAL_TEXT:String =
 				"Place the tile on one of the green highlighted spots.";
+		public static const RUN_TUTORIAL_TEXT:String =
+				"Click here when\nyou're done building.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -46,6 +48,7 @@ package {
 		// tutorialState values
 		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
 		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
+		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
 
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
@@ -303,8 +306,21 @@ package {
 				placeShadow,
 				false);
 
+			// Run button instructions
+			var runText:TextField = new TextField(180, 100,
+												  RUN_TUTORIAL_TEXT,
+												  Util.DEFAULT_FONT,
+												  Util.SMALL_FONT_SIZE);
+			runText.x = 440;
+			runText.y = 148;
+			var runOverlay:TutorialOverlay = new TutorialOverlay(
+				runText,
+				new Image(Assets.textures[Util.TUTORIAL_RUN]),
+				false);
+
 			buildTutorialOverlays.push(buildhudOverlay);
 			buildTutorialOverlays.push(placeOverlay);
+			buildTutorialOverlays.push(runOverlay);
 
 			buildTutorial = new TutorialSequence(onBuildTutorialComplete,
 												 buildTutorialOverlays);
@@ -373,6 +389,10 @@ package {
 		public function runFloor():void {
 			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
 				return;
+			}
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				buildTutorial.next();
 			}
 
 			Util.logger.logAction(3, {
@@ -915,6 +935,7 @@ package {
 		}
 
 		public function onBuildTutorialComplete():void {
+			removeChild(buildTutorial);
 			return;
 		}
 
