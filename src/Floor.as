@@ -227,10 +227,7 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					var stationary:Boolean;
-					if (entity["stationary"]) {
-						stationary = entity["stationary"];
-					}
+					var stationary:Boolean  = entity["stationary"];
 					var enemy:Enemy = new Enemy(tX, tY, textureName, Assets.textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					enemy.deletable = tDeletable;
@@ -256,7 +253,7 @@ package {
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
 				} else if (entity["type"] == "trap") {
-					var trapType:String = entity["trap"];
+					var trapType:String = entity["texture"];
 					var damage:int = entity["damage"];
 					var radius:int = entity["radius"];
 					var trap:Trap = new Trap(tX, tY, Assets.textures[textureName], trapType, damage, radius);
@@ -1074,6 +1071,9 @@ package {
 		// objectiveState to mark the tile as visited.
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
+			if (obj.key.indexOf(Util.DOOR) >= 0) {
+				Assets.mixer.play(Util.DOOR_OPEN);
+			}
 			objectiveState[obj.key] = true;
 			entityGrid[e.x][e.y] = null;
 			removeChild(obj);
@@ -1118,12 +1118,12 @@ package {
 
 		private function onActivateTrap(e:GameEvent):void {
 			var i:int; var j:int; var entity:Entity;
-			
+
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
 			var affectedTiles:Array = trap.generateDamageRadius();
 			Assets.mixer.play(trap.triggerSound);
-			
+
 			Util.logger.logAction(23, {
 				"type":trap.type,
 				"radius":trap.radius,
