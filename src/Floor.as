@@ -41,6 +41,7 @@ package {
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
+		public var completed:Boolean;
 
 		// Character's initial stats.
 		private var initialHp:int;
@@ -806,6 +807,10 @@ package {
 			if (char.moving) {
 				return;
 			}
+			
+			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed && char.hp > 0) {
+				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
+			}
 
 			var keyCode:uint;
 			var cgx:int; var cgy:int;
@@ -1009,10 +1014,6 @@ package {
 		private function onCharArrived(e:GameEvent):void {
 			preHealth = char.hp;
 			runSummary.distanceTraveled++;
-
-			if (grid[char.grid_x][char.grid_y] is ExitTile) {
-				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
-			}
 
 			if (goldGrid[char.grid_x][char.grid_y]) {
 				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));

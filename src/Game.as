@@ -1087,6 +1087,7 @@ package {
 				});
 			}
 			Assets.mixer.play(Util.FLOOR_COMPLETE);
+			currentFloor.completed = true;
 			
 			var winBox:Sprite = new Sprite();
 			var popup:Image = new Image(Assets.textures[Util.POPUP_BACKGROUND])
