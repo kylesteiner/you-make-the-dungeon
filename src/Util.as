@@ -179,6 +179,7 @@ package {
 		public static const TRAPS:String = "traps"
 		public static const BASIC_TRAP:String = "basic_trap";
 		public static const FLAME_TRAP:String = "flame_trap";
+		public static const FLAME_TRAP_BLUE:String = "flame_trap_blue";
 		public static const SHOCK_TRAP:String = "shock_trap";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
@@ -221,6 +222,7 @@ package {
 		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
 		public static const BASIC_TRAP_COST:int = 5;
 		public static const FLAME_TRAP_COST:int = 5;
+		public static const BLUE_FLAME_TRAP_COST:int = 5;
 		public static const SHOCK_TRAP_COST:int = 5;
 
 		// Upgrade costs

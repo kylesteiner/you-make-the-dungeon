@@ -1178,51 +1178,10 @@ package {
 				}
 			}
 
-			/*if (trap.type == Util.FLAME_TRAP) {
-				Assets.mixer.play(Util.SFX_FLAME_TRAP);
-				// Damage radius from epicenter
-				for (i = trap.radius * -1; i <= trap.radius; i++) {
-					for (j = trap.radius * -1; j <= trap.radius; j++) {
-						if (i + j > trap.radius) {
-							continue;
-						}
-						// FLAME ANIMATION HERE
-						entity = entityGrid[e.x + i][e.y + j];
-						if (entity is Enemy) {
-							enemies.push(entity);
-						}
-						if (char.grid_x == e.x + i && char.grid_y == e.y + j) {
-							char.hp -= trap.damage;
-						}
-					}
-				}
-			} else if (trap.type == Util.SHOCK_TRAP) {
-				Assets.mixer.play(Util.SFX_SHOCK_TRAP);
-				// Damage in line from epicenter
-				for (i = trap.radius * -1; i <= trap.radius; i++) {
-					// SHOCK ANIMATION HERE
-					entity = entityGrid[e.x + i][e.y];
-					if (entity is Enemy) {
-						enemies.push(entity);
-					}
-					entity = entityGrid[e.x][e.y + i];
-					if (entity is Enemy) {
-						enemies.push(entity);
-					}
-					if ((char.grid_x == e.x + i && char.grid_y == e.y) ||
-						(char.grid_x == e.x && char.grid_y == e.y + i)) {
-						char.hp -= trap.damage;
-					}
-				}
-			} else if (trap.type == Util.BASIC_TRAP) {
-				// BASIC ANIMATION HERE
-				Assets.mixer.play(Util.SFX_BASIC_TRAP);
-				enemies.push(entityGrid[e.x][e.y]);
-			}*/
-
 			var reward:int = 0;
 			for each (var enemy:Enemy in enemies) {
 				enemy.hp -= trap.damage;
+				enemy.addOverlay();
 				if (enemy.hp <= 0) {
 					reward += enemy.reward;
 					killEnemy(enemy);

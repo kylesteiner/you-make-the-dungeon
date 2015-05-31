@@ -8,7 +8,7 @@ package {
 
     public class RunHUD extends Sprite {
         public static const HEALTH_BAR_COLOR:uint = 0xff0000;
-        public static const STAMINA_BAR_COLOR:uint = 0x0000ff;
+        public static const STAMINA_BAR_COLOR:uint = 0x00ff00;
         public static const HEALTH_BAR_WIDTH:int = 32;
         public static const STAMINA_BAR_WIDTH:int = 32;
 

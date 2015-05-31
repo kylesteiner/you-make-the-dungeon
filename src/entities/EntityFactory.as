@@ -16,6 +16,7 @@ package entities {
 
         public static const BASIC_TRAP:String = "basic_trap";
         public static const FLAME_TRAP:String = "flame_trap";
+        public static const FLAME_TRAP_BLUE:String = "flame_trap_blue";
         public static const SHOCK_TRAP:String = "shock_trap";
 
         public var entitySet:Dictionary;
@@ -27,6 +28,9 @@ package entities {
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
             unlockTile(FLAME_TRAP);
+            unlockTile(FLAME_TRAP_BLUE);
+            unlockTile(SHOCK_TRAP);
+            unlockTile(BASIC_TRAP);
         }
 
         public function unlockTile(type:String):void {
@@ -116,11 +120,18 @@ package entities {
             trapDict[BASIC_TRAP] = basicTrap;
 
             var flameTrap:Dictionary = new Dictionary();
-            flameTrap["constructor"] = constructFlameTrap;
+            flameTrap["constructor"] = constructRedFlameTrap;
             flameTrap["texture"] = Assets.textures[Util.FLAME_TRAP];
             flameTrap["cost"] = Util.FLAME_TRAP_COST;
             flameTrap["category"] = TRAP_CATEGORY;
             trapDict[FLAME_TRAP] = flameTrap;
+
+            var blueFlameTrap:Dictionary = new Dictionary();
+            blueFlameTrap["constructor"] = constructBlueFlameTrap;
+            blueFlameTrap["texture"] = Assets.textures[Util.FLAME_TRAP_BLUE];
+            blueFlameTrap["cost"] = Util.BLUE_FLAME_TRAP_COST;
+            blueFlameTrap["category"] = TRAP_CATEGORY;
+            trapDict[FLAME_TRAP_BLUE] = blueFlameTrap;
 
             var shockTrap:Dictionary = new Dictionary();
             shockTrap["constructor"] = constructShockTrap;
@@ -168,25 +179,29 @@ package entities {
 
         public function constructBasicTrap(x:int=0, y:int=0):Trap {
 			var damage:int = 5;
-			var type:String = Util.BASIC_TRAP;
 
-            return new Trap(x, y, Assets.textures[Util.BASIC_TRAP], type, damage, 0);
+            return new Trap(x, y, Assets.textures[Util.BASIC_TRAP], Util.BASIC_TRAP, damage, 0);
         }
 
-        public function constructFlameTrap(x:int=0, y:int=0):Trap {
-           	var damage:int = 5;
-			var radius:int = 3;
-			var type:String = Util.FLAME_TRAP;
+        public function constructRedFlameTrap(x:int=0, y:int=0):Trap {
+           	var damage:int = 3;
+			var radius:int = 4;
 
-			return new Trap(x, y, Assets.textures[Util.FLAME_TRAP], type, damage, radius);
+			return new Trap(x, y, Assets.textures[Util.FLAME_TRAP], Util.FLAME_TRAP, damage, radius);
+        }
+
+        public function constructBlueFlameTrap(x:int=0, y:int=0):Trap {
+            var damage:int = 5;
+            var radius:int = 2;
+
+            return new Trap(x, y, Assets.textures[Util.FLAME_TRAP_BLUE], Util.FLAME_TRAP, damage, radius);
         }
 
         public function constructShockTrap(x:int=0, y:int=0):Trap {
     		var damage:int = 5;
 			var radius:int = 3;
-			var type:String = Util.SHOCK_TRAP;
 
-			return new Trap(x, y, Assets.textures[Util.SHOCK_TRAP], type, damage, radius);
+			return new Trap(x, y, Assets.textures[Util.SHOCK_TRAP], Util.SHOCK_TRAP, damage, radius);
         }
     }
 }
