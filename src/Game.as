@@ -557,6 +557,12 @@ package {
 			removeChild(runHud);
 
 			gameState = STATE_SUMMARY;
+			bestRunGoldEarned = Math.max(bestRunGoldEarned, runSummary.goldCollected);
+			bestRunDistance = Math.max(bestRunDistance, runSummary.distanceTraveled);
+			bestRunEnemiesDefeated = Math.max(bestRunEnemiesDefeated, runSummary.enemiesDefeated);
+			runSummary.bestGold = bestRunGoldEarned;
+			runSummary.bestDistance = bestRunDistance;
+			runSummary.bestEnemies = bestRunEnemiesDefeated;
 			popupManager.addSummary(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
 		}
@@ -569,7 +575,6 @@ package {
 
 		public function returnToBuild():void {
 			popupManager.removeSummary();
-			runSummary.reset();
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -594,6 +599,8 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
+			trace(overallGoldEarned);
+			trace(saveGame.data["overallGoldEarned"]);
 
 			saveGame.flush();
 
