@@ -6,6 +6,7 @@ package tutorial {
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.text.TextField;
 	import starling.textures.Texture;
 
 	public class TutorialOverlay extends Sprite {
@@ -24,21 +25,19 @@ package tutorial {
 
 			this.touchable = touchable;
 
-			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			if (touchable) {
+				var click:TextField = new TextField(175, 50,
+													"Click to continue",
+													Util.DEFAULT_FONT,
+													Util.SMALL_FONT_SIZE);
+				click.x = Util.STAGE_WIDTH - 175;
+				click.y = Util.STAGE_HEIGHT - 50;
+				addChild(click);
+			}
+
             addEventListener(TouchEvent.TOUCH, onMouseDown);
             addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		}
-
-		public function onKeyDown(event:KeyboardEvent):void {
-            if (timeAccrued < SKIP_DELAY) {
-                return;
-            }
-
-			// Only allow keyboard skipping if the tutorial is also touchable.
-			if (touchable) {
-            	dispatchEvent(new TutorialEvent(TutorialEvent.NEXT));
-			}
-        }
 
         public function onMouseDown(event:TouchEvent):void {
             if (timeAccrued < SKIP_DELAY) {
