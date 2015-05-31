@@ -69,7 +69,6 @@ package {
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
 		private var tileUnlockPopup:Clickable;
-		private var tutorialHud:TutorialHUD;
 		private var cinematic:Cinematic;
 
 		private var gameState:String;
@@ -123,9 +122,6 @@ package {
 			addChild(shopButton);
 			addChild(helpButton);
 			addChild(buildHud);
-			if (gameState == STATE_TUTORIAL) {
-				addChild(tutorialHud);
-			}
 
 			// Update build hud with unlocks if loading from save.
 			if (fromSave) {
@@ -169,7 +165,6 @@ package {
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
 
 			// Tutorial-specific game events.
-			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 		}
@@ -249,7 +244,6 @@ package {
 
 			runHud = new RunHUD(); // textures not needed for now but maybe in future
 			buildHud = new BuildHUD();
-			tutorialHud = new TutorialHUD();
 		}
 
 		private function returnToMenu():void {
@@ -333,7 +327,7 @@ package {
 			removeChild(runButton);
 			removeChild(buildHud.currentImage);
 			removeChild(buildHud);
-			
+
 			// to account for the case where they click run, and the hud is still open
 			if (getChildIndex(shopHud) != -1) {
 				goldSpent += gold - shopHud.gold;
@@ -700,13 +694,6 @@ package {
 			if (event.keyCode == Util.SPEED_TOGGLE_KEY) {
 				toggleRunSpeed();
 			}
-
-			if (currentFloor) {
-				// TODO: set up dictionary of charCode -> callback?
-				if(currentFloor.floorName == Util.TUTORIAL_PAN_FLOOR) {
-					currentFloor.removeTutorial();
-				}
-			}
 		}
 
 		public function onKeyUp(event:KeyboardEvent):void {
@@ -790,12 +777,6 @@ package {
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
-		}
-
-		public function onTutorialComplete(event:GameEvent):void {
-			gameState = Game.STATE_CINEMATIC;
-			removeChild(tutorialHud);
-			playOpeningCinematic();
 		}
 
 		public function playOpeningCinematic():void {
