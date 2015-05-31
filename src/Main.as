@@ -102,9 +102,10 @@ package {
 
         // Switches from the game/credits to the menu.
         public function returnToMenu():void {
-            // Ok to remove both credits and game - if either doesn't exist
+            // Ok to remove both credits and game and scores - if either doesn't exist
             // nothing happens.
             removeChild(credits);
+			removeChild(scores);
             removeChild(game, true);  // Dispose of all sprites in Game.
             addChild(menu);
         }

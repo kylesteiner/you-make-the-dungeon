@@ -530,7 +530,6 @@ package {
 		public function returnToBuild():void {
 			removeChild(runSummary);
 			onSummary = false;
-			runSummary.reset();
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -551,12 +550,14 @@ package {
 			saveGame.data["overallGoldEarned"] = overallGoldEarned;
 			overallDistance += runSummary.distanceTraveled;
 			saveGame.data["overallDistance"] = overallDistance;
-			overallEnemiesDefeated += runSummary.distanceTraveled;
+			overallEnemiesDefeated += runSummary.enemiesDefeated;
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
 			
 			saveGame.flush();
+			
+			runSummary.reset();
 
 			addChild(runButton);
 
