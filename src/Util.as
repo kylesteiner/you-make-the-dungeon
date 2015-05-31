@@ -162,6 +162,7 @@ package {
 
 		public static const TUTORIAL_BUILDHUD_ARROW:String = "tutorial_buildhud_arrow";
 		public static const TUTORIAL_BUILDHUD_SHADOW:String = "tutorial_buildhud_shadow";
+		public static const TUTORIAL_PLACE_SHADOW:String = "tutorial_place_shadow";
 
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";

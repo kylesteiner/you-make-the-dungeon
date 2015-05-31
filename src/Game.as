@@ -25,6 +25,8 @@ package {
 				"Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
 		public static const BUILD_TUTORIAL_TEXT:String =
 				"Buy tiles to make a path for Nea.\nClick the arrows to choose the tile walls.";
+		public static const PLACE_TUTORIAL_TEXT:String =
+				"Place the tile on one of the green highlighted spots.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -275,20 +277,33 @@ package {
 
 			// Build hud instructions
 			var buildhudShadow:Image = new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW]);
-			buildhudShadow.alpha = 0.7
-
+			buildhudShadow.alpha = 0.7;
 			var buildhudText:TextField = new TextField(Util.STAGE_WIDTH, 100,
 													   BUILD_TUTORIAL_TEXT,
 													   Util.DEFAULT_FONT,
 													   Util.MEDIUM_FONT_SIZE);
 			buildhudText.y = 220;
-
 			var buildhudOverlay:TutorialOverlay = new TutorialOverlay(
 					new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW]),
 					buildhudShadow,
 					false);
 			buildhudOverlay.addChild(buildhudText);
+
+			// Tile place instructions
+			var placeShadow:Image = new Image(Assets.textures[Util.TUTORIAL_PLACE_SHADOW]);
+			placeShadow.alpha = 0.7;
+			var placeText:TextField = new TextField(Util.STAGE_WIDTH, 100,
+													PLACE_TUTORIAL_TEXT,
+													Util.DEFAULT_FONT,
+													Util.MEDIUM_FONT_SIZE);
+			placeText.y = 320;
+			var placeOverlay:TutorialOverlay = new TutorialOverlay(
+				placeText,
+				placeShadow,
+				false);
+
 			buildTutorial.add(buildhudOverlay);
+			buildTutorial.add(placeOverlay);
 		}
 
 		private function returnToMenu():void {
@@ -577,8 +592,8 @@ package {
 				}
 			}
 
-			// In the build hud tutorial, check to see if the player has
-			// successfully selected a tile, then advance
+			// If we are in the build hud tutorial, check to see if the player has
+			// successfully selected a tile, then advance.
 			if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
 				&& buildHud.hudState == BuildHUD.STATE_TILE) {
 				tutorialState = TUTORIAL_WAITING_FOR_PLACE;
@@ -673,6 +688,13 @@ package {
 					});
 					goldSpent += cost;
 					Assets.mixer.play(Util.TILE_MOVE);
+
+					// If we are in the build tutorial, advance to the next part.
+					if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
+						tutorialState = null;
+						buildTutorial.next();
+					}
+
 				} else {
 					Assets.mixer.play(Util.TILE_FAILURE);
 				}
