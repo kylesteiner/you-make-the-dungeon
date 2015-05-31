@@ -469,7 +469,7 @@ package {
 			secondBuildTutorialOverlays.push(shopOverlay);
 			secondBuildTutorialOverlays.push(panOverlay);
 
-			secondBuildTutorial = new TutorialSequence(onsecondBuildTutorialComplete,
+			secondBuildTutorial = new TutorialSequence(onSecondBuildTutorialComplete,
 													   secondBuildTutorialOverlays);
 
 			//--------- ENTITY TUTORIAL ---------//
@@ -659,7 +659,6 @@ package {
 				addChild(secondRunTutorial);
 				currentFloor.char.moveLock = true;
 				tutorialState = TUTORIAL_WAITING_FOR_SPEED;
-				secondRun = false;
 			}
 		}
 
@@ -774,8 +773,6 @@ package {
 
 			// If this is the second build, show the advanced build tutorial.
 			if (secondBuild) {
-				secondBuild = false;
-				secondRun = true;
 				addChild(secondBuildTutorial);
 			// If this is not the second build, but the first entity was just
 			// unlocked, show the entity tutorial.
@@ -1243,6 +1240,7 @@ package {
 			removeChild(buildTutorial);
 			addChild(runTutorial);
 			currentFloor.char.moveLock = true;
+			tutorialState = null;
 		}
 
 		public function onRunTutorialComplete():void {
@@ -1250,8 +1248,10 @@ package {
 			currentFloor.char.moveLock = false;
 		}
 
-		public function onsecondBuildTutorialComplete():void {
+		public function onSecondBuildTutorialComplete():void {
 			removeChild(secondBuildTutorial);
+			secondBuild = false;
+			secondRun = true;
 			return;
 		}
 
@@ -1263,7 +1263,7 @@ package {
 		public function onSecondRunTutorialComplete():void {
 			removeChild(secondRunTutorial);
 			currentFloor.char.moveLock = false;
-			tutorialState == null;
+			secondRun = false;
 		}
 
 		public function playCinematic(commands:Array, onComplete:Function):void {
