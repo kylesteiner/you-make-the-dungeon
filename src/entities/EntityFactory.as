@@ -10,8 +10,14 @@ package entities {
         public static const LIGHT_HEALING:String = "entity_light_healing";
         public static const MODERATE_HEALING:String = "entity_moderate_healing";
         public static const LIGHT_STAMINA_HEAL:String = "entity_light_stamina_heal";
+
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
+
+        public static const BASIC_TRAP:String = "basic_trap";
+        public static const FLAME_TRAP:String = "flame_trap";
+        public static const FLAME_TRAP_BLUE:String = "flame_trap_blue";
+        public static const SHOCK_TRAP:String = "shock_trap";
 
         public var entitySet:Dictionary;
         public var masterSet:Dictionary;
@@ -102,6 +108,34 @@ package entities {
         public function constructTrapEntities():Dictionary {
             var trapDict:Dictionary = new Dictionary();
 
+            var basicTrap:Dictionary = new Dictionary();
+            basicTrap["constructor"] = constructBasicTrap;
+            basicTrap["texture"] = Assets.textures[Util.BASIC_TRAP];
+            basicTrap["cost"] = Util.BASIC_TRAP_COST;
+            basicTrap["category"] = TRAP_CATEGORY;
+            trapDict[BASIC_TRAP] = basicTrap;
+
+            var flameTrap:Dictionary = new Dictionary();
+            flameTrap["constructor"] = constructRedFlameTrap;
+            flameTrap["texture"] = Assets.textures[Util.FLAME_TRAP];
+            flameTrap["cost"] = Util.FLAME_TRAP_COST;
+            flameTrap["category"] = TRAP_CATEGORY;
+            trapDict[FLAME_TRAP] = flameTrap;
+
+            var blueFlameTrap:Dictionary = new Dictionary();
+            blueFlameTrap["constructor"] = constructBlueFlameTrap;
+            blueFlameTrap["texture"] = Assets.textures[Util.FLAME_TRAP_BLUE];
+            blueFlameTrap["cost"] = Util.BLUE_FLAME_TRAP_COST;
+            blueFlameTrap["category"] = TRAP_CATEGORY;
+            trapDict[FLAME_TRAP_BLUE] = blueFlameTrap;
+
+            var shockTrap:Dictionary = new Dictionary();
+            shockTrap["constructor"] = constructShockTrap;
+            shockTrap["texture"] = Assets.textures[Util.SHOCK_TRAP];
+            shockTrap["cost"] = Util.SHOCK_TRAP_COST;
+            shockTrap["category"] = TRAP_CATEGORY;
+            trapDict[SHOCK_TRAP] = shockTrap;
+
             return trapDict;
         }
 
@@ -137,6 +171,33 @@ package entities {
             var reward:int = 18;
 
             return new Enemy(x, y, Util.ENEMY_MAGE, Assets.textures[Util.ENEMY_MAGE], hp, atk, reward);
+        }
+
+        public function constructBasicTrap(x:int=0, y:int=0):Trap {
+			var damage:int = 5;
+
+            return new Trap(x, y, Assets.textures[Util.BASIC_TRAP], Util.BASIC_TRAP, damage, 0);
+        }
+
+        public function constructRedFlameTrap(x:int=0, y:int=0):Trap {
+           	var damage:int = 3;
+			var radius:int = 4;
+
+			return new Trap(x, y, Assets.textures[Util.FLAME_TRAP], Util.FLAME_TRAP, damage, radius);
+        }
+
+        public function constructBlueFlameTrap(x:int=0, y:int=0):Trap {
+            var damage:int = 5;
+            var radius:int = 2;
+
+            return new Trap(x, y, Assets.textures[Util.FLAME_TRAP_BLUE], Util.FLAME_TRAP, damage, radius);
+        }
+
+        public function constructShockTrap(x:int=0, y:int=0):Trap {
+    		var damage:int = 5;
+			var radius:int = 3;
+
+			return new Trap(x, y, Assets.textures[Util.SHOCK_TRAP], Util.SHOCK_TRAP, damage, radius);
         }
     }
 }

@@ -6,8 +6,19 @@ The game can be built from the command line using the build scripts in the top l
 The game can also be built using an IDE like FlashDevelop.
 
 ## In-Game Commands
-m - toggle mute
-w/a/s/d - move camera
+w/a/s/d - move camera (build phase) / move player
+
+arrow keys - move camera (build phase) / move player
+
+space - switch phase
+
+m - mute background music
+
+, - mute sound effects
+
+j - toggle fast movement
+
+k - toggle fast combat
 
 ## Floor Data
 
