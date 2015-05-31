@@ -230,7 +230,7 @@ package {
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 200000;
+		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs
