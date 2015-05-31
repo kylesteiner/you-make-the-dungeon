@@ -227,10 +227,7 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					var stationary:Boolean;
-					if (entity["stationary"]) {
-						stationary = entity["stationary"];
-					}
+					var stationary:Boolean  = entity["stationary"];
 					var enemy:Enemy = new Enemy(tX, tY, textureName, Assets.textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					enemy.deletable = tDeletable;
@@ -256,7 +253,7 @@ package {
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
 				} else if (entity["type"] == "trap") {
-					var trapType:String = entity["trap"];
+					var trapType:String = entity["texture"];
 					var damage:int = entity["damage"];
 					var radius:int = entity["radius"];
 					var trap:Trap = new Trap(tX, tY, Assets.textures[textureName], trapType, damage, radius);
