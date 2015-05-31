@@ -49,6 +49,7 @@ package {
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
+		public static const PHASE_CHANGE_THRESHOLD:Number = 0.40;
 
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
 		public static const MAX_CAMERA_ACCEL:int = 3;
@@ -104,6 +105,7 @@ package {
 
 		private var phaseBanner:Image;
 		private var phaseBannerTimer:Number;
+		private var phaseTimer:Number;
 
 		private var tileUnlockTimer:Number;
 
