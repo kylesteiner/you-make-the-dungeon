@@ -30,6 +30,8 @@ package {
 		public static const RUN_TUTORIAL_TEXT:String =
 				"Click here when\nyou're done building.";
 		public static const MOVE_TUTORIAL_TEXT:String = "To move Nea";
+		public static const HEALTH_TUTORIAL_TEXT:String = "This is Nea's health. Nea loses health when fighting monsters."
+		public static const STAMINA_TUTORIAL_TEXT:String = "This is Nea's stamina. Nea can move until she runs out of stamina."
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -338,7 +340,29 @@ package {
 					new Image(Assets.textures[Util.TUTORIAL_KEYS]),
 					Util.getTransparentQuad());
 			controlsOverlay.addChild(controlsText);
+
+			var healthText:TextField = new TextField(300, 80,
+													 HEALTH_TUTORIAL_TEXT,
+													 Util.DEFAULT_FONT,
+													 Util.SMALL_FONT_SIZE);
+			healthText.x = 185;
+			healthText.y = 25;
+			var staminaText:TextField = new TextField(300, 80,
+													  STAMINA_TUTORIAL_TEXT,
+													  Util.DEFAULT_FONT,
+													  Util.SMALL_FONT_SIZE);
+			staminaText.x = 205;
+			staminaText.y = 150;
+			var healthStaminaShadow:Image = new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
+			healthStaminaShadow.alpha = 0.7;
+			var healthStaminaOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_ARROWS]),
+					healthStaminaShadow);
+			healthStaminaOverlay.addChild(healthText);
+			healthStaminaOverlay.addChild(staminaText);
+
 			runTutorialOverlays.push(controlsOverlay);
+			runTutorialOverlays.push(healthStaminaOverlay);
 			runTutorial = new TutorialSequence(onRunTutorialComplete,
 											   runTutorialOverlays);
 		}
