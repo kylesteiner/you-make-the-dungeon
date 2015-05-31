@@ -11,6 +11,10 @@ package {
         public static const MOVE_SPEED:int = 2;
         public static const COLOR_SPEND:uint = Color.BLACK;
         public static const COLOR_EARN:uint = Color.YELLOW;
+        public static const BORDER_COLOR:uint = Color.BLACK;
+        public static const INTERIOR_COLOR:uint = Color.WHITE;
+        public static const FLASH_COLOR:uint = Color.RED;
+        public static const FLASH_DURATION:Number = 0.5;
 
         private var hud:Sprite;
         private var gold:int;
@@ -19,6 +23,8 @@ package {
         private var goldQuad:Quad;
         private var goldQuadInterior:Quad;
         private var goldChangeTexts:Array;
+        private var timeFlashed:Number;
+        private var flashing:Boolean;
 
         public function GoldHUD(gold:int) {
             this.gold = gold;
@@ -31,8 +37,8 @@ package {
             goldText = new TextField(64, Util.MEDIUM_FONT_SIZE, gold.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             goldText.x = goldImage.width + goldImage.x;
             goldText.y = goldImage.y;
-            goldQuad = new Quad(goldImage.width + goldText.width + BORDER * 2, goldImage.height, 0x000000);
-            goldQuadInterior = new Quad(goldQuad.width - BORDER * 2, goldQuad.height - 2*BORDER, 0xffffff);
+            goldQuad = new Quad(goldImage.width + goldText.width + BORDER * 2, goldImage.height, BORDER_COLOR);
+            goldQuadInterior = new Quad(goldQuad.width - BORDER * 2, goldQuad.height - 2*BORDER, INTERIOR_COLOR);
             goldQuadInterior.x = BORDER;
             goldQuadInterior.y = BORDER;
             hud.addChild(goldQuad);
@@ -52,7 +58,7 @@ package {
             var modifier:String = "+";
             var soundString:String = Util.COIN_COLLECT;
 
-            if(this.gold > gold) {
+            if (this.gold > gold) {
                 soundString = Util.GOLD_SPEND;
                 textColor = COLOR_SPEND;
                 modifier = "-";
@@ -72,6 +78,13 @@ package {
         }
 
         public function onEnterFrame(event:EnterFrameEvent):void {
+            if (flashing) {
+                timeFlashed += event.passedTime;
+                if (timeFlashed > FLASH_DURATION) {
+                    clearFlash();
+                }
+            }
+
             var cut:Array = new Array();
 
             var i:int;
@@ -86,6 +99,18 @@ package {
                 hud.removeChild(goldChangeTexts[i]);
                 goldChangeTexts.splice(i, 1);
             }
+        }
+
+        public function setFlash():void {
+            flashing = true;
+            timeFlashed = 0;
+            goldQuadInterior.color = FLASH_COLOR;
+            Assets.mixer.play(Util.GOLD_DEFICIT);
+        }
+
+        public function clearFlash():void {
+            flashing = false;
+            goldQuadInterior.color = INTERIOR_COLOR;
         }
     }
 

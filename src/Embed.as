@@ -21,14 +21,13 @@ package {
 		[Embed(source='assets/backgrounds/run_help.png')] public static const run_help:Class;
 		[Embed(source='assets/backgrounds/build_help.png')] public static const build_help:Class;
 
-		[Embed(source='assets/effects/large/fow_6.png')] public static var fog:Class;
-		[Embed(source='assets/effects/large/hl_blue.png')] public static var hl_blue:Class;
+		[Embed(source='assets/highlights/hl_blue.png')] public static var hl_blue:Class;
 		//[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
 		//[Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
 		//[Embed(source='assets/effects/large/hl_yellow.png')] public static var hl_yellow:Class;
-		[Embed(source='assets/effects/large/hl_tile.png')] public static var hl_tile:Class;
-		[Embed(source='assets/effects/large/hl_delete.png')] public static var hl_delete:Class;
-		[Embed(source='assets/effects/large/hl_entity.png')] public static var hl_entity:Class;
+		[Embed(source='assets/highlights/hl_tile.png')] public static var hl_tile:Class;
+		[Embed(source='assets/highlights/hl_delete.png')] public static var hl_delete:Class;
+		[Embed(source='assets/highlights/hl_entity.png')] public static var hl_entity:Class;
 
 		//[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
 		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
@@ -86,22 +85,22 @@ package {
 		[Embed(source='assets/icons/red_run_lg.png')] public static const icon_fast_run:Class;
 		[Embed(source='assets/icons/slow_run_lg.png')] public static const icon_slow_run:Class;
 
-		[Embed(source='assets/tiles/clean/tile_e.png')] public static var tile_e:Class;
-		[Embed(source='assets/tiles/clean/tile_ew.png')] public static var tile_ew:Class;
-		[Embed(source='assets/tiles/clean/tile_n.png')] public static var tile_n:Class;
-		[Embed(source='assets/tiles/clean/tile_ne.png')] public static var tile_ne:Class;
-		[Embed(source='assets/tiles/clean/tile_new.png')] public static var tile_new:Class;
-		[Embed(source='assets/tiles/clean/tile_none.png')] public static var tile_none:Class;
-		[Embed(source='assets/tiles/clean/tile_ns.png')] public static var tile_ns:Class;
-		[Embed(source='assets/tiles/clean/tile_nse.png')] public static var tile_nse:Class;
-		[Embed(source='assets/tiles/clean/tile_nsew.png')] public static var tile_nsew:Class;
-		[Embed(source='assets/tiles/clean/tile_nsw.png')] public static var tile_nsw:Class;
-		[Embed(source='assets/tiles/clean/tile_nw.png')] public static var tile_nw:Class;
-		[Embed(source='assets/tiles/clean/tile_s.png')] public static var tile_s:Class;
-		[Embed(source='assets/tiles/clean/tile_se.png')] public static var tile_se:Class;
-		[Embed(source='assets/tiles/clean/tile_sew.png')] public static var tile_sew:Class;
-		[Embed(source='assets/tiles/clean/tile_sw.png')] public static var tile_sw:Class;
-		[Embed(source='assets/tiles/clean/tile_w.png')] public static var tile_w:Class;
+		[Embed(source='assets/tiles/tile_e.png')] public static var tile_e:Class;
+		[Embed(source='assets/tiles/tile_ew.png')] public static var tile_ew:Class;
+		[Embed(source='assets/tiles/tile_n.png')] public static var tile_n:Class;
+		[Embed(source='assets/tiles/tile_ne.png')] public static var tile_ne:Class;
+		[Embed(source='assets/tiles/tile_new.png')] public static var tile_new:Class;
+		[Embed(source='assets/tiles/tile_none.png')] public static var tile_none:Class;
+		[Embed(source='assets/tiles/tile_ns.png')] public static var tile_ns:Class;
+		[Embed(source='assets/tiles/tile_nse.png')] public static var tile_nse:Class;
+		[Embed(source='assets/tiles/tile_nsew.png')] public static var tile_nsew:Class;
+		[Embed(source='assets/tiles/tile_nsw.png')] public static var tile_nsw:Class;
+		[Embed(source='assets/tiles/tile_nw.png')] public static var tile_nw:Class;
+		[Embed(source='assets/tiles/tile_s.png')] public static var tile_s:Class;
+		[Embed(source='assets/tiles/tile_se.png')] public static var tile_se:Class;
+		[Embed(source='assets/tiles/tile_sew.png')] public static var tile_sew:Class;
+		[Embed(source='assets/tiles/tile_sw.png')] public static var tile_sw:Class;
+		[Embed(source='assets/tiles/tile_w.png')] public static var tile_w:Class;
 
 		[Embed(source='floordata/main_floor.json', mimeType="application/octet-stream")] public static const mainFloor:Class;
 
@@ -157,7 +156,9 @@ package {
 		[Embed(source='assets/sfx/attack.mp3')] public static const sfxAttack:Class;
 		[Embed(source='assets/sfx/coin_collect.mp3')] public static const sfxCoinCollect:Class;
 		[Embed(source='assets/sfx/spend_gold.mp3')] public static const sfxGoldSpend:Class;
+		[Embed(source='assets/sfx/no_gold.mp3')] public static const sfxGoldDeficit:Class;
 		[Embed(source='assets/sfx/chest_open_lowhz.mp3')] public static const sfxReward:Class;
+		[Embed(source='assets/sfx/door_open.mp3')] public static const sfxDoorOpen:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
@@ -210,7 +211,7 @@ package {
 			Assets.textures[Util.TILE_SW] = Texture.fromBitmap(new tile_sw(), true, false, scale);
 			Assets.textures[Util.TILE_W] = Texture.fromBitmap(new tile_w(), true, false, scale);
 
-			Assets.textures[Util.TILE_FOG] = Texture.fromBitmap(new fog(), true, false, scale);
+			//Assets.textures[Util.TILE_FOG] = Texture.fromBitmap(new fog(), true, false, scale);
 			//Assets.textures[Util.TILE_HL_Y] = Texture.fromBitmap(new hl_yellow(), true, false, scale);
 			//Assets.textures[Util.TILE_HL_R] = Texture.fromBitmap(new hl_red(), true, false, scale);
 			//Assets.textures[Util.TILE_HL_G] = Texture.fromBitmap(new hl_green(), true, false, scale);
@@ -386,7 +387,9 @@ package {
 			tSfx[Util.TILE_REMOVE] = new sfxTileRemove();
 			tSfx[Util.COIN_COLLECT] = new sfxCoinCollect();
 			tSfx[Util.GOLD_SPEND] = new sfxGoldSpend();
+			tSfx[Util.GOLD_DEFICIT] = new sfxGoldDeficit();
 			tSfx[Util.REWARD_COLLECT] = new sfxReward();
+			tSfx[Util.DOOR_OPEN] = new sfxDoorOpen();
 
 			return tSfx;
 		}
