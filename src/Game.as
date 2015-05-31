@@ -761,8 +761,6 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
-			trace(overallGoldEarned);
-			trace(saveGame.data["overallGoldEarned"]);
 
 			saveGame.flush();
 
@@ -1036,6 +1034,8 @@ package {
 					if (newEntity is Enemy) {
 						currentFloor.activeEnemies.push(newEntity);
 						type = "enemy";
+					} else if (newEntity is Trap) {
+						type = "trap";
 					}
 					Assets.mixer.play(Util.TILE_MOVE);
 					Util.logger.logAction(18, {

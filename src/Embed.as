@@ -42,6 +42,7 @@ package {
 		[Embed(source='assets/entities/trap_shock.png')] public static var shock_trap:Class;
 
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] public static const bebas_font:Class;
+		[Embed(source='assets/fonts/FertigoProRegular.otf', embedAsCFF="false", fontFamily="Fertigo")] public static const fertigo_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] public static const league_font:Class;
 
 		[Embed(source='assets/animations/cursor/cursor_small.png')] public static const icon_cursor:Class;

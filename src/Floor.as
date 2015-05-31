@@ -35,7 +35,7 @@ package {
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
 		// Map string (objective key) -> boolean (state)
-		public var objectiveState:Dictionary;
+		public var objectiveState:Object;
 
 		// Grid metadata.
 		public var gridHeight:int;
@@ -111,7 +111,6 @@ package {
 			preplacedTiles = 0;
 
 			pressedKeys = new Array();
-			objectiveState = new Dictionary();
 			removedEntities = new Array();
 			activeEnemies = new Array();
 			trapAnimations = new Array();
@@ -245,7 +244,6 @@ package {
 					var prereqs:Array = entity["prereqs"];
 					var obj:Objective = new Objective(tX, tY, Assets.textures[textureName], key, prereqs);
 					entityGrid[tX][tY] = obj;
-					objectiveState[key] = false;
 				} else if (entity["type"] == "reward") {
 					var callback:String = entity["function"];
 					var param:String = entity["parameter"];
@@ -265,6 +263,12 @@ package {
 					entityGrid[tX][tY] = trap;
 					trap.deletable = tDeletable;
 				}
+			}
+
+			if (floorData["objectiveState"]) {
+				objectiveState = floorData["objectiveState"];
+			} else {
+				objectiveState = new Object();
 			}
 
 			removeFoggedLocationsInPath();
@@ -386,11 +390,6 @@ package {
 					var enemyEntity:Enemy = entity as Enemy;
 					activeEnemies.push(enemyEntity);
 				}
-			}
-
-			for (var k:Object in objectiveState) {
-				var key:String = String(k);
-				objectiveState[key] = false;
 			}
 
 			save();
@@ -516,6 +515,7 @@ package {
 			// because they shouldn't be changed by the player.
 			saveGame.data["temporary_entities"] = initialFloorData["temporary_entities"];
 			saveGame.data["rooms"] = initialFloorData["rooms"];
+			saveGame.data["objectiveState"] = objectiveState;
 			saveGame.flush();
 
 		}
@@ -807,7 +807,7 @@ package {
 			if (char.moving) {
 				return;
 			}
-			
+
 			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed && char.hp > 0) {
 				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
 			}
@@ -830,7 +830,9 @@ package {
 					}
 
 					nextTile = grid[cgx][cgy-1];
-					if (charTile.north && nextTile.south) {
+					if (charTile.north
+						&& nextTile.south
+						&& objectiveSatisfied(cgx, cgy-1)) {
 						char.move(Util.NORTH);
 					}
 				} else if ((keyCode == Keyboard.DOWN || keyCode == Util.DOWN_KEY) && cgy < gridHeight - 1) {
@@ -839,7 +841,9 @@ package {
 					}
 
 					nextTile = grid[cgx][cgy+1];
-					if (charTile.south && nextTile.north) {
+					if (charTile.south
+						&& nextTile.north
+						&& objectiveSatisfied(cgx, cgy+1)) {
 						char.move(Util.SOUTH);
 
 					}
@@ -849,7 +853,9 @@ package {
 					}
 
 					nextTile = grid[cgx-1][cgy];
-					if (charTile.west && nextTile.east) {
+					if (charTile.west
+						&& nextTile.east
+						&& objectiveSatisfied(cgx-1, cgy)) {
 						char.move(Util.WEST);
 					}
 				} else if ((keyCode == Keyboard.RIGHT || keyCode == Util.RIGHT_KEY) && cgx < gridWidth - 1) {
@@ -858,11 +864,33 @@ package {
 					}
 
 					nextTile = grid[cgx+1][cgy];
-					if (charTile.east && nextTile.west) {
+					if (charTile.east
+						&& nextTile.west
+						&& objectiveSatisfied(cgx+1, cgy)) {
 						char.move(Util.EAST);
 					}
 				}
 			}
+		}
+
+		// Returns true if the objective at (x,y) is satisfied, or if there
+		// is no objective at the tile. Returns false if the objective at (x,y)
+		// has not been satisfied.
+		private function objectiveSatisfied(x:int, y:int):Boolean {
+			if (!entityGrid[x][y]) {
+				return true;
+			}
+			var entity:Entity = entityGrid[x][y]
+			if (!(entity is Objective)) {
+				return true;
+			}
+			var obj:Objective = (entity as Objective);
+			for (var i:int = 0; i < obj.prereqs.length; i++) {
+				if (!objectiveState[obj.prereqs[i]]) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		private function moveAllEnemies():void {
@@ -1036,7 +1064,7 @@ package {
 				"characterStaminaLeft":char.stamina,
 				"characterStaminaMax":char.maxStamina,
 				"characterAttack":char.attack,
-				"enemyHealth":enemy.hp,
+				"enemyHealth":enemy.maxHp,
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
@@ -1047,7 +1075,6 @@ package {
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
 			objectiveState[obj.key] = true;
-			removedEntities.push(obj);
 			entityGrid[e.x][e.y] = null;
 			removeChild(obj);
 		}
@@ -1091,11 +1118,17 @@ package {
 
 		private function onActivateTrap(e:GameEvent):void {
 			var i:int; var j:int; var entity:Entity;
-
+			
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
 			var affectedTiles:Array = trap.generateDamageRadius();
 			Assets.mixer.play(trap.triggerSound);
+			
+			Util.logger.logAction(23, {
+				"type":trap.type,
+				"radius":trap.radius,
+				"damage":trap.damage
+			});
 
 			var trapAnim:MovieClip;
 			for each(trapAnim in trap.generateDamageAnimations()) {
@@ -1113,16 +1146,24 @@ package {
 				if (char.grid_x == damagePoint.x && char.grid_y == damagePoint.y) {
 					char.hp -= trap.damage;
 					// Probably want to play some sfx here
+					Util.logger.logAction(25, { } );
 				}
 			}
 
 			var reward:int = 0;
 			for each (var enemy:Enemy in enemies) {
 				enemy.hp -= trap.damage;
+				Util.logger.logAction(26, { } );
 				enemy.addOverlay();
 				if (enemy.hp <= 0) {
 					reward += enemy.reward;
 					killEnemy(enemy);
+					Util.logger.logAction(24, {
+						"name":enemy.enemyName,
+						"attack":enemy.attack,
+						"hp":enemy.maxHp,
+						"reward":enemy.reward
+					});
 				}
 			}
 			var eventData:Dictionary = new Dictionary();
