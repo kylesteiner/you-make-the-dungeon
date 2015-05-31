@@ -91,6 +91,21 @@ package {
 		private var saveGame:SharedObject;
 		
 		private var onSummary:Boolean;
+		
+		// for keeping track of scores
+		// best per run
+		private var bestRunGoldEarned:int;
+		private var bestRunDistance:int;
+		private var bestRunEnemiesDefeated:int;
+		//private var bestRunTrapsUsed;
+		
+		// overall stats
+		private var overallGoldEarned:int;
+		private var overallDistance:int;
+		private var overallEnemiesDefeated:int;
+		//private var overallTrapsUsed;
+		private var overallTilesPlaced:int;
+		private var overallGoldSpent:int;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -111,6 +126,19 @@ package {
 			gold = fromSave ? saveGame.data["gold"] : Util.STARTING_GOLD;
 			Util.speed = Util.SPEED_SLOW;
 			combatSkip = false;
+			
+			// setting up scores and stats
+			bestRunGoldEarned = fromSave ? saveGame.data["bestRunGoldEarned"] : 0;
+			bestRunDistance = fromSave ? saveGame.data["bestRunDistance"] : 0;
+			bestRunEnemiesDefeated = fromSave ? saveGame.data["bestRunEnemiesDefeated"] : 0;
+			//bestRunTrapsUsed = fromSave ? saveGame.data["bestRunTrapsUsed"] : 0;
+			
+			overallGoldEarned = fromSave ? saveGame.data["overallGoldEarned"] : 0;
+			overallDistance = fromSave ? saveGame.data["overallDistance"] : 0;
+			overallEnemiesDefeated = fromSave ? saveGame.data["overallEnemiesDefeated"] : 0;
+			//overallTrapsUsed = fromSave ? saveGame.data["overallTrapsUsed"] : 0;
+			overallTilesPlaced = fromSave ? saveGame.data["overallTilesPlaced"] : 0;
+			overallGoldSpent = fromSave ? saveGame.data["overallGoldSpent"] : 0;
 
 			initializeWorld(fromSave);
 			initializeUI();
@@ -324,6 +352,29 @@ package {
 				"numberOfEntitiesPlaced":entitiesPlaced,
 				"goldSpent":goldSpent
 			});
+			
+			// set up saving before running floor as well.
+			saveGame.clear();
+			saveGame.data["gold"] = gold;
+			saveGame.data["unlocks"] = new Array();
+			for (var unlock:String in buildHud.entityFactory.entitySet) {
+				saveGame.data["unlocks"].push(unlock);
+			}
+			
+			// insert score stuff here yet again
+			saveGame.data["bestRunGoldEarned"] = bestRunGoldEarned;
+			saveGame.data["bestRunDistance"] = bestRunDistance;
+			saveGame.data["bestRunEnemiesDefeated"] = bestRunEnemiesDefeated;
+			
+			saveGame.data["overallGoldEarned"] = overallGoldEarned;
+			saveGame.data["overallDistance"] = overallDistance;
+			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
+			overallTilesPlaced += numberOfTilesPlaced;
+			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
+			overallGoldSpent += goldSpent;
+			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
+			
+			saveGame.flush();
 
 			goldSpent = 0;
 			numberOfTilesPlaced = 0;
@@ -406,6 +457,24 @@ package {
 			for (var unlock:String in buildHud.entityFactory.entitySet) {
 				saveGame.data["unlocks"].push(unlock);
 			}
+			
+			// insert score stuff here (for run based stuff)
+			saveGame.data["bestRunGoldEarned"] = Math.max(bestRunGoldEarned, runSummary.goldCollected);
+			bestRunGoldEarned = saveGame.data["bestRunGoldEarned"];
+			saveGame.data["bestRunDistance"] = Math.max(bestRunDistance, runSummary.distanceTraveled);
+			bestRunDistance = saveGame.data["bestRunDistance"];
+			saveGame.data["bestRunEnemiesDefeated"] = Math.max(bestRunEnemiesDefeated, runSummary.enemiesDefeated);
+			bestRunEnemiesDefeated = saveGame.data["bestRunEnemiesDefeated"];
+			
+			overallGoldEarned += runSummary.goldCollected;
+			saveGame.data["overallGoldEarned"] = overallGoldEarned;
+			overallDistance += runSummary.distanceTraveled;
+			saveGame.data["overallDistance"] = overallDistance;
+			overallEnemiesDefeated += runSummary.distanceTraveled;
+			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
+			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
+			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
+			
 			saveGame.flush();
 
 			addChild(runButton);
@@ -625,7 +694,7 @@ package {
 					currentFloor.addChild(newTile);
 					currentFloor.rooms.addTile(newTile);
 					currentFloor.removeFoggedLocationsInPath();
-					numberOfTilesPlaced++;
+					numberOfTilesPlaced += 1;
 					Util.logger.logAction(1, {
 						"goldSpent": cost,
 						"northOpen":newTile.north,
