@@ -33,21 +33,15 @@ package tutorial {
 		}
 
 		public function onKeyDown(event:KeyboardEvent):void {
-			trace("onKeyDown");
-            if(timeAccrued < SKIP_DELAY) {
+            if (timeAccrued < SKIP_DELAY) {
                 return;
             }
 
-            if(event.keyCode == Util.TUTORIAL_SKIP_KEY) {
-                dispatchEvent(new GameEvent(GameEvent.TUTORIAL_COMPLETE, 0, 0));
-            }
-
-            dispatchEvent(new TutorialEvent(TutorialEvent.NEXT, this, next));
+            dispatchEvent(new TutorialEvent(TutorialEvent.NEXT));
         }
 
         public function onMouseDown(event:TouchEvent):void {
-			trace("onMouseDown");
-            if(timeAccrued < SKIP_DELAY) {
+            if (timeAccrued < SKIP_DELAY) {
                 return;
             }
 
@@ -55,7 +49,7 @@ package tutorial {
 
             if (touch && touch.phase == TouchPhase.BEGAN) {
 				trace("onMouseDown: dispatching event");
-				dispatchEvent(new TutorialEvent(TutorialEvent.NEXT, this, next));
+				dispatchEvent(new TutorialEvent(TutorialEvent.NEXT));
             }
         }
 

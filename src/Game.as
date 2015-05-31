@@ -70,7 +70,7 @@ package {
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
 		private var tileUnlockPopup:Clickable;
-		private var cinematic:Cinematic;
+
 
 		private var gameState:String;
 		private var gold:int;
@@ -90,8 +90,9 @@ package {
 
 		private var saveGame:SharedObject;
 
-		private var newGame1:TutorialOverlay;
-		private var newGame2:TutorialOverlay;
+		// Tutorial sequences
+		private var cinematic:Cinematic;
+		private var intro:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -128,7 +129,8 @@ package {
 			addChild(helpButton);
 			addChild(buildHud);
 			if (gameState == STATE_TUTORIAL) {
-				addChild(newGame1);
+				addChild(intro);
+				intro.start();
 			}
 
 			// Update build hud with unlocks if loading from save.
@@ -173,7 +175,6 @@ package {
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
 
 			// Tutorial-specific game events.
-			addEventListener(TutorialEvent.NEXT, onTutorialClicked);
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 		}
@@ -256,15 +257,11 @@ package {
 		}
 
 		private function initializeTutorial():void {
-			var bg2:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
-            bg2.alpha = 0.7;
-			newGame2 = new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
-										   bg2);
-			var bg1:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
-            bg1.alpha = 0.7;
-			newGame1 = new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
-										   bg1,
-										   newGame2);
+			intro = new TutorialSequence(onIntroComplete);
+			intro.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
+										  Util.getTransparentQuad()));
+			intro.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
+										  Util.getTransparentQuad()));
 		}
 
 		private function returnToMenu():void {
@@ -791,18 +788,9 @@ package {
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
 		}
 
-		public function onTutorialClicked(e:TutorialEvent):void {
-			trace("onTutorialClicked");
-			nextTutorial(e.current, e.next);
-		}
-
-		public function nextTutorial(current:TutorialOverlay, next:TutorialOverlay=null):void {
-			removeChild(current);
-			if (next) {
-				addChild(next);
-			} else {
-				gameState = STATE_BUILD;
-			}
+		public function onIntroComplete():void {
+			removeChild(intro);
+			gameState = STATE_BUILD;
 		}
 
 		public function playOpeningCinematic():void {
