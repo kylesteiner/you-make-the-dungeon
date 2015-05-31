@@ -170,7 +170,7 @@ package entities {
 			var damage:int = 5;
 			var type:String = Util.BASIC_TRAP;
 
-            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], type, damage, 0);
+            return new Trap(x, y, Assets.textures[Util.BASIC_TRAP], type, damage, 0);
         }
 
         public function constructFlameTrap(x:int=0, y:int=0):Trap {
@@ -178,7 +178,7 @@ package entities {
 			var radius:int = 3;
 			var type:String = Util.FLAME_TRAP;
 
-			return new Trap(0, 0, Assets.textures[Util.FLAME_TRAP], type, damage, radius);
+			return new Trap(x, y, Assets.textures[Util.FLAME_TRAP], type, damage, radius);
         }
 
         public function constructShockTrap(x:int=0, y:int=0):Trap {
@@ -186,7 +186,7 @@ package entities {
 			var radius:int = 3;
 			var type:String = Util.SHOCK_TRAP;
 
-			return new Trap(0, 0, Assets.textures[Util.SHOCK_TRAP], type, damage, radius);
+			return new Trap(x, y, Assets.textures[Util.SHOCK_TRAP], type, damage, radius);
         }
     }
 }
