@@ -30,8 +30,12 @@ package {
 		public static const RUN_TUTORIAL_TEXT:String =
 				"Click here when\nyou're done building.";
 		public static const MOVE_TUTORIAL_TEXT:String = "To move Nea";
-		public static const HEALTH_TUTORIAL_TEXT:String = "This is Nea's health. Nea loses health when fighting monsters."
-		public static const STAMINA_TUTORIAL_TEXT:String = "This is Nea's stamina. Nea can move until she runs out of stamina."
+		public static const HEALTH_TUTORIAL_TEXT:String =
+				"This is Nea's health. Nea loses health when fighting monsters."
+		public static const STAMINA_TUTORIAL_TEXT:String =
+				"This is Nea's stamina. Nea can move until she runs out of stamina."
+		public static const SHOP_TUTORIAL_TEXT:String =
+				"Click here to upgrade Nea's stats.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -126,7 +130,7 @@ package {
 		private var tutorialState:String;
 		private var unlockedFirstEntity:Boolean;
 		private var entityTutorialDisplayed:Boolean;
-		private var firstRun:Boolean;
+		private var secondBuild:Boolean;
 		private var cinematic:Cinematic;
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
@@ -309,7 +313,7 @@ package {
 		}
 
 		private function initializeTutorial():void {
-			firstRun = true;
+			secondBuild = false;
 			unlockedFirstEntity = false;
 			entityTutorialDisplayed = false;
 
@@ -408,6 +412,21 @@ package {
 
 			//--------- SHOP TUTORIAL ---------//
 			var shopTutorialOverlays:Array = new Array();
+			var shopText:TextField = new TextField(300, 100,
+												   SHOP_TUTORIAL_TEXT,
+												   Util.DEFAULT_FONT,
+												   Util.MEDIUM_FONT_SIZE);
+			shopText.x = 290;
+			shopText.y = 210;
+			var shopShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SHOP_SHADOW]);
+			shopShadow.alpha = 0.7;
+			var shopOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_SHOP_ARROW]),
+					shopShadow,
+					false);
+			shopOverlay.addChild(shopText);
+
+			shopTutorialOverlays.push(shopOverlay);
 
 			shopTutorial = new TutorialSequence(onShopTutorialComplete,
 												shopTutorialOverlays);
@@ -415,8 +434,8 @@ package {
 			//--------- ENTITY TUTORIAL ---------//
 			var entityTutorialOverlays:Array = new Array();
 
-			entityTutorial = new TutorialSequence(onEntityTutorialComplete,
-												  entityTutorialOverlays);
+			// entityTutorial = new TutorialSequence(onEntityTutorialComplete,
+			// 									  entityTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -472,8 +491,8 @@ package {
 				removeChild(shopHud);
 			}
 
-			if (firstRun && unlockedFirstEntity && !entityTutorialDisplayed) {
-				addChild(entityTutorial);
+			if (secondBuild && unlockedFirstEntity && !entityTutorialDisplayed) {
+				// addChild(entityTutorial);
 			}
 		}
 
@@ -542,6 +561,7 @@ package {
 			gameState = STATE_RUN;
 
 			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				secondBuild = true;
 				buildTutorial.next();
 			}
 
@@ -638,13 +658,13 @@ package {
 			centerWorldOnCharacter();
 			constructPhaseBanner(false); // happens after the summary dialog box
 
-			if (firstRun) {
-				firstRun = false;
+			if (secondBuild) {
+				secondBuild = false;
 				addChild(shopTutorial);
 			}
-			if (!firstRun && unlockedFirstEntity && !entityTutorialDisplayed) {
+			if (!secondBuild && unlockedFirstEntity && !entityTutorialDisplayed) {
 				entityTutorialDisplayed = true;
-				addChild(entityTutorial);
+				// addChild(entityTutorial);
 			}
 		}
 
