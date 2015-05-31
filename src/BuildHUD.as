@@ -357,7 +357,7 @@ package {
 
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
-				if (!entityClickables[i] || !entityList[i] || !entityDisplayList[i]) {
+				if (entityClickables[i] == null || entityList[i] == null || entityDisplayList[i] == null) {
 					continue;
 				}
 
