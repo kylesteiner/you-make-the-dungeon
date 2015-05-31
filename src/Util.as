@@ -234,7 +234,7 @@ package {
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs
-		public static const BASE_TILE_COST:int = 2;
+		public static const BASE_TILE_COST:int = 1;
 		public static const REFUND_PERCENT:int = 50;
 		public static const ENEMY_FIGHTER_COST:int = 20;
 		public static const ENEMY_MAGE_COST:int = 30;
