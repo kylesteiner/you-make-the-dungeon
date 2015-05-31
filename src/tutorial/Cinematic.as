@@ -1,4 +1,4 @@
-package {
+package tutorial {
     import starling.display.*;
     import starling.events.*;
 

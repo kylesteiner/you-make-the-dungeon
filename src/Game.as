@@ -16,6 +16,7 @@ package {
 
 	import entities.*;
 	import tiles.*;
+	import tutorial.*;
 
 	public class Game extends Sprite {
 		public static const FLOOR_FAIL_TEXT:String =

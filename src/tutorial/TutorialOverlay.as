@@ -1,4 +1,4 @@
-package {
+package tutorial {
 	import starling.display.DisplayObject;
 	import starling.display.Sprite;
 	import starling.events.EnterFrameEvent;

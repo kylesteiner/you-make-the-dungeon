@@ -1,4 +1,4 @@
-package {
+package tutorial {
 	import starling.events.Event;
 
 	public class TutorialEvent extends Event {
