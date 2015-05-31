@@ -42,6 +42,10 @@ package {
 				"Click the buttons to see other choices.";
 		public static const DELETE_TUTORIAL_TEXT:String =
 				"Click here to sell back tiles you placed.";
+		public static const SPEED_MOVE_TUTORIAL_TEXT:String =
+				"Click here to make Nea move faster.";
+		public static const SPEED_COMBAT_TUTORIAL_TEXT:String =
+				"Click here to speed up combat.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -61,7 +65,7 @@ package {
 		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
 		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
 		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
-		public static const TUTORIAL_PRE_RUN:String = "pre_run";
+		public static const TUTORIAL_WAITING_FOR_SPEED:String = "waiting_for_speed";
 
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
@@ -134,12 +138,14 @@ package {
 		private var unlockedFirstEntity:Boolean;
 		private var entityTutorialDisplayed:Boolean;
 		private var secondBuild:Boolean;
+		private var secondRun:Boolean;
 		private var cinematic:Cinematic;
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
 		private var runTutorial:TutorialSequence;
 		private var secondBuildTutorial:TutorialSequence;
 		private var entityTutorial:TutorialSequence;
+		private var secondRunTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -319,6 +325,7 @@ package {
 
 		private function initializeTutorial():void {
 			secondBuild = false;
+			secondRun = false;
 			unlockedFirstEntity = false;
 			entityTutorialDisplayed = false;
 
@@ -478,6 +485,34 @@ package {
 
 			entityTutorial = new TutorialSequence(onEntityTutorialComplete,
 			 									  entityTutorialOverlays);
+
+			//--------- SECOND RUN PHASE TUTORIAL ---------//
+			var secondRunTutorialOverlays:Array = new Array();
+			var speedShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
+			speedShadow.alpha = 0.7;
+			var speedCombat:TextField = new TextField(210, 85,
+													  SPEED_COMBAT_TUTORIAL_TEXT,
+													  Util.DEFAULT_FONT,
+													  Util.SMALL_FONT_SIZE);
+			speedCombat.x = 430;
+			speedCombat.y = 245;
+			var speedMove:TextField = new TextField(220, 80,
+													SPEED_MOVE_TUTORIAL_TEXT,
+													Util.DEFAULT_FONT,
+													Util.SMALL_FONT_SIZE);
+			speedMove.x = 135;
+			speedMove.y = 400;
+			var speedOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_SPEED_ARROWS]),
+					speedShadow,
+					false);
+			speedOverlay.addChild(speedCombat);
+			speedOverlay.addChild(speedMove);
+
+			secondRunTutorialOverlays.push(speedOverlay);
+
+			secondRunTutorial = new TutorialSequence(onSecondRunTutorialComplete,
+													 secondRunTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -605,6 +640,8 @@ package {
 			gameState = STATE_RUN;
 
 			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				// This means the run button was hit, so the build tutorial needs
+				// to complete and start the first run tutorial.
 				secondBuild = true;
 				buildTutorial.next();
 			}
@@ -612,6 +649,14 @@ package {
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
 			constructPhaseBanner();
+
+			if (secondRun) {
+				// For the second run, it also needs to start a tutorial.
+				addChild(secondRunTutorial);
+				currentFloor.char.moveLock = true;
+				tutorialState = TUTORIAL_WAITING_FOR_SPEED;
+				secondRun = false;
+			}
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
@@ -705,9 +750,13 @@ package {
 			centerWorldOnCharacter();
 			constructPhaseBanner(false); // happens after the summary dialog box
 
+			// If this is the second build, show the advanced build tutorial.
 			if (secondBuild) {
 				secondBuild = false;
+				secondRun = true;
 				addChild(secondBuildTutorial);
+			// If this is not the second build, but the first entity was just
+			// unlocked, show the entity tutorial.
 			} else if (unlockedFirstEntity && !entityTutorialDisplayed) {
 				entityTutorialDisplayed = true;
 				addChild(entityTutorial);
@@ -1100,6 +1149,10 @@ package {
 
 			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
 			currentFloor.updateRunSpeed();
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
+				onSecondRunTutorialComplete();
+			}
 		}
 
 		public function toggleCombatSpeed():void {
@@ -1111,6 +1164,10 @@ package {
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
+				onSecondRunTutorialComplete();
+			}
 		}
 
 		public function onIntroTutorialComplete():void {
@@ -1163,21 +1220,18 @@ package {
 			addChild(shopButton);
 
 			addChild(buildTutorial);
-			// Assets.mixer.play(Util.LEVEL_UP);
+			Assets.mixer.play(Util.LEVEL_UP);
 		}
 
 		public function onBuildTutorialComplete():void {
 			removeChild(buildTutorial);
 			addChild(runTutorial);
-			tutorialState = TUTORIAL_PRE_RUN;
 			currentFloor.char.moveLock = true;
-			return;
 		}
 
 		public function onRunTutorialComplete():void {
 			removeChild(runTutorial);
 			currentFloor.char.moveLock = false;
-			return;
 		}
 
 		public function onsecondBuildTutorialComplete():void {
@@ -1188,6 +1242,12 @@ package {
 		public function onEntityTutorialComplete():void {
 			removeChild(entityTutorial);
 			entityTutorialDisplayed = true;
+		}
+
+		public function onSecondRunTutorialComplete():void {
+			removeChild(secondRunTutorial);
+			currentFloor.char.moveLock = false;
+			tutorialState == null;
 		}
 
 		public function playCinematic(commands:Array, onComplete:Function):void {

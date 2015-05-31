@@ -160,6 +160,8 @@ package {
 		public static const TUTORIAL_ENTITY_SHADOW:String = "tutorial_entity_shadow";
 		public static const TUTORIAL_DELETE_ARROW:String = "tutorial_delete_arrow";
 		public static const TUTORIAL_DELETE_SHADOW:String = "tutorial_delete_shadow";
+		public static const TUTORIAL_SPEED_ARROWS:String = "tutorial_speed_arrows";
+		public static const TUTORIAL_SPEED_SHADOW:String = "tutorial_speed_shadow";
 
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
