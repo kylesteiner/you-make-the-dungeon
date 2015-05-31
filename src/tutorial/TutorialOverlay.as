@@ -10,21 +10,18 @@ package tutorial {
 
 	public class TutorialOverlay extends Sprite {
 		public static const SKIP_DELAY:Number = 0.2;
-		private var next:TutorialOverlay;
 		private var background:DisplayObject;
 		private var foreground:DisplayObject;
 		private var timeAccrued:Number;
 
 		public function TutorialOverlay(foreground:DisplayObject,
 										background:DisplayObject,
-										next:TutorialOverlay=null,
 										touchable:Boolean=true) {
 			this.foreground = foreground;
 			this.background = background;
 			addChild(background);
 			addChild(foreground);
 
-			this.next = next;
 			this.touchable = touchable;
 
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
