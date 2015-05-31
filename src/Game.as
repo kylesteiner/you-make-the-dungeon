@@ -52,6 +52,7 @@ package {
 		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
 		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
 		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
+		public static const TUTORIAL_PRE_RUN:String = "pre_run";
 
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
@@ -341,13 +342,13 @@ package {
 					Util.getTransparentQuad());
 			controlsOverlay.addChild(controlsText);
 
-			var healthText:TextField = new TextField(300, 80,
+			var healthText:TextField = new TextField(300, 96,
 													 HEALTH_TUTORIAL_TEXT,
 													 Util.DEFAULT_FONT,
 													 Util.SMALL_FONT_SIZE);
 			healthText.x = 185;
 			healthText.y = 25;
-			var staminaText:TextField = new TextField(300, 80,
+			var staminaText:TextField = new TextField(300, 96,
 													  STAMINA_TUTORIAL_TEXT,
 													  Util.DEFAULT_FONT,
 													  Util.SMALL_FONT_SIZE);
@@ -985,11 +986,14 @@ package {
 		public function onBuildTutorialComplete():void {
 			removeChild(buildTutorial);
 			addChild(runTutorial);
+			tutorialState = TUTORIAL_PRE_RUN;
+			currentFloor.char.moveLock = true;
 			return;
 		}
 
 		public function onRunTutorialComplete():void {
 			removeChild(runTutorial);
+			currentFloor.char.moveLock = false;
 			return;
 		}
 
