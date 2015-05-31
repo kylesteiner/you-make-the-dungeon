@@ -87,7 +87,6 @@ package {
 		private var tileUnlockPopup:Clickable;
 
 		private var gameState:String;
-		private var tutorialState:String;
 
 		private var gold:int;
 
@@ -123,11 +122,17 @@ package {
 		private var overallTilesPlaced:int;
 		private var overallGoldSpent:int;
 
-		// Tutorial sequences
+		// Tutorial sequences and state
+		private var tutorialState:String;
+		private var unlockedFirstEntity:Boolean;
+		private var entityTutorialDisplayed:Boolean;
+		private var firstRun:Boolean;
 		private var cinematic:Cinematic;
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
 		private var runTutorial:TutorialSequence;
+		private var shopTutorial:TutorialSequence;
+		private var entityTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -304,6 +309,10 @@ package {
 		}
 
 		private function initializeTutorial():void {
+			firstRun = true;
+			unlockedFirstEntity = false;
+			entityTutorialDisplayed = false;
+
 			//--------- INTRO TUTORIAL ---------//
 			var introOverlays:Array = new Array();
 			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
@@ -396,6 +405,18 @@ package {
 			runTutorialOverlays.push(healthStaminaOverlay);
 			runTutorial = new TutorialSequence(onRunTutorialComplete,
 											   runTutorialOverlays);
+
+			//--------- SHOP TUTORIAL ---------//
+			var shopTutorialOverlays:Array = new Array();
+
+			shopTutorial = new TutorialSequence(onShopTutorialComplete,
+												shopTutorialOverlays);
+
+			//--------- ENTITY TUTORIAL ---------//
+			var entityTutorialOverlays:Array = new Array();
+
+			entityTutorial = new TutorialSequence(onEntityTutorialComplete,
+												  entityTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -434,6 +455,8 @@ package {
 				return;
 			}
 
+			shopTutorial.next();
+
 			if (getChildIndex(shopHud) == -1) {
 				Util.logger.logAction(13, { } );
 				shopHud.update(currentFloor.char, gold);
@@ -447,6 +470,10 @@ package {
 				goldSpent += gold - shopHud.gold;
 				gold = shopHud.gold;
 				removeChild(shopHud);
+			}
+
+			if (firstRun && unlockedFirstEntity && !entityTutorialDisplayed) {
+				addChild(entityTutorial);
 			}
 		}
 
@@ -610,6 +637,15 @@ package {
 			currentFloor.resetFloor();
 			centerWorldOnCharacter();
 			constructPhaseBanner(false); // happens after the summary dialog box
+
+			if (firstRun) {
+				firstRun = false;
+				addChild(shopTutorial);
+			}
+			if (!firstRun && unlockedFirstEntity && !entityTutorialDisplayed) {
+				entityTutorialDisplayed = true;
+				addChild(entityTutorial);
+			}
 		}
 
 		private function centerWorldOnCharacter(exact:Boolean = false):void {
@@ -1069,6 +1105,16 @@ package {
 			return;
 		}
 
+		public function onShopTutorialComplete():void {
+			removeChild(shopTutorial);
+			return;
+		}
+
+		public function onEntityTutorialComplete():void {
+			removeChild(entityTutorial);
+			entityTutorialDisplayed = true;
+		}
+
 		public function playCinematic(commands:Array, onComplete:Function):void {
 			cinematic = new Cinematic(world.x,
 									  world.y,
@@ -1084,6 +1130,7 @@ package {
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
+			unlockedFirstEntity = true;
 			removeChild(tileUnlockPopup);
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
