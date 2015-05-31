@@ -641,7 +641,7 @@ package {
 
 			if (touch.phase == TouchPhase.BEGAN && popupManager.popup is Clickable) {
 				Clickable(popupManager.popup).onClick();
-			} else if (touch.phase == TouchPhase.BEGAN && popupManager.summary && gameState == STATE_BUILD) {
+			} else if (touch.phase == TouchPhase.BEGAN && popupManager.summary && !touch.isTouching(endButton)) {
 				Clickable(popupManager.summary).onClick();
 			}
 
