@@ -6,6 +6,7 @@ package {
 		public static const CONTINUE_GAME:String = "continue_game";
 		public static const CREDITS:String = "credits";
 		public static const EXIT:String = "exit";
+		public static const SCORES:String = "scores";
 
 		public function MenuEvent(type:String, bubbles:Boolean=true) {
 			super(type, bubbles);

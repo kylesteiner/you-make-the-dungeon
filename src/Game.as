@@ -29,6 +29,9 @@ package {
 				"Place the tile on one of the green highlighted spots.";
 		public static const RUN_TUTORIAL_TEXT:String =
 				"Click here when\nyou're done building.";
+		public static const MOVE_TUTORIAL_TEXT:String = "To move Nea";
+		public static const HEALTH_TUTORIAL_TEXT:String = "This is Nea's health. Nea loses health when fighting monsters."
+		public static const STAMINA_TUTORIAL_TEXT:String = "This is Nea's stamina. Nea can move until she runs out of stamina."
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -49,6 +52,7 @@ package {
 		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
 		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
 		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
+		public static const TUTORIAL_PRE_RUN:String = "pre_run";
 
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
@@ -101,11 +105,29 @@ package {
 		private var timeHovered:Number;
 
 		private var saveGame:SharedObject;
+		
+		private var onSummary:Boolean;
+		
+		// for keeping track of scores
+		// best per run
+		private var bestRunGoldEarned:int;
+		private var bestRunDistance:int;
+		private var bestRunEnemiesDefeated:int;
+		//private var bestRunTrapsUsed;
+		
+		// overall stats
+		private var overallGoldEarned:int;
+		private var overallDistance:int;
+		private var overallEnemiesDefeated:int;
+		//private var overallTrapsUsed;
+		private var overallTilesPlaced:int;
+		private var overallGoldSpent:int;
 
 		// Tutorial sequences
 		private var cinematic:Cinematic;
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
+		private var runTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -126,6 +148,19 @@ package {
 			gold = fromSave ? saveGame.data["gold"] : Util.STARTING_GOLD;
 			Util.speed = Util.SPEED_SLOW;
 			combatSkip = false;
+			
+			// setting up scores and stats
+			bestRunGoldEarned = fromSave ? saveGame.data["bestRunGoldEarned"] : 0;
+			bestRunDistance = fromSave ? saveGame.data["bestRunDistance"] : 0;
+			bestRunEnemiesDefeated = fromSave ? saveGame.data["bestRunEnemiesDefeated"] : 0;
+			//bestRunTrapsUsed = fromSave ? saveGame.data["bestRunTrapsUsed"] : 0;
+			
+			overallGoldEarned = fromSave ? saveGame.data["overallGoldEarned"] : 0;
+			overallDistance = fromSave ? saveGame.data["overallDistance"] : 0;
+			overallEnemiesDefeated = fromSave ? saveGame.data["overallEnemiesDefeated"] : 0;
+			//overallTrapsUsed = fromSave ? saveGame.data["overallTrapsUsed"] : 0;
+			overallTilesPlaced = fromSave ? saveGame.data["overallTilesPlaced"] : 0;
+			overallGoldSpent = fromSave ? saveGame.data["overallGoldSpent"] : 0;
 
 			initializeWorld(fromSave);
 			initializeUI();
@@ -315,9 +350,9 @@ package {
 			runText.x = 440;
 			runText.y = 148;
 			var runOverlay:TutorialOverlay = new TutorialOverlay(
-				runText,
-				new Image(Assets.textures[Util.TUTORIAL_RUN]),
-				false);
+					runText,
+					new Image(Assets.textures[Util.TUTORIAL_RUN]),
+					false);
 
 			buildTutorialOverlays.push(buildhudOverlay);
 			buildTutorialOverlays.push(placeOverlay);
@@ -325,6 +360,43 @@ package {
 
 			buildTutorial = new TutorialSequence(onBuildTutorialComplete,
 												 buildTutorialOverlays);
+
+			//--------- RUN TUTORIAL ---------//
+			var runTutorialOverlays:Array = new Array();
+			var controlsText:TextField = new TextField(Util.STAGE_WIDTH, 64,
+													   MOVE_TUTORIAL_TEXT,
+													   Util.DEFAULT_FONT,
+													   Util.MEDIUM_FONT_SIZE);
+			controlsText.y = 260;
+			var controlsOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_KEYS]),
+					Util.getTransparentQuad());
+			controlsOverlay.addChild(controlsText);
+
+			var healthText:TextField = new TextField(300, 96,
+													 HEALTH_TUTORIAL_TEXT,
+													 Util.DEFAULT_FONT,
+													 Util.SMALL_FONT_SIZE);
+			healthText.x = 185;
+			healthText.y = 25;
+			var staminaText:TextField = new TextField(300, 96,
+													  STAMINA_TUTORIAL_TEXT,
+													  Util.DEFAULT_FONT,
+													  Util.SMALL_FONT_SIZE);
+			staminaText.x = 205;
+			staminaText.y = 150;
+			var healthStaminaShadow:Image = new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
+			healthStaminaShadow.alpha = 0.7;
+			var healthStaminaOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_ARROWS]),
+					healthStaminaShadow);
+			healthStaminaOverlay.addChild(healthText);
+			healthStaminaOverlay.addChild(staminaText);
+
+			runTutorialOverlays.push(controlsOverlay);
+			runTutorialOverlays.push(healthStaminaOverlay);
+			runTutorial = new TutorialSequence(onRunTutorialComplete,
+											   runTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -392,15 +464,36 @@ package {
 				return;
 			}
 
-			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
-				buildTutorial.next();
-			}
-
 			Util.logger.logAction(3, {
 				"numberOfTiles":numberOfTilesPlaced,
 				"numberOfEntitiesPlaced":entitiesPlaced,
 				"goldSpent":goldSpent
 			});
+			
+			// set up saving before running floor as well.
+			saveGame.clear();
+			saveGame.data["gold"] = gold;
+			saveGame.data["unlocks"] = new Array();
+			for (var unlock:String in buildHud.entityFactory.entitySet) {
+				saveGame.data["unlocks"].push(unlock);
+			}
+			
+			// insert score stuff here yet again
+			saveGame.data["bestRunGoldEarned"] = bestRunGoldEarned;
+			saveGame.data["bestRunDistance"] = bestRunDistance;
+			saveGame.data["bestRunEnemiesDefeated"] = bestRunEnemiesDefeated;
+			
+			saveGame.data["overallGoldEarned"] = overallGoldEarned;
+			saveGame.data["overallDistance"] = overallDistance;
+			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
+			overallTilesPlaced += numberOfTilesPlaced;
+			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
+			overallGoldSpent += goldSpent;
+			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
+			
+			saveGame.flush();
+			
+			currentFloor.save();
 
 			goldSpent = 0;
 			numberOfTilesPlaced = 0;
@@ -414,16 +507,17 @@ package {
 			removeChild(buildHud);
 
 			// to account for the case where they click run, and the hud is still open
-			if (getChildIndex(shopHud) != -1) {
-				goldSpent += gold - shopHud.gold;
-				gold = shopHud.gold;
-			}
+			closeShopHUD();
 			removeChild(shopHud);
 			removeChild(shopButton);
 
 			addChild(endButton);
 			addChild(runHud);
 			gameState = STATE_RUN;
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				buildTutorial.next();
+			}
 
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
@@ -465,6 +559,7 @@ package {
 
 			gameState = STATE_SUMMARY;
 			addChild(runSummary);
+			onSummary = true;
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
@@ -476,7 +571,7 @@ package {
 
 		public function returnToBuild():void {
 			removeChild(runSummary);
-			runSummary.reset();
+			onSummary = false;
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -484,7 +579,27 @@ package {
 			for (var unlock:String in buildHud.entityFactory.entitySet) {
 				saveGame.data["unlocks"].push(unlock);
 			}
+			
+			// insert score stuff here (for run based stuff)
+			saveGame.data["bestRunGoldEarned"] = Math.max(bestRunGoldEarned, runSummary.goldCollected);
+			bestRunGoldEarned = saveGame.data["bestRunGoldEarned"];
+			saveGame.data["bestRunDistance"] = Math.max(bestRunDistance, runSummary.distanceTraveled);
+			bestRunDistance = saveGame.data["bestRunDistance"];
+			saveGame.data["bestRunEnemiesDefeated"] = Math.max(bestRunEnemiesDefeated, runSummary.enemiesDefeated);
+			bestRunEnemiesDefeated = saveGame.data["bestRunEnemiesDefeated"];
+			
+			overallGoldEarned += runSummary.goldCollected;
+			saveGame.data["overallGoldEarned"] = overallGoldEarned;
+			overallDistance += runSummary.distanceTraveled;
+			saveGame.data["overallDistance"] = overallDistance;
+			overallEnemiesDefeated += runSummary.enemiesDefeated;
+			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
+			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
+			saveGame.data["overallGoldSpent"] = overallGoldSpent;	
+			
 			saveGame.flush();
+			
+			runSummary.reset();
 
 			addChild(runButton);
 
@@ -661,8 +776,7 @@ package {
 				addChild(helpImageSprite);
 				helping = true;
 			} else {
-				removeChild(helpImageSprite);
-				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN)) {
+				if (helping && (gameState == STATE_BUILD || gameState == STATE_RUN) && timeHovered >= 1) {
 					var state:String = gameState == STATE_BUILD ? "buildState" : "runState";
 					Util.logger.logAction(21, {
 						"phaseHovered":state,
@@ -670,7 +784,7 @@ package {
 					});
 					timeHovered = 0;
 					helping = false;
-
+					removeChild(helpImageSprite);
 				}
 			}
 
@@ -715,7 +829,7 @@ package {
 					currentFloor.addChild(newTile);
 					currentFloor.rooms.addTile(newTile);
 					currentFloor.removeFoggedLocationsInPath();
-					numberOfTilesPlaced++;
+					numberOfTilesPlaced += 1;
 					Util.logger.logAction(1, {
 						"goldSpent": cost,
 						"northOpen":newTile.north,
@@ -728,7 +842,7 @@ package {
 
 					// If we are in the build tutorial, advance to the next part.
 					if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
-						tutorialState = null;
+						tutorialState = TUTORIAL_WAITING_FOR_RUN;
 						buildTutorial.next();
 					}
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
@@ -770,7 +884,7 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if(gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+			if(gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC || onSummary) {
 				return;
 			}
 
@@ -944,6 +1058,15 @@ package {
 
 		public function onBuildTutorialComplete():void {
 			removeChild(buildTutorial);
+			addChild(runTutorial);
+			tutorialState = TUTORIAL_PRE_RUN;
+			currentFloor.char.moveLock = true;
+			return;
+		}
+
+		public function onRunTutorialComplete():void {
+			removeChild(runTutorial);
+			currentFloor.char.moveLock = false;
 			return;
 		}
 
