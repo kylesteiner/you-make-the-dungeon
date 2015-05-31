@@ -25,6 +25,10 @@ package {
 
 		private var shopItems:Array;
 		private var itemCosts:Array;
+		
+		// for help with determining gold spent
+		// per phase
+		private var spentGold:int;
 
 		/**********************************************************************************
 		 *  Intialization
@@ -176,7 +180,8 @@ package {
 				Util.logger.logAction(10, {
 					"itemBought":"hpIncrease",
 					"newCharacterHP":char.maxHp,
-					"upgradeAmount":1
+					"upgradeAmount":1,
+					"goldSpent":spentGold
 				});
 			}
 		}
@@ -187,7 +192,8 @@ package {
 				Util.logger.logAction(10, {
 					"itemBought":"attackIncrease",
 					"newCharacterAttack":char.attack,
-					"upgradeAmount":1
+					"upgradeAmount":1,
+					"goldSpent":spentGold
 				});
 			}
 		}
@@ -198,7 +204,8 @@ package {
 				Util.logger.logAction(10, {
 					"itemBought":"staminaIncrease",
 					"newCharacterStamina":char.maxStamina,
-					"upgradeAmount":1
+					"upgradeAmount":1,
+					"goldSpent":spentGold
 				});
 			}
 		}
@@ -209,7 +216,8 @@ package {
 				Util.logger.logAction(10, {
 					"itemBought":"lineOfSight",
 					"newCharacterLOS":char.los,
-					"upgradeAmount":1
+					"upgradeAmount":1,
+					"goldSpent":spentGold
 				});
 			}
 
@@ -233,6 +241,7 @@ package {
 				return false;
 			} else {
 				gold -= goldSpent;
+				spentGold = goldSpent;
 				goldHud.update(gold);
 				return true;
 			}

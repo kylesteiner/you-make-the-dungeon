@@ -76,7 +76,7 @@ package {
 		public static const TILE_SW:String = "tile_sw";
 		public static const TILE_W:String = "tile_w";
 
-		public static const TILE_FOG:String = "fog";
+		//public static const TILE_FOG:String = "fog";
 		public static const TILE_HL_Y:String = "hl_y";
 		public static const TILE_HL_B:String = "hl_b";
 		public static const TILE_HL_G:String = "hl_g";
@@ -136,18 +136,6 @@ package {
 		// up: 38		left: 37
 		// down: 40		right: 39
 
-		public static const FLOOR_0:String = "floor0";
-		public static const FLOOR_1:String = "floor1";
-		public static const FLOOR_2:String = "floor2";
-		public static const FLOOR_3:String = "floor3";
-		public static const FLOOR_4:String = "floor4";
-		public static const FLOOR_5:String = "floor5";
-		public static const FLOOR_6:String = "floor6";
-		public static const FLOOR_7:String = "floor7";
-		public static const FLOOR_8:String = "floor8";
-		public static const FLOOR_9:String = "floor9";
-		public static const FLOOR_10:String = "floor10";
-		public static const FLOOR_11:String = "floor11";
 		public static const MAIN_FLOOR:String = "main_floor";
 
 		// Room callbacks

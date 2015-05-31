@@ -334,6 +334,12 @@ package {
 			removeChild(runButton);
 			removeChild(buildHud.currentImage);
 			removeChild(buildHud);
+			
+			// to account for the case where they click run, and the hud is still open
+			if (getChildIndex(shopHud) != -1) {
+				goldSpent += gold - shopHud.gold;
+				gold = shopHud.gold;
+			}
 			removeChild(shopHud);
 			removeChild(shopButton);
 
@@ -734,6 +740,9 @@ package {
 			    event.y >= 0 && event.y < currentFloor.gridHeight) { // if floor tile has gold
 				var coin:Coin = currentFloor.goldGrid[event.x][event.y];
 				addAmount += coin.gold;
+				Util.logger.logAction(22, {
+					"goldEarned":coin.gold
+				});
 				runHud.tilesVisited += 1;
 				currentFloor.removeChild(currentFloor.goldGrid[event.x][event.y]);
 				currentFloor.goldGrid[event.x][event.y] = null;

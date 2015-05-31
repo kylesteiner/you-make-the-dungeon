@@ -12,12 +12,18 @@ package {
 	import starling.events.*;
 	import starling.text.TextField;
 	import starling.textures.Texture;
+	import starling.utils.Color;
+	import starling.display.Quad;
 
 	import entities.*;
 	import tiles.*;
 
 	public class Floor extends Sprite {
 		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing!\nClick here to return the the main menu."
+		public static const FOG_OF_WAR_COLOR:uint = Color.BLACK;
+		public static const FOG_OF_WAR_OPACITY_RANGE:int = 3;
+		public static const FOG_OF_WAR_MAX_OPACITY:Number = 0.95;
+		public static const FOG_OF_WAR_MIN_OPACITY:Number = 0.85;
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -146,7 +152,9 @@ package {
 			// Add a fog image at every grid tile.
 			for (i = 0; i < gridWidth; i++) {
 				for (j = 0; j < gridHeight; j++) {
-					var fog:Image = new Image(Assets.textures[Util.TILE_FOG]);
+					//var fog:Image = new Image(Assets.textures[Util.TILE_FOG]);
+					var fog:Quad = new Quad(Util.PIXELS_PER_TILE, Util.PIXELS_PER_TILE, FOG_OF_WAR_COLOR);
+					fog.alpha = FOG_OF_WAR_MAX_OPACITY;
 					fog.x = i * Util.PIXELS_PER_TILE;
 					fog.y = j * Util.PIXELS_PER_TILE;
 					fogGrid[i][j] = fog;
@@ -575,12 +583,20 @@ package {
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int;
 			var radius:int = char.los;
+			var shade:int = FOG_OF_WAR_OPACITY_RANGE;
+			var increment:Number = (FOG_OF_WAR_MAX_OPACITY - FOG_OF_WAR_MIN_OPACITY) / shade;
+			var xDist:int;
+			var yDist:int;
+			var distanceFromFog:int;
+			var proposedAlpha:Number;
 
-			for (x = i - radius; x <= i + radius; x++) {
+			for (x = i - radius - shade; x <= i + radius + shade; x++) {
 				if (x >= 0 && x < gridWidth) {
-					for (y = j - radius; y <= j + radius; y++) {
+					for (y = j - radius - shade; y <= j + radius + shade; y++) {
 						if (y >= 0 && y < gridHeight) {
-							if (Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
+							xDist = Math.abs(x-i);
+							yDist = Math.abs(y-j);
+							if (xDist + yDist <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
 								if(grid[x][y]) {
 									addChild(grid[x][y]);
@@ -588,10 +604,14 @@ package {
 								if(entityGrid[x][y]) {
 									addChild(entityGrid[x][y]);
 								}
-								fogGrid[x][y] = false;
+								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {
 									activeEnemies.push(entityGrid[x][y]);
 								}
+							} else if(xDist + yDist <= radius + shade && fogGrid[x][y]) {
+								distanceFromFog = shade + radius - xDist - yDist + 1;
+							 	proposedAlpha = FOG_OF_WAR_MAX_OPACITY - (distanceFromFog * increment);
+								fogGrid[x][y].alpha = Math.min(fogGrid[x][y].alpha, proposedAlpha);
 							}
 						}
 					}
@@ -1104,7 +1124,7 @@ package {
 			for each(point in coords) {
 				if(fogGrid[point.x][point.y]) {
 					removeChild(fogGrid[point.x][point.y]);
-					fogGrid[point.x][point.y] = false;
+					fogGrid[point.x][point.y] = null;
 				}
 			}
 			Util.logger.logAction(7, { } );
