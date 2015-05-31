@@ -46,6 +46,8 @@ package {
 				"Click here to make Nea move faster.";
 		public static const SPEED_COMBAT_TUTORIAL_TEXT:String =
 				"Click here to speed up combat.";
+		public static const PAN_TUTORIAL_TEXT:String =
+				"To go to other parts of the dungeon"
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -453,8 +455,19 @@ package {
 					true);
 			shopOverlay.addChild(shopText);
 
+			var panText:TextField = new TextField(Util.STAGE_WIDTH, 64,
+												  PAN_TUTORIAL_TEXT,
+												  Util.DEFAULT_FONT,
+												  Util.MEDIUM_FONT_SIZE);
+			panText.y = 260;
+			var panOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_KEYS]),
+					Util.getTransparentQuad());
+			panOverlay.addChild(panText);
+
 			secondBuildTutorialOverlays.push(deleteOverlay);
 			secondBuildTutorialOverlays.push(shopOverlay);
+			secondBuildTutorialOverlays.push(panOverlay);
 
 			secondBuildTutorial = new TutorialSequence(onsecondBuildTutorialComplete,
 													   secondBuildTutorialOverlays);
