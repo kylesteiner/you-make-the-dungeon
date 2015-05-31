@@ -219,7 +219,7 @@ package {
 
 		public function setLos(val:int):void {
 			char.los = val;
-			charStats[STAMINA].text = String(char.los);
+			charStats[LOS].text = String(char.los);
 			dispatchEvent(new GameEvent(GameEvent.CHARACTER_LOS_CHANGE, 0, 0));
 		}
 
@@ -227,7 +227,6 @@ package {
 			if (!char) {
 				return;
 			}
-			
 			var i:int;
 			var newCost:int;
 			var shopButton:Clickable;
