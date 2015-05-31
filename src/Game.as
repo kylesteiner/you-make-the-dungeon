@@ -140,7 +140,6 @@ package {
 			addChild(buildHud);
 			if (gameState == STATE_TUTORIAL) {
 				addChild(introTutorial);
-				introTutorial.start();
 			}
 
 			// Update build hud with unlocks if loading from save.
@@ -266,16 +265,18 @@ package {
 		}
 
 		private function initializeTutorial():void {
-			// Intro slides
-			introTutorial = new TutorialSequence(onIntroTutorialComplete);
-			introTutorial.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
-										  		  Util.getTransparentQuad()));
-			introTutorial.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
-												  Util.getTransparentQuad()));
+			//--------- INTRO TUTORIAL ---------//
+			var introOverlays:Array = new Array();
+			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
+										  		   Util.getTransparentQuad()));
+			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
+												   Util.getTransparentQuad()));
+			introTutorial = new TutorialSequence(onIntroTutorialComplete, introOverlays);
 
-			buildTutorial = new TutorialSequence(onBuildTutorialComplete);
-
+			//--------- BUILD TUTORIAL ---------//
 			// Build hud instructions
+			var buildTutorialOverlays:Array = new Array();
+
 			var buildhudShadow:Image = new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW]);
 			buildhudShadow.alpha = 0.7;
 			var buildhudText:TextField = new TextField(Util.STAGE_WIDTH, 100,
@@ -302,8 +303,11 @@ package {
 				placeShadow,
 				false);
 
-			buildTutorial.add(buildhudOverlay);
-			buildTutorial.add(placeOverlay);
+			buildTutorialOverlays.push(buildhudOverlay);
+			buildTutorialOverlays.push(placeOverlay);
+
+			buildTutorial = new TutorialSequence(onBuildTutorialComplete,
+												 buildTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -895,7 +899,6 @@ package {
 			addChild(shopButton);
 
 			addChild(buildTutorial);
-			buildTutorial.start();
 			// Assets.mixer.play(Util.LEVEL_UP);
 		}
 

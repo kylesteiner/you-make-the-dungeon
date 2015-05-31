@@ -6,7 +6,7 @@ package tutorial {
 		private var frames:Array;	// Array of TutorialOverlays
 		private var onComplete:Function;
 
-		public function TutorialSequence(onComplete:Function, frames:Array=null) {
+		public function TutorialSequence(onComplete:Function, frames:Array) {
 			this.onComplete = onComplete;
 			if (frames) {
 				this.frames = frames;
@@ -14,18 +14,12 @@ package tutorial {
 				this.frames = new Array();
 			}
 			current = 0;
+			addChild(frames[0]);
 			addEventListener(TutorialEvent.NEXT, onTutorialClicked);
 		}
 
 		public function add(frame:TutorialOverlay):void {
 			frames.push(frame);
-		}
-
-		public function start():void {
-			if (frames.length == 0) {
-				return;
-			}
-			addChild(frames[current]);
 		}
 
 		public function next():void {
