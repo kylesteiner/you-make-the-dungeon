@@ -40,6 +40,8 @@ package {
 				"Click up here to buy and place an\nenemy, health/stamina pickup, or traps.";
 		public static const ENTITY_DROPDOWN_TUTORIAL_TEXT:String =
 				"Click the buttons to see other choices.";
+		public static const DELETE_TUTORIAL_TEXT:String =
+				"Click here to sell back tiles you placed.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -139,7 +141,7 @@ package {
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
 		private var runTutorial:TutorialSequence;
-		private var shopTutorial:TutorialSequence;
+		private var secondBuildTutorial:TutorialSequence;
 		private var entityTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
@@ -414,8 +416,22 @@ package {
 			runTutorial = new TutorialSequence(onRunTutorialComplete,
 											   runTutorialOverlays);
 
-			//--------- SHOP TUTORIAL ---------//
-			var shopTutorialOverlays:Array = new Array();
+			//--------- SECOND BUILD PHASE TUTORIAL ---------//
+			var secondBuildTutorialOverlays:Array = new Array();
+
+			var deleteText:TextField = new TextField(320, 150,
+													 DELETE_TUTORIAL_TEXT,
+													 Util.DEFAULT_FONT,
+													 Util.MEDIUM_FONT_SIZE);
+			deleteText.x = 130;
+			deleteText.y = 170;
+			var deleteShadow:Image = new Image(Assets.textures[Util.TUTORIAL_DELETE_SHADOW]);
+			deleteShadow.alpha = 0.7;
+			var deleteOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_DELETE_ARROW]),
+					deleteShadow);
+			deleteOverlay.addChild(deleteText);
+
 			var shopText:TextField = new TextField(300, 100,
 												   SHOP_TUTORIAL_TEXT,
 												   Util.DEFAULT_FONT,
@@ -430,10 +446,11 @@ package {
 					false);
 			shopOverlay.addChild(shopText);
 
-			shopTutorialOverlays.push(shopOverlay);
+			secondBuildTutorialOverlays.push(deleteOverlay);
+			secondBuildTutorialOverlays.push(shopOverlay);
 
-			shopTutorial = new TutorialSequence(onShopTutorialComplete,
-												shopTutorialOverlays);
+			secondBuildTutorial = new TutorialSequence(onsecondBuildTutorialComplete,
+													   secondBuildTutorialOverlays);
 
 			//--------- ENTITY TUTORIAL ---------//
 			var entityTutorialOverlays:Array = new Array();
@@ -500,7 +517,7 @@ package {
 				return;
 			}
 
-			shopTutorial.next();
+			secondBuildTutorial.next();
 
 			if (getChildIndex(shopHud) == -1) {
 				Util.logger.logAction(13, { } );
@@ -686,7 +703,7 @@ package {
 
 			if (secondBuild) {
 				secondBuild = false;
-				addChild(shopTutorial);
+				addChild(secondBuildTutorial);
 			} else if (unlockedFirstEntity && !entityTutorialDisplayed) {
 				entityTutorialDisplayed = true;
 				addChild(entityTutorial);
@@ -1150,8 +1167,8 @@ package {
 			return;
 		}
 
-		public function onShopTutorialComplete():void {
-			removeChild(shopTutorial);
+		public function onsecondBuildTutorialComplete():void {
+			removeChild(secondBuildTutorial);
 			return;
 		}
 

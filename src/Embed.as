@@ -126,6 +126,8 @@ package {
 		[Embed(source='assets/tutorials/shop_shadow.png')] public static const tutorial_shop_shadow:Class;
 		[Embed(source='assets/tutorials/entity_arrows.png')] public static const tutorial_entity_arrows:Class;
 		[Embed(source='assets/tutorials/entity_shadow.png')] public static const tutorial_entity_shadow:Class;
+		[Embed(source='assets/tutorials/delete_arrow.png')] public static const tutorial_delete_arrow:Class;
+		[Embed(source='assets/tutorials/delete_shadow.png')] public static const tutorial_delete_shadow:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -339,6 +341,8 @@ package {
 			Assets.textures[Util.TUTORIAL_SHOP_SHADOW] = Texture.fromEmbeddedAsset(tutorial_shop_shadow);
 			Assets.textures[Util.TUTORIAL_ENTITY_ARROWS] = Texture.fromEmbeddedAsset(tutorial_entity_arrows);
 			Assets.textures[Util.TUTORIAL_ENTITY_SHADOW] = Texture.fromEmbeddedAsset(tutorial_entity_shadow);
+			Assets.textures[Util.TUTORIAL_DELETE_ARROW] = Texture.fromEmbeddedAsset(tutorial_delete_arrow);
+			Assets.textures[Util.TUTORIAL_DELETE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_delete_shadow);
 		}
 
 		public static function setupAnimations():void {
