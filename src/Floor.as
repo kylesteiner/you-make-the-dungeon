@@ -1119,12 +1119,14 @@ package {
 				if (char.grid_x == damagePoint.x && char.grid_y == damagePoint.y) {
 					char.hp -= trap.damage;
 					// Probably want to play some sfx here
+					Util.logger.logAction(25, { } );
 				}
 			}
 
 			var reward:int = 0;
 			for each (var enemy:Enemy in enemies) {
 				enemy.hp -= trap.damage;
+				Util.logger.logAction(26, { } );
 				enemy.addOverlay();
 				if (enemy.hp <= 0) {
 					reward += enemy.reward;

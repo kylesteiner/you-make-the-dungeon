@@ -964,6 +964,8 @@ package {
 					if (newEntity is Enemy) {
 						currentFloor.activeEnemies.push(newEntity);
 						type = "enemy";
+					} else if (newEntity is Trap) {
+						type = "trap";
 					}
 					Assets.mixer.play(Util.TILE_MOVE);
 					Util.logger.logAction(18, {
