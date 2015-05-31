@@ -603,7 +603,8 @@ package {
 						"upgradeAmount":1,
 						"goldSpent":cost
 					});
-					break;
+					break
+			}
 		}
 
 		public function constructPhaseBanner(run:Boolean = true):void {
