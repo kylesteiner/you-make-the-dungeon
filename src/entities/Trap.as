@@ -81,8 +81,8 @@ package entities {
 
 			for each (animPoint in animPoints) {
 				currentAnimation = new MovieClip(animationVector);
-				currentAnimation.x = Util.grid_to_real(animPoint.x) - (currentAnimation.width / 2);
-				currentAnimation.y = Util.grid_to_real(animPoint.y) - (currentAnimation.height / 2);
+				currentAnimation.x = Util.grid_to_real(animPoint.x);
+				currentAnimation.y = Util.grid_to_real(animPoint.y);
 				currentAnimation.loop = false;
 				tAnim.push(currentAnimation);
 			}
