@@ -105,8 +105,6 @@ package {
 
 		private var saveGame:SharedObject;
 
-		private var onSummary:Boolean;
-
 		// for keeping track of scores
 		// best per run
 		private var bestRunGoldEarned:int;
@@ -407,11 +405,13 @@ package {
 			currentCombat = new CombatHUD(currentFloor.char,
 										  currentFloor.entityGrid[e.x][e.y],
 										  combatSkip);
+			removeChild(endButton);
 			popupManager.addPopup(currentCombat);
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
 			popupManager.removePopup();
+			addChild(endButton);
 			
 			currentFloor.onCombatSuccess(event.enemy);
 			gold += event.enemy.reward;
@@ -558,7 +558,6 @@ package {
 
 			gameState = STATE_SUMMARY;
 			popupManager.addSummary(runSummary);
-			onSummary = true;
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
@@ -571,7 +570,6 @@ package {
 		public function returnToBuild():void {
 			popupManager.removeSummary();
 			runSummary.reset();
-			onSummary = false;
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -882,8 +880,13 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if(gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC || onSummary) {
+			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC ||
+				popupManager.summary || currentFloor.char.inCombat) {
 				return;
+			}
+			
+			if (popupManager.popup) {
+				popupManager.removePopup();
 			}
 
 			// to ensure that they can't move the world around until
@@ -897,7 +900,7 @@ package {
 				sfxMuteButton.onClick();
 			}
 			
-			if (event.keyCode == Util.CHANGE_PHASE_KEY && !popupManager.popup) {
+			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
 				if (gameState == STATE_BUILD) {
 					runFloor();
 				} else if (gameState == STATE_RUN) {
