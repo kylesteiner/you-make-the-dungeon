@@ -165,6 +165,17 @@ package {
 		[Embed(source='assets/animations/traps/flame/flame_14.png')] public static const flameTrapAnim14:Class;
 		[Embed(source='assets/animations/traps/flame/flame_15.png')] public static const flameTrapAnim15:Class;
 
+		[Embed(source='assets/animations/traps/shock/shock_0.png')] public static const shockTrapAnim0:Class;
+		[Embed(source='assets/animations/traps/shock/shock_1.png')] public static const shockTrapAnim1:Class;
+		[Embed(source='assets/animations/traps/shock/shock_2.png')] public static const shockTrapAnim2:Class;
+		[Embed(source='assets/animations/traps/shock/shock_3.png')] public static const shockTrapAnim3:Class;
+		[Embed(source='assets/animations/traps/shock/shock_0a.png')] public static const shockTrapAnim4:Class;
+		[Embed(source='assets/animations/traps/shock/shock_1a.png')] public static const shockTrapAnim5:Class;
+		[Embed(source='assets/animations/traps/shock/shock_2a.png')] public static const shockTrapAnim6:Class;
+		[Embed(source='assets/animations/traps/shock/shock_3a.png')] public static const shockTrapAnim7:Class;
+
+		[Embed(source='assets/animations/traps/basic/basic_0.png')] public static const basicTrapAnim0:Class;
+
 		[Embed(source='assets/sfx/floor_complete_new.mp3')] public static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] public static const sfxTileMove:Class;
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
@@ -384,11 +395,18 @@ package {
 
 			var trapDict:Dictionary = new Dictionary();
 			var basicVector:Vector.<Texture> = new Vector.<Texture>();
-			basicVector.push(Texture.fromEmbeddedAsset(basic_trap));
+			basicVector.push(Texture.fromEmbeddedAsset(basicTrapAnim0));
 			trapDict[Util.BASIC_TRAP] = basicVector;
 
 			var shockVector:Vector.<Texture> = new Vector.<Texture>();
-			shockVector.push(Texture.fromEmbeddedAsset(shock_trap));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim0));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim1));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim2));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim3));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim4));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim5));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim6));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim7));
 			trapDict[Util.SHOCK_TRAP] = shockVector;
 
 			var flameVector:Vector.<Texture> = new Vector.<Texture>();
