@@ -85,6 +85,7 @@ package {
 		private var entityGoldCosts:Array;
 
 		private var deleteQuad:Quad;
+		private var interiorDeleteQuad:Quad;
 		private var deleteButton:Clickable;
 
 		public var entityFactory:EntityFactory;
@@ -300,10 +301,10 @@ package {
 			deleteQuad = new Quad(DELETE_BUTTON_SIZE, DELETE_BUTTON_SIZE, 0x000000);
 			deleteQuad.x = entityQuad.x + entityQuad.width + HUD_MARGIN;
 			deleteQuad.y = TOP;
-			var interiorDQ:Quad = new Quad(deleteQuad.width - 2*QUAD_BORDER_PIXELS,
-										   deleteQuad.height - 2*QUAD_BORDER_PIXELS);
-			interiorDQ.x = deleteQuad.x + QUAD_BORDER_PIXELS;
-			interiorDQ.y = deleteQuad.y + QUAD_BORDER_PIXELS;
+			interiorDeleteQuad = new Quad(deleteQuad.width - 2*QUAD_BORDER_PIXELS,
+										  deleteQuad.height - 2*QUAD_BORDER_PIXELS);
+			interiorDeleteQuad.x = deleteQuad.x + QUAD_BORDER_PIXELS;
+			interiorDeleteQuad.y = deleteQuad.y + QUAD_BORDER_PIXELS;
 			deleteButton = new Clickable(deleteQuad.x + QUAD_BORDER_PIXELS,
 										 deleteQuad.y + QUAD_BORDER_PIXELS,
 										 deleteClickable, null, Assets.textures[Util.ICON_DELETE]);
@@ -344,7 +345,7 @@ package {
 			}
 
 			hud.addChild(deleteQuad);
-			hud.addChild(interiorDQ);
+			hud.addChild(interiorDeleteQuad);
 			hud.addChild(deleteButton);
 
 			addChild(hud);
@@ -447,6 +448,8 @@ package {
 			if(hudState == STATE_ENTITY) {
 				entityColoredRegions[currentEntityIndex].color = COLOR_SELECTED;
 			}
+
+			interiorDeleteQuad.color = COLOR_DESELECTED_ENTITY;
 		}
 
 		/**********************************************************************************
@@ -503,10 +506,16 @@ package {
 		}
 
 		public function deleteClickable():void {
+			var priorState:String = hudState;
 			deselect();
-			hudState = STATE_DELETE;
-			currentImage = new Image(Assets.textures[Util.ICON_DELETE]);
-			currentImage.touchable = false;
+
+			if (priorState != STATE_DELETE) {
+				hudState = STATE_DELETE;
+				currentImage = new Image(Assets.textures[Util.ICON_DELETE]);
+				currentImage.touchable = false;
+				interiorDeleteQuad.color = COLOR_SELECTED;
+			}
+
 			closePopup();
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 		}
