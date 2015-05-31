@@ -5,13 +5,12 @@ package {
 
 	public class Embed {
 		[Embed(source='assets/backgrounds/background.png')] public static var grid_background:Class;
-		[Embed(source='assets/backgrounds/char_hud_stretch.png')] public static const char_hud:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] public static var static_background:Class;
-		[Embed(source='assets/backgrounds/tile_hud.png')] public static const tile_hud:Class;
 		[Embed(source='assets/backgrounds/tutorial_shifted.png')] public static const tutorial_hud:Class;
 		[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
+		[Embed(source='assets/backgrounds/summary_bg.png')] public static const summary_background:Class;
 		[Embed(source='assets/backgrounds/shop_bg.png')] public static const shop_background:Class;
 		[Embed(source='assets/backgrounds/shop_item.png')] public static const shop_item:Class;
 
@@ -66,7 +65,6 @@ package {
 		[Embed(source='assets/icons/medium/reset.png')] public static const icon_reset:Class;
 		[Embed(source='assets/icons/medium/run.png')] public static const icon_run:Class;
 		[Embed(source='assets/icons/medium/end_run.png')] public static const icon_end:Class;
-		[Embed(source='assets/icons/medium/shop.png')] public static const icon_shop:Class;
 		[Embed(source='assets/icons/attack.png')] public static const icon_atk:Class;
 		[Embed(source='assets/icons/health.png')] public static const icon_health:Class;
 		[Embed(source='assets/icons/stamina.png')] public static const icon_stamina:Class;
@@ -221,6 +219,7 @@ package {
 			Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 			Assets.textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);
 			Assets.textures[Util.POPUP_BACKGROUND] = Texture.fromEmbeddedAsset(popup_background);
+			Assets.textures[Util.SUMMARY_BACKGROUND] = Texture.fromEmbeddedAsset(summary_background);
 			Assets.textures[Util.SHOP_BACKGROUND] = Texture.fromEmbeddedAsset(shop_background);
 			Assets.textures[Util.SHOP_ITEM] = Texture.fromEmbeddedAsset(shop_item);
 			Assets.textures[Util.RUN_BANNER] = Texture.fromEmbeddedAsset(run_phase_banner);
@@ -284,7 +283,6 @@ package {
 			Assets.textures[Util.ICON_LOS_MED] = Texture.fromBitmap(new icon_los_med(), true, false, 1);
 			Assets.textures[Util.ICON_GOLD] = Texture.fromBitmap(new icon_gold(), true, false, 1);
 			Assets.textures[Util.ICON_DELETE] = Texture.fromBitmap(new icon_delete(), true, false, 1);
-			Assets.textures[Util.ICON_SHOP] = Texture.fromBitmap(new icon_shop(), true, false, 1);
 
 			Assets.textures[Util.ENEMY_MENU] = Texture.fromBitmap(new enemy_menu(), true, false, 1);
 			Assets.textures[Util.HEALING_MENU] = Texture.fromBitmap(new healing_menu(), true, false, 1);
@@ -301,7 +299,6 @@ package {
 			Assets.textures[Util.ICON_SLOW_RUN] = Texture.fromEmbeddedAsset(icon_slow_run);
 			Assets.textures[Util.ICON_HELP] = Texture.fromBitmap(new icon_help(), true, false, 1);
 
-			Assets.textures[Util.TILE_HUD] = Texture.fromEmbeddedAsset(tile_hud);
 			Assets.textures[Util.TILE_UP_ACTIVE] = Texture.fromEmbeddedAsset(tile_up_active);
 			Assets.textures[Util.TILE_UP_INACTIVE] = Texture.fromEmbeddedAsset(tile_up_inactive);
 			Assets.textures[Util.TILE_DOWN_ACTIVE] = Texture.fromEmbeddedAsset(tile_down_active);
@@ -310,8 +307,6 @@ package {
 			Assets.textures[Util.TILE_RIGHT_INACTIVE] = Texture.fromEmbeddedAsset(tile_right_inactive);
 			Assets.textures[Util.TILE_LEFT_ACTIVE] = Texture.fromEmbeddedAsset(tile_left_active);
 			Assets.textures[Util.TILE_LEFT_INACTIVE] = Texture.fromEmbeddedAsset(tile_left_inactive);
-
-			Assets.textures[Util.CHAR_HUD] = Texture.fromEmbeddedAsset(char_hud);
 
 			Assets.textures[Util.COMBAT_BG] = Texture.fromEmbeddedAsset(combatBackground);
 			Assets.textures[Util.COMBAT_SHADOW] = Texture.fromEmbeddedAsset(combatShadow);
