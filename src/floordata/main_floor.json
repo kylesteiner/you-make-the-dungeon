@@ -35,6 +35,12 @@
 		},
 		{
 			"type": "empty",
+			"x": 0,
+			"y": 0,
+			"edges": ["s", "e"]
+		},
+		{
+			"type": "empty",
 			"x": 4,
 			"y": 23,
 			"edges": ["n", "s", "e", "w"]
@@ -807,6 +813,7 @@
 		{"type": "reward", "x": 11, "y": 8, "texture": "reward", "function": "tile", "parameter": "entity_ninja", "permanent": false},
 		{"type": "reward", "x": 13, "y": 12, "texture": "reward", "function": "tile", "parameter": "basic_trap", "permanent": false},
 		{"type": "reward", "x": 23, "y": 16, "texture": "reward", "function": "tile", "parameter": "flame_trap", "permanent": false},
+		{"type": "reward", "x": 0, "y": 0, "texture": "reward", "function": "tile", "parameter": "flame_trap_blue", "permanent": false},
 		{"type": "reward", "x": 5, "y": 18, "texture": "reward", "function": "tile", "parameter": "entity_moderate_healing", "permanent": false},
 		{"type": "reward", "x": 3, "y": 22, "texture": "reward", "function": "tile", "parameter": "entity_fighter", "permanent": false},
 		{"type": "reward", "x": 18, "y": 23, "texture": "reward", "function": "tile", "parameter": "entity_light_healing", "permanent": false},

@@ -357,7 +357,7 @@ package {
 
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
-				if (!entityClickables[i] || !entityList[i] || !entityDisplayList[i]) {
+				if (entityClickables[i] == null || entityList[i] == null || entityDisplayList[i] == null) {
 					continue;
 				}
 
@@ -528,7 +528,7 @@ package {
 			}
 
 			closePopup();
-			
+
 		}
 
 		public function getRefundForDelete(tile:Tile, entity:Entity):int {
@@ -617,8 +617,8 @@ package {
 
 		public function selectEntityClickable(values:Dictionary):void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-			
-			if(currentEntityIndex == values["index"]) {
+
+			if (currentEntityIndex == values["index"]) {
 				// Toggle off
 				currentEntity = null
 				currentImage = null;
@@ -651,11 +651,14 @@ package {
 			pageEntity(values["index"], values["change"]);
 			closePopup();
 			updateUI();
+
 			currentEntityIndex = values["index"];
 			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
 			currentImage = new Image(currentEntity.texture);
 			currentImage.touchable = false;
 			hudState = STATE_ENTITY;
+
+
 			updateSelectButtons();
 			updateEntityGoldCosts();
 		}

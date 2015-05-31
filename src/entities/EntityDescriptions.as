@@ -26,6 +26,18 @@ package entities {
         public static const MODERATE_STAMINA_HEAL_NAME:String = "Medium Stamina Boost";
         public static const MODERATE_STAMINA_HEAL_FLAVOR:String = "The sugar-free energy solution.";
 
+        public static const BASIC_TRAP_NAME:String = "Basic Trap";
+        public static const BASIC_TRAP_FLAVOR:String = "Usually holds a cupcake, but the last adventurer to stop by stole it away.";
+
+        public static const FLAME_TRAP_NAME:String = "Flame Trap";
+        public static const FLAME_TRAP_FLAVOR:String = "While they may be rare, its victims are certainly well-done.";
+
+        public static const BLUE_FLAME_TRAP_NAME:String = "Blue Flame Trap";
+        public static const BLUE_FLAME_TRAP_FLAVOR:String = "This trap is so hot, it's cool.";
+
+        public static const SHOCK_TRAP_NAME:String = "Shock Trap";
+        public static const SHOCK_TRAP_FLAVOR:String = "There would be an electricity pun here, but those are just too easy.";
+
         public static function setupDescriptions():Dictionary {
             var tDescriptions:Dictionary = new Dictionary();
 
@@ -68,6 +80,26 @@ package entities {
             moderateStaminaHealArray.push(MODERATE_STAMINA_HEAL_NAME);
             moderateStaminaHealArray.push(MODERATE_STAMINA_HEAL_FLAVOR);
             tDescriptions[EntityFactory.MODERATE_STAMINA_HEAL] = moderateStaminaHealArray;
+
+            var basicTrapArray:Array = new Array();
+            basicTrapArray.push(BASIC_TRAP_NAME);
+            basicTrapArray.push(BASIC_TRAP_FLAVOR);
+            tDescriptions[EntityFactory.BASIC_TRAP] = basicTrapArray;
+
+            var flameTrapArray:Array = new Array();
+            flameTrapArray.push(FLAME_TRAP_NAME);
+            flameTrapArray.push(FLAME_TRAP_FLAVOR);
+            tDescriptions[EntityFactory.FLAME_TRAP] = flameTrapArray;
+
+            var blueFlameTrapArray:Array = new Array();
+            blueFlameTrapArray.push(BLUE_FLAME_TRAP_NAME);
+            blueFlameTrapArray.push(BLUE_FLAME_TRAP_FLAVOR);
+            tDescriptions[EntityFactory.FLAME_TRAP_BLUE] = blueFlameTrapArray;
+
+            var shockTrapArray:Array = new Array();
+            shockTrapArray.push(SHOCK_TRAP_NAME);
+            shockTrapArray.push(SHOCK_TRAP_FLAVOR);
+            tDescriptions[EntityFactory.SHOCK_TRAP] = shockTrapArray;
 
             return tDescriptions;
         }
