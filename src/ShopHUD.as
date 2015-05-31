@@ -48,22 +48,22 @@ package {
 
 		private function displayCharStats():void {
 			charStats[HP] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[HP].y = Util.UI_PADDING / 2;
+			charStats[HP].y = 4;
 			var hpImg:Image = new Image(Assets.textures[Util.ICON_HEALTH]);
 			setupStat(charStats[HP], hpImg);
 
 			charStats[ATTACK] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[ATTACK].y = Util.UI_PADDING / 2 + height / 4;
+			charStats[ATTACK].y = 4 + height / 4;
 			var atkImg:Image = new Image(Assets.textures[Util.ICON_ATK]);
 			setupStat(charStats[ATTACK], atkImg);
 
 			charStats[STAMINA] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[STAMINA].y = Util.UI_PADDING / 2 + height / 2;
+			charStats[STAMINA].y = 4 + height / 2;
 			var staminaImg:Image = new Image(Assets.textures[Util.ICON_STAMINA]);
 			setupStat(charStats[STAMINA], staminaImg);
 
 			charStats[LOS] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[LOS].y = Util.UI_PADDING / 2 + height * 3 / 4;
+			charStats[LOS].y = 4 + height * 3 / 4;
 			var losImg:Image = new Image(Assets.textures[Util.ICON_LOS]);
 			setupStat(charStats[LOS], losImg);
 		}
@@ -72,7 +72,7 @@ package {
 			tf.height = tf.textBounds.height;
 			tf.hAlign = HAlign.LEFT;
 			tf.x = 75;
-			i.x = tf.x - i.width + Util.UI_PADDING / 2;
+			i.x = tf.x - i.width + 4;
 			i.y = tf.y + tf.height / 2 - i.height / 2;
 			addChild(tf);
 			addChild(i);
@@ -125,8 +125,8 @@ package {
 			var item:Clickable = new Clickable(32, 32, clickUpgrade, null, Assets.textures[Util.SHOP_ITEM]);
 			item.addParameter("type", type);
 			item.addParameter("cost", cost);
-			item.x = Util.UI_PADDING;
-			item.y = Util.UI_PADDING + position * (height / 4);
+			item.x = 8;
+			item.y = 8 + position * (height / 4);
 
 			var base:Sprite = createGoldCost(cost, type);
 			base.x = item.x + item.width - base.width * 3 / 4;
@@ -150,7 +150,6 @@ package {
 
 			base.addChild(goldImage);
 			base.addChild(costText);
-
 			base.touchable = false;
 
 			return base;

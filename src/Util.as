@@ -3,7 +3,7 @@
 
 package {
 	import flash.ui.Keyboard;
-	import starling.display.*;
+	import starling.display.Quad;
 	import starling.text.TextField;
 
 	public class Util {
