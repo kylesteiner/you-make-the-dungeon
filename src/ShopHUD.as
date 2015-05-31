@@ -74,21 +74,25 @@ package {
 			charStats[HP].x = shopItems[HP].x + shopItems[HP].width - charStats[HP].width;
 			charStats[HP].y = shopItems[HP].y + 4;
 			charStats[HP].autoScale = true;
+			charStats[HP].touchable = false;
 
 			charStats[ATTACK] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
 			charStats[ATTACK].x = shopItems[ATTACK].x + shopItems[ATTACK].width - charStats[ATTACK].width;
 			charStats[ATTACK].y = shopItems[ATTACK].y + 4;
 			charStats[ATTACK].autoScale = true;
+			charStats[ATTACK].touchable = false;
 
 			charStats[STAMINA] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
 			charStats[STAMINA].x = shopItems[STAMINA].x + shopItems[STAMINA].width - charStats[STAMINA].width;
 			charStats[STAMINA].y = shopItems[STAMINA].y + 4;
 			charStats[STAMINA].autoScale = true;
+			charStats[STAMINA].touchable = false;
 
 			charStats[LOS] = new TextField(16, Util.SMALL_FONT_SIZE, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE - 2);
 			charStats[LOS].x = shopItems[LOS].x + shopItems[LOS].width - charStats[LOS].width;
 			charStats[LOS].y = shopItems[LOS].y + 4;
 			charStats[LOS].autoScale = true;
+			charStats[LOS].touchable = false;
 
 			shopPrices[HP] = createGoldCost(getHpCost(), HP);
 			shopPrices[HP].x = shopItems[HP].x + 10;
