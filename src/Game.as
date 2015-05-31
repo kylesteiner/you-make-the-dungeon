@@ -564,13 +564,6 @@ package {
 		}
 
 		public function onShopSpend(e:GameEvent):void {
-
-			/* todo:put these somewhere
-			 * secondBuildTutorial.next();
-			 * if (unlockedFirstEntity && !entityTutorialDisplayed) {
-				addChild(entityTutorial);
-			}*/
-
 			var cost:int = e.gameData["cost"];
 			if (gold - cost < 0) {
 				// Cannot purchase item
@@ -1252,6 +1245,11 @@ package {
 			removeChild(secondBuildTutorial);
 			secondBuild = false;
 			secondRun = true;
+
+			if (unlockedFirstEntity && !entityTutorialDisplayed) {
+				addChild(entityTutorial);
+			}
+			
 			return;
 		}
 
