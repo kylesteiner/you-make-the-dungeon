@@ -36,6 +36,10 @@ package {
 				"This is Nea's stamina. Nea can move until she runs out of stamina."
 		public static const SHOP_TUTORIAL_TEXT:String =
 				"Click here to upgrade Nea's stats.";
+		public static const ENTITY_TUTORIAL_TEXT:String =
+				"Click up here to buy and place an\nenemy, health/stamina pickup, or traps.";
+		public static const ENTITY_DROPDOWN_TUTORIAL_TEXT:String =
+				"Click the buttons to see other choices.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -433,9 +437,31 @@ package {
 
 			//--------- ENTITY TUTORIAL ---------//
 			var entityTutorialOverlays:Array = new Array();
+			var entityShadow:Image = new Image(Assets.textures[Util.TUTORIAL_ENTITY_SHADOW]);
+			entityShadow.alpha = 0.7;
+			var entitySelectText:TextField = new TextField(300, 100,
+														   ENTITY_TUTORIAL_TEXT,
+														   Util.DEFAULT_FONT,
+														   Util.SMALL_FONT_SIZE);
+			entitySelectText.x = 325;
+			entitySelectText.y = 2;
 
-			// entityTutorial = new TutorialSequence(onEntityTutorialComplete,
-			// 									  entityTutorialOverlays);
+			var entityMoreText:TextField = new TextField(230, 95,
+														 ENTITY_DROPDOWN_TUTORIAL_TEXT,
+														 Util.DEFAULT_FONT,
+														 Util.SMALL_FONT_SIZE);
+			entityMoreText.x = 60;
+			entityMoreText.y = 165;
+
+			var entityOverlay:TutorialOverlay = new TutorialOverlay(
+				new Image(Assets.textures[Util.TUTORIAL_ENTITY_ARROWS]),
+				entityShadow);
+			entityOverlay.addChild(entitySelectText);
+			entityOverlay.addChild(entityMoreText);
+			entityTutorialOverlays.push(entityOverlay);
+
+			entityTutorial = new TutorialSequence(onEntityTutorialComplete,
+			 									  entityTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -491,8 +517,8 @@ package {
 				removeChild(shopHud);
 			}
 
-			if (secondBuild && unlockedFirstEntity && !entityTutorialDisplayed) {
-				// addChild(entityTutorial);
+			if (unlockedFirstEntity && !entityTutorialDisplayed) {
+				addChild(entityTutorial);
 			}
 		}
 
@@ -661,10 +687,9 @@ package {
 			if (secondBuild) {
 				secondBuild = false;
 				addChild(shopTutorial);
-			}
-			if (!secondBuild && unlockedFirstEntity && !entityTutorialDisplayed) {
+			} else if (unlockedFirstEntity && !entityTutorialDisplayed) {
 				entityTutorialDisplayed = true;
-				// addChild(entityTutorial);
+				addChild(entityTutorial);
 			}
 		}
 
