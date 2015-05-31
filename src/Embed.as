@@ -12,7 +12,6 @@ package {
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
 		[Embed(source='assets/backgrounds/summary_bg.png')] public static const summary_background:Class;
 		[Embed(source='assets/backgrounds/shop_bg.png')] public static const shop_background:Class;
-		[Embed(source='assets/backgrounds/shop_item.png')] public static const shop_item:Class;
 
 		[Embed(source='assets/backgrounds/run_phase.png')] public static const run_phase_banner:Class;
 		[Embed(source='assets/backgrounds/build_phase.png')] public static const build_phase_banner:Class;
@@ -74,6 +73,7 @@ package {
 		[Embed(source='assets/icons/delete.png')] public static const icon_delete:Class;
 		[Embed(source='assets/icons/help_lg.png')] public static const icon_help:Class;
 		[Embed(source='assets/icons/cursor_reticle.png')] public static const cursor_reticle:Class;
+		[Embed(source='assets/icons/shop_item.png')] public static const shop_item:Class;
 
 		[Embed(source='assets/icons/medium/enemies_menu.png')] public static const enemy_menu:Class;
 		[Embed(source='assets/icons/medium/healing_menu.png')] public static const healing_menu:Class;

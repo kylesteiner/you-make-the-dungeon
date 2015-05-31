@@ -307,7 +307,7 @@ package {
 			runButton.y = Util.UI_PADDING;
 
 			shopHud = new ShopHUD();
-			shopHud.update(currentFloor.char);
+			shopHud.char = currentFloor.char;
 
 			endButton = new Clickable(3 *  Util.PIXELS_PER_TILE,
 									  Util.STAGE_HEIGHT - Util.PIXELS_PER_TILE,
@@ -565,46 +565,7 @@ package {
 			gold -= cost;
 			goldSpent += cost;
 			goldHud.update(gold);
-			
-			var type:String = e.gameData["type"];
-			switch(type) {
-				case "hp":
-					shopHud.setHP(currentFloor.char.maxHp + 1);
-					Util.logger.logAction(10, {
-						"itemBought":"hpIncrease",
-						"newCharacterHP":currentFloor.char.maxHp,
-						"upgradeAmount":1,
-						"goldSpent":cost
-					});
-					break;
-				case "atk":
-					shopHud.setAtk(currentFloor.char.attack + 1);
-					Util.logger.logAction(10, {
-						"itemBought":"attackIncrease",
-						"newCharacterAttack":currentFloor.char.attack,
-						"upgradeAmount":1,
-						"goldSpent":cost
-					});
-					break;
-				case "stamina":
-					shopHud.setStamina(currentFloor.char.maxStamina + 1);
-					Util.logger.logAction(10, {
-						"itemBought":"staminaIncrease",
-						"newCharacterStamina":currentFloor.char.maxStamina,
-						"upgradeAmount":1,
-						"goldSpent":cost
-					});
-					break;
-				case "los":
-					shopHud.setLos(currentFloor.char.los + 1);
-					Util.logger.logAction(10, {
-						"itemBought":"lineOfSight",
-						"newCharacterLOS":currentFloor.char.los,
-						"upgradeAmount":1,
-						"goldSpent":cost
-					});
-					break
-			}
+			shopHud.incStat(e.gameData["type"], cost);
 		}
 
 		public function constructPhaseBanner(run:Boolean = true):void {
