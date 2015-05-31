@@ -333,7 +333,7 @@ package {
 			removeChild(runButton);
 			removeChild(buildHud.currentImage);
 			removeChild(buildHud);
-			
+
 			// to account for the case where they click run, and the hud is still open
 			if (getChildIndex(shopHud) != -1) {
 				goldSpent += gold - shopHud.gold;
@@ -635,7 +635,11 @@ package {
 					});
 					goldSpent += cost;
 					Assets.mixer.play(Util.TILE_MOVE);
+				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
+					// Could place but do not have gold required
+					goldHud.setFlash();
 				} else {
+					// Invalid placement
 					Assets.mixer.play(Util.TILE_FAILURE);
 				}
 			} else if (buildHud.hudState == BuildHUD.STATE_ENTITY) {
@@ -659,7 +663,11 @@ package {
 					});
 					goldSpent += cost;
 					entitiesPlaced++;
+				} else if (currentFloor.isEmptyTile(currentTile)) {
+					// Could place but do not have gold required
+					goldHud.setFlash();
 				} else {
+					// Invalid placement
 					Assets.mixer.play(Util.TILE_FAILURE);
 				}
 			}
