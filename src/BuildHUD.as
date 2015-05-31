@@ -126,6 +126,7 @@ package {
 
 		public function updateHUD():void {
 			removeChild(hud);
+			removeChild(currentImage);
 
 			tileBlock = new Sprite();
 			entityBlock = new Sprite();
@@ -475,11 +476,11 @@ package {
 		}
 
 		public function deselect():void {
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
             currentImage = null;
             currentEntityIndex = -1;
 			hudState = STATE_NONE;
             updateSelectButtons();
-			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
         }
 
 		public function buildTileFromImage(worldX:int, worldY:int):Tile {
@@ -506,6 +507,7 @@ package {
 		}
 
 		public function deleteClickable():void {
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 			var priorState:String = hudState;
 			deselect();
 
@@ -517,7 +519,7 @@ package {
 			}
 
 			closePopup();
-			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
+			
 		}
 
 		public function getRefundForDelete(tile:Tile, entity:Entity):int {
@@ -606,7 +608,7 @@ package {
 
 		public function selectEntityClickable(values:Dictionary):void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
-
+			
 			if(currentEntityIndex == values["index"]) {
 				// Toggle off
 				currentEntity = null

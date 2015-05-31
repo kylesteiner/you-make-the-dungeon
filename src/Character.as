@@ -172,12 +172,16 @@ package {
 
 				if (x == destX && y == destY && moving) {
 					moving = false;
-					stamina -= 1;
 
 					removeChild(currentAnimation);
 					currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
 					currentAnimation.play();
 					addChild(currentAnimation);
+
+					stamina -= 1;
+					if (stamina <= 0) {
+						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED, grid_x, grid_y));
+					}
 
 					dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_TILE,
 												grid_x,

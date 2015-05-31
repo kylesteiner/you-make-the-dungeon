@@ -59,6 +59,7 @@ package {
 		private var entitiesPlaced:int;
 		private var goldSpent:int;
 
+		private var popupManager:PopupManager;
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
 		private var runPhaseSpeed:Boolean;
@@ -68,7 +69,6 @@ package {
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
-		private var tileUnlockPopup:Clickable;
 		private var tutorialHud:TutorialHUD;
 		private var cinematic:Cinematic;
 
@@ -102,6 +102,7 @@ package {
 			numberOfTilesPlaced = 0;
 			timeHovered = 0;
 
+			popupManager = new PopupManager();
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
@@ -116,6 +117,7 @@ package {
 			addChild(world);
 			addChild(sfxMuteButton);
 			addChild(bgmMuteButton);
+			addChild(popupManager);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
 			addChild(runButton);
@@ -260,23 +262,20 @@ package {
 			currentCombat = new CombatHUD(currentFloor.char,
 										  currentFloor.entityGrid[e.x][e.y],
 										  combatSkip);
-			addChild(currentCombat);
+			popupManager.addPopup(currentCombat);
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
-			removeChild(currentCombat);
+			popupManager.removePopup();
+			
 			currentFloor.onCombatSuccess(event.enemy);
 			gold += event.enemy.reward;
 			runSummary.goldCollected += event.enemy.reward;
 			goldHud.update(gold);
-			if (currentFloor.char.stamina <= 0) {
-				// End run if they entered combat as final move
-				endRun();
-			}
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
-			removeChild(currentCombat);
+			popupManager.removePopup();
 
 			Util.logger.logAction(4, {
 				"characterAttack":event.character.attack,
@@ -335,7 +334,6 @@ package {
 			buildHud.deselect();
 
 			removeChild(runButton);
-			removeChild(buildHud.currentImage);
 			removeChild(buildHud);
 
 			// to account for the case where they click run, and the hud is still open
@@ -386,10 +384,9 @@ package {
 
 			removeChild(endButton);
 			removeChild(runHud);
-			removeChild(tileUnlockPopup);
 
 			gameState = STATE_SUMMARY;
-			addChild(runSummary);
+			popupManager.addSummary(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
@@ -400,7 +397,7 @@ package {
 		}
 
 		public function returnToBuild():void {
-			removeChild(runSummary);
+			popupManager.removeSummary();
 			runSummary.reset();
 
 			saveGame.clear();
@@ -495,10 +492,6 @@ package {
 				}
 			}
 
-			if(tileUnlockPopup) {
-				tileUnlockTimer += event.passedTime;
-			}
-
 			removeChild(buildHud.currentImage);
 			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
 				addChild(buildHud.currentImage);
@@ -548,9 +541,9 @@ package {
 				removeChild(shopHud);
 			}
 
-			if (touch.phase == TouchPhase.BEGAN && tileUnlockPopup != null && tileUnlockTimer > TILE_UNLOCK_THRESHOLD) {
+			/*if (touch.phase == TouchPhase.BEGAN && tileUnlockPopup != null && tileUnlockTimer > TILE_UNLOCK_THRESHOLD) {
 				closeTileUnlock();
-			}
+			}*/
 
 			var isTouchHelpButton:Boolean;
 			var touchX:int = touch.globalX;
@@ -583,15 +576,6 @@ package {
 				removeChild(phaseBanner);
 				phaseBanner = null;
 			}
-
-			/*if(gameState == STATE_BUILD) {
-				showBuildHudImage = !touch.isTouching(buildHud);
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(goldHud) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(bgmMuteButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(sfxMuteButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(runButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(shopButton) : showBuildHudImage;
-			}*/
 		}
 
 		private function buildHandleClick(touch:Touch):void {
@@ -688,10 +672,12 @@ package {
 			if (event.keyCode == Util.BGM_MUTE_KEY) {
 				bgmMuteButton.onClick();
 			}
+			
 			if (event.keyCode == Util.SFX_MUTE_KEY) {
 				sfxMuteButton.onClick();
 			}
-			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
+			
+			if (event.keyCode == Util.CHANGE_PHASE_KEY && !popupManager.popup) {
 				if (gameState == STATE_BUILD) {
 					runFloor();
 				} else if (gameState == STATE_RUN) {
@@ -700,6 +686,7 @@ package {
 					returnToBuild();
 				}
 			}
+			
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				//combatSkip = !combatSkip;
 				toggleCombatSpeed();
@@ -709,6 +696,7 @@ package {
 					}
 				}
 			}
+			
 			if (event.keyCode == Util.SPEED_TOGGLE_KEY) {
 				toggleRunSpeed();
 			}
@@ -863,8 +851,6 @@ package {
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
-			removeChild(tileUnlockPopup);
-
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Assets.mixer.play(Util.LEVEL_UP);
 
@@ -939,10 +925,10 @@ package {
 				tileUnlockSprite.addChild(newEntityFlavor);
 				tileUnlockSprite.addChild(closeText);
 
-				tileUnlockPopup = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
-												(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
-												closeTileUnlock,
-												tileUnlockSprite);
+				var tileUnlockPopup:Clickable = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
+															(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
+															closeTileUnlock,
+															tileUnlockSprite);
 
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
@@ -970,14 +956,13 @@ package {
 						"healthRestored":tempH.health
 					});
 				}
+				
+				popupManager.addPopup(tileUnlockPopup);
 			}
-
-			addChild(tileUnlockPopup);
 		}
 
 		public function closeTileUnlock():void {
-			removeChild(tileUnlockPopup);
-			tileUnlockPopup = null;
+			popupManager.removePopup();
 		}
 
 		private function onLosChange(event:GameEvent):void {

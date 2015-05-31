@@ -1006,8 +1006,6 @@ package {
 			var entity:Entity = entityGrid[e.x][e.y];
 			if (entity) {
 				entity.handleChar(char);
-			} else if (char.stamina <= 0) {
-				dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED, char.grid_x, char.grid_y));
 			}
 		}
 
