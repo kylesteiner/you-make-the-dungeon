@@ -192,6 +192,9 @@ package {
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
+		public static const ENEMY_ARCHER:String = "enemy_archer";
+		public static const ENEMY_NINJA:String = "enemy_ninja";
+		public static const ENEMY_KNIGHT:String = "enemy_knight";
 		public static const TRAPS:String = "traps"
 		public static const BASIC_TRAP:String = "basic_trap";
 		public static const FLAME_TRAP:String = "flame_trap";
@@ -227,21 +230,24 @@ package {
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_HEALTH:int = 5;
 		public static const STARTING_STAMINA:int = 5;
-		public static const STARTING_GOLD:int = 20;
+		public static const STARTING_GOLD:int = 200000;
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs
 		public static const BASE_TILE_COST:int = 2;
 		public static const REFUND_PERCENT:int = 50;
 		public static const ENEMY_FIGHTER_COST:int = 20;
-		public static const ENEMY_MAGE_COST:int = 40;
-		public static const LIGHT_HEALING_COST:int = 20;
-		public static const MODERATE_HEALING_COST:int = 40;
-		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
-		public static const BASIC_TRAP_COST:int = 5;
-		public static const FLAME_TRAP_COST:int = 5;
+		public static const ENEMY_MAGE_COST:int = 30;
+		public static const ENEMY_ARCHER_COST:int = 40;
+		public static const ENEMY_NINJA_COST:int = 50;
+		public static const LIGHT_HEALING_COST:int = 8;
+		public static const MODERATE_HEALING_COST:int = 35;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 8;
+		public static const MODERATE_STAMINA_HEAL_COST:int = 20;
+		public static const BASIC_TRAP_COST:int = 15;
+		public static const FLAME_TRAP_COST:int = 55;
 		public static const BLUE_FLAME_TRAP_COST:int = 5;
-		public static const SHOCK_TRAP_COST:int = 5;
+		public static const SHOCK_TRAP_COST:int = 40;
 
 		// Upgrade costs
 		public static const BASE_HP_UPGRADE_COST:int = 6;

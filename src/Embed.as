@@ -29,7 +29,7 @@ package {
 		[Embed(source='assets/highlights/hl_delete.png')] public static var hl_delete:Class;
 		[Embed(source='assets/highlights/hl_entity.png')] public static var hl_entity:Class;
 
-		//[Embed(source='assets/entities/door.png')] public static var entity_door:Class;
+		[Embed(source='assets/entities/door.png')] public static var entity_door:Class;
 		[Embed(source='assets/entities/new_healing.png')] public static var entity_healing:Class;
 		[Embed(source='assets/entities/chest.png')] public static var entity_reward:Class;
 		[Embed(source='assets/entities/stamina_heal.png')] public static var entity_stamina_heal:Class;
@@ -37,6 +37,9 @@ package {
 		[Embed(source='assets/entities/new_key.png')] public static var entity_key:Class;
 		[Embed(source='assets/entities/enemy_fighter.png')] public static var entity_fighter:Class;
 		[Embed(source='assets/entities/enemy_mage.png')] public static var entity_mage:Class;
+		[Embed(source='assets/entities/enemy_archer.png')] public static var entity_archer:Class;
+		[Embed(source='assets/entities/enemy_knight.png')] public static var entity_knight:Class;
+		[Embed(source='assets/entities/enemy_ninja.png')] public static var entity_ninja:Class;
 		[Embed(source='assets/entities/trap_basic.png')] public static var basic_trap:Class;
 		[Embed(source='assets/entities/trap_flame_red.png')] public static var flame_trap:Class;
 		[Embed(source='assets/entities/trap_flame_blue.png')] public static var flame_trap_blue:Class;
@@ -160,6 +163,12 @@ package {
 		[Embed(source='assets/animations/mage/idle/mage_idle_1.png')] public static const enemyMageCombatIdleAnim1:Class;
 		[Embed(source='assets/animations/mage/idle/mage_idle_2.png')] public static const enemyMageCombatIdleAnim2:Class;
 
+		[Embed(source='assets/animations/archer/idle/archer_idle_0.png')] public static const enemyArcherCombatIdleAnim0:Class;
+
+		[Embed(source='assets/animations/ninja/idle/ninja_idle_0.png')] public static const enemyNinjaCombatIdleAnim0:Class;
+
+		[Embed(source='assets/animations/knight/idle/knight_idle_0.png')] public static const enemyKnightCombatIdleAnim0:Class;
+
 		[Embed(source='assets/animations/generic/new_attack/attack_0.png')] public static const genericAttackAnim0:Class;
 		[Embed(source='assets/animations/generic/new_attack/attack_1.png')] public static const genericAttackAnim1:Class;
 		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim2:Class;
@@ -243,8 +252,12 @@ package {
 			Assets.textures[Util.STAMINA_HEAL] = Texture.fromBitmap(new entity_stamina_heal(), true, false, scale);
 			Assets.textures[Util.REWARD] = Texture.fromBitmap(new entity_reward(), true, false, scale);
 			Assets.textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
+			Assets.textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);
 			Assets.textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
 			Assets.textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			Assets.textures[Util.ENEMY_KNIGHT] = Texture.fromBitmap(new entity_knight(), true, false, scale);
+			Assets.textures[Util.ENEMY_NINJA] = Texture.fromBitmap(new entity_ninja(), true, false, scale);
+			Assets.textures[Util.ENEMY_ARCHER] = Texture.fromBitmap(new entity_archer(), true, false, scale);
 			Assets.textures[Util.BASIC_TRAP] = Texture.fromBitmap(new basic_trap(), true, false, scale);
 			Assets.textures[Util.FLAME_TRAP] = Texture.fromBitmap(new flame_trap(), true, false, scale);
 			Assets.textures[Util.FLAME_TRAP_BLUE] = Texture.fromBitmap(new flame_trap_blue(), true, false, scale);
@@ -425,6 +438,41 @@ package {
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
 			Assets.animations[Util.ENEMY_MAGE] = mageDict;
+
+			var archerDict:Dictionary = new Dictionary();
+			var archerVector:Vector.<Texture> = new Vector.<Texture>();
+			archerVector.push(Texture.fromEmbeddedAsset(enemyArcherCombatIdleAnim0));
+			archerDict[Util.ENEMY_COMBAT_IDLE] = archerVector;
+			archerDict[Util.ENEMY_COMBAT_ATTACK] = archerVector;
+
+			var archerFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			archerFaintVector.push(Texture.fromEmbeddedAsset(enemyArcherCombatIdleAnim0));
+			archerDict[Util.ENEMY_COMBAT_FAINT] = archerFaintVector;
+			Assets.animations[Util.ENEMY_ARCHER] = archerDict;
+
+
+			var ninjaDict:Dictionary = new Dictionary();
+			var ninjaVector:Vector.<Texture> = new Vector.<Texture>();
+			ninjaVector.push(Texture.fromEmbeddedAsset(enemyNinjaCombatIdleAnim0));
+			ninjaDict[Util.ENEMY_COMBAT_IDLE] = ninjaVector;
+			ninjaDict[Util.ENEMY_COMBAT_ATTACK] = ninjaVector;
+
+			var ninjaFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			ninjaFaintVector.push(Texture.fromEmbeddedAsset(enemyNinjaCombatIdleAnim0));
+			ninjaDict[Util.ENEMY_COMBAT_FAINT] = ninjaFaintVector;
+			Assets.animations[Util.ENEMY_NINJA] = ninjaDict;
+
+
+			var knightDict:Dictionary = new Dictionary();
+			var knightVector:Vector.<Texture> = new Vector.<Texture>();
+			knightVector.push(Texture.fromEmbeddedAsset(enemyKnightCombatIdleAnim0));
+			knightDict[Util.ENEMY_COMBAT_IDLE] = knightVector;
+			knightDict[Util.ENEMY_COMBAT_ATTACK] = knightVector;
+
+			var knightFaintVector:Vector.<Texture> = new Vector.<Texture>();
+			knightFaintVector.push(Texture.fromEmbeddedAsset(enemyKnightCombatIdleAnim0));
+			knightDict[Util.ENEMY_COMBAT_FAINT] = knightFaintVector;
+			Assets.animations[Util.ENEMY_KNIGHT] = knightDict;
 
 
 			var trapDict:Dictionary = new Dictionary();
