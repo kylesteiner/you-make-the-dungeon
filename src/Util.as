@@ -17,7 +17,7 @@ package {
 		public static const UI_PADDING:int = 8;
 		public static const BORDER_PIXELS:Number = (1.0 / 16.0);
 		public static const BUTTON_SPACING:int = (1.0 / 8.0);
-		public static const CAMERA_SHIFT:int = 4; // in pixels
+		public static const CAMERA_SHIFT:int = 8; // in pixels
 		// can update to pixels once tile movement is tied down
 		public static const ANIM_FPS:int = 2;
 		public static const VISITED_ALPHA:Number = 0.4;

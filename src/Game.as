@@ -1194,8 +1194,8 @@ package {
 
 			var moveToExit:Dictionary = new Dictionary();
 			moveToExit["command"] = Cinematic.COMMAND_MOVE;
-			moveToExit["destX"] = world.x + Util.grid_to_real(2);
-			moveToExit["destY"] = world.y + Util.grid_to_real(13);
+			moveToExit["destX"] = world.x + Util.grid_to_real(-8);
+			moveToExit["destY"] = world.y + Util.grid_to_real(19);
 
 			var waitAtExit:Dictionary = new Dictionary();
 			waitAtExit["command"] = Cinematic.COMMAND_WAIT;
