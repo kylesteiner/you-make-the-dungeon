@@ -89,6 +89,8 @@ package {
 		private var timeHovered:Number;
 
 		private var saveGame:SharedObject;
+		
+		private var onSummary:Boolean;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -383,6 +385,7 @@ package {
 
 			gameState = STATE_SUMMARY;
 			addChild(runSummary);
+			onSummary = true;
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
@@ -394,6 +397,7 @@ package {
 
 		public function returnToBuild():void {
 			removeChild(runSummary);
+			onSummary = false;
 			runSummary.reset();
 
 			saveGame.clear();
@@ -663,7 +667,7 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if(gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+			if(gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC || onSummary) {
 				return;
 			}
 
