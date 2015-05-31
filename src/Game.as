@@ -600,8 +600,20 @@ package {
 			// successfully selected a tile, then advance.
 			if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
 				&& buildHud.hudState == BuildHUD.STATE_TILE) {
-				tutorialState = TUTORIAL_WAITING_FOR_PLACE;
-				buildTutorial.next();
+
+				// We want the player to click at least two arrows before
+				// letting them place. It's less sudden and gives them a
+				// usable tile.
+				var ctr:int = 0;
+				for (var i:int = 0; i < Util.DIRECTIONS.length; i++) {
+					if (buildHud.directions[Util.DIRECTIONS[i]]) {
+						ctr++;
+					}
+				}
+				if (ctr > 1) {
+					tutorialState = TUTORIAL_WAITING_FOR_PLACE;
+					buildTutorial.next();
+				}
 			}
 
 
