@@ -29,6 +29,7 @@ package {
             rightCredits += "Attack: Vladimir (soundbible)\nCoin collect: Bard Wesson (freesound)\nGold spend: jalastram (opengameart)\nNo gold: artisticdude (opengameart)\n";
             rightCredits += "Chest open: Vitor da Silva Goncalves (opengameart)\nDoor open: artisticdude (opengameart)\n";
             rightCredits += "Basic trap: blastwavesfx (freesfx.co.uk)\nFlame trap: Mike Koenig (soundbible)\nShock trap: gr8sfx (freesfx.co.uk)\n";
+			rightCredits += "Stamina heal: artisticdude (opengameart)\nHealing: DoKashiteru (opengameart)";
 
 			var creditsLineLeft:TextField = new TextField(Util.STAGE_WIDTH / 2, Util.STAGE_HEIGHT - backButton.height, leftCredits, Util.SECONDARY_FONT, Util.SMALL_FONT_SIZE*3 / 4);
 			creditsLineLeft.x = 0;

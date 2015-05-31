@@ -19,6 +19,8 @@ package entities {
 				return;  // Early return if no healing necessary
 			}
 
+			Assets.mixer.play(Util.SFX_HEAL);
+
 			Util.logger.logAction(6, {
 				"characterHealth": c.hp,
 				"characterMaxHealth": c.maxHp,

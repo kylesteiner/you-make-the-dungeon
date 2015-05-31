@@ -19,6 +19,8 @@ package entities {
 				return;  // Early return if no healing necessary
 			}
 
+			Assets.mixer.play(Util.SFX_STAMINA_HEAL);
+
 			c.stamina += stamina;
 			if (c.stamina > c.maxStamina) {
 				c.stamina = c.maxStamina;

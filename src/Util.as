@@ -224,6 +224,8 @@ package {
 		public static const SFX_BASIC_TRAP:String = "sfx_basic_trap";
 		public static const SFX_FLAME_TRAP:String = "sfx_flame_trap";
 		public static const SFX_SHOCK_TRAP:String = "sfx_shock_trap";
+		public static const SFX_STAMINA_HEAL:String = "sfx_stamina_heal";
+		public static const SFX_HEAL:String = "sfx_heal";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
