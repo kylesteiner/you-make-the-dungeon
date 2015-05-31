@@ -23,6 +23,8 @@ package {
 				"Nea was defeated!\nClick here to continue building.";
 		public static const LEVEL_UP_TEXT:String =
 				"Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
+		public static const BUILD_TUTORIAL_TEXT:String =
+				"Buy tiles to make a path for Nea.\nClick the arrows to choose the tile walls.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -38,6 +40,10 @@ package {
 		public static const STATE_TUTORIAL:String = "game_tutorial";
 		public static const STATE_SUMMARY:String = "game_summary";
 		public static const STATE_CINEMATIC:String = "game_cinematic";
+
+		// tutorialState values
+		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
+		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
 
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
@@ -71,8 +77,9 @@ package {
 		private var runSummary:Summary;
 		private var tileUnlockPopup:Clickable;
 
-
 		private var gameState:String;
+		private var tutorialState:String;
+
 		private var gold:int;
 
 		private var phaseBanner:Image;
@@ -92,7 +99,8 @@ package {
 
 		// Tutorial sequences
 		private var cinematic:Cinematic;
-		private var intro:TutorialSequence;
+		private var introTutorial:TutorialSequence;
+		private var buildTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -129,8 +137,8 @@ package {
 			addChild(helpButton);
 			addChild(buildHud);
 			if (gameState == STATE_TUTORIAL) {
-				addChild(intro);
-				intro.start();
+				addChild(introTutorial);
+				introTutorial.start();
 			}
 
 			// Update build hud with unlocks if loading from save.
@@ -256,11 +264,31 @@ package {
 		}
 
 		private function initializeTutorial():void {
-			intro = new TutorialSequence(onIntroComplete);
-			intro.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
-										  Util.getTransparentQuad()));
-			intro.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
-										  Util.getTransparentQuad()));
+			// Intro slides
+			introTutorial = new TutorialSequence(onIntroTutorialComplete);
+			introTutorial.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
+										  		  Util.getTransparentQuad()));
+			introTutorial.add(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
+												  Util.getTransparentQuad()));
+
+			buildTutorial = new TutorialSequence(onBuildTutorialComplete);
+
+			// Build hud instructions
+			var buildhudShadow:Image = new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW]);
+			buildhudShadow.alpha = 0.7
+
+			var buildhudText:TextField = new TextField(Util.STAGE_WIDTH, 100,
+													   BUILD_TUTORIAL_TEXT,
+													   Util.DEFAULT_FONT,
+													   Util.MEDIUM_FONT_SIZE);
+			buildhudText.y = 220;
+
+			var buildhudOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW]),
+					buildhudShadow,
+					false);
+			buildhudOverlay.addChild(buildhudText);
+			buildTutorial.add(buildhudOverlay);
 		}
 
 		private function returnToMenu():void {
@@ -549,6 +577,14 @@ package {
 				}
 			}
 
+			// In the build hud tutorial, check to see if the player has
+			// successfully selected a tile, then advance
+			if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
+				&& buildHud.hudState == BuildHUD.STATE_TILE) {
+				tutorialState = TUTORIAL_WAITING_FOR_PLACE;
+				buildTutorial.next();
+			}
+
 
 			// Click outside of shop (onblur)
 			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
@@ -787,8 +823,8 @@ package {
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
 		}
 
-		public function onIntroComplete():void {
-			removeChild(intro);
+		public function onIntroTutorialComplete():void {
+			removeChild(introTutorial);
 
 			// Set up cinematic to show exit
 			var commands:Array = new Array();
@@ -826,14 +862,23 @@ package {
 
 		public function onIntroCinematicComplete():void {
 			gameState = STATE_BUILD;
+			tutorialState = TUTORIAL_WAITING_FOR_EDGES;
+
 			removeChild(cinematic);
 			centerWorldOnCharacter();
+
 			addChild(buildHud);
 			addChild(goldHud);
 			addChild(runButton);
 			addChild(shopButton);
 
-			Assets.mixer.play(Util.LEVEL_UP);
+			addChild(buildTutorial);
+			buildTutorial.start();
+			// Assets.mixer.play(Util.LEVEL_UP);
+		}
+
+		public function onBuildTutorialComplete():void {
+			return;
 		}
 
 		public function playCinematic(commands:Array, onComplete:Function):void {
