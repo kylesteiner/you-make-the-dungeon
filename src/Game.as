@@ -269,6 +269,10 @@ package {
 			gold += event.enemy.reward;
 			runSummary.goldCollected += event.enemy.reward;
 			goldHud.update(gold);
+			if (currentFloor.char.stamina <= 0) {
+				// End run if they entered combat as final move
+				endRun();
+			}
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
