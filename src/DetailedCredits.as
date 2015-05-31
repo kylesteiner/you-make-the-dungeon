@@ -21,11 +21,14 @@ package {
             leftCredits += "Fonts: Bebas Neue Regular & Fertigo Pro Regular";
 
             var rightCredits:String = "";
-            rightCredits += "BGM:\nDiving Turtle - PacDV.com\nGentle Thoughts 2 - PacDV.com\n";
+            rightCredits += "BGM: Diving Turtle - PacDV.com\nGentle Thoughts 2 - PacDV.com\n";
             rightCredits += "Glow in the Dark - PacDV.com\nOriental Drift - PacDV.com\nPearl Cavern - Essa (soundcloud)\n";
             rightCredits += "Seven Nation - Scribe / Daniel Stephens (opengameart)\nSnowfall - Kistol/Joseph Gilbert (opengameart)\nWarm Interlude - PacDV.com\n";
-            rightCredits += "\nSFX:\n";
-            rightCredits += "";
+            rightCredits += "\nSFX: Floor begin: Dianakc (soundbible)\nFloor complete: Mike Koenig (soundbible)\nTile place: Mark DiAngelo (soundbible)\nTile error: Joe Antares (flashkit)\n";
+            rightCredits += "Button press: Deepfrozenapps (soundbible)\nTile remove: Mike Koenig (soundbible)\nCombat success: unknown :(\nCombat failure: Mike Simmons (flashkit)\n";
+            rightCredits += "Attack: Vladimir (soundbible)\nCoin collect: Bard Wesson (freesound)\nGold spend: jalastram (opengameart)\nNo gold: artisticdude (opengameart)\n";
+            rightCredits += "Chest open: Vitor da Silva Goncalves (opengameart)\nDoor open: artisticdude (opengameart)\n";
+            rightCredits += "Basic trap: blastwavesfx (freesfx.co.uk)\nFlame trap: Mike Koenig (soundbible)\nShock trap: gr8sfx (freesfx.co.uk)\n";
 
 			var creditsLineLeft:TextField = new TextField(Util.STAGE_WIDTH / 2, Util.STAGE_HEIGHT - backButton.height, leftCredits, Util.SECONDARY_FONT, Util.SMALL_FONT_SIZE*3 / 4);
 			creditsLineLeft.x = 0;
@@ -35,7 +38,7 @@ package {
 			creditsLineLeft.vAlign = VAlign.TOP;
 			addChild(creditsLineLeft);
 
-			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH / 2, Util.STAGE_HEIGHT - backButton.height, rightCredits, Util.SECONDARY_FONT, Util.SMALL_FONT_SIZE*3 / 4);
+			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH / 2, Util.STAGE_HEIGHT, rightCredits, Util.SECONDARY_FONT, Util.SMALL_FONT_SIZE*3 / 4);
 			creditsLineRight.x = creditsLineLeft.x + creditsLineLeft.width;
 			creditsLineRight.y = 0;
 			creditsLineRight.autoScale = true;

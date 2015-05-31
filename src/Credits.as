@@ -19,28 +19,28 @@ package {
 
 			var leftCredits:String = "";
 
-			leftCredits += "Developers: \nBabak Dabagh\nKyle Steiner\nKing Xia\nEric Zeng\n\n";
-			leftCredits += "Major thanks to Louisa Fan for sprite designs + iconography.\n";
-			leftCredits += "\tCharacter design\n";
-			leftCredits += "\tEnemy design\n";
-			leftCredits += "\tTrap design\n";
-			leftCredits += "\tIcon design\n";
-			leftCredits += "\tKey + Cake design\n";
-			leftCredits += "\tCursor design\n";
+			leftCredits += "Produced by \nBabak Dabagh\tEric Zeng\nKing Xia\tKyle Steiner\n\n";
 
 			var rightCredits:String = "";
+			rightCredits += "Major thanks to Louisa Fan for sprite designs + iconography.\n";
+			rightCredits += "\tCharacter design\n";
+			rightCredits += "\tEnemy design\n";
+			rightCredits += "\tTrap design\n";
+			rightCredits += "\tIcon design\n";
+			rightCredits += "\tKey + Cake design\n";
+			rightCredits += "\tCursor design\n";
 
-			var creditsLineLeft:TextField = new TextField(Util.STAGE_WIDTH / 2, Util.STAGE_HEIGHT - backButton.height, leftCredits, Util.SECONDARY_FONT, Util.SMALL_FONT_SIZE*3 / 4);
+			var creditsLineLeft:TextField = new TextField(Util.STAGE_WIDTH, (Util.STAGE_HEIGHT - backButton.height) / 2, leftCredits, Util.SECONDARY_FONT, Util.LARGE_FONT_SIZE*3);
 			creditsLineLeft.x = 0;
 			creditsLineLeft.y = backButton.y + backButton.height;
 			creditsLineLeft.autoScale = true;
-			creditsLineLeft.hAlign = HAlign.LEFT;
+			creditsLineLeft.hAlign = HAlign.CENTER;
 			creditsLineLeft.vAlign = VAlign.TOP;
 			addChild(creditsLineLeft);
 
-			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH / 2, Util.STAGE_HEIGHT - backButton.height, rightCredits, Util.SECONDARY_FONT, Util.SMALL_FONT_SIZE*3 / 4);
-			creditsLineRight.x = creditsLineLeft.x + creditsLineLeft.width;
-			creditsLineRight.y = creditsLineLeft.y;
+			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH, (Util.STAGE_HEIGHT - backButton.height) / 2, rightCredits, Util.SECONDARY_FONT, Util.LARGE_FONT_SIZE);
+			creditsLineRight.x = 0;
+			creditsLineRight.y = creditsLineLeft.y + creditsLineLeft.height;
 			creditsLineRight.autoScale = true;
 			creditsLineRight.hAlign = HAlign.LEFT;
 			creditsLineRight.vAlign = VAlign.TOP;
