@@ -71,7 +71,7 @@ package {
 			dispatchEvent(new MenuEvent(MenuEvent.CONTINUE_GAME));
 		}
 
-		public function openCredits(params:Object):void {
+		public function openCredits():void {
 			dispatchEvent(new MenuEvent(MenuEvent.CREDITS));
 		}
 		

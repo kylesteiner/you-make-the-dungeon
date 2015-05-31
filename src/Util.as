@@ -2,9 +2,9 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
-	import Logger;
-	import starling.text.TextField;
 	import flash.ui.Keyboard;
+	import starling.display.Quad;
+	import starling.text.TextField;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -148,6 +148,11 @@ package {
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"
 		public static const TUTORIAL_KEYS:String = "tutorial_keys"
 
+		public static const TUTORIAL_BUILDHUD_ARROW:String = "tutorial_buildhud_arrow";
+		public static const TUTORIAL_BUILDHUD_SHADOW:String = "tutorial_buildhud_shadow";
+		public static const TUTORIAL_PLACE_SHADOW:String = "tutorial_place_shadow";
+		public static const TUTORIAL_RUN:String = "tutorial_run";
+
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
 		public static const TILE_DOWN_ACTIVE:String = "tile_down_active";
@@ -176,6 +181,11 @@ package {
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
+		public static const TRAPS:String = "traps"
+		public static const BASIC_TRAP:String = "basic_trap";
+		public static const FLAME_TRAP:String = "flame_trap";
+		public static const FLAME_TRAP_BLUE:String = "flame_trap_blue";
+		public static const SHOCK_TRAP:String = "shock_trap";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
 
@@ -195,6 +205,9 @@ package {
 		public static const GOLD_DEFICIT:String = "gold_deficit";
 		public static const REWARD_COLLECT:String = "reward_collect";
 		public static const DOOR_OPEN:String = "door_open";
+		public static const SFX_BASIC_TRAP:String = "sfx_basic_trap";
+		public static const SFX_FLAME_TRAP:String = "sfx_flame_trap";
+		public static const SFX_SHOCK_TRAP:String = "sfx_shock_trap";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -214,6 +227,10 @@ package {
 		public static const LIGHT_HEALING_COST:int = 20;
 		public static const MODERATE_HEALING_COST:int = 40;
 		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
+		public static const BASIC_TRAP_COST:int = 5;
+		public static const FLAME_TRAP_COST:int = 5;
+		public static const BLUE_FLAME_TRAP_COST:int = 5;
+		public static const SHOCK_TRAP_COST:int = 5;
 
 		// Upgrade costs
 		public static const BASE_HP_UPGRADE_COST:int = 6;
@@ -290,6 +307,12 @@ package {
 
 		public static function defaultTextField(width:int, height:int, initialText:String, size:int = Util.MEDIUM_FONT_SIZE):TextField {
 			return new TextField(width, height, initialText, Util.DEFAULT_FONT, size);
+		}
+
+		public static function getTransparentQuad():Quad {
+			var q:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
+			q.alpha = 0.7;
+			return q;
 		}
 	}
 }

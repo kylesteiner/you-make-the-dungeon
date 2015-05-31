@@ -16,12 +16,19 @@ package {
 
 	import entities.*;
 	import tiles.*;
+	import tutorial.*;
 
 	public class Game extends Sprite {
 		public static const FLOOR_FAIL_TEXT:String =
 				"Nea was defeated!\nClick here to continue building.";
 		public static const LEVEL_UP_TEXT:String =
 				"Nea levelled up!\nHealth fully restored!\n+{0} max health\n+{1} attack\nClick to dismiss";
+		public static const BUILD_TUTORIAL_TEXT:String =
+				"Buy tiles to make a path for Nea.\nClick the arrows to choose the tile walls.";
+		public static const PLACE_TUTORIAL_TEXT:String =
+				"Place the tile on one of the green highlighted spots.";
+		public static const RUN_TUTORIAL_TEXT:String =
+				"Click here when\nyou're done building.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -37,6 +44,11 @@ package {
 		public static const STATE_TUTORIAL:String = "game_tutorial";
 		public static const STATE_SUMMARY:String = "game_summary";
 		public static const STATE_CINEMATIC:String = "game_cinematic";
+
+		// tutorialState values
+		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
+		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
+		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
 
 		private var shopButton:Clickable;
 		private var runButton:Clickable;
@@ -69,10 +81,10 @@ package {
 		private var showBuildHudImage:Boolean;
 		private var runSummary:Summary;
 		private var tileUnlockPopup:Clickable;
-		private var tutorialHud:TutorialHUD;
-		private var cinematic:Cinematic;
 
 		private var gameState:String;
+		private var tutorialState:String;
+
 		private var gold:int;
 
 		private var phaseBanner:Image;
@@ -106,6 +118,11 @@ package {
 		//private var overallTrapsUsed;
 		private var overallTilesPlaced:int;
 		private var overallGoldSpent:int;
+
+		// Tutorial sequences
+		private var cinematic:Cinematic;
+		private var introTutorial:TutorialSequence;
+		private var buildTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -142,6 +159,7 @@ package {
 
 			initializeWorld(fromSave);
 			initializeUI();
+			initializeTutorial();
 
 			addChild(world);
 			addChild(sfxMuteButton);
@@ -154,7 +172,7 @@ package {
 			addChild(helpButton);
 			addChild(buildHud);
 			if (gameState == STATE_TUTORIAL) {
-				addChild(tutorialHud);
+				addChild(introTutorial);
 			}
 
 			// Update build hud with unlocks if loading from save.
@@ -197,11 +215,10 @@ package {
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
 
 			// Tutorial-specific game events.
-			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
-			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 		}
 
 		private function initializeWorld(fromSave:Boolean):void {
@@ -279,7 +296,65 @@ package {
 
 			runHud = new RunHUD(); // textures not needed for now but maybe in future
 			buildHud = new BuildHUD();
-			tutorialHud = new TutorialHUD();
+		}
+
+		private function initializeTutorial():void {
+			//--------- INTRO TUTORIAL ---------//
+			var introOverlays:Array = new Array();
+			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
+										  		   Util.getTransparentQuad()));
+			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
+												   Util.getTransparentQuad()));
+			introTutorial = new TutorialSequence(onIntroTutorialComplete, introOverlays);
+
+			//--------- BUILD TUTORIAL ---------//
+			// Build hud instructions
+			var buildTutorialOverlays:Array = new Array();
+
+			var buildhudShadow:Image = new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW]);
+			buildhudShadow.alpha = 0.7;
+			var buildhudText:TextField = new TextField(Util.STAGE_WIDTH, 100,
+													   BUILD_TUTORIAL_TEXT,
+													   Util.DEFAULT_FONT,
+													   Util.MEDIUM_FONT_SIZE);
+			buildhudText.y = 220;
+			var buildhudOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW]),
+					buildhudShadow,
+					false);
+			buildhudOverlay.addChild(buildhudText);
+
+			// Tile place instructions
+			var placeShadow:Image = new Image(Assets.textures[Util.TUTORIAL_PLACE_SHADOW]);
+			placeShadow.alpha = 0.7;
+			var placeText:TextField = new TextField(Util.STAGE_WIDTH, 100,
+													PLACE_TUTORIAL_TEXT,
+													Util.DEFAULT_FONT,
+													Util.MEDIUM_FONT_SIZE);
+			placeText.y = 320;
+			var placeOverlay:TutorialOverlay = new TutorialOverlay(
+				placeText,
+				placeShadow,
+				false);
+
+			// Run button instructions
+			var runText:TextField = new TextField(180, 100,
+												  RUN_TUTORIAL_TEXT,
+												  Util.DEFAULT_FONT,
+												  Util.SMALL_FONT_SIZE);
+			runText.x = 440;
+			runText.y = 148;
+			var runOverlay:TutorialOverlay = new TutorialOverlay(
+				runText,
+				new Image(Assets.textures[Util.TUTORIAL_RUN]),
+				false);
+
+			buildTutorialOverlays.push(buildhudOverlay);
+			buildTutorialOverlays.push(placeOverlay);
+			buildTutorialOverlays.push(runOverlay);
+
+			buildTutorial = new TutorialSequence(onBuildTutorialComplete,
+												 buildTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -345,6 +420,10 @@ package {
 		public function runFloor():void {
 			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
 				return;
+			}
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				buildTutorial.next();
 			}
 
 			Util.logger.logAction(3, {
@@ -610,6 +689,26 @@ package {
 				}
 			}
 
+			// If we are in the build hud tutorial, check to see if the player has
+			// successfully selected a tile, then advance.
+			if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
+				&& buildHud.hudState == BuildHUD.STATE_TILE) {
+
+				// We want the player to click at least two arrows before
+				// letting them place. It's less sudden and gives them a
+				// usable tile.
+				var ctr:int = 0;
+				for (var i:int = 0; i < Util.DIRECTIONS.length; i++) {
+					if (buildHud.directions[Util.DIRECTIONS[i]]) {
+						ctr++;
+					}
+				}
+				if (ctr > 1) {
+					tutorialState = TUTORIAL_WAITING_FOR_PLACE;
+					buildTutorial.next();
+				}
+			}
+
 
 			// Click outside of shop (onblur)
 			if (getChildIndex(shopHud) != -1 && !touch.isTouching(shopHud) && !touch.isTouching(shopButton) && touch.phase == TouchPhase.BEGAN) {
@@ -650,15 +749,6 @@ package {
 				removeChild(phaseBanner);
 				phaseBanner = null;
 			}
-
-			/*if(gameState == STATE_BUILD) {
-				showBuildHudImage = !touch.isTouching(buildHud);
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(goldHud) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(bgmMuteButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(sfxMuteButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(runButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(shopButton) : showBuildHudImage;
-			}*/
 		}
 
 		private function buildHandleClick(touch:Touch):void {
@@ -706,6 +796,12 @@ package {
 					});
 					goldSpent += cost;
 					Assets.mixer.play(Util.TILE_MOVE);
+
+					// If we are in the build tutorial, advance to the next part.
+					if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
+						tutorialState = null;
+						buildTutorial.next();
+					}
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Could place but do not have gold required
 					goldHud.setFlash();
@@ -778,13 +874,6 @@ package {
 			}
 			if (event.keyCode == Util.SPEED_TOGGLE_KEY) {
 				toggleRunSpeed();
-			}
-
-			if (currentFloor) {
-				// TODO: set up dictionary of charCode -> callback?
-				if(currentFloor.floorName == Util.TUTORIAL_PAN_FLOOR) {
-					currentFloor.removeTutorial();
-				}
 			}
 		}
 
@@ -871,13 +960,10 @@ package {
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
 		}
 
-		public function onTutorialComplete(event:GameEvent):void {
-			gameState = Game.STATE_CINEMATIC;
-			removeChild(tutorialHud);
-			playOpeningCinematic();
-		}
+		public function onIntroTutorialComplete():void {
+			removeChild(introTutorial);
 
-		public function playOpeningCinematic():void {
+			// Set up cinematic to show exit
 			var commands:Array = new Array();
 
 			var moveToExit:Dictionary = new Dictionary();
@@ -903,30 +989,47 @@ package {
 			commands.push(moveToStart);
 			commands.push(waitAtStart);
 
-			cinematic = new Cinematic(world.x, world.y, Util.CAMERA_SHIFT * 3, commands);
-			addChild(cinematic);
-
 			removeChild(buildHud);
 			removeChild(runButton);
 			removeChild(goldHud);
 			removeChild(shopButton);
+
+			playCinematic(commands, onIntroCinematicComplete);
 		}
 
-		public function onMoveCamera(event:GameEvent):void {
-			world.x += event.x;
-			world.y += event.y;
-		}
-
-		public function onCinematicComplete(event:GameEvent):void {
+		public function onIntroCinematicComplete():void {
 			gameState = STATE_BUILD;
+			tutorialState = TUTORIAL_WAITING_FOR_EDGES;
+
 			removeChild(cinematic);
 			centerWorldOnCharacter();
+
 			addChild(buildHud);
 			addChild(goldHud);
 			addChild(runButton);
 			addChild(shopButton);
 
-			Assets.mixer.play(Util.LEVEL_UP);
+			addChild(buildTutorial);
+			// Assets.mixer.play(Util.LEVEL_UP);
+		}
+
+		public function onBuildTutorialComplete():void {
+			removeChild(buildTutorial);
+			return;
+		}
+
+		public function playCinematic(commands:Array, onComplete:Function):void {
+			cinematic = new Cinematic(world.x,
+									  world.y,
+									  Util.CAMERA_SHIFT * 3,
+									  commands,
+									  onComplete);
+			addChild(cinematic);
+		}
+
+		public function onMoveCamera(event:GameEvent):void {
+			world.x += event.x;
+			world.y += event.y;
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
@@ -1020,10 +1123,6 @@ package {
 						"enemyReward":temp.reward,
 						"enemyName":temp.enemyName
 					});
-					trace(temp.hp);
-					trace(newEntity.cost);
-					trace(temp.reward);
-					trace(temp.attack);
 				} else if (newEntity is StaminaHeal) {
 					var tempS:StaminaHeal = newEntity as StaminaHeal;
 					Util.logger.logAction(19, {
@@ -1049,6 +1148,17 @@ package {
 
 		private function onLosChange(event:GameEvent):void {
 			currentFloor.removeFoggedLocationsInPath();
+		}
+		
+		private function onGetTrapReward(e:GameEvent):void {
+			gold += e.gameData["reward"];
+			runSummary.goldCollected += e.gameData["reward"];
+			goldHud.update(gold);
+			
+			runSummary.damageTaken += e.gameData["damage"];
+			if (currentFloor.char.hp <= 0) {
+				endRun();
+			}
 		}
 	}
 }
