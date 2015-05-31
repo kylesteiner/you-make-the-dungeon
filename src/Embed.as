@@ -113,12 +113,15 @@ package {
 		[Embed(source='assets/tutorials/tutorial_gold.png')] public static const tutorial_gold:Class;
 		[Embed(source='assets/tutorials/tutorial_adventurers.png')] public static const tutorial_adventurers:Class;
 		[Embed(source='assets/tutorials/tutorial_spend.png')] public static const tutorial_spend:Class;
-		[Embed(source='assets/tutorials/tutorial_keys.png')] public static const tutorial_keys:Class;
+		// [Embed(source='assets/tutorials/tutorial_keys.png')] public static const tutorial_keys:Class;
 
 		[Embed(source='assets/tutorials/build_hud_arrow.png')] public static const tutorial_buildhud_arrow:Class;
 		[Embed(source='assets/tutorials/build_hud_shadow.png')] public static const tutorial_buildhud_shadow:Class;
 		[Embed(source='assets/tutorials/place_shadow.png')] public static const tutorial_place_shadow:Class;
 		[Embed(source='assets/tutorials/run.png')] public static const tutorial_run:Class;
+		[Embed(source='assets/tutorials/keys.png')] public static const tutorial_keys:Class;
+		[Embed(source='assets/tutorials/health_stamina_arrows.png')] public static const tutorial_health_stamina_arrows:Class;
+		[Embed(source='assets/tutorials/health_stamina_shadow.png')] public static const tutorial_health_stamina_shadow:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -320,12 +323,14 @@ package {
 			Assets.textures[Util.TUTORIAL_GOLD] = Texture.fromEmbeddedAsset(tutorial_gold);
 			Assets.textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
 			Assets.textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
-			Assets.textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
 
 			Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW] = Texture.fromEmbeddedAsset(tutorial_buildhud_shadow);
 			Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW] = Texture.fromEmbeddedAsset(tutorial_buildhud_arrow);
 			Assets.textures[Util.TUTORIAL_PLACE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_place_shadow);
 			Assets.textures[Util.TUTORIAL_RUN] = Texture.fromEmbeddedAsset(tutorial_run);
+			Assets.textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
+			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_ARROWS] = Texture.fromEmbeddedAsset(tutorial_health_stamina_arrows);
+			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW] = Texture.fromEmbeddedAsset(tutorial_health_stamina_shadow);
 		}
 
 		public static function setupAnimations():void {

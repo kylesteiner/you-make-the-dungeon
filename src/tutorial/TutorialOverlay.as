@@ -34,7 +34,10 @@ package tutorial {
                 return;
             }
 
-            dispatchEvent(new TutorialEvent(TutorialEvent.NEXT));
+			// Only allow keyboard skipping if the tutorial is also touchable.
+			if (touchable) {
+            	dispatchEvent(new TutorialEvent(TutorialEvent.NEXT));
+			}
         }
 
         public function onMouseDown(event:TouchEvent):void {

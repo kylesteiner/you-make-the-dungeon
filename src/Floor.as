@@ -824,7 +824,7 @@ package {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
 
-				if(!grid[cgx][cgy]) {
+				if (!grid[cgx][cgy]) {
 					continue; // empty tile, invalid state
 				}
 
