@@ -181,6 +181,11 @@ package {
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
+		public static const TRAPS:String = "traps"
+		public static const BASIC_TRAP:String = "basic_trap";
+		public static const FLAME_TRAP:String = "flame_trap";
+		public static const FLAME_TRAP_BLUE:String = "flame_trap_blue";
+		public static const SHOCK_TRAP:String = "shock_trap";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
 
@@ -200,6 +205,9 @@ package {
 		public static const GOLD_DEFICIT:String = "gold_deficit";
 		public static const REWARD_COLLECT:String = "reward_collect";
 		public static const DOOR_OPEN:String = "door_open";
+		public static const SFX_BASIC_TRAP:String = "sfx_basic_trap";
+		public static const SFX_FLAME_TRAP:String = "sfx_flame_trap";
+		public static const SFX_SHOCK_TRAP:String = "sfx_shock_trap";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -219,6 +227,10 @@ package {
 		public static const LIGHT_HEALING_COST:int = 20;
 		public static const MODERATE_HEALING_COST:int = 40;
 		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
+		public static const BASIC_TRAP_COST:int = 5;
+		public static const FLAME_TRAP_COST:int = 5;
+		public static const BLUE_FLAME_TRAP_COST:int = 5;
+		public static const SHOCK_TRAP_COST:int = 5;
 
 		// Upgrade costs
 		public static const BASE_HP_UPGRADE_COST:int = 6;

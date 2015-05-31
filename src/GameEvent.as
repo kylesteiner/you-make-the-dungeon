@@ -9,6 +9,8 @@ package {
 		public static const HEALED:String = "healed";
 		public static const STAMINA_HEALED:String = "stamina_healed";
 		public static const MOVING:String = "moving";
+		public static const ACTIVATE_TRAP:String = "activate_trap";
+		public static const GET_TRAP_REWARD:String = "get_trap_reward";
         public static const OBJ_COMPLETED:String = "obj_completed";
 		public static const STAMINA_EXPENDED:String = "stamina_expended";
         public static const REVEAL_ROOM:String = "reveal_room";

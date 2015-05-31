@@ -29,14 +29,18 @@ package {
 		[Embed(source='assets/highlights/hl_delete.png')] public static var hl_delete:Class;
 		[Embed(source='assets/highlights/hl_entity.png')] public static var hl_entity:Class;
 
-		//[Embed(source='assets/entities/large/door.png')] public static var entity_door:Class;
-		[Embed(source='assets/entities/large/new_healing.png')] public static var entity_healing:Class;
-		[Embed(source='assets/entities/large/chest.png')] public static var entity_reward:Class;
-		[Embed(source='assets/entities/large/stamina_heal.png')] public static var entity_stamina_heal:Class;
-		//[Embed(source='assets/entities/large/hero.png')] public static var entity_hero:Class;
-		[Embed(source='assets/entities/large/new_key.png')] public static var entity_key:Class;
-		[Embed(source='assets/entities/large/enemy_fighter.png')] public static var entity_fighter:Class;
-		[Embed(source='assets/entities/large/enemy_mage.png')] public static var entity_mage:Class;
+		//[Embed(source='assets/entities/door.png')] public static var entity_door:Class;
+		[Embed(source='assets/entities/new_healing.png')] public static var entity_healing:Class;
+		[Embed(source='assets/entities/chest.png')] public static var entity_reward:Class;
+		[Embed(source='assets/entities/stamina_heal.png')] public static var entity_stamina_heal:Class;
+		//[Embed(source='assets/entities/hero.png')] public static var entity_hero:Class;
+		[Embed(source='assets/entities/new_key.png')] public static var entity_key:Class;
+		[Embed(source='assets/entities/enemy_fighter.png')] public static var entity_fighter:Class;
+		[Embed(source='assets/entities/enemy_mage.png')] public static var entity_mage:Class;
+		[Embed(source='assets/entities/trap_basic.png')] public static var basic_trap:Class;
+		[Embed(source='assets/entities/trap_flame_red.png')] public static var flame_trap:Class;
+		[Embed(source='assets/entities/trap_flame_blue.png')] public static var flame_trap_blue:Class;
+		[Embed(source='assets/entities/trap_shock.png')] public static var shock_trap:Class;
 
 		[Embed(source='assets/fonts/BebasNeueRegular.otf', embedAsCFF="false", fontFamily="Bebas")] public static const bebas_font:Class;
 		[Embed(source='assets/fonts/LeagueGothicRegular.otf', embedAsCFF="false", fontFamily="League")] public static const league_font:Class;
@@ -149,6 +153,34 @@ package {
 		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim2:Class;
 		[Embed(source='assets/animations/generic/new_attack/attack_2.png')] public static const genericAttackAnim3:Class;
 
+		[Embed(source='assets/animations/traps/flame/flame_0.png')] public static const flameTrapAnim0:Class;
+		[Embed(source='assets/animations/traps/flame/flame_1.png')] public static const flameTrapAnim1:Class;
+		[Embed(source='assets/animations/traps/flame/flame_2.png')] public static const flameTrapAnim2:Class;
+		[Embed(source='assets/animations/traps/flame/flame_3.png')] public static const flameTrapAnim3:Class;
+		[Embed(source='assets/animations/traps/flame/flame_4.png')] public static const flameTrapAnim4:Class;
+		[Embed(source='assets/animations/traps/flame/flame_5.png')] public static const flameTrapAnim5:Class;
+		[Embed(source='assets/animations/traps/flame/flame_6.png')] public static const flameTrapAnim6:Class;
+		[Embed(source='assets/animations/traps/flame/flame_7.png')] public static const flameTrapAnim7:Class;
+		[Embed(source='assets/animations/traps/flame/flame_8.png')] public static const flameTrapAnim8:Class;
+		[Embed(source='assets/animations/traps/flame/flame_9.png')] public static const flameTrapAnim9:Class;
+		[Embed(source='assets/animations/traps/flame/flame_10.png')] public static const flameTrapAnim10:Class;
+		[Embed(source='assets/animations/traps/flame/flame_11.png')] public static const flameTrapAnim11:Class;
+		[Embed(source='assets/animations/traps/flame/flame_12.png')] public static const flameTrapAnim12:Class;
+		[Embed(source='assets/animations/traps/flame/flame_13.png')] public static const flameTrapAnim13:Class;
+		[Embed(source='assets/animations/traps/flame/flame_14.png')] public static const flameTrapAnim14:Class;
+		[Embed(source='assets/animations/traps/flame/flame_15.png')] public static const flameTrapAnim15:Class;
+
+		[Embed(source='assets/animations/traps/shock/shock_0.png')] public static const shockTrapAnim0:Class;
+		[Embed(source='assets/animations/traps/shock/shock_1.png')] public static const shockTrapAnim1:Class;
+		[Embed(source='assets/animations/traps/shock/shock_2.png')] public static const shockTrapAnim2:Class;
+		[Embed(source='assets/animations/traps/shock/shock_3.png')] public static const shockTrapAnim3:Class;
+		[Embed(source='assets/animations/traps/shock/shock_0a.png')] public static const shockTrapAnim4:Class;
+		[Embed(source='assets/animations/traps/shock/shock_1a.png')] public static const shockTrapAnim5:Class;
+		[Embed(source='assets/animations/traps/shock/shock_2a.png')] public static const shockTrapAnim6:Class;
+		[Embed(source='assets/animations/traps/shock/shock_3a.png')] public static const shockTrapAnim7:Class;
+
+		[Embed(source='assets/animations/traps/basic/basic_0.png')] public static const basicTrapAnim0:Class;
+
 		[Embed(source='assets/sfx/floor_complete_new.mp3')] public static const sfxFloorComplete:Class;
 		[Embed(source='assets/sfx/tile_move.mp3')] public static const sfxTileMove:Class;
 		[Embed(source='assets/sfx/tile_failure_new.mp3')] public static const sfxTileFailure:Class;
@@ -164,6 +196,9 @@ package {
 		[Embed(source='assets/sfx/no_gold.mp3')] public static const sfxGoldDeficit:Class;
 		[Embed(source='assets/sfx/chest_open_lowhz.mp3')] public static const sfxReward:Class;
 		[Embed(source='assets/sfx/door_open.mp3')] public static const sfxDoorOpen:Class;
+		[Embed(source='assets/sfx/basic_trap.mp3')] public static const sfxBasicTrap:Class;
+		[Embed(source='assets/sfx/flame_trap.mp3')] public static const sfxFlameTrap:Class;
+		[Embed(source='assets/sfx/shock_trap.mp3')] public static const sfxShockTrap:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
@@ -198,6 +233,10 @@ package {
 			Assets.textures[Util.KEY] = Texture.fromBitmap(new entity_key(), true, false, scale);
 			Assets.textures[Util.ENEMY_FIGHTER] = Texture.fromBitmap(new entity_fighter(), true, false, scale);
 			Assets.textures[Util.ENEMY_MAGE] = Texture.fromBitmap(new entity_mage(), true, false, scale);
+			Assets.textures[Util.BASIC_TRAP] = Texture.fromBitmap(new basic_trap(), true, false, scale);
+			Assets.textures[Util.FLAME_TRAP] = Texture.fromBitmap(new flame_trap(), true, false, scale);
+			Assets.textures[Util.FLAME_TRAP_BLUE] = Texture.fromBitmap(new flame_trap_blue(), true, false, scale);
+			Assets.textures[Util.SHOCK_TRAP] = Texture.fromBitmap(new shock_trap(), true, false, scale);
 
 			Assets.textures[Util.TILE_E] = Texture.fromBitmap(new tile_e(), true, false, scale);
 			Assets.textures[Util.TILE_EW] = Texture.fromBitmap(new tile_ew(), true, false, scale);
@@ -299,6 +338,7 @@ package {
 			cursorDict[Util.ICON_CURSOR] = cursorVector;
 			Assets.animations[Util.ICON_CURSOR] = cursorDict;
 
+
 			var genericDict:Dictionary = new Dictionary();
 			var genericVector:Vector.<Texture> = new Vector.<Texture>();
 			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim0));
@@ -307,6 +347,7 @@ package {
 			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim3));
 			genericDict[Util.GENERIC_ATTACK] = genericVector;
 			Assets.animations[Util.GENERIC_ATTACK] = genericDict;
+
 
 			var charDict:Dictionary = new Dictionary();
 			var charVector:Vector.<Texture> = new Vector.<Texture>();
@@ -337,6 +378,7 @@ package {
 			charDict[Util.CHAR_COMBAT_FAINT] = charCombatFaintVector;
 			Assets.animations[Util.CHARACTER] = charDict;
 
+
 			var fighterDict:Dictionary = new Dictionary();
 			var fighterVector:Vector.<Texture> = new Vector.<Texture>();
 			fighterVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
@@ -349,6 +391,7 @@ package {
 			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
 			Assets.animations[Util.ENEMY_FIGHTER] = fighterDict;
 
+
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
 			mageVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
@@ -360,6 +403,44 @@ package {
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
 			Assets.animations[Util.ENEMY_MAGE] = mageDict;
+
+
+			var trapDict:Dictionary = new Dictionary();
+			var basicVector:Vector.<Texture> = new Vector.<Texture>();
+			basicVector.push(Texture.fromEmbeddedAsset(basicTrapAnim0));
+			trapDict[Util.BASIC_TRAP] = basicVector;
+
+			var shockVector:Vector.<Texture> = new Vector.<Texture>();
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim0));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim1));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim2));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim3));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim4));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim5));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim6));
+			shockVector.push(Texture.fromEmbeddedAsset(shockTrapAnim7));
+			trapDict[Util.SHOCK_TRAP] = shockVector;
+
+			var flameVector:Vector.<Texture> = new Vector.<Texture>();
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim0));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim1));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim2));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim3));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim4));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim5));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim6));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim7));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim8));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim9));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim10));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim11));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim12));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim13));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim14));
+			flameVector.push(Texture.fromEmbeddedAsset(flameTrapAnim15));
+			trapDict[Util.FLAME_TRAP] = flameVector;
+
+			Assets.animations[Util.TRAPS] = trapDict;
 		}
 
 		public static function setupFloors():void {
@@ -400,6 +481,9 @@ package {
 			tSfx[Util.GOLD_DEFICIT] = new sfxGoldDeficit();
 			tSfx[Util.REWARD_COLLECT] = new sfxReward();
 			tSfx[Util.DOOR_OPEN] = new sfxDoorOpen();
+			tSfx[Util.SFX_BASIC_TRAP] = new sfxBasicTrap();
+			tSfx[Util.SFX_FLAME_TRAP] = new sfxFlameTrap();
+			tSfx[Util.SFX_SHOCK_TRAP] = new sfxShockTrap();
 
 			return tSfx;
 		}

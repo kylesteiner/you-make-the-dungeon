@@ -14,6 +14,7 @@ package {
 	import starling.textures.Texture;
 	import starling.utils.Color;
 	import starling.display.Quad;
+	import starling.display.MovieClip;
 
 	import entities.*;
 	import tiles.*;
@@ -54,6 +55,8 @@ package {
 		public var removedEntities:Array;
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
+
+		public var trapAnimations:Array;
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
@@ -115,6 +118,7 @@ package {
 			objectiveState = new Dictionary();
 			removedEntities = new Array();
 			activeEnemies = new Array();
+			trapAnimations = new Array();
 
 			var floorData:Object;
 			if (saveGame.size == 0) {
@@ -257,6 +261,13 @@ package {
 					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, Assets.textures[textureName], stamina);
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
+				} else if (entity["type"] == "trap") {
+					var trapType:String = entity["trap"];
+					var damage:int = entity["damage"];
+					var radius:int = entity["radius"];
+					var trap:Trap = new Trap(tX, tY, Assets.textures[textureName], trapType, damage, radius);
+					entityGrid[tX][tY] = trap;
+					trap.deletable = tDeletable;
 				}
 			}
 
@@ -277,6 +288,7 @@ package {
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			addEventListener(GameEvent.ACTIVATE_TRAP, onActivateTrap);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
@@ -494,6 +506,12 @@ package {
 						saveEntity["type"] = "stamina_heal";
 						saveEntity["texture"] = "stamina_heal";
 						saveEntity["stamina"] = stamina.stamina;
+					} else if (entity is Trap) {
+						var trap:Trap = entity as Trap;
+						saveEntity["type"] = "trap";
+						saveEntity["texture"] = trap.type;
+						saveEntity["damage"] = trap.damage;
+						saveEntity["radius"] = trap.radius;
 					}
 					saveGame.data["entities"].push(saveEntity);
 				}
@@ -778,10 +796,18 @@ package {
 			return arr;
 		}
 
-		private function onEnterFrame(e:Event):void {
-			var keyCode:uint;
-			var cgx:int; var cgy:int;
-			var charTile:Tile; var nextTile:Tile;
+		private function onEnterFrame(event:EnterFrameEvent):void {
+			var trapAnimation:MovieClip;
+			var i:int;
+			for (i = 0; i < trapAnimations.length; i++) {
+				trapAnimation = trapAnimations[i];
+				trapAnimation.advanceTime(event.passedTime);
+				if (trapAnimation.isComplete) {
+					removeChild(trapAnimation);
+					trapAnimations.splice(i, 1);
+					i--;
+				}
+			}
 
 			if (char.moving) {
 				return;
@@ -791,6 +817,9 @@ package {
 				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
 			}
 
+			var keyCode:uint;
+			var cgx:int; var cgy:int;
+			var charTile:Tile; var nextTile:Tile;
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -856,28 +885,32 @@ package {
 				if (enemy.grid_y > 0
 					&& grid[enemy.grid_x][enemy.grid_y-1]
 					&& grid[enemy.grid_x][enemy.grid_y-1].south
-					&& entityGrid[enemy.grid_x][enemy.grid_y-1] == null) {
+					&& (entityGrid[enemy.grid_x][enemy.grid_y-1] == null
+					|| entityGrid[enemy.grid_x][enemy.grid_y-1] is Trap)) {
 					possibleDirections.push(Util.NORTH);
 				}
 				// South
 				if (enemy.grid_y < gridHeight - 1
 					&& grid[enemy.grid_x][enemy.grid_y+1]
 					&& grid[enemy.grid_x][enemy.grid_y+1].north
-					&& entityGrid[enemy.grid_x][enemy.grid_y+1] == null) {
+					&& (entityGrid[enemy.grid_x][enemy.grid_y+1] == null
+					|| entityGrid[enemy.grid_x][enemy.grid_y+1] is Trap)) {
 					possibleDirections.push(Util.SOUTH);
 				}
 				// East
 				if (enemy.grid_x < gridWidth - 1
 					&& grid[enemy.grid_x+1][enemy.grid_y]
 					&& grid[enemy.grid_x+1][enemy.grid_y].west
-					&& entityGrid[enemy.grid_x+1][enemy.grid_y] == null) {
+					&& (entityGrid[enemy.grid_x+1][enemy.grid_y] == null
+					|| entityGrid[enemy.grid_x+1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.EAST);
 				}
 				// West
 				if (enemy.grid_x > 0
 					&& grid[enemy.grid_x-1][enemy.grid_y]
 					&& grid[enemy.grid_x-1][enemy.grid_y].east
-					&& entityGrid[enemy.grid_x-1][enemy.grid_y] == null) {
+					&& (entityGrid[enemy.grid_x-1][enemy.grid_y] == null
+					|| entityGrid[enemy.grid_x-1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.WEST);
 				}
 
@@ -912,25 +945,41 @@ package {
 					continue;
 				}
 
-				// Move the entity's position in the entityGrid.
+				// Command the enemy to move.
 				entityGrid[enemy.grid_x][enemy.grid_y] = null;
+				var new_x:int; var new_y:int;
 				switch (direction) {
 					case Util.NORTH:
-						entityGrid[enemy.grid_x][enemy.grid_y - 1] = enemy;
+						new_x = enemy.grid_x;
+						new_y = enemy.grid_y - 1;
 						break;
 					case Util.SOUTH:
-						entityGrid[enemy.grid_x][enemy.grid_y + 1] = enemy;
+						new_x = enemy.grid_x;
+						new_y = enemy.grid_y + 1;
 						break;
 					case Util.EAST:
-						entityGrid[enemy.grid_x + 1][enemy.grid_y] = enemy;
+						new_x = enemy.grid_x + 1;
+						new_y = enemy.grid_y;
 						break;
 					case Util.WEST:
-						entityGrid[enemy.grid_x - 1][enemy.grid_y] = enemy;
+						new_x = enemy.grid_x - 1;
+						new_y = enemy.grid_y;
 						break;
 				}
-				// Command the enemy to move.
+				if (entityGrid[new_x][new_y] is Trap) {
+					enemy.trap = entityGrid[new_x][new_y];
+				}
+				entityGrid[new_x][new_y] = enemy;
 				enemy.move(direction);
 			}
+		}
+
+		private function killEnemy(enemy:Enemy):void {
+			removeEnemyFromActive(enemy);
+			removedEntities.push(enemy);
+			entityGrid[enemy.grid_x][enemy.grid_y] = null;
+			removeChild(enemy);
+			runSummary.enemiesDefeated++;
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -1012,11 +1061,9 @@ package {
 
 		// Called after the character defeats an enemy entity.
 		public function onCombatSuccess(enemy:Enemy):void {
-			removeEnemyFromActive(enemy);
-			removedEntities.push(enemy);
-			entityGrid[enemy.grid_x][enemy.grid_y] = null;
-			removeChild(enemy);
+			killEnemy(enemy);
 			char.inCombat = false;
+			runSummary.damageTaken += preHealth - char.hp;
 			Util.logger.logAction(17, {
 				"characterHealthLeft":char.hp,
 				"characterHealthMax":char.maxHp,
@@ -1027,9 +1074,6 @@ package {
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
-
-			runSummary.enemiesDefeated++;
-			runSummary.damageTaken += preHealth - char.hp;
 		}
 
 		// Called when the character moves into an objective tile. Updates
@@ -1077,6 +1121,50 @@ package {
 				}
 			}
 			Util.logger.logAction(7, { } );
+		}
+
+		private function onActivateTrap(e:GameEvent):void {
+			var i:int; var j:int; var entity:Entity;
+
+			var trap:Trap = e.gameData["trap"];
+			var enemies:Array = new Array();
+			var affectedTiles:Array = trap.generateDamageRadius();
+			Assets.mixer.play(trap.triggerSound);
+
+			var trapAnim:MovieClip;
+			for each(trapAnim in trap.generateDamageAnimations()) {
+				trapAnimations.push(trapAnim);
+				addChild(trapAnim);
+			}
+
+			var damagePoint:Point;
+			for each(damagePoint in affectedTiles) {
+				entity = entityGrid[damagePoint.x][damagePoint.y];
+				if (entity is Enemy) {
+					enemies.push(entity);
+				}
+
+				if (char.grid_x == damagePoint.x && char.grid_y == damagePoint.y) {
+					char.hp -= trap.damage;
+					// Probably want to play some sfx here
+				}
+			}
+
+			var reward:int = 0;
+			for each (var enemy:Enemy in enemies) {
+				enemy.hp -= trap.damage;
+				enemy.addOverlay();
+				if (enemy.hp <= 0) {
+					reward += enemy.reward;
+					killEnemy(enemy);
+				}
+			}
+			var eventData:Dictionary = new Dictionary();
+			eventData["reward"] = reward;
+			eventData["damage"] = trap.damage;
+			dispatchEvent(new GameEvent(GameEvent.GET_TRAP_REWARD, e.x, e.y, eventData));
+			removedEntities.push(trap);
+			removeChild(trap);
 		}
 	}
 }

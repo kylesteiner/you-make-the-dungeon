@@ -28,6 +28,7 @@ package entities {
 		public function handleChar(c:Character):void {}
 
 		public function addOverlay():void {
+			removeChild(overlaySprite);
 			overlaySprite = generateOverlay();
 			addChild(overlaySprite);
 		}

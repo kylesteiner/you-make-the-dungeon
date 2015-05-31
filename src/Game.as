@@ -185,6 +185,7 @@ package {
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
@@ -1051,10 +1052,6 @@ package {
 						"enemyReward":temp.reward,
 						"enemyName":temp.enemyName
 					});
-					trace(temp.hp);
-					trace(newEntity.cost);
-					trace(temp.reward);
-					trace(temp.attack);
 				} else if (newEntity is StaminaHeal) {
 					var tempS:StaminaHeal = newEntity as StaminaHeal;
 					Util.logger.logAction(19, {
@@ -1080,6 +1077,17 @@ package {
 
 		private function onLosChange(event:GameEvent):void {
 			currentFloor.removeFoggedLocationsInPath();
+		}
+		
+		private function onGetTrapReward(e:GameEvent):void {
+			gold += e.gameData["reward"];
+			runSummary.goldCollected += e.gameData["reward"];
+			goldHud.update(gold);
+			
+			runSummary.damageTaken += e.gameData["damage"];
+			if (currentFloor.char.hp <= 0) {
+				endRun();
+			}
 		}
 	}
 }
