@@ -43,6 +43,11 @@ package {
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE)
 			var creditsButton:Clickable = new Clickable(256, 320, openCredits, creditsField);
 			addChild(creditsButton);
+			
+			var scoresField:TextField = 
+					new TextField(128, 40, "SCORES", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			var scoresButton:Clickable = new Clickable(256, 384, openScores, scoresField);
+			addChild(scoresButton);
 
 			var versionString:String = "v " + versionID + "." + cid;
 			var version:TextField = new TextField(48, 16, versionString, Util.DEFAULT_FONT, 16);
@@ -68,6 +73,10 @@ package {
 
 		public function openCredits():void {
 			dispatchEvent(new MenuEvent(MenuEvent.CREDITS));
+		}
+		
+		public function openScores():void {
+			dispatchEvent(new MenuEvent(MenuEvent.SCORES));
 		}
 	}
 }

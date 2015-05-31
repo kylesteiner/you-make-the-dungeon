@@ -26,6 +26,7 @@ package {
 		public var attack:int;
 
 		// Character movement state (for rendering).
+		public var moveLock:Boolean; // Used by tutorial to hold char in place.
 		public var inCombat:Boolean;
 		public var moving:Boolean;
 		private var destX:int;
@@ -113,7 +114,7 @@ package {
 		// continuously over many frames. Once the character arrives at the tile
 		// an event is passed to floor.
 		public function move(direction:int):void {
-			if (moving || inCombat) {
+			if (moving || inCombat || moveLock) {
 				return;
 			}
 
