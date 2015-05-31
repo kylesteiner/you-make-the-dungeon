@@ -27,10 +27,6 @@ package entities {
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
-            unlockTile(FLAME_TRAP);
-            unlockTile(FLAME_TRAP_BLUE);
-            unlockTile(SHOCK_TRAP);
-            unlockTile(BASIC_TRAP);
         }
 
         public function unlockTile(type:String):void {
