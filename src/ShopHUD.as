@@ -40,35 +40,25 @@ package {
 			shopItems = new Dictionary();
 			shopPrices = new Dictionary();
 
-			displayCharStats();
-			displayShopItems();
+			displayStat(0, HP, Assets.textures[Util.ICON_HEALTH], getHpCost());
+			displayStat(1, ATTACK, Assets.textures[Util.ICON_ATK], getAttackCost());
+			displayStat(2, STAMINA, Assets.textures[Util.ICON_STAMINA], getStaminaCost());
+			displayStat(3, LOS, Assets.textures[Util.ICON_LOS], getLOSCost());
 
 			addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
 		}
 
-		private function displayCharStats():void {
-			charStats[HP] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[HP].y = 4;
-			var hpImg:Image = new Image(Assets.textures[Util.ICON_HEALTH]);
-			setupStat(charStats[HP], hpImg);
-
-			charStats[ATTACK] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[ATTACK].y = 4 + height / 4;
-			var atkImg:Image = new Image(Assets.textures[Util.ICON_ATK]);
-			setupStat(charStats[ATTACK], atkImg);
-
-			charStats[STAMINA] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[STAMINA].y = 4 + height / 2;
-			var staminaImg:Image = new Image(Assets.textures[Util.ICON_STAMINA]);
-			setupStat(charStats[STAMINA], staminaImg);
-
-			charStats[LOS] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			charStats[LOS].y = 4 + height * 3 / 4;
-			var losImg:Image = new Image(Assets.textures[Util.ICON_LOS]);
-			setupStat(charStats[LOS], losImg);
+		private function displayStat(position:int, type:String, icon:Texture, cost:int):void {
+			// Show stat and icon
+			charStats[type] = new TextField(50, 0, "0", Util.DEFAULT_FONT, Util.SMALL_FONT_SIZE);
+			charStats[type].y = 9 + height * position / 4;
+			setupCharStat(charStats[type], new Image(icon));
+			// Show upgrade button
+			shopItems[type] = displayShopItem(position, type, cost);
+			addChild(shopItems[type]);
 		}
 
-		private function setupStat(tf:TextField, i:Image):void {
+		private function setupCharStat(tf:TextField, i:Image):void {
 			tf.height = tf.textBounds.height;
 			tf.hAlign = HAlign.LEFT;
 			tf.x = 75;
@@ -76,17 +66,6 @@ package {
 			i.y = tf.y + tf.height / 2 - i.height / 2;
 			addChild(tf);
 			addChild(i);
-		}
-
-		private function displayShopItems():void {
-			shopItems[HP] = displayShopItem(0, HP, getHpCost());
-			shopItems[ATTACK] = displayShopItem(1, ATTACK, getAttackCost());
-			shopItems[STAMINA] = displayShopItem(2, STAMINA, getStaminaCost());
-			shopItems[LOS] = displayShopItem(3, LOS, getLOSCost());
-
-			for (var item:String in shopItems) {
-				addChild(shopItems[item]);
-			}
 		}
 
 		private function getHpCost():int {
