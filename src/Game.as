@@ -689,8 +689,6 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
-			trace(overallGoldEarned);
-			trace(saveGame.data["overallGoldEarned"]);
 
 			saveGame.flush();
 

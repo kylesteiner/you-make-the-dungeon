@@ -1036,7 +1036,7 @@ package {
 				"characterStaminaLeft":char.stamina,
 				"characterStaminaMax":char.maxStamina,
 				"characterAttack":char.attack,
-				"enemyHealth":enemy.hp,
+				"enemyHealth":enemy.maxHp,
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
@@ -1091,11 +1091,17 @@ package {
 
 		private function onActivateTrap(e:GameEvent):void {
 			var i:int; var j:int; var entity:Entity;
-
+			
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
 			var affectedTiles:Array = trap.generateDamageRadius();
 			Assets.mixer.play(trap.triggerSound);
+			
+			Util.logger.logAction(23, {
+				"type":trap.type,
+				"radius":trap.radius,
+				"damage":trap.damage
+			});
 
 			var trapAnim:MovieClip;
 			for each(trapAnim in trap.generateDamageAnimations()) {
@@ -1123,6 +1129,12 @@ package {
 				if (enemy.hp <= 0) {
 					reward += enemy.reward;
 					killEnemy(enemy);
+					Util.logger.logAction(24, {
+						"name":enemy.enemyName,
+						"attack":enemy.attack,
+						"hp":enemy.maxHp,
+						"reward":enemy.reward
+					});
 				}
 			}
 			var eventData:Dictionary = new Dictionary();
