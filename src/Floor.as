@@ -14,6 +14,7 @@ package {
 	import starling.textures.Texture;
 	import starling.utils.Color;
 	import starling.display.Quad;
+	import starling.display.MovieClip;
 
 	import entities.*;
 	import tiles.*;
@@ -54,6 +55,8 @@ package {
 		public var removedEntities:Array;
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
+
+		public var trapAnimations:Array;
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
@@ -120,6 +123,7 @@ package {
 			objectiveState = new Dictionary();
 			removedEntities = new Array();
 			activeEnemies = new Array();
+			trapAnimations = new Array();
 
 			var floorData:Object;
 			if (saveGame.size == 0) {
@@ -526,6 +530,12 @@ package {
 						saveEntity["type"] = "stamina_heal";
 						saveEntity["texture"] = "stamina_heal";
 						saveEntity["stamina"] = stamina.stamina;
+					} else if (entity is Trap) {
+						var trap:Trap = entity as Trap;
+						saveEntity["type"] = "trap";
+						saveEntity["texture"] = trap.type;
+						saveEntity["damage"] = trap.damage;
+						saveEntity["radius"] = trap.radius;
 					}
 					saveGame.data["entities"].push(saveEntity);
 				}
@@ -810,14 +820,22 @@ package {
 			return arr;
 		}
 
-		private function onEnterFrame(e:Event):void {
+		private function onEnterFrame(event:EnterFrameEvent):void {
 			if(tutorialImage && tutorialDisplaying) {
 				addChild(tutorialImage);
 			}
 
-			var keyCode:uint;
-			var cgx:int; var cgy:int;
-			var charTile:Tile; var nextTile:Tile;
+			var trapAnimation:MovieClip;
+			var i:int;
+			for (i = 0; i < trapAnimations.length; i++) {
+				trapAnimation = trapAnimations[i];
+				trapAnimation.advanceTime(event.passedTime);
+				if (trapAnimation.isComplete) {
+					removeChild(trapAnimation);
+					trapAnimations.splice(i, 1);
+					i--;
+				}
+			}
 
 			if (char.moving) {
 				return;
@@ -827,6 +845,9 @@ package {
 				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
 			}
 
+			var keyCode:uint;
+			var cgx:int; var cgy:int;
+			var charTile:Tile; var nextTile:Tile;
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -980,7 +1001,7 @@ package {
 				enemy.move(direction);
 			}
 		}
-		
+
 		private function killEnemy(enemy:Enemy):void {
 			removeEnemyFromActive(enemy);
 			removedEntities.push(enemy);
@@ -1135,11 +1156,36 @@ package {
 
 			var trap:Trap = e.gameData["trap"];
 			var enemies:Array = new Array();
-			if (trap.type == "flame") {
+			var affectedTiles:Array = trap.generateDamageRadius();
+			Assets.mixer.play(trap.triggerSound);
+
+			var trapAnim:MovieClip;
+			for each(trapAnim in trap.generateDamageAnimations()) {
+				trapAnimations.push(trapAnim);
+				addChild(trapAnim);
+			}
+
+			var damagePoint:Point;
+			for each(damagePoint in affectedTiles) {
+				entity = entityGrid[damagePoint.x][damagePoint.y];
+				if (entity is Enemy) {
+					enemies.push(entity);
+				}
+
+				if (char.grid_x == damagePoint.x && char.grid_y == damagePoint.y) {
+					char.hp -= trap.damage;
+					// Probably want to play some sfx here
+				}
+			}
+
+			/*if (trap.type == Util.FLAME_TRAP) {
 				Assets.mixer.play(Util.SFX_FLAME_TRAP);
 				// Damage radius from epicenter
 				for (i = trap.radius * -1; i <= trap.radius; i++) {
 					for (j = trap.radius * -1; j <= trap.radius; j++) {
+						if (i + j > trap.radius) {
+							continue;
+						}
 						// FLAME ANIMATION HERE
 						entity = entityGrid[e.x + i][e.y + j];
 						if (entity is Enemy) {
@@ -1150,7 +1196,7 @@ package {
 						}
 					}
 				}
-			} else if (trap.type == "shock") {
+			} else if (trap.type == Util.SHOCK_TRAP) {
 				Assets.mixer.play(Util.SFX_SHOCK_TRAP);
 				// Damage in line from epicenter
 				for (i = trap.radius * -1; i <= trap.radius; i++) {
@@ -1168,11 +1214,11 @@ package {
 						char.hp -= trap.damage;
 					}
 				}
-			} else if (trap.type == "basic") {
+			} else if (trap.type == Util.BASIC_TRAP) {
 				// BASIC ANIMATION HERE
 				Assets.mixer.play(Util.SFX_BASIC_TRAP);
 				enemies.push(entityGrid[e.x][e.y]);
-			}
+			}*/
 
 			var reward:int = 0;
 			for each (var enemy:Enemy in enemies) {

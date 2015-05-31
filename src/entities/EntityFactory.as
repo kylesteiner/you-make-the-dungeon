@@ -10,8 +10,10 @@ package entities {
         public static const LIGHT_HEALING:String = "entity_light_healing";
         public static const MODERATE_HEALING:String = "entity_moderate_healing";
         public static const LIGHT_STAMINA_HEAL:String = "entity_light_stamina_heal";
+
         public static const FIGHTER:String = "entity_fighter";
         public static const MAGE:String = "entity_mage";
+
         public static const BASIC_TRAP:String = "basic_trap";
         public static const FLAME_TRAP:String = "flame_trap";
         public static const SHOCK_TRAP:String = "shock_trap";
@@ -24,6 +26,7 @@ package entities {
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
+            unlockTile(BASIC_TRAP);
         }
 
         public function unlockTile(type:String):void {
@@ -163,25 +166,25 @@ package entities {
             return new Enemy(x, y, Util.ENEMY_MAGE, Assets.textures[Util.ENEMY_MAGE], hp, atk, reward);
         }
 
-        public function constructBasicTrap():Trap {
+        public function constructBasicTrap(x:int=0, y:int=0):Trap {
 			var damage:int = 5;
-			var type:String = "basic";
+			var type:String = Util.BASIC_TRAP;
 
-            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], type, damage);
+            return new Trap(0, 0, Assets.textures[Util.BASIC_TRAP], type, damage, 0);
         }
 
-        public function constructFlameTrap():Trap {
+        public function constructFlameTrap(x:int=0, y:int=0):Trap {
            	var damage:int = 5;
 			var radius:int = 3;
-			var type:String = "flame";
+			var type:String = Util.FLAME_TRAP;
 
 			return new Trap(0, 0, Assets.textures[Util.FLAME_TRAP], type, damage, radius);
         }
 
-        public function constructShockTrap():Trap {
+        public function constructShockTrap(x:int=0, y:int=0):Trap {
     		var damage:int = 5;
 			var radius:int = 3;
-			var type:String = "shock";
+			var type:String = Util.SHOCK_TRAP;
 
 			return new Trap(0, 0, Assets.textures[Util.SHOCK_TRAP], type, damage, radius);
         }

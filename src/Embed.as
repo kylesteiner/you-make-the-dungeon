@@ -296,6 +296,7 @@ package {
 			cursorDict[Util.ICON_CURSOR] = cursorVector;
 			Assets.animations[Util.ICON_CURSOR] = cursorDict;
 
+
 			var genericDict:Dictionary = new Dictionary();
 			var genericVector:Vector.<Texture> = new Vector.<Texture>();
 			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim0));
@@ -304,6 +305,7 @@ package {
 			genericVector.push(Texture.fromEmbeddedAsset(genericAttackAnim3));
 			genericDict[Util.GENERIC_ATTACK] = genericVector;
 			Assets.animations[Util.GENERIC_ATTACK] = genericDict;
+
 
 			var charDict:Dictionary = new Dictionary();
 			var charVector:Vector.<Texture> = new Vector.<Texture>();
@@ -334,6 +336,7 @@ package {
 			charDict[Util.CHAR_COMBAT_FAINT] = charCombatFaintVector;
 			Assets.animations[Util.CHARACTER] = charDict;
 
+
 			var fighterDict:Dictionary = new Dictionary();
 			var fighterVector:Vector.<Texture> = new Vector.<Texture>();
 			fighterVector.push(Texture.fromEmbeddedAsset(enemyFighterCombatIdleAnim0));
@@ -346,6 +349,7 @@ package {
 			fighterDict[Util.ENEMY_COMBAT_FAINT] = fighterFaintVector;
 			Assets.animations[Util.ENEMY_FIGHTER] = fighterDict;
 
+
 			var mageDict:Dictionary = new Dictionary();
 			var mageVector:Vector.<Texture> = new Vector.<Texture>();
 			mageVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
@@ -357,6 +361,22 @@ package {
 			mageFaintVector.push(Texture.fromEmbeddedAsset(enemyMageCombatIdleAnim0));
 			mageDict[Util.ENEMY_COMBAT_FAINT] = mageFaintVector;
 			Assets.animations[Util.ENEMY_MAGE] = mageDict;
+
+
+			var trapDict:Dictionary = new Dictionary();
+			var basicVector:Vector.<Texture> = new Vector.<Texture>();
+			basicVector.push(Texture.fromEmbeddedAsset(basic_trap));
+			trapDict[Util.BASIC_TRAP] = basicVector;
+
+			var shockVector:Vector.<Texture> = new Vector.<Texture>();
+			shockVector.push(Texture.fromEmbeddedAsset(shock_trap));
+			trapDict[Util.SHOCK_TRAP] = shockVector;
+
+			var flameVector:Vector.<Texture> = new Vector.<Texture>();
+			flameVector.push(Texture.fromEmbeddedAsset(flame_trap));
+			trapDict[Util.FLAME_TRAP] = flameVector;
+
+			Assets.animations[Util.TRAPS] = trapDict;
 		}
 
 		public static function setupFloors():void {

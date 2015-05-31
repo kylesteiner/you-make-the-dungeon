@@ -176,6 +176,7 @@ package {
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
+		public static const TRAPS:String = "traps"
 		public static const BASIC_TRAP:String = "basic_trap";
 		public static const FLAME_TRAP:String = "flame_trap";
 		public static const SHOCK_TRAP:String = "shock_trap";
