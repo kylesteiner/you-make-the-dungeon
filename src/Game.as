@@ -89,6 +89,9 @@ package {
 
 		private var saveGame:SharedObject;
 
+		private var newGame1:TutorialOverlay;
+		private var newGame2:TutorialOverlay;
+
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
 							 bgmMuteButton:Clickable) {
@@ -111,6 +114,7 @@ package {
 
 			initializeWorld(fromSave);
 			initializeUI();
+			initializeTutorial();
 
 			addChild(world);
 			addChild(sfxMuteButton);
@@ -122,6 +126,9 @@ package {
 			addChild(shopButton);
 			addChild(helpButton);
 			addChild(buildHud);
+			if (gameState == STATE_TUTORIAL) {
+				addChild(newGame1);
+			}
 
 			// Update build hud with unlocks if loading from save.
 			if (fromSave) {
@@ -165,6 +172,7 @@ package {
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
 
 			// Tutorial-specific game events.
+			addEventListener(TutorialEvent.NEXT, onTutorialClicked);
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 			addEventListener(GameEvent.CINEMATIC_COMPLETE, onCinematicComplete);
 		}
@@ -244,6 +252,18 @@ package {
 
 			runHud = new RunHUD(); // textures not needed for now but maybe in future
 			buildHud = new BuildHUD();
+		}
+
+		private function initializeTutorial():void {
+			var bg2:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
+            bg2.alpha = 0.7;
+			newGame2 = new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
+										   bg2);
+			var bg1:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
+            bg1.alpha = 0.7;
+			newGame1 = new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
+										   bg1,
+										   newGame2);
 		}
 
 		private function returnToMenu():void {
@@ -573,15 +593,6 @@ package {
 				removeChild(phaseBanner);
 				phaseBanner = null;
 			}
-
-			/*if(gameState == STATE_BUILD) {
-				showBuildHudImage = !touch.isTouching(buildHud);
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(goldHud) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(bgmMuteButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(sfxMuteButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(runButton) : showBuildHudImage;
-				showBuildHudImage = showBuildHudImage ? !touch.isTouching(shopButton) : showBuildHudImage;
-			}*/
 		}
 
 		private function buildHandleClick(touch:Touch):void {
@@ -777,6 +788,20 @@ package {
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
+		}
+
+		public function onTutorialClicked(e:TutorialEvent):void {
+			trace("onTutorialClicked");
+			nextTutorial(e.current, e.next);
+		}
+
+		public function nextTutorial(current:TutorialOverlay, next:TutorialOverlay=null):void {
+			removeChild(current);
+			if (next) {
+				addChild(next);
+			} else {
+				gameState = STATE_BUILD;
+			}
 		}
 
 		public function playOpeningCinematic():void {
