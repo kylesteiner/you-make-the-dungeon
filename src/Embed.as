@@ -120,6 +120,14 @@ package {
 		[Embed(source='assets/tutorials/keys.png')] public static const tutorial_keys:Class;
 		[Embed(source='assets/tutorials/health_stamina_arrows.png')] public static const tutorial_health_stamina_arrows:Class;
 		[Embed(source='assets/tutorials/health_stamina_shadow.png')] public static const tutorial_health_stamina_shadow:Class;
+		[Embed(source='assets/tutorials/shop_arrow.png')] public static const tutorial_shop_arrow:Class;
+		[Embed(source='assets/tutorials/shop_shadow.png')] public static const tutorial_shop_shadow:Class;
+		[Embed(source='assets/tutorials/entity_arrows.png')] public static const tutorial_entity_arrows:Class;
+		[Embed(source='assets/tutorials/entity_shadow.png')] public static const tutorial_entity_shadow:Class;
+		[Embed(source='assets/tutorials/delete_arrow.png')] public static const tutorial_delete_arrow:Class;
+		[Embed(source='assets/tutorials/delete_shadow.png')] public static const tutorial_delete_shadow:Class;
+		[Embed(source='assets/tutorials/speed_arrows.png')] public static const tutorial_speed_arrows:Class;
+		[Embed(source='assets/tutorials/speed_shadow.png')] public static const tutorial_speed_shadow:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -326,6 +334,14 @@ package {
 			Assets.textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
 			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_ARROWS] = Texture.fromEmbeddedAsset(tutorial_health_stamina_arrows);
 			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW] = Texture.fromEmbeddedAsset(tutorial_health_stamina_shadow);
+			Assets.textures[Util.TUTORIAL_SHOP_ARROW] = Texture.fromEmbeddedAsset(tutorial_shop_arrow);
+			Assets.textures[Util.TUTORIAL_SHOP_SHADOW] = Texture.fromEmbeddedAsset(tutorial_shop_shadow);
+			Assets.textures[Util.TUTORIAL_ENTITY_ARROWS] = Texture.fromEmbeddedAsset(tutorial_entity_arrows);
+			Assets.textures[Util.TUTORIAL_ENTITY_SHADOW] = Texture.fromEmbeddedAsset(tutorial_entity_shadow);
+			Assets.textures[Util.TUTORIAL_DELETE_ARROW] = Texture.fromEmbeddedAsset(tutorial_delete_arrow);
+			Assets.textures[Util.TUTORIAL_DELETE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_delete_shadow);
+			Assets.textures[Util.TUTORIAL_SPEED_ARROWS] = Texture.fromEmbeddedAsset(tutorial_speed_arrows);
+			Assets.textures[Util.TUTORIAL_SPEED_SHADOW] = Texture.fromEmbeddedAsset(tutorial_speed_shadow);
 		}
 
 		public static function setupAnimations():void {

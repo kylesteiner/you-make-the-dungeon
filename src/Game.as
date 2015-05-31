@@ -30,8 +30,22 @@ package {
 		public static const RUN_TUTORIAL_TEXT:String =
 				"Click here when\nyou're done building.";
 		public static const MOVE_TUTORIAL_TEXT:String = "To move Nea";
-		public static const HEALTH_TUTORIAL_TEXT:String = "This is Nea's health. Nea loses health when fighting monsters."
-		public static const STAMINA_TUTORIAL_TEXT:String = "This is Nea's stamina. Nea can move until she runs out of stamina."
+		public static const HEALTH_TUTORIAL_TEXT:String =
+				"This is Nea's health. Nea loses health when fighting monsters."
+		public static const STAMINA_TUTORIAL_TEXT:String =
+				"This is Nea's stamina. Nea can move until she runs out of stamina."
+		public static const SHOP_TUTORIAL_TEXT:String =
+				"Click here to upgrade Nea's stats.";
+		public static const ENTITY_TUTORIAL_TEXT:String =
+				"Click up here to buy and place an enemy, health boost, stamina boost, or trap.";
+		public static const ENTITY_DROPDOWN_TUTORIAL_TEXT:String =
+				"Click the buttons to see other choices.";
+		public static const DELETE_TUTORIAL_TEXT:String =
+				"Click here to sell back tiles you placed.";
+		public static const SPEED_MOVE_TUTORIAL_TEXT:String =
+				"Click here to make Nea move faster.";
+		public static const SPEED_COMBAT_TUTORIAL_TEXT:String =
+				"Click here to speed up combat.";
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
@@ -51,7 +65,7 @@ package {
 		public static const TUTORIAL_WAITING_FOR_EDGES:String = "waiting_for_edges";
 		public static const TUTORIAL_WAITING_FOR_PLACE:String = "waiting_for_place";
 		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
-		public static const TUTORIAL_PRE_RUN:String = "pre_run";
+		public static const TUTORIAL_WAITING_FOR_SPEED:String = "waiting_for_speed";
 
 		private var runButton:Clickable;
 		private var endButton:Clickable;
@@ -85,7 +99,6 @@ package {
 		private var runSummary:Summary;
 
 		private var gameState:String;
-		private var tutorialState:String;
 
 		private var gold:int;
 
@@ -119,11 +132,19 @@ package {
 		private var overallTilesPlaced:int;
 		private var overallGoldSpent:int;
 
-		// Tutorial sequences
+		// Tutorial sequences and state
+		private var tutorialState:String;
+		private var unlockedFirstEntity:Boolean;
+		private var entityTutorialDisplayed:Boolean;
+		private var secondBuild:Boolean;
+		private var secondRun:Boolean;
 		private var cinematic:Cinematic;
 		private var introTutorial:TutorialSequence;
 		private var buildTutorial:TutorialSequence;
 		private var runTutorial:TutorialSequence;
+		private var secondBuildTutorial:TutorialSequence;
+		private var entityTutorial:TutorialSequence;
+		private var secondRunTutorial:TutorialSequence;
 
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
@@ -301,6 +322,11 @@ package {
 		}
 
 		private function initializeTutorial():void {
+			secondBuild = false;
+			secondRun = false;
+			unlockedFirstEntity = false;
+			entityTutorialDisplayed = false;
+
 			//--------- INTRO TUTORIAL ---------//
 			var introOverlays:Array = new Array();
 			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
@@ -393,6 +419,98 @@ package {
 			runTutorialOverlays.push(healthStaminaOverlay);
 			runTutorial = new TutorialSequence(onRunTutorialComplete,
 											   runTutorialOverlays);
+
+			//--------- SECOND BUILD PHASE TUTORIAL ---------//
+			var secondBuildTutorialOverlays:Array = new Array();
+
+			var deleteText:TextField = new TextField(320, 150,
+													 DELETE_TUTORIAL_TEXT,
+													 Util.DEFAULT_FONT,
+													 Util.MEDIUM_FONT_SIZE);
+			deleteText.x = 130;
+			deleteText.y = 170;
+			var deleteShadow:Image = new Image(Assets.textures[Util.TUTORIAL_DELETE_SHADOW]);
+			deleteShadow.alpha = 0.7;
+			var deleteOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_DELETE_ARROW]),
+					deleteShadow);
+			deleteOverlay.addChild(deleteText);
+
+			var shopText:TextField = new TextField(300, 100,
+												   SHOP_TUTORIAL_TEXT,
+												   Util.DEFAULT_FONT,
+												   Util.MEDIUM_FONT_SIZE);
+			shopText.x = 290;
+			shopText.y = 210;
+			var shopShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SHOP_SHADOW]);
+			shopShadow.alpha = 0.7;
+			var shopOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_SHOP_ARROW]),
+					shopShadow,
+					false);
+			shopOverlay.addChild(shopText);
+
+			secondBuildTutorialOverlays.push(deleteOverlay);
+			secondBuildTutorialOverlays.push(shopOverlay);
+
+			secondBuildTutorial = new TutorialSequence(onsecondBuildTutorialComplete,
+													   secondBuildTutorialOverlays);
+
+			//--------- ENTITY TUTORIAL ---------//
+			var entityTutorialOverlays:Array = new Array();
+			var entityShadow:Image = new Image(Assets.textures[Util.TUTORIAL_ENTITY_SHADOW]);
+			entityShadow.alpha = 0.7;
+			var entitySelectText:TextField = new TextField(300, 100,
+														   ENTITY_TUTORIAL_TEXT,
+														   Util.DEFAULT_FONT,
+														   Util.SMALL_FONT_SIZE);
+			entitySelectText.x = 325;
+			entitySelectText.y = 2;
+
+			var entityMoreText:TextField = new TextField(230, 95,
+														 ENTITY_DROPDOWN_TUTORIAL_TEXT,
+														 Util.DEFAULT_FONT,
+														 Util.SMALL_FONT_SIZE);
+			entityMoreText.x = 60;
+			entityMoreText.y = 165;
+
+			var entityOverlay:TutorialOverlay = new TutorialOverlay(
+				new Image(Assets.textures[Util.TUTORIAL_ENTITY_ARROWS]),
+				entityShadow);
+			entityOverlay.addChild(entitySelectText);
+			entityOverlay.addChild(entityMoreText);
+			entityTutorialOverlays.push(entityOverlay);
+
+			entityTutorial = new TutorialSequence(onEntityTutorialComplete,
+			 									  entityTutorialOverlays);
+
+			//--------- SECOND RUN PHASE TUTORIAL ---------//
+			var secondRunTutorialOverlays:Array = new Array();
+			var speedShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
+			speedShadow.alpha = 0.7;
+			var speedCombat:TextField = new TextField(210, 85,
+													  SPEED_COMBAT_TUTORIAL_TEXT,
+													  Util.DEFAULT_FONT,
+													  Util.SMALL_FONT_SIZE);
+			speedCombat.x = 430;
+			speedCombat.y = 245;
+			var speedMove:TextField = new TextField(220, 80,
+													SPEED_MOVE_TUTORIAL_TEXT,
+													Util.DEFAULT_FONT,
+													Util.SMALL_FONT_SIZE);
+			speedMove.x = 135;
+			speedMove.y = 400;
+			var speedOverlay:TutorialOverlay = new TutorialOverlay(
+					new Image(Assets.textures[Util.TUTORIAL_SPEED_ARROWS]),
+					speedShadow,
+					false);
+			speedOverlay.addChild(speedCombat);
+			speedOverlay.addChild(speedMove);
+
+			secondRunTutorialOverlays.push(speedOverlay);
+
+			secondRunTutorial = new TutorialSequence(onSecondRunTutorialComplete,
+													 secondRunTutorialOverlays);
 		}
 
 		private function returnToMenu():void {
@@ -410,7 +528,7 @@ package {
 		private function onCombatSuccess(event:AnimationEvent):void {
 			popupManager.removePopup();
 			addChild(endButton);
-			
+
 			currentFloor.onCombatSuccess(event.enemy);
 			gold += event.enemy.reward;
 			runSummary.goldCollected += event.enemy.reward;
@@ -430,12 +548,20 @@ package {
 		}
 
 		public function onShopSpend(e:GameEvent):void {
+			
+			/* todo:put these somewhere
+			 * secondBuildTutorial.next();
+			 * if (unlockedFirstEntity && !entityTutorialDisplayed) {
+				addChild(entityTutorial);
+			}*/
+			
 			var cost:int = e.gameData["cost"];
 			if (gold - cost < 0) {
 				// Cannot purchase item
 				goldHud.setFlash();
 				return;
 			}
+
 			gold -= cost;
 			goldSpent += cost;
 			goldHud.update(gold);
@@ -478,7 +604,6 @@ package {
 						"goldSpent":cost
 					});
 					break;
-			}
 		}
 
 		public function constructPhaseBanner(run:Boolean = true):void {
@@ -541,12 +666,23 @@ package {
 			gameState = STATE_RUN;
 
 			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+				// This means the run button was hit, so the build tutorial needs
+				// to complete and start the first run tutorial.
+				secondBuild = true;
 				buildTutorial.next();
 			}
 
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
 			constructPhaseBanner();
+
+			if (secondRun) {
+				// For the second run, it also needs to start a tutorial.
+				addChild(secondRunTutorial);
+				currentFloor.char.moveLock = true;
+				tutorialState = TUTORIAL_WAITING_FOR_SPEED;
+				secondRun = false;
+			}
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
@@ -582,6 +718,12 @@ package {
 			removeChild(runHud);
 
 			gameState = STATE_SUMMARY;
+			bestRunGoldEarned = Math.max(bestRunGoldEarned, runSummary.goldCollected);
+			bestRunDistance = Math.max(bestRunDistance, runSummary.distanceTraveled);
+			bestRunEnemiesDefeated = Math.max(bestRunEnemiesDefeated, runSummary.enemiesDefeated);
+			runSummary.bestGold = bestRunGoldEarned;
+			runSummary.bestDistance = bestRunDistance;
+			runSummary.bestEnemies = bestRunEnemiesDefeated;
 			popupManager.addSummary(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
 		}
@@ -594,7 +736,6 @@ package {
 
 		public function returnToBuild():void {
 			popupManager.removeSummary();
-			runSummary.reset();
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -619,6 +760,8 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
+			trace(overallGoldEarned);
+			trace(saveGame.data["overallGoldEarned"]);
 
 			saveGame.flush();
 
@@ -634,6 +777,18 @@ package {
 			currentFloor.resetFloor();
 			centerWorldOnCharacter();
 			constructPhaseBanner(false); // happens after the summary dialog box
+
+			// If this is the second build, show the advanced build tutorial.
+			if (secondBuild) {
+				secondBuild = false;
+				secondRun = true;
+				addChild(secondBuildTutorial);
+			// If this is not the second build, but the first entity was just
+			// unlocked, show the entity tutorial.
+			} else if (unlockedFirstEntity && !entityTutorialDisplayed) {
+				entityTutorialDisplayed = true;
+				addChild(entityTutorial);
+			}
 		}
 
 		private function centerWorldOnCharacter(exact:Boolean = false):void {
@@ -903,7 +1058,7 @@ package {
 				popupManager.summary || currentFloor.char.inCombat) {
 				return;
 			}
-			
+
 			if (popupManager.popup) {
 				popupManager.removePopup();
 			}
@@ -914,11 +1069,11 @@ package {
 			if (event.keyCode == Util.BGM_MUTE_KEY) {
 				bgmMuteButton.onClick();
 			}
-			
+
 			if (event.keyCode == Util.SFX_MUTE_KEY) {
 				sfxMuteButton.onClick();
 			}
-			
+
 			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
 				if (gameState == STATE_BUILD) {
 					runFloor();
@@ -928,7 +1083,7 @@ package {
 					returnToBuild();
 				}
 			}
-			
+
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				//combatSkip = !combatSkip;
 				toggleCombatSpeed();
@@ -938,7 +1093,7 @@ package {
 					}
 				}
 			}
-			
+
 			if (event.keyCode == Util.SPEED_TOGGLE_KEY) {
 				toggleRunSpeed();
 			}
@@ -1014,6 +1169,10 @@ package {
 
 			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
 			currentFloor.updateRunSpeed();
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
+				onSecondRunTutorialComplete();
+			}
 		}
 
 		public function toggleCombatSpeed():void {
@@ -1025,6 +1184,10 @@ package {
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
+
+			if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
+				onSecondRunTutorialComplete();
+			}
 		}
 
 		public function onIntroTutorialComplete():void {
@@ -1077,21 +1240,34 @@ package {
 			addChild(shopHud);
 
 			addChild(buildTutorial);
-			// Assets.mixer.play(Util.LEVEL_UP);
+			Assets.mixer.play(Util.LEVEL_UP);
 		}
 
 		public function onBuildTutorialComplete():void {
 			removeChild(buildTutorial);
 			addChild(runTutorial);
-			tutorialState = TUTORIAL_PRE_RUN;
 			currentFloor.char.moveLock = true;
-			return;
 		}
 
 		public function onRunTutorialComplete():void {
 			removeChild(runTutorial);
 			currentFloor.char.moveLock = false;
+		}
+
+		public function onsecondBuildTutorialComplete():void {
+			removeChild(secondBuildTutorial);
 			return;
+		}
+
+		public function onEntityTutorialComplete():void {
+			removeChild(entityTutorial);
+			entityTutorialDisplayed = true;
+		}
+
+		public function onSecondRunTutorialComplete():void {
+			removeChild(secondRunTutorial);
+			currentFloor.char.moveLock = false;
+			tutorialState == null;
 		}
 
 		public function playCinematic(commands:Array, onComplete:Function):void {
@@ -1109,6 +1285,9 @@ package {
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
+			unlockedFirstEntity = true;
+			removeChild(tileUnlockPopup);
+
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Assets.mixer.play(Util.LEVEL_UP);
 
@@ -1210,7 +1389,7 @@ package {
 						"healthRestored":tempH.health
 					});
 				}
-				
+
 				popupManager.addPopup(tileUnlockPopup);
 			}
 		}
@@ -1222,7 +1401,7 @@ package {
 		private function onLosChange(event:GameEvent):void {
 			currentFloor.removeFoggedLocationsInPath();
 		}
-		
+
 		// Event handler for when a character arrives at an exit tile.
 		private function onCharExited(e:GameEvent):void {
 			if (Util.logger) {
@@ -1233,7 +1412,7 @@ package {
 			}
 			Assets.mixer.play(Util.FLOOR_COMPLETE);
 			currentFloor.completed = true;
-			
+
 			var winBox:Sprite = new Sprite();
 			var popup:Image = new Image(Assets.textures[Util.POPUP_BACKGROUND])
 			winBox.addChild(popup);
@@ -1246,7 +1425,7 @@ package {
 			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - y;
 
 			var nC:Clickable = new Clickable(0, 0, returnToMenu, winBox);
-			
+
 			popupManager.addPopup(nC);
 		}
 
