@@ -25,7 +25,6 @@ package {
 
 		public static const PHASE_BANNER_DURATION:Number = 0.75; // seconds
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
-		public static const TILE_UNLOCK_THRESHOLD:Number = 0.05;
 
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
 		public static const MAX_CAMERA_ACCEL:int = 3;
@@ -169,6 +168,7 @@ package {
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
 			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.TUTORIAL_COMPLETE, onTutorialComplete);
@@ -194,7 +194,6 @@ package {
 									 stamina,
 									 attack,
 									 los,
-									 returnToMenu,
 									 runSummary);
 
 			world.addChild(cursorHighlight);
@@ -391,7 +390,7 @@ package {
 		}
 
 		public function endRunButton():void {
-			if(currentFloor && !currentFloor.completed && gameState == STATE_RUN) {
+			if(currentFloor && gameState == STATE_RUN) {
 				endRun();
 			}
 		}
@@ -541,9 +540,11 @@ package {
 				removeChild(shopHud);
 			}
 
-			/*if (touch.phase == TouchPhase.BEGAN && tileUnlockPopup != null && tileUnlockTimer > TILE_UNLOCK_THRESHOLD) {
-				closeTileUnlock();
-			}*/
+			if (touch.phase == TouchPhase.BEGAN && popupManager.popup is Clickable) {
+				Clickable(popupManager.popup).onClick();
+			} else if (touch.phase == TouchPhase.BEGAN && popupManager.summary && gameState == STATE_BUILD) {
+				Clickable(popupManager.summary).onClick();
+			}
 
 			var isTouchHelpButton:Boolean;
 			var touchX:int = touch.globalX;
@@ -967,6 +968,32 @@ package {
 
 		private function onLosChange(event:GameEvent):void {
 			currentFloor.removeFoggedLocationsInPath();
+		}
+		
+		// Event handler for when a character arrives at an exit tile.
+		private function onCharExited(e:GameEvent):void {
+			if (Util.logger) {
+				Util.logger.logLevelEnd({
+					"characterHpRemaining":currentFloor.char.hp,
+					"characterMaxHP":currentFloor.char.maxHp
+				});
+			}
+			Assets.mixer.play(Util.FLOOR_COMPLETE);
+			
+			var winBox:Sprite = new Sprite();
+			var popup:Image = new Image(Assets.textures[Util.POPUP_BACKGROUND])
+			winBox.addChild(popup);
+			winBox.addChild(new TextField(popup.width,
+										  popup.height,
+										  "You did it!\nThanks for playing!\nClick here to return the the main menu.",
+										  Util.DEFAULT_FONT,
+										  Util.MEDIUM_FONT_SIZE));
+			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - x;
+			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - y;
+
+			var nC:Clickable = new Clickable(0, 0, returnToMenu, winBox);
+			
+			popupManager.addPopup(nC);
 		}
 	}
 }

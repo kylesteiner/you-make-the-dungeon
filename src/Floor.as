@@ -19,7 +19,6 @@ package {
 	import tiles.*;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing!\nClick here to return the the main menu."
 		public static const FOG_OF_WAR_COLOR:uint = Color.BLACK;
 		public static const FOG_OF_WAR_OPACITY_RANGE:int = 3;
 		public static const FOG_OF_WAR_MAX_OPACITY:Number = 0.95;
@@ -41,7 +40,6 @@ package {
 		public var gridHeight:int;
 		public var gridWidth:int;
 		public var preplacedTiles:int;
-		public var completed:Boolean;
 
 		// Character's initial stats.
 		private var initialHp:int;
@@ -57,7 +55,6 @@ package {
 
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
-		private var onCompleteCallback:Function;
 		public var altCallback:Function;
 
 		// Room metadata and control flow
@@ -89,7 +86,6 @@ package {
 							  initialStamina:int,
 							  initialAttack:int,
 							  initialLineOfSight:int,
-							  nextFloorCallback:Function,
 							  runSummary:Summary,
 							  showPrompt:int = 0) {
 			super();
@@ -111,7 +107,6 @@ package {
 			}
 
 			this.floorFiles = floorFiles;
-			onCompleteCallback = nextFloorCallback;
 			altCallback = null;
 
 			preplacedTiles = 0;
@@ -283,7 +278,6 @@ package {
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
-			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
@@ -815,10 +809,6 @@ package {
 				return;
 			}
 
-			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed) {
-				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
-			}
-
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
@@ -999,6 +989,10 @@ package {
 			preHealth = char.hp;
 			runSummary.distanceTraveled++;
 
+			if (grid[char.grid_x][char.grid_y] is ExitTile) {
+				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
+			}
+
 			if (goldGrid[char.grid_x][char.grid_y]) {
 				dispatchEvent(new GameEvent(GameEvent.GAIN_GOLD, char.grid_x, char.grid_y));
 			}
@@ -1007,33 +1001,6 @@ package {
 			if (entity) {
 				entity.handleChar(char);
 			}
-		}
-
-		// Event handler for when a character arrives at an exit tile.
-		private function onCharExited(e:GameEvent):void {
-			if (Util.logger) {
-				Util.logger.logLevelEnd({
-					"characterHpRemaining":char.hp,
-					"characterMaxHP":char.maxHp
-				});
-			}
-			completed = true;
-
-			Assets.mixer.play(Util.FLOOR_COMPLETE);
-
-			var winBox:Sprite = new Sprite();
-			var popup:Image = new Image(Assets.textures[Util.POPUP_BACKGROUND])
-			winBox.addChild(popup);
-			winBox.addChild(new TextField(popup.width,
-										  popup.height,
-										  NEXT_LEVEL_MESSAGE,
-										  Util.DEFAULT_FONT,
-										  Util.MEDIUM_FONT_SIZE));
-			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
-			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
-
-			var nC:Clickable = new Clickable(0, 0, onCompleteCallback, winBox);
-			addChild(nC);
 		}
 
 		// Called after the character defeats an enemy entity.
