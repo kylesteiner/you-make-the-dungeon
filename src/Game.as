@@ -691,6 +691,22 @@ package {
 			removeChild(endButton);
 			removeChild(runHud);
 
+			if (buildHud.directions[Util.NORTH]) {
+				buildHud.toggleNorth();
+			}
+
+			if (buildHud.directions[Util.SOUTH]) {
+				buildHud.toggleSouth();
+			}
+
+			if (buildHud.directions[Util.WEST]) {
+				buildHud.toggleWest();
+			}
+
+			if (buildHud.directions[Util.EAST]) {
+				buildHud.toggleEast();
+			}
+
 			gameState = STATE_SUMMARY;
 			bestRunGoldEarned = Math.max(bestRunGoldEarned, runSummary.goldCollected);
 			bestRunDistance = Math.max(bestRunDistance, runSummary.distanceTraveled);
@@ -1178,8 +1194,8 @@ package {
 
 			var moveToExit:Dictionary = new Dictionary();
 			moveToExit["command"] = Cinematic.COMMAND_MOVE;
-			moveToExit["destX"] = world.x + Util.grid_to_real(13);
-			moveToExit["destY"] = world.y + Util.grid_to_real(2);
+			moveToExit["destX"] = world.x + Util.grid_to_real(2);
+			moveToExit["destY"] = world.y + Util.grid_to_real(13);
 
 			var waitAtExit:Dictionary = new Dictionary();
 			waitAtExit["command"] = Cinematic.COMMAND_WAIT;
