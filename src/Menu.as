@@ -3,6 +3,7 @@ package {
 
 	import starling.display.Sprite;
 	import starling.text.TextField;
+	import starling.utils.VAlign;
 
 	public class Menu extends Sprite {
 		private var saveGame:SharedObject;
@@ -14,9 +15,10 @@ package {
 			super();
 			saveGame = SharedObject.getLocal("saveGame");
 
-			var titleField:TextField = new TextField(512, 80, "You Make The Dungeon", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
+			var titleField:TextField = new TextField(Util.STAGE_WIDTH, 120, "You Make The Dungeon", Util.SECONDARY_FONT, Util.LARGE_FONT_SIZE);
 			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
 			titleField.y = 32 + titleField.height / 2;
+			titleField.vAlign = VAlign.TOP;
 			addChild(titleField);
 
 			var startField:TextField =
@@ -43,8 +45,8 @@ package {
 					new TextField(128, 40, "CREDITS", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE)
 			var creditsButton:Clickable = new Clickable(256, 320, openCredits, creditsField);
 			addChild(creditsButton);
-			
-			var scoresField:TextField = 
+
+			var scoresField:TextField =
 					new TextField(128, 40, "SCORES", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			var scoresButton:Clickable = new Clickable(256, 384, openScores, scoresField);
 			addChild(scoresButton);
@@ -74,7 +76,7 @@ package {
 		public function openCredits():void {
 			dispatchEvent(new MenuEvent(MenuEvent.CREDITS));
 		}
-		
+
 		public function openScores():void {
 			dispatchEvent(new MenuEvent(MenuEvent.SCORES));
 		}
