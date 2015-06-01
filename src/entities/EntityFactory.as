@@ -28,10 +28,10 @@ package entities {
 
         public function EntityFactory() {
             this.masterSet = constructEntitySet();
-            this.entitySet = new Dictionary();
+            this.entitySet = masterSet;//new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
-            unlockTile(FLAME_TRAP);
-            unlockTile(FLAME_TRAP_BLUE);
+            //unlockTile(FLAME_TRAP);
+            //unlockTile(FLAME_TRAP_BLUE);
         }
 
         public function unlockTile(type:String):void {
@@ -235,8 +235,8 @@ package entities {
         }
 
         public function constructBlueFlameTrap(x:int=0, y:int=0):Trap {
-            var damage:int = 5;
-            var radius:int = 2;
+            var damage:int = 3;
+            var radius:int = 5;
 
             return new Trap(x, y, Assets.textures[Util.FLAME_TRAP_BLUE], Util.FLAME_TRAP, damage, radius);
         }
