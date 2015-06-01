@@ -1080,7 +1080,9 @@ package {
 			var obj:Objective = entityGrid[e.x][e.y];
 			if (obj.key.indexOf(Util.DOOR) >= 0) {
 				Assets.mixer.play(Util.DOOR_OPEN);
+				Util.logger.logAction(28, { } );
 			}
+			Util.logger.logAction(20, { } );
 			objectiveState[obj.key] = true;
 			entityGrid[e.x][e.y] = null;
 			removeChild(obj);
