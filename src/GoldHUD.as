@@ -37,6 +37,7 @@ package {
             goldText = new TextField(64, Util.MEDIUM_FONT_SIZE, gold.toString(), Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
             goldText.x = goldImage.width + goldImage.x;
             goldText.y = goldImage.y;
+            goldText.autoScale = true;
             goldQuad = new Quad(goldImage.width + goldText.width + BORDER * 2, goldImage.height, BORDER_COLOR);
             goldQuadInterior = new Quad(goldQuad.width - BORDER * 2, goldQuad.height - 2*BORDER, INTERIOR_COLOR);
             goldQuadInterior.x = BORDER;
