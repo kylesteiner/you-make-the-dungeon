@@ -28,7 +28,7 @@ package entities {
 
         public function EntityFactory() {
             this.masterSet = constructEntitySet();
-            this.entitySet = masterSet;//new Dictionary();
+            this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
         }
 

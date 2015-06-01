@@ -1249,7 +1249,7 @@ package {
 			if (unlockedFirstEntity && !entityTutorialDisplayed) {
 				addChild(entityTutorial);
 			}
-			
+
 			return;
 		}
 
@@ -1288,7 +1288,7 @@ package {
 				tileUnlockTimer = 0;
 
 				var reward:Reward = event.gameData["entity"];
-				if(reward.permanent) {
+				if (reward.permanent) {
 					currentFloor.removedEntities.push(reward);
 				}
 				currentFloor.removeChild(reward);
@@ -1376,11 +1376,19 @@ package {
 						"type":"staminaHeal",
 						"staminaRestored":tempS.stamina
 					});
-				} else {
+				} else if (newEntity is Healing) {
 					var tempH:Healing = newEntity as Healing;
 					Util.logger.logAction(19, {
 						"type":"healing",
 						"healthRestored":tempH.health
+					});
+				} else if (newEntity is Trap) {
+					var tempT:Trap = newEntity as Trap;
+					Util.logger.logAction(19, {
+						"type":"trap",
+						"trapType":tempT.type,
+						"trapDamage":tempT.damage,
+						"trapRadius":tempT.radius
 					});
 				}
 
