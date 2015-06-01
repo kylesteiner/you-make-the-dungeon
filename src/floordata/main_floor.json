@@ -624,27 +624,9 @@
 		{
 			"type": "enemy",
 			"x": 15,
-			"y": 3,
-			"texture": "enemy_mage",
-			"hp": 8,
-			"attack": 2,
-			"reward": 9
-		},
-		{
-			"type": "enemy",
-			"x": 15,
-			"y": 4,
-			"texture": "enemy_archer",
-			"hp": 14,
-			"attack": 3,
-			"reward": 13
-		},
-		{
-			"type": "enemy",
-			"x": 15,
 			"y": 5,
 			"texture": "enemy_archer",
-			"hp": 13,
+			"hp": 14,
 			"attack": 3,
 			"reward": 13
 		},
