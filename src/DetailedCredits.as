@@ -17,7 +17,7 @@ package {
             leftCredits += "BGM Mute/Unmute: yannick (flaticon)\nSFX Mute/Unmute: Freepik (flaticon)\n";
             leftCredits += "Clock icon: Freepik (flaticon)\nBomb: Alucard (opengameart)\nFlame animation: Cuzco (opengameart)\n";
             leftCredits += "Shock animation: Clint Bellanger (opengameart)\nCombat floor: n4pgamer (opengameart)\nBackground: qubodup (opengameart)\n";
-            leftCredits += "Chest: Daniel Cook (lostgarden)\nDoor: Daniel Cook (lostgarden)\n";
+            leftCredits += "Chest: Daniel Cook (lostgarden)\nDoor: rubberduck (opengameart)\n";
             leftCredits += "Fonts: Bebas Neue Regular & Fertigo Pro Regular";
 
             var rightCredits:String = "";
