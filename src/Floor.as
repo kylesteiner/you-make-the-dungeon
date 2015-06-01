@@ -240,6 +240,12 @@ package {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
 					var obj:Objective = new Objective(tX, tY, Assets.textures[textureName], key, prereqs);
+					if (key.indexOf(Util.DOOR) >= 0) {
+						removeChild(fogGrid[tX][tY]);
+						fogGrid[tX][tY] = null;
+						addChild(grid[tX][tY]);
+						addChild(obj);
+					}
 					entityGrid[tX][tY] = obj;
 				} else if (entity["type"] == "reward") {
 					var callback:String = entity["function"];
