@@ -993,6 +993,7 @@ package {
 						break;
 				}
 				if (entityGrid[new_x][new_y] is Trap) {
+					removedEntities.push(entityGrid[new_x][new_y]);
 					enemy.trap = entityGrid[new_x][new_y];
 				}
 				entityGrid[new_x][new_y] = enemy;
@@ -1144,6 +1145,11 @@ package {
 
 			var damagePoint:Point;
 			for each(damagePoint in affectedTiles) {
+				if (damagePoint.x < 0 || damagePoint.x >= gridWidth ||
+				    damagePoint.y < 0 || damagePoint.y >= gridHeight) {
+					continue;
+				}
+
 				entity = entityGrid[damagePoint.x][damagePoint.y];
 				if (entity is Enemy) {
 					enemies.push(entity);

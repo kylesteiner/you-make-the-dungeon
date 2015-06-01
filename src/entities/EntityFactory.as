@@ -30,6 +30,8 @@ package entities {
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
+            unlockTile(FLAME_TRAP);
+            unlockTile(FLAME_TRAP_BLUE);
         }
 
         public function unlockTile(type:String):void {

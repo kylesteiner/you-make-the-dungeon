@@ -139,6 +139,7 @@ package entities {
 			x = initialX;
 			y = initialY;
 			hp = maxHp;
+			trap = null;
 			addOverlay();
 		}
 
