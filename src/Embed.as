@@ -235,6 +235,8 @@ package {
 		[Embed(source='assets/bgm/pearl_cavern.mp3')] public static const bgmPearlCavern:Class;
 		[Embed(source='assets/bgm/warm-interlude.mp3')] public static const bgmWarmInterlude:Class;
 
+		[Embed(source='assets/icons/Y8_logo.png')] public static const y8_logo:Class;
+
 		public static function setupTextures():void {
 			Assets.textures = new Dictionary();
 			var scale:int = Util.REAL_TILE_SIZE / Util.PIXELS_PER_TILE;
@@ -251,6 +253,8 @@ package {
 			Assets.textures[Util.BUILD_BANNER] = Texture.fromEmbeddedAsset(build_phase_banner);
 			Assets.textures[Util.RUN_HELP] = Texture.fromEmbeddedAsset(run_help);
 			Assets.textures[Util.BUILD_HELP] = Texture.fromEmbeddedAsset(build_help);
+
+			Assets.textures[Util.Y8_LOGO] = Texture.fromEmbeddedAsset(y8_logo);
 
 			//Assets.textures[Util.CHARACTER] = Texture.fromBitmap(new entity_hero(), true, false, scale);
 			//Assets.textures[Util.DOOR] = Texture.fromBitmap(new entity_door(), true, false, scale);

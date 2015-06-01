@@ -1,9 +1,13 @@
 package {
 	import flash.net.SharedObject;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.navigateToURL;
 
 	import starling.display.Sprite;
 	import starling.text.TextField;
 	import starling.utils.VAlign;
+	import starling.display.Image;
 
 	public class Menu extends Sprite {
 		private var saveGame:SharedObject;
@@ -57,8 +61,20 @@ package {
 			version.y = Util.STAGE_HEIGHT - version.height - 4;
 			addChild(version);
 
+			var logo:Clickable = new Clickable(0, 0, navToY8, new Image(Assets.textures[Util.Y8_LOGO]));
+			logo.x = Util.STAGE_WIDTH - logo.width - 4;
+			logo.y = 4;
+			addChild(logo);
+
 			addChild(sfxMute);
 			addChild(bgmMute);
+		}
+
+		public function navToY8():void {
+			var request:URLRequest = new URLRequest("http://www.y8.com");
+			request.method = URLRequestMethod.GET;
+			var target:String = "_blank";
+			navigateToURL(request, target);
 		}
 
 		public function newGame(params:Object):void {

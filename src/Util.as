@@ -237,6 +237,8 @@ package {
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
+		public static const Y8_LOGO:String = "y8_logo";
+
 		// Build costs
 		public static const BASE_TILE_COST:int = 1;
 		public static const REFUND_PERCENT:int = 50;
