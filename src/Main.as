@@ -60,7 +60,7 @@ package {
             // This is the current version. We'll treat 0 as the debugging
 			// version, and release versions will be assigned unique cids.
 			versionID = 0;
-			cid = 0;
+			cid = 19;
 			Util.logger = Logger.initialize(gid, gname, skey, cid, null, false);
 
             // Initialize sound assets and mixer.
