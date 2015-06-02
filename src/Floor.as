@@ -239,7 +239,7 @@ package {
 				} else if (entity["type"] == "objective") {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
-					var obj:Objective = new Objective(tX, tY, Assets.textures[textureName], key, prereqs);
+					var obj:Objective = new Objective(tX, tY, Assets.textures[textureName], key, prereqs, textureName);
 					if (key.indexOf(Util.DOOR) >= 0) {
 						removeChild(fogGrid[tX][tY]);
 						fogGrid[tX][tY] = null;
@@ -490,7 +490,9 @@ package {
 					} else if (entity is Objective) {
 						var objective:Objective = entity as Objective;
 						saveEntity["type"] = "objective";
-						// TODO: implement objective saving if we use them.
+						saveEntity["key"] = objective.key;
+						saveEntity["objective"] = objective.prereqs;
+						saveEntity["texture"] = objective.textureName;
 					} else if (entity is Reward) {
 						var reward:Reward = entity as Reward;
 						saveEntity["type"] = "reward";
