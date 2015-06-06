@@ -1014,6 +1014,9 @@ package {
 				return true;
 			}
 			var obj:Objective = (entity as Objective);
+			if (obj.prereqs == null) {
+				return true;
+			}
 			for (var i:int = 0; i < obj.prereqs.length; i++) {
 				if (!objectiveState[obj.prereqs[i]]) {
 					return false;

@@ -15,6 +15,7 @@ package {
 	import starling.utils.HAlign;
 
 	import entities.*;
+	import menu.MenuEvent;
 	import tiles.*;
 	import tutorial.*;
 
@@ -656,8 +657,10 @@ package {
 			}
 		}
 
-		public function onStaminaExpended(event:GameEvent):void {
-			endRun();
+		public function onStaminaExpended(event:GameEvent):void { 
+			if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
+				endRun();
+			}
 		}
 
 		private function onRoomComplete(event:GameEvent):void {
@@ -668,10 +671,10 @@ package {
 
 		public function endRun():void {
 			var reason:String;
-			if (currentFloor.char.stamina <= 0) {
-				reason = "staminaExpended";
-			} else if (currentFloor.char.hp <= 0) {
+			if (currentFloor.char.hp <= 0) {
 				reason = "healthExpended";
+			} else if (currentFloor.char.stamina <= 0) {
+				reason = "staminaExpended";
 			} else {
 				reason = "endRunButton";
 			}

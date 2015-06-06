@@ -162,8 +162,10 @@ package {
 		[Embed(source='assets/animations/mage/idle/mage_idle_2.png')] public static const enemyMageCombatIdleAnim2:Class;
 
 		[Embed(source='assets/animations/archer/idle/archer_idle_0.png')] public static const enemyArcherCombatIdleAnim0:Class;
+		[Embed(source='assets/animations/archer/idle/archer_idle_1.png')] public static const enemyArcherCombatIdleAnim1:Class;
 
 		[Embed(source='assets/animations/ninja/idle/ninja_idle_0.png')] public static const enemyNinjaCombatIdleAnim0:Class;
+		[Embed(source='assets/animations/ninja/idle/ninja_idle_1.png')] public static const enemyNinjaCombatIdleAnim1:Class;
 
 		[Embed(source='assets/animations/knight/idle/knight_idle_0.png')] public static const enemyKnightCombatIdleAnim0:Class;
 
@@ -449,6 +451,7 @@ package {
 			var archerDict:Dictionary = new Dictionary();
 			var archerVector:Vector.<Texture> = new Vector.<Texture>();
 			archerVector.push(Texture.fromEmbeddedAsset(enemyArcherCombatIdleAnim0));
+			archerVector.push(Texture.fromEmbeddedAsset(enemyArcherCombatIdleAnim1));
 			archerDict[Util.ENEMY_COMBAT_IDLE] = archerVector;
 			archerDict[Util.ENEMY_COMBAT_ATTACK] = archerVector;
 
@@ -461,6 +464,7 @@ package {
 			var ninjaDict:Dictionary = new Dictionary();
 			var ninjaVector:Vector.<Texture> = new Vector.<Texture>();
 			ninjaVector.push(Texture.fromEmbeddedAsset(enemyNinjaCombatIdleAnim0));
+			ninjaVector.push(Texture.fromEmbeddedAsset(enemyNinjaCombatIdleAnim1));
 			ninjaDict[Util.ENEMY_COMBAT_IDLE] = ninjaVector;
 			ninjaDict[Util.ENEMY_COMBAT_ATTACK] = ninjaVector;
 
