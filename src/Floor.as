@@ -315,11 +315,9 @@ package {
 
 			// Ensure that the character and all enemies are higher in the
 			// display order than the tiles.
-			removeChild(char);
-			addChild(char);
+			setChildIndex(char, numChildren - 1);
 			for each (var enemy:Enemy in activeEnemies) {
-				removeChild(enemy);
-				addChild(enemy);
+				setChildIndex(enemy, numChildren - 1);
 			}
 
 			if(gameState == Game.STATE_RUN) {
@@ -331,6 +329,7 @@ package {
 			for(x = 0; x < gridWidth; x++) {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
+					goldGrid[x][y] = null;
 
 					if (grid[x][y]
 						&& !(grid[x][y] is ImpassableTile)
