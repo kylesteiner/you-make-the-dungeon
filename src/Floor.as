@@ -898,15 +898,15 @@ package {
 			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
 				return;
 			}
-			//if (fogGrid[x][y]) {
-			//	addChild(fogGrid[x][y]);
-			//} else {
+			if (fogGrid[x][y]) {
+				addChild(fogGrid[x][y]);
+			} else {
 				if (grid[x][y]) { addChild(grid[x][y]); }
 				if (entityGrid[x][y]) { addChild(entityGrid[x][y]); }
 				if (goldGrid[x][y]) { addChild(goldGrid[x][y]); }
 				if (highlightedLocations[x][y]) { addChild(highlightedLocations[x][y]); }
 				setChildIndex(char, numChildren-1);
-			//}
+			}
 		}
 
 		private function onEnterFrame(event:EnterFrameEvent):void {
