@@ -37,7 +37,7 @@ package {
 		// Map string (objective key) -> boolean (state)
 		public var objectiveState:Object;
 
-		// Region of loaded children
+		// Current world position
 		public var worldX:int;
 		public var worldY:int;
 
@@ -782,42 +782,118 @@ package {
 			}
 			return arr;
 		}
+		
+		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fill:Boolean = false):void {
+			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
 
-		public function addVisibleChildren(worldX:int, worldY:int):void {
-			worldX = worldX * -1;
-			worldY = worldY * -1;
-			var i:int; var j:int;
-			this.worldX = worldX;
-			this.worldY = worldY;
-			for (i = 0; i < gridWidth; i++) {
-				for (j = 0; j < gridHeight; j++) {
-					removeChild(grid[i][j]);
-					removeChild(entityGrid[i][j]);
-					removeChild(fogGrid[i][j]);
-					removeChild(goldGrid[i][j]);
-					removeChild(highlightedLocations[i][j]);
-				}
-			}
-			var s_width:int = Util.real_to_grid(Util.STAGE_WIDTH) + 1;
-			var s_height:int = Util.real_to_grid(Util.STAGE_HEIGHT) + 2;
-			var w_gridX:int = Util.real_to_grid(worldX);
-			var w_gridY:int = Util.real_to_grid(worldY);
-			var startX:int = w_gridX - 1 < 0 ? 0 : w_gridX - 1;
-			var startY:int = w_gridY - 1 < 0 ? 0 : w_gridY - 1;
-			var endX:int = w_gridX + s_width >= gridWidth ? gridWidth : w_gridX + s_width;
-			var endY:int = w_gridY + s_height >= gridHeight ? gridHeight : w_gridY + s_height;
-			for (i = startX; i < endX; i++) {
-				for (j = startY; j < endY; j++) {
-					if (fogGrid[i][j]) {
-						addChild(fogGrid[i][j]);
-					} else {
-						if (grid[i][j]) { addChild(grid[i][j]); }
-						if (entityGrid[i][j]) { addChild(entityGrid[i][j]); }
-						if (goldGrid[i][j]) { addChild(goldGrid[i][j]); }
-						if (highlightedLocations[i][j]) { addChild(highlightedLocations[i][j]); }
-						setChildIndex(char, numChildren-1);
+			newWorldX *= -1;
+			newWorldY *= -1;
+
+			startX = Util.real_to_grid(newWorldX);
+			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
+			startY = Util.real_to_grid(newWorldY);
+			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
+			
+			if (fill) {
+				// First time calling this function
+				for (x = startX; x < endX; x++) {
+					for (y = startY; y < endY; y++) {
+						addLocation(x, y);
 					}
 				}
+			} else {
+				// Right shift
+				if (newWorldX > worldX) {
+					// Left side
+					for (x = startX - 2; x < startX; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							clearLocation(x, y);
+						}
+					}
+					// Right side
+					for (x = endX - 2; x < endX + 1; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+				}
+				
+				// Left shift
+				if (newWorldX < worldX) {
+					// Left side
+					for (x = startX - 2; x < startX + 2; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+					// Right side
+					for (x = endX + 1; x < endX + 3; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							clearLocation(x, y);
+						}
+					}
+				}
+				
+				// Up shift
+				if (newWorldY < worldY) {
+					// Top side
+					for (x = startX - 2; x < endX + 2; x++) {
+						for (y = startY - 2; y < startY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+					// Bottom side
+					for (x = startX - 2; x < endX + 2; x++) {
+						for (y = endY + 2; y < endY + 4; y++) {
+							clearLocation(x, y);
+						}
+					}
+				}
+				
+				// Down shift
+				if (newWorldY > worldY) {
+					// Top side
+					for (x = startX - 2; x < endX + 2; x++) {
+						for (y = startY - 2; y < startY; y++) {
+							clearLocation(x, y);
+						}
+					}
+					// Bottom side
+					for (x = startX - 2; x < endX + 2; x++) {
+						for (y = endY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+				}
+			}
+
+			worldX = newWorldX;
+			worldY = newWorldY;
+		}
+		
+		private function clearLocation(x:int, y:int):void {
+			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
+				return;
+			}
+			removeChild(grid[x][y]);
+			removeChild(entityGrid[x][y]);
+			removeChild(fogGrid[x][y]);
+			removeChild(goldGrid[x][y]);
+			removeChild(highlightedLocations[x][y]);
+		}
+		
+		private function addLocation(x:int, y:int):void {
+			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
+				return;
+			}
+			if (fogGrid[x][y]) {
+				addChild(fogGrid[x][y]);
+			} else {
+				if (grid[x][y]) { addChild(grid[x][y]); }
+				if (entityGrid[x][y]) { addChild(entityGrid[x][y]); }
+				if (goldGrid[x][y]) { addChild(goldGrid[x][y]); }
+				if (highlightedLocations[x][y]) { addChild(highlightedLocations[x][y]); }
+				setChildIndex(char, numChildren-1);
 			}
 		}
 
