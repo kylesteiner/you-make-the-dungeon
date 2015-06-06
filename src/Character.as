@@ -159,15 +159,27 @@ package {
 			if (moving) {
 				if (x > destX) {
 					x -= speed;
+					if (x < destX) {
+						x = destX;
+					}
 				}
 				if (x < destX) {
 					x += speed;
+					if (x > destX) {
+						x = destX;
+					}
 				}
 				if (y > destY) {
 					y -= speed;
+					if (y < destY) {
+						y = destY;
+					}
 				}
 				if (y < destY) {
 					y += speed;
+					if (y > destY) {
+						y = destY;
+					}
 				}
 
 				if (x == destX && y == destY && moving) {

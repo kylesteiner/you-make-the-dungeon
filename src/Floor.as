@@ -1024,34 +1024,38 @@ package {
 				var possibleDirections:Array = new Array();
 				// North
 				if (enemy.grid_y > 0
+					&& grid[enemy.grid_x][enemy.grid_y].north
 					&& grid[enemy.grid_x][enemy.grid_y-1]
 					&& grid[enemy.grid_x][enemy.grid_y-1].south
 					&& (entityGrid[enemy.grid_x][enemy.grid_y-1] == null
-					|| entityGrid[enemy.grid_x][enemy.grid_y-1] is Trap)) {
+						|| entityGrid[enemy.grid_x][enemy.grid_y-1] is Trap)) {
 					possibleDirections.push(Util.NORTH);
 				}
 				// South
 				if (enemy.grid_y < gridHeight - 1
+					&& grid[enemy.grid_x][enemy.grid_y].south
 					&& grid[enemy.grid_x][enemy.grid_y+1]
 					&& grid[enemy.grid_x][enemy.grid_y+1].north
 					&& (entityGrid[enemy.grid_x][enemy.grid_y+1] == null
-					|| entityGrid[enemy.grid_x][enemy.grid_y+1] is Trap)) {
+						|| entityGrid[enemy.grid_x][enemy.grid_y+1] is Trap)) {
 					possibleDirections.push(Util.SOUTH);
 				}
 				// East
 				if (enemy.grid_x < gridWidth - 1
+					&& grid[enemy.grid_x][enemy.grid_y].east
 					&& grid[enemy.grid_x+1][enemy.grid_y]
 					&& grid[enemy.grid_x+1][enemy.grid_y].west
 					&& (entityGrid[enemy.grid_x+1][enemy.grid_y] == null
-					|| entityGrid[enemy.grid_x+1][enemy.grid_y] is Trap)) {
+						|| entityGrid[enemy.grid_x+1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.EAST);
 				}
 				// West
 				if (enemy.grid_x > 0
+					&& grid[enemy.grid_x][enemy.grid_y].west
 					&& grid[enemy.grid_x-1][enemy.grid_y]
 					&& grid[enemy.grid_x-1][enemy.grid_y].east
 					&& (entityGrid[enemy.grid_x-1][enemy.grid_y] == null
-					|| entityGrid[enemy.grid_x-1][enemy.grid_y] is Trap)) {
+						|| entityGrid[enemy.grid_x-1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.WEST);
 				}
 
