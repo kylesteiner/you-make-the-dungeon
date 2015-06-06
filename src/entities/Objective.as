@@ -19,6 +19,9 @@ package entities {
 			super(g_x, g_y, texture);
 			this.key = key;
 			this.prereqs = prereqs;
+			if (this.prereqs == null) {
+				prereqs = new Array();
+			}
 			this.textureName = textureName;
 		}
 

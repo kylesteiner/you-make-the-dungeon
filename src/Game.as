@@ -1,4 +1,5 @@
 package {
+	import flash.display.Bitmap;
 	import flash.net.SharedObject;
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
@@ -655,8 +656,10 @@ package {
 			}
 		}
 
-		public function onStaminaExpended(event:GameEvent):void {
-			endRun();
+		public function onStaminaExpended(event:GameEvent):void { 
+			if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
+				endRun();
+			}
 		}
 
 		private function onRoomComplete(event:GameEvent):void {
