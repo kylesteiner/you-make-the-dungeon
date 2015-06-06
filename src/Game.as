@@ -12,7 +12,6 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.utils.Color;
-	import starling.utils.HAlign;
 
 	import entities.*;
 	import menu.MenuEvent;
@@ -656,7 +655,7 @@ package {
 			}
 		}
 
-		public function onStaminaExpended(event:GameEvent):void { 
+		public function onStaminaExpended(event:GameEvent):void {
 			if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
 				endRun();
 			}
@@ -1290,13 +1289,12 @@ package {
 
 		public function onTileUnlock(event:GameEvent):void {
 			unlockedFirstEntity = true;
-			removeChild(tileUnlockPopup);
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Assets.mixer.play(Util.LEVEL_UP);
-
 				tileUnlockTimer = 0;
 
+				// Remove the entity from the grid.
 				var reward:Reward = event.gameData["entity"];
 				if (reward.permanent) {
 					currentFloor.removedEntities.push(reward);
@@ -1304,72 +1302,21 @@ package {
 				currentFloor.removeChild(reward);
 				currentFloor.entityGrid[reward.grid_x][reward.grid_y] = null;
 
-				var tileUnlockSprite:Sprite = new Sprite();
-				var outerQuad:Quad = new Quad(Util.STAGE_WIDTH / 2,
-											  Util.STAGE_HEIGHT / 2, Color.BLACK);
-				var innerQuad:Quad = new Quad(outerQuad.width - 4, outerQuad.height - 4, Color.WHITE);
-				innerQuad.x = outerQuad.x + 2;
-				innerQuad.y = outerQuad.y + 2;
-
-				var titleText:TextField = Util.defaultTextField(innerQuad.width, Util.LARGE_FONT_SIZE, "Tile Unlocked!", Util.LARGE_FONT_SIZE);
-				titleText.x = innerQuad.x + (innerQuad.width - titleText.width) / 2;
-				titleText.y = innerQuad.y;
-
-				var closeText:TextField = Util.defaultTextField(innerQuad.width, Util.SMALL_FONT_SIZE, "Click to continue", Util.SMALL_FONT_SIZE);
-				closeText.x = innerQuad.x + innerQuad.width - closeText.width;
-				closeText.y = innerQuad.y + innerQuad.height - closeText.height;
-
+				// Unlock the tile in the build hud.
 				buildHud.entityFactory.unlockTile(event.gameData["type"]);
 				buildHud.updateHUD();
 
+
 				var unlockedTile:Dictionary = buildHud.entityFactory.masterSet[event.gameData["type"]];
 				var newEntity:Entity = unlockedTile["constructor"]();
-				var newEntitySprite:Sprite = new Sprite();
-				newEntitySprite.addChild(newEntity.img);
-				newEntitySprite.addChild(newEntity.generateOverlay());
-				newEntitySprite.scaleX = 2;
-				newEntitySprite.scaleY = 2;
-				newEntitySprite.x = innerQuad.x + Util.PIXELS_PER_TILE / 4;
-				newEntitySprite.y = innerQuad.y + (innerQuad.height / 4);
 
-				var newEntityTitle:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
-																	Util.MEDIUM_FONT_SIZE, buildHud.entityFactory.entityText[event.gameData["type"]][0]);
-				newEntityTitle.autoScale = true;
-				newEntityTitle.hAlign = HAlign.LEFT;
-				newEntityTitle.x = newEntitySprite.x + newEntitySprite.width;
-				//newEntityTitle.y = titleText.y + titleText.height + Util.PIXELS_PER_TILE / 4;
-				newEntityTitle.y = newEntitySprite.y;
 
-				//var openSpace:int = innerQuad.height - titleText.height - newEntityTitle.height - (2 * Util.PIXELS_PER_TILE) / 4 - closeText.height;
-				var openSpace:int = innerQuad.height - (newEntitySprite.y - innerQuad.y) - closeText.height - newEntityTitle.height;
-
-				var newEntityText:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
-																	(openSpace * 2 / 3), newEntity.generateDescription());
-				newEntityText.autoScale = true;
-				newEntityText.hAlign = HAlign.LEFT;
-				newEntityText.x = newEntitySprite.x + newEntitySprite.width;
-				newEntityText.y = newEntityTitle.y + newEntityTitle.height;
-
-				var newEntityFlavor:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
-				 													  (openSpace / 3), buildHud.entityFactory.entityText[event.gameData["type"]][1]);
-				newEntityFlavor.autoScale = true;
-				newEntityFlavor.hAlign = HAlign.LEFT;
-				newEntityFlavor.x = newEntitySprite.x + newEntitySprite.width;
-				newEntityFlavor.y = newEntityText.y + newEntityText.height;
-
-				tileUnlockSprite.addChild(outerQuad);
-				tileUnlockSprite.addChild(innerQuad);
-				tileUnlockSprite.addChild(titleText);
-				tileUnlockSprite.addChild(newEntitySprite);
-				tileUnlockSprite.addChild(newEntityTitle);
-				tileUnlockSprite.addChild(newEntityText);
-				tileUnlockSprite.addChild(newEntityFlavor);
-				tileUnlockSprite.addChild(closeText);
-
-				var tileUnlockPopup:Clickable = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
-															(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
-															closeTileUnlock,
-															tileUnlockSprite);
+				var unlock:Unlock = new Unlock(newEntity.img,
+											   newEntity.generateOverlay(),
+											   buildHud.entityFactory.entityText[event.gameData["type"]][0],
+											   newEntity.generateDescription(),
+											   buildHud.entityFactory.entityText[event.gameData["type"]][1],
+											   closeTileUnlock);
 
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
@@ -1402,7 +1349,7 @@ package {
 					});
 				}
 
-				popupManager.addPopup(tileUnlockPopup);
+				popupManager.addPopup(unlock);
 			}
 		}
 
