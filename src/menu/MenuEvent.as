@@ -1,4 +1,4 @@
-package {
+package menu {
 	import starling.events.Event;
 
 	public class MenuEvent extends Event {
