@@ -32,6 +32,7 @@ package {
 		public var char:Character;
 		public var floorName:String;
 		public var highlightedLocations:Array;
+		public var isHighlighted:Boolean;
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
 		// Map string (objective key) -> boolean (state)
@@ -600,6 +601,11 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
+			if (isHighlighted) {
+				return;
+			}
+			isHighlighted = true;
+			
 			var x:int; var y:int; var addBool:Boolean;
 			var allowed:Array = hudState == BuildHUD.STATE_TILE ? getAllowedLocations(directions) : new Array();
 
@@ -656,6 +662,11 @@ package {
 
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
+			if (!isHighlighted) {
+				return;
+			}
+			isHighlighted = false;
+
 			for (var x:int = 0; x < gridWidth; x++) {
 				for (var y:int = 0; y < gridHeight; y++) {
 					removeChild(highlightedLocations[x][y]);
