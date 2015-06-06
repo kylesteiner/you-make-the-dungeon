@@ -993,6 +993,7 @@ package {
 					currentFloor.addChild(newTile);
 					currentFloor.rooms.addTile(newTile);
 					currentFloor.removeFoggedLocationsInPath();
+					currentFloor.changeVisibleChildren(world.x, world.y, true);
 					numberOfTilesPlaced += 1;
 					Util.logger.logAction(1, {
 						"goldSpent": cost,
