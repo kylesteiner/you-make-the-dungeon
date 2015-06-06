@@ -1,5 +1,4 @@
 package {
-	import flash.display.Bitmap;
 	import flash.net.SharedObject;
 	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
