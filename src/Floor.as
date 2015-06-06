@@ -798,10 +798,15 @@ package {
 		
 		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fill:Boolean = false):void {
 			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
+			var oldStartX:int; var oldEndX:int; var oldStartY:int; var oldEndY:int;
 
 			// Figure out the boundaries of the visible grid
 			newWorldX *= -1;
 			newWorldY *= -1;
+			oldStartX = Util.real_to_grid(worldX);
+			oldEndX = oldStartX + Util.real_to_grid(Util.STAGE_WIDTH);
+			oldStartY = Util.real_to_grid(worldY);
+			oldEndY = oldStartY + Util.real_to_grid(Util.STAGE_HEIGHT);
 			startX = Util.real_to_grid(newWorldX);
 			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
 			startY = Util.real_to_grid(newWorldY);
@@ -809,6 +814,12 @@ package {
 			
 			if (fill) {
 				// Fill entire grid -- useful for moving to character and at the start
+				// First clear the old spot
+				for (x = oldStartX - 2; x < oldEndX + 2; x++) {
+					for (y = oldStartY - 2; y < oldEndY + 2; y++) {
+						clearLocation(x, y);
+					}
+				}
 				for (x = startX; x < endX; x++) {
 					for (y = startY; y < endY; y++) {
 						addLocation(x, y);
