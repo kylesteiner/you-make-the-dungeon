@@ -671,6 +671,7 @@ package {
 			for (var x:int = 0; x < gridWidth; x++) {
 				for (var y:int = 0; y < gridHeight; y++) {
 					removeChild(highlightedLocations[x][y]);
+					highlightedLocations[x][y] = null;
 				}
 			}
 		}
@@ -799,22 +800,23 @@ package {
 		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fill:Boolean = false):void {
 			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
 
+			// Figure out the boundaries of the visible grid
 			newWorldX *= -1;
 			newWorldY *= -1;
-
 			startX = Util.real_to_grid(newWorldX);
 			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
 			startY = Util.real_to_grid(newWorldY);
 			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
 			
 			if (fill) {
-				// First time calling this function
+				// Fill entire grid -- useful for moving to character and at the start
 				for (x = startX; x < endX; x++) {
 					for (y = startY; y < endY; y++) {
 						addLocation(x, y);
 					}
 				}
 			} else {
+				// Otherwise clear & add edges around visible grid
 				// Right shift
 				if (newWorldX > worldX) {
 					// Left side
@@ -851,12 +853,11 @@ package {
 				if (newWorldY < worldY) {
 					// Top side
 					for (x = startX - 2; x < endX + 2; x++) {
+						// Top side
 						for (y = startY - 2; y < startY + 2; y++) {
 							addLocation(x, y);
 						}
-					}
-					// Bottom side
-					for (x = startX - 2; x < endX + 2; x++) {
+						// Bottom side
 						for (y = endY + 2; y < endY + 4; y++) {
 							clearLocation(x, y);
 						}
@@ -867,12 +868,11 @@ package {
 				if (newWorldY > worldY) {
 					// Top side
 					for (x = startX - 2; x < endX + 2; x++) {
+						// Top side
 						for (y = startY - 2; y < startY; y++) {
 							clearLocation(x, y);
 						}
-					}
-					// Bottom side
-					for (x = startX - 2; x < endX + 2; x++) {
+						// Bottom side
 						for (y = endY - 2; y < endY + 2; y++) {
 							addLocation(x, y);
 						}
