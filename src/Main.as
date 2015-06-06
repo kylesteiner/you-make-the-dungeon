@@ -11,8 +11,10 @@ package {
     import starling.display.MovieClip;
     import starling.display.Sprite;
 
+	import menu.*;
+
     public class Main extends Sprite {
-        private var menu:Menu;
+        private var mainMenu:Menu;
         private var game:Game;
         private var credits:Credits;
 		private var detailedCredits:DetailedCredits;
@@ -81,8 +83,8 @@ package {
 			addChild(staticBackgroundImage);
 
             // Display the main menu.
-            menu = new Menu(versionID, cid, bgmMuteButton, sfxMuteButton);
-            addChild(menu);
+			mainMenu = new Menu(versionID, cid, bgmMuteButton, sfxMuteButton);
+            addChild(mainMenu);
 
             addEventListener(Event.ENTER_FRAME, onEnterFrame);
             addEventListener(TouchEvent.TOUCH, onTouchEvent);
@@ -97,7 +99,7 @@ package {
 
         // Switches from the menu to the game.
         public function startGame(fromSave:Boolean):void {
-            removeChild(menu);
+            removeChild(mainMenu);
             game = new Game(fromSave, sfxMuteButton, bgmMuteButton);
             addChild(game);
         }
@@ -109,12 +111,12 @@ package {
             removeChild(credits);
 			removeChild(scores);
             removeChild(game, true);  // Dispose of all sprites in Game.
-            addChild(menu);
+            addChild(mainMenu);
         }
 
         // Switches from the credits to the menu.
         public function displayCredits():void {
-            removeChild(menu);
+            removeChild(mainMenu);
 			removeChild(detailedCredits);
             credits = new Credits();
             addChild(credits);
@@ -127,7 +129,7 @@ package {
 		}
 
 		public function displayScores():void {
-			removeChild(menu);
+			removeChild(mainMenu);
 			scores = new Scores();
 			addChild(scores);
 		}

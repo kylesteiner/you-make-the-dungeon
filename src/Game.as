@@ -15,6 +15,7 @@ package {
 	import starling.utils.HAlign;
 
 	import entities.*;
+	import menu.MenuEvent;
 	import tiles.*;
 	import tutorial.*;
 

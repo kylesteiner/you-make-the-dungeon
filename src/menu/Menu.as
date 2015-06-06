@@ -1,4 +1,4 @@
-package {
+package menu {
 	import flash.net.SharedObject;
 
 	import starling.display.Sprite;
