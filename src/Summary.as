@@ -19,6 +19,8 @@ package {
 		public var bestGold:int;
 		public var bestDistance:int;
 		public var bestEnemies:int;
+		
+		public var reason:String;
 
 		private var complete:TextField;
 		private var best:TextField;
@@ -31,6 +33,7 @@ package {
 		private var bestGoldField:TextField;
 		private var bestDistanceField:TextField;
 		private var bestEnemiesField:TextField;
+		private var reasonField:TextField;
 
 		private var healImage:Image;
 		private var damageImage:Image;
@@ -131,9 +134,15 @@ package {
 			healedField.y = 256;
 			healedField.hAlign = HAlign.LEFT;
 			addChild(healedField);
+			
+			reasonField = new TextField(500, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			reasonField.x = 62;
+			reasonField.y = 304;
+			reasonField.hAlign = HAlign.LEFT;
+			addChild(reasonField)
 
 			clickContinue = new TextField(560, 64, "Click to Continue", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
-			clickContinue.y = 304;
+			clickContinue.y = 344;
 			addChild(clickContinue);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -148,6 +157,7 @@ package {
 			bestGoldField.text = "" + Math.max(bestGold, goldCollected);
 			bestDistanceField.text = "" + Math.max(distanceTraveled, bestDistance);
 			bestEnemiesField.text = "" + Math.max(enemiesDefeated, bestEnemies);
+			reasonField.text = "End Run Reason: " + reason;
 		}
 
 		public function reset():void {
