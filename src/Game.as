@@ -670,10 +670,10 @@ package {
 
 		public function endRun():void {
 			var reason:String;
-			if (currentFloor.char.stamina <= 0) {
-				reason = "staminaExpended";
-			} else if (currentFloor.char.hp <= 0) {
+			if (currentFloor.char.hp <= 0) {
 				reason = "healthExpended";
+			} else if (currentFloor.char.stamina <= 0) {
+				reason = "staminaExpended";
 			} else {
 				reason = "endRunButton";
 			}
