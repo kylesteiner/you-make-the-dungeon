@@ -37,6 +37,10 @@ package {
 		// Map string (objective key) -> boolean (state)
 		public var objectiveState:Object;
 
+		// Region of loaded children
+		public var worldX:int;
+		public var worldY:int;
+
 		// Grid metadata.
 		public var gridHeight:int;
 		public var gridWidth:int;
@@ -152,7 +156,6 @@ package {
 					fog.x = i * Util.PIXELS_PER_TILE;
 					fog.y = j * Util.PIXELS_PER_TILE;
 					fogGrid[i][j] = fog;
-					addChild(fog);
 				}
 			}
 
@@ -204,7 +207,6 @@ package {
 					grid[tX][tY] = ex;
 					ex.deletable = tDeletable;
 					// Special case: remove fog manually from exit tile
-					addChild(ex);
 					removeChild(fogGrid[tX][tY]);
 					fogGrid[tX][tY] = null;
 				} else if (tile["type"] == "none") {
@@ -243,8 +245,6 @@ package {
 					if (key.indexOf(Util.DOOR) >= 0) {
 						removeChild(fogGrid[tX][tY]);
 						fogGrid[tX][tY] = null;
-						addChild(grid[tX][tY]);
-						addChild(obj);
 					}
 					entityGrid[tX][tY] = obj;
 				} else if (entity["type"] == "reward") {
@@ -384,10 +384,6 @@ package {
 				var entity:Entity = removedEntities.pop();
 				entity.reset();
 				entityGrid[entity.grid_x][entity.grid_y] = entity;
-
-				if(!fogGrid[entity.grid_x][entity.grid_y]) {
-					addChild(entity);
-				}
 
 				if (entity is Enemy) {
 					var enemyEntity:Enemy = entity as Enemy;
@@ -583,13 +579,6 @@ package {
 							xDist = Math.abs(x-i);
 							yDist = Math.abs(y-j);
 							if (xDist + yDist <= radius && fogGrid[x][y]) {
-								removeChild(fogGrid[x][y]);
-								if(grid[x][y]) {
-									addChild(grid[x][y]);
-								}
-								if(entityGrid[x][y]) {
-									addChild(entityGrid[x][y]);
-								}
 								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {
 									activeEnemies.push(entityGrid[x][y]);
@@ -661,8 +650,6 @@ package {
 				highlight.x = x * Util.PIXELS_PER_TILE;
 				highlight.y = y * Util.PIXELS_PER_TILE;
 				highlightedLocations[x][y] = highlight;
-
-				addChild(highlightedLocations[x][y]);
 			}
 		}
 
@@ -794,6 +781,44 @@ package {
 				arr[i] = new Array(y);
 			}
 			return arr;
+		}
+
+		public function addVisibleChildren(worldX:int, worldY:int):void {
+			worldX = worldX * -1;
+			worldY = worldY * -1;
+			var i:int; var j:int;
+			this.worldX = worldX;
+			this.worldY = worldY;
+			for (i = 0; i < gridWidth; i++) {
+				for (j = 0; j < gridHeight; j++) {
+					removeChild(grid[i][j]);
+					removeChild(entityGrid[i][j]);
+					removeChild(fogGrid[i][j]);
+					removeChild(goldGrid[i][j]);
+					removeChild(highlightedLocations[i][j]);
+				}
+			}
+			var s_width:int = Util.real_to_grid(Util.STAGE_WIDTH) + 1;
+			var s_height:int = Util.real_to_grid(Util.STAGE_HEIGHT) + 2;
+			var w_gridX:int = Util.real_to_grid(worldX);
+			var w_gridY:int = Util.real_to_grid(worldY);
+			var startX:int = w_gridX - 1 < 0 ? 0 : w_gridX - 1;
+			var startY:int = w_gridY - 1 < 0 ? 0 : w_gridY - 1;
+			var endX:int = w_gridX + s_width >= gridWidth ? gridWidth : w_gridX + s_width;
+			var endY:int = w_gridY + s_height >= gridHeight ? gridHeight : w_gridY + s_height;
+			for (i = startX; i < endX; i++) {
+				for (j = startY; j < endY; j++) {
+					if (fogGrid[i][j]) {
+						addChild(fogGrid[i][j]);
+					} else {
+						if (grid[i][j]) { addChild(grid[i][j]); }
+						if (entityGrid[i][j]) { addChild(entityGrid[i][j]); }
+						if (goldGrid[i][j]) { addChild(goldGrid[i][j]); }
+						if (highlightedLocations[i][j]) { addChild(highlightedLocations[i][j]); }
+						setChildIndex(char, numChildren-1);
+					}
+				}
+			}
 		}
 
 		private function onEnterFrame(event:EnterFrameEvent):void {

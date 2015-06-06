@@ -838,6 +838,8 @@ package {
 				}
 			}
 
+			currentFloor.addVisibleChildren(world.x, world.y);
+
 			if(phaseBanner) {
 				phaseBannerTimer += event.passedTime;
 				addChild(phaseBanner);
