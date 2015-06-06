@@ -580,6 +580,7 @@ package {
 							xDist = Math.abs(x-i);
 							yDist = Math.abs(y-j);
 							if (xDist + yDist <= radius && fogGrid[x][y]) {
+								removeChild(fogGrid[x][y]);
 								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {
 									activeEnemies.push(entityGrid[x][y]);
