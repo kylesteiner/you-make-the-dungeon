@@ -71,6 +71,12 @@
 		},
 		{
 			"type": "empty",
+			"x": 5,
+			"y": 26,
+			"edges": ["n", "s", "e", "w"]
+		},
+		{
+			"type": "empty",
 			"x": 11,
 			"y": 20,
 			"edges": ["s"]

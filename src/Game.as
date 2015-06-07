@@ -271,7 +271,6 @@ package {
 									 attack,
 									 los,
 									 runSummary);
-			currentFloor.changeVisibleChildren(world.x, world.y, true);
 
 			world.addChild(cursorHighlight);
 			world.addChild(currentFloor);
@@ -804,7 +803,6 @@ package {
 				charY = Util.grid_to_real(Util.real_to_grid(charY));
 			}
 			world.y = Util.STAGE_HEIGHT / 2 - charY - (Util.PIXELS_PER_TILE * 3.0 / 4);
-			currentFloor.changeVisibleChildren(world.x, world.y, true);
 		}
 
 		private function onFrameBegin(event:EnterFrameEvent):void {
@@ -820,34 +818,34 @@ package {
 			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
 			if(pressedKeys[Keyboard.DOWN] || pressedKeys[Util.DOWN_KEY]) {
 				world.y -= worldShift;
+
 				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
 					world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1);
 				}
-				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if(pressedKeys[Keyboard.UP] || pressedKeys[Util.UP_KEY]) {
 				world.y += worldShift;
+
 				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
 					world.y = Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT;
 				}
-				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if(pressedKeys[Keyboard.RIGHT] || pressedKeys[Util.RIGHT_KEY]) {
 				world.x -= worldShift;
+
 				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
 					world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1);
 				}
-				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if(pressedKeys[Keyboard.LEFT] || pressedKeys[Util.LEFT_KEY]) {
 				world.x += worldShift;
+
 				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
 					world.x = Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH;
 				}
-				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if(phaseBanner) {
@@ -991,12 +989,10 @@ package {
 					gold -= cost;
 					goldHud.update(gold);
 					// Player correctly placed the tile. Add it to the grid.
-					currentFloor.clearHighlightedLocations();
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
 					currentFloor.rooms.addTile(newTile);
 					currentFloor.removeFoggedLocationsInPath();
-					currentFloor.changeVisibleChildren(world.x, world.y, true);
 					numberOfTilesPlaced += 1;
 					Util.logger.logAction(1, {
 						"goldSpent": cost,
@@ -1290,7 +1286,6 @@ package {
 		public function onMoveCamera(event:GameEvent):void {
 			world.x += event.x;
 			world.y += event.y;
-			currentFloor.changeVisibleChildren(world.x, world.y);
 		}
 
 		public function onTileUnlock(event:GameEvent):void {
