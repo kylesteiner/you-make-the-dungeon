@@ -313,6 +313,15 @@ package {
 			char.toggleRunUI();
 			pressedKeys = new Array();
 
+			// Ensure that the character and all enemies are higher in the
+			// display order than the tiles.
+			removeChild(char);
+			addChild(char);
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
+
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -610,7 +619,7 @@ package {
 				return;
 			}
 			isHighlighted = true;
-			
+
 			var x:int; var y:int; var addBool:Boolean;
 			var allowed:Array = hudState == BuildHUD.STATE_TILE ? getAllowedLocations(directions) : new Array();
 
@@ -800,7 +809,7 @@ package {
 			}
 			return arr;
 		}
-		
+
 		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fillVisible:Boolean = false):void {
 			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
 			var oldStartX:int; var oldEndX:int; var oldStartY:int; var oldEndY:int;
@@ -849,7 +858,7 @@ package {
 						}
 					}
 				}
-				
+
 				// Left shift
 				if (newWorldX < worldX) {
 					// Left side
@@ -865,7 +874,7 @@ package {
 						}
 					}
 				}
-				
+
 				// Up shift
 				if (newWorldY < worldY) {
 					// Top side
@@ -880,7 +889,7 @@ package {
 						}
 					}
 				}
-				
+
 				// Down shift
 				if (newWorldY > worldY) {
 					// Top side
@@ -896,7 +905,7 @@ package {
 					}
 				}
 			}
-			
+
 			// Ensure that the character and all enemies are higher in the
 			// display order than the tiles.
 			removeChild(char);
@@ -909,7 +918,7 @@ package {
 			worldX = newWorldX;
 			worldY = newWorldY;
 		}
-		
+
 		private function clearLocation(x:int, y:int):void {
 			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
 				return;
@@ -920,7 +929,7 @@ package {
 			removeChild(goldGrid[x][y]);
 			removeChild(highlightedLocations[x][y]);
 		}
-		
+
 		private function addLocation(x:int, y:int):void {
 			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
 				return;
