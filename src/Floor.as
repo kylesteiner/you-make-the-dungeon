@@ -32,10 +32,15 @@ package {
 		public var char:Character;
 		public var floorName:String;
 		public var highlightedLocations:Array;
+		public var isHighlighted:Boolean;
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
 		// Map string (objective key) -> boolean (state)
 		public var objectiveState:Object;
+
+		// Current world position
+		public var worldX:int;
+		public var worldY:int;
 
 		// Grid metadata.
 		public var gridHeight:int;
@@ -152,7 +157,6 @@ package {
 					fog.x = i * Util.PIXELS_PER_TILE;
 					fog.y = j * Util.PIXELS_PER_TILE;
 					fogGrid[i][j] = fog;
-					addChild(fog);
 				}
 			}
 
@@ -204,7 +208,6 @@ package {
 					grid[tX][tY] = ex;
 					ex.deletable = tDeletable;
 					// Special case: remove fog manually from exit tile
-					addChild(ex);
 					removeChild(fogGrid[tX][tY]);
 					fogGrid[tX][tY] = null;
 				} else if (tile["type"] == "none") {
@@ -243,8 +246,6 @@ package {
 					if (key.indexOf(Util.DOOR) >= 0) {
 						removeChild(fogGrid[tX][tY]);
 						fogGrid[tX][tY] = null;
-						addChild(grid[tX][tY]);
-						addChild(obj);
 					}
 					entityGrid[tX][tY] = obj;
 				} else if (entity["type"] == "reward") {
@@ -314,11 +315,9 @@ package {
 
 			// Ensure that the character and all enemies are higher in the
 			// display order than the tiles.
-			removeChild(char);
-			addChild(char);
+			setChildIndex(char, numChildren - 1);
 			for each (var enemy:Enemy in activeEnemies) {
-				removeChild(enemy);
-				addChild(enemy);
+				setChildIndex(enemy, numChildren - 1);
 			}
 
 			if(gameState == Game.STATE_RUN) {
@@ -330,6 +329,7 @@ package {
 			for(x = 0; x < gridWidth; x++) {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
+					goldGrid[x][y] = null;
 
 					if (grid[x][y]
 						&& !(grid[x][y] is ImpassableTile)
@@ -390,10 +390,6 @@ package {
 				var entity:Entity = removedEntities.pop();
 				entity.reset();
 				entityGrid[entity.grid_x][entity.grid_y] = entity;
-
-				if(!fogGrid[entity.grid_x][entity.grid_y]) {
-					addChild(entity);
-				}
 
 				if (entity is Enemy) {
 					var enemyEntity:Enemy = entity as Enemy;
@@ -590,12 +586,6 @@ package {
 							yDist = Math.abs(y-j);
 							if (xDist + yDist <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
-								if(grid[x][y]) {
-									addChild(grid[x][y]);
-								}
-								if(entityGrid[x][y]) {
-									addChild(entityGrid[x][y]);
-								}
 								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {
 									activeEnemies.push(entityGrid[x][y]);
@@ -617,6 +607,11 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
+			if (isHighlighted) {
+				return;
+			}
+			isHighlighted = true;
+			
 			var x:int; var y:int; var addBool:Boolean;
 			var allowed:Array = hudState == BuildHUD.STATE_TILE ? getAllowedLocations(directions) : new Array();
 
@@ -667,16 +662,21 @@ package {
 				highlight.x = x * Util.PIXELS_PER_TILE;
 				highlight.y = y * Util.PIXELS_PER_TILE;
 				highlightedLocations[x][y] = highlight;
-
-				addChild(highlightedLocations[x][y]);
+				addChild(highlight);
 			}
 		}
 
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
+			if (!isHighlighted) {
+				return;
+			}
+			isHighlighted = false;
+
 			for (var x:int = 0; x < gridWidth; x++) {
 				for (var y:int = 0; y < gridHeight; y++) {
 					removeChild(highlightedLocations[x][y]);
+					highlightedLocations[x][y] = null;
 				}
 			}
 		}
@@ -800,6 +800,130 @@ package {
 				arr[i] = new Array(y);
 			}
 			return arr;
+		}
+		
+		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fill:Boolean = false):void {
+			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
+			var oldStartX:int; var oldEndX:int; var oldStartY:int; var oldEndY:int;
+
+			// Figure out the boundaries of the visible grid
+			newWorldX *= -1;
+			newWorldY *= -1;
+			oldStartX = Util.real_to_grid(worldX);
+			oldEndX = oldStartX + Util.real_to_grid(Util.STAGE_WIDTH);
+			oldStartY = Util.real_to_grid(worldY);
+			oldEndY = oldStartY + Util.real_to_grid(Util.STAGE_HEIGHT);
+			startX = Util.real_to_grid(newWorldX);
+			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
+			startY = Util.real_to_grid(newWorldY);
+			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
+			
+			if (fill) {
+				// Fill entire grid -- useful for moving to character and at the start
+				// First clear the old spot
+				for (x = oldStartX - 2; x < oldEndX + 2; x++) {
+					for (y = oldStartY - 2; y < oldEndY + 2; y++) {
+						clearLocation(x, y);
+					}
+				}
+				for (x = startX; x < endX; x++) {
+					for (y = startY; y < endY; y++) {
+						addLocation(x, y);
+					}
+				}
+			} else {
+				// Otherwise clear & add edges around visible grid
+				// Right shift
+				if (newWorldX > worldX) {
+					// Left side
+					for (x = startX - 2; x < startX; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							clearLocation(x, y);
+						}
+					}
+					// Right side
+					for (x = endX - 2; x < endX + 1; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+				}
+				
+				// Left shift
+				if (newWorldX < worldX) {
+					// Left side
+					for (x = startX - 2; x < startX + 2; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+					// Right side
+					for (x = endX + 1; x < endX + 3; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							clearLocation(x, y);
+						}
+					}
+				}
+				
+				// Up shift
+				if (newWorldY < worldY) {
+					// Top side
+					for (x = startX - 2; x < endX + 2; x++) {
+						// Top side
+						for (y = startY - 2; y < startY + 2; y++) {
+							addLocation(x, y);
+						}
+						// Bottom side
+						for (y = endY + 2; y < endY + 4; y++) {
+							clearLocation(x, y);
+						}
+					}
+				}
+				
+				// Down shift
+				if (newWorldY > worldY) {
+					// Top side
+					for (x = startX - 2; x < endX + 2; x++) {
+						// Top side
+						for (y = startY - 2; y < startY; y++) {
+							clearLocation(x, y);
+						}
+						// Bottom side
+						for (y = endY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+				}
+			}
+
+			worldX = newWorldX;
+			worldY = newWorldY;
+		}
+		
+		private function clearLocation(x:int, y:int):void {
+			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
+				return;
+			}
+			removeChild(grid[x][y]);
+			removeChild(entityGrid[x][y]);
+			removeChild(fogGrid[x][y]);
+			removeChild(goldGrid[x][y]);
+			removeChild(highlightedLocations[x][y]);
+		}
+		
+		private function addLocation(x:int, y:int):void {
+			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
+				return;
+			}
+			if (fogGrid[x][y]) {
+				addChild(fogGrid[x][y]);
+			} else {
+				if (grid[x][y]) { addChild(grid[x][y]); }
+				if (entityGrid[x][y]) { addChild(entityGrid[x][y]); }
+				if (goldGrid[x][y]) { addChild(goldGrid[x][y]); }
+				if (highlightedLocations[x][y]) { addChild(highlightedLocations[x][y]); }
+				setChildIndex(char, numChildren-1);
+			}
 		}
 
 		private function onEnterFrame(event:EnterFrameEvent):void {
