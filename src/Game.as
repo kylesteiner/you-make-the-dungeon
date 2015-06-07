@@ -69,6 +69,10 @@ package {
 		public static const TUTORIAL_WAITING_FOR_RUN:String = "waiting_for_run";
 		public static const TUTORIAL_WAITING_FOR_SPEED:String = "waiting_for_speed";
 
+		public static const UNLOCK_TUTORIAL_STATE_NONE:int = 0;
+		public static const UNLOCK_TUTORIAL_STATE_FIRST:int = 1;
+		public static const UNLOCK_TUTORIAL_STATE_SHOWN:int = 2;
+
 		private var runButton:Clickable;
 		private var endButton:Clickable;
 		private var combatSpeedButton:Clickable;
@@ -157,6 +161,12 @@ package {
 		private var entityTutorial:TutorialSequence;
 		private var secondRunTutorial:TutorialSequence;
 
+		private var tutorialManager:TutorialManager;
+		private var buildCount:int;
+		private var runCount:int;
+		private var tutorialCount:int;
+		private var unlockTutorialState:int;
+
 		public function Game(fromSave:Boolean,
 							 sfxMuteButton:Clickable,
 							 bgmMuteButton:Clickable) {
@@ -202,14 +212,21 @@ package {
 			addChild(bgmMuteButton);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
-			addChild(runButton);
+			//addChild(runButton);
 			addChild(goldHud);
-			addChild(shopHud);
+			//addChild(shopHud);
 			addChild(helpButton);
-			addChild(buildHud);
-			if (gameState == STATE_TUTORIAL) {
-				addChild(introTutorial);
-			}
+			//addChild(buildHud);
+			addChild(runHud);
+			addChild(endButton);
+			addChild(tutorialManager);
+			runHud.startRun();
+			currentFloor.toggleRun(gameState);
+			gameState = STATE_RUN;
+			//tutorialState = "";
+			//if (gameState == STATE_TUTORIAL) {
+			//	addChild(introTutorial);
+			//}
 
 			// Update build hud with unlocks if loading from save.
 			if (fromSave) {
@@ -258,6 +275,12 @@ package {
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
+
+			addEventListener(TutorialEvent.CLOSE_TUTORIAL, onCloseTutorial);
+			addEventListener(TutorialEvent.END_RUN, onTutorialEndRun);
+			addEventListener(TutorialEvent.REVEAL_ENEMY, onTutorialRevealEnemy);
+			addEventListener(TutorialEvent.REVEAL_TRAP, onTutorialRevealTrap);
+			addEventListener(GameEvent.SURFACE_ELEMENT, sendToTop);
 		}
 
 		private function initializeWorld(fromSave:Boolean):void {
@@ -335,6 +358,16 @@ package {
 		}
 
 		private function initializeTutorial():void {
+			tutorialManager = new TutorialManager();
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_NEA]);
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_EXIT]);
+
+			buildCount = 0;
+			runCount = 0;
+			tutorialCount = 0;
+		}
+
+		/*private function initializeTutorial():void {
 			secondBuild = false;
 			secondRun = false;
 			unlockedFirstEntity = false;
@@ -536,7 +569,7 @@ package {
 
 			secondRunTutorial = new TutorialSequence(onSecondRunTutorialComplete,
 													 secondRunTutorialOverlays);
-		}
+		}*/
 
 		private function returnToMenu():void {
 			dispatchEvent(new MenuEvent(MenuEvent.EXIT));
@@ -604,6 +637,8 @@ package {
 			phaseBanner.y = (Util.STAGE_HEIGHT - phaseBanner.height) / 2;
 			phaseBannerTimer = 0;
 			addChild(phaseBanner);
+
+			tutorialManager.canSkip(false);
 		}
 
 		public function runFloor():void {
@@ -655,31 +690,33 @@ package {
 
 			addChild(endButton);
 			addChild(runHud);
+			runCount += 1;
 			gameState = STATE_RUN;
 
-			if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
+			/*if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
 				// This means the run button was hit, so the build tutorial needs
 				// to complete and start the first run tutorial.
 				secondBuild = true;
 				buildTutorial.next();
-			}
+			}*/
 
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
 			constructPhaseBanner();
 
-			if (secondRun) {
+			/*if (secondRun) {
 				// For the second run, it also needs to start a tutorial.
 				addChild(secondRunTutorial);
 				currentFloor.char.moveLock = true;
 				tutorialState = TUTORIAL_WAITING_FOR_SPEED;
-			}
+			}*/
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
 			if (popupActive || gameState != STATE_RUN) {
 				endRunDeferred = true;
 			} else {
+			//if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
 				endRun();
 			}
 		}
@@ -746,6 +783,10 @@ package {
 			}
 			addChild(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
+
+			if (runCount == 0) {
+				dispatchEvent(new TutorialEvent(TutorialEvent.END_RUN));
+			}
 		}
 
 		public function endRunButton():void {
@@ -792,19 +833,39 @@ package {
 			addChild(shopHud);
 
 			gameState = STATE_BUILD;
+			buildCount += 1;
 			currentFloor.resetFloor();
 			centerWorldOnCharacter();
 			constructPhaseBanner(false); // happens after the summary dialog box
 
+			if (buildCount == 1) {
+				// First build phase
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_BUILD]);
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
+				//addChild(tutorialManager);
+			} else if (buildCount == 2) {
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
+				//addChild(tutorialManager);
+			} else if (buildCount == 3) {
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
+				//addChild(tutorialManager);
+			}
+
+			if (unlockTutorialState == UNLOCK_TUTORIAL_STATE_FIRST) {
+				unlockTutorialState = UNLOCK_TUTORIAL_STATE_SHOWN;
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_UNLOCK]);
+				//addChild(tutorialManager);
+			}
+
 			// If this is the second build, show the advanced build tutorial.
-			if (secondBuild) {
+			/*if (secondBuild) {
 				addChild(secondBuildTutorial);
 			// If this is not the second build, but the first entity was just
 			// unlocked, show the entity tutorial.
 			} else if (unlockedFirstEntity && !entityTutorialDisplayed) {
 				entityTutorialDisplayed = true;
 				addChild(entityTutorial);
-			}
+			}*/
 		}
 
 		private function centerWorldOnCharacter(exact:Boolean = false):void {
@@ -876,6 +937,7 @@ package {
 				if(phaseBannerTimer > PHASE_BANNER_DURATION) {
 					removeChild(phaseBanner);
 					phaseBanner = null;
+					tutorialManager.canSkip(true);
 				}
 			}
 
@@ -884,7 +946,7 @@ package {
 				addChild(buildHud.currentImage);
 			}
 
-			if (gameState == STATE_RUN && runHud && currentFloor) {
+			if (gameState == STATE_RUN && runHud && currentFloor && cinematic == null) {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
 			}
@@ -892,7 +954,7 @@ package {
 
 		private function onMouseEvent(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(this);
-			if(!touch) {
+			if (!touch) {
 				return;
 			}
 
@@ -925,9 +987,13 @@ package {
 				}
 			}
 
+			if (tutorialManager.isActive()) {
+				return;
+			}
+
 			// If we are in the build hud tutorial, check to see if the player has
 			// successfully selected a tile, then advance.
-			if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
+			/*if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
 				&& buildHud.hudState == BuildHUD.STATE_TILE) {
 
 				// We want the player to click at least two arrows before
@@ -943,7 +1009,7 @@ package {
 					tutorialState = TUTORIAL_WAITING_FOR_PLACE;
 					buildTutorial.next();
 				}
-			}
+			}*/
 
 			var isTouchHelpButton:Boolean;
 			var touchX:int = touch.globalX;
@@ -974,6 +1040,7 @@ package {
 			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {
 				removeChild(phaseBanner);
 				phaseBanner = null;
+				tutorialManager.canSkip(true);
 			}
 		}
 
@@ -1024,10 +1091,10 @@ package {
 					Assets.mixer.play(Util.TILE_MOVE);
 
 					// If we are in the build tutorial, advance to the next part.
-					if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
+					/*if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
 						tutorialState = TUTORIAL_WAITING_FOR_RUN;
 						buildTutorial.next();
-					}
+					}*/
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Could place but do not have gold required
 					goldHud.setFlash();
@@ -1083,9 +1150,12 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if (gameState == STATE_TUTORIAL
-				|| gameState == STATE_CINEMATIC
-				|| currentFloor.char.inCombat) {
+			if (gameState == STATE_TUTORIAL ||
+			    gameState == STATE_CINEMATIC ||
+				currentFloor.char.inCombat ||
+				tutorialManager.isActive() ||
+				phaseBanner != null) {
+				pressedKeys = new Dictionary(); // Clear all currently pressed keys in loss of control
 				return;
 			}
 
@@ -1203,9 +1273,9 @@ package {
 			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
 			currentFloor.updateRunSpeed();
 
-			if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
+			/*if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
 				onSecondRunTutorialComplete();
-			}
+			}*/
 		}
 
 		public function toggleCombatSpeed():void {
@@ -1218,12 +1288,12 @@ package {
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
 
-			if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
+			/*if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
 				onSecondRunTutorialComplete();
-			}
+			}*/
 		}
 
-		public function onIntroTutorialComplete():void {
+		/*public function onIntroTutorialComplete():void {
 			removeChild(introTutorial);
 
 			// Set up cinematic to show exit
@@ -1258,9 +1328,9 @@ package {
 			removeChild(shopHud);
 
 			playCinematic(commands, onIntroCinematicComplete);
-		}
+		}*/
 
-		public function onIntroCinematicComplete():void {
+		/*public function onIntroCinematicComplete():void {
 			gameState = STATE_BUILD;
 			tutorialState = TUTORIAL_WAITING_FOR_EDGES;
 
@@ -1274,9 +1344,9 @@ package {
 
 			addChild(buildTutorial);
 			Assets.mixer.play(Util.LEVEL_UP);
-		}
+		}*/
 
-		public function onBuildTutorialComplete():void {
+		/*public function onBuildTutorialComplete():void {
 			removeChild(buildTutorial);
 			addChild(runTutorial);
 			currentFloor.char.moveLock = true;
@@ -1309,7 +1379,7 @@ package {
 			removeChild(secondRunTutorial);
 			currentFloor.char.moveLock = false;
 			secondRun = false;
-		}
+		}*/
 
 		public function playCinematic(commands:Array, onComplete:Function):void {
 			cinematic = new Cinematic(world.x,
@@ -1331,6 +1401,10 @@ package {
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Assets.mixer.play(Util.LEVEL_UP);
 				tileUnlockTimer = 0;
+
+				if (unlockTutorialState == UNLOCK_TUTORIAL_STATE_NONE) {
+					unlockTutorialState = UNLOCK_TUTORIAL_STATE_FIRST;
+				}
 
 				// Remove the entity from the grid.
 				var reward:Reward = event.gameData["entity"];
@@ -1445,6 +1519,75 @@ package {
 			if (currentFloor.char.hp <= 0) {
 				endRun();
 			}
+		}
+
+		private function onCloseTutorial(event:TutorialEvent):void {
+			tutorialCount += 1;
+
+			if (tutorialCount == 2) {
+				// Set up cinematic to show exit
+				var commands:Array = new Array();
+
+				var moveToExit:Dictionary = new Dictionary();
+				moveToExit["command"] = Cinematic.COMMAND_MOVE;
+				moveToExit["destX"] = world.x + Util.grid_to_real(-8);
+				moveToExit["destY"] = world.y + Util.grid_to_real(19);
+
+				var waitAtExit:Dictionary = new Dictionary();
+				waitAtExit["command"] = Cinematic.COMMAND_WAIT;
+				waitAtExit["timeToWait"] = 1.5;
+
+				var moveToStart:Dictionary = new Dictionary();
+				moveToStart["command"] = Cinematic.COMMAND_MOVE;
+				moveToStart["destX"] = world.x;
+				moveToStart["destY"] = world.y;
+
+				commands.push(moveToExit);
+				commands.push(waitAtExit);
+				commands.push(moveToStart);
+
+				removeChild(endButton);
+				removeChild(goldHud);
+				removeChild(runHud);
+
+				gameState == STATE_CINEMATIC;
+				playCinematic(commands, exitCinematicCallback);
+			}
+		}
+
+		private function exitCinematicCallback():void {
+			removeChild(cinematic);
+			cinematic = null;
+			centerWorldOnCharacter();
+
+			addChild(endButton);
+			addChild(goldHud);
+			addChild(runHud);
+
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_MOVE]);
+			//addChild(tutorialManager); // Make sure it's on top of other UI elements.
+
+			gameState = STATE_RUN;
+		}
+
+		private function onTutorialEndRun(event:TutorialEvent):void {
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_END_RUN]);
+		}
+
+		private function onTutorialRevealEnemy(event:TutorialEvent):void {
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_ENEMY]);
+		}
+
+		private function onTutorialRevealTrap(event:TutorialEvent):void {
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_TRAP]);
+		}
+
+		private function sendToTop(event:GameEvent):void {
+			if (event.gameData == null || event.gameData["visual"] == null) {
+				return;
+			}
+
+			addChild(event.gameData["visual"]);
 		}
 	}
 }
