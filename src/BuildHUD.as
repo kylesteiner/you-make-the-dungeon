@@ -715,6 +715,8 @@ package {
 				toggleWest();
 			} else if (event.keyCode == Keyboard.RIGHT) {
 				toggleEast();
+			} else {
+				return;
 			}
 			dispatchEvent(new GameEvent(GameEvent.KEYBOARD_TOGGLE_TILE, 0, 0));
 		}

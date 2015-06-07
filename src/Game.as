@@ -1132,7 +1132,7 @@ package {
 		}
 
 		public function onKeyboardToggleTile(event:GameEvent):void {
-			if (gameState == STATE_BUILD) {
+			if (gameState == STATE_BUILD && buildHud.hasSelected()) {
 				// Move buildHud image to cursor
 				buildHud.currentImage.x = lastMouseX - buildHud.currentImage.width / 2;
 				buildHud.currentImage.y = lastMouseY - buildHud.currentImage.height / 2;
