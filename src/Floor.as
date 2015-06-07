@@ -573,6 +573,12 @@ package {
 							yDist = Math.abs(y-j);
 							if (xDist + yDist <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
+								if (grid[x][y]) {
+									addChild(grid[x][y]);
+								}
+								if (entityGrid[x][y]) {
+									addChild(entityGrid[x][y]);
+								}
 								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {
 									activeEnemies.push(entityGrid[x][y]);
@@ -789,7 +795,7 @@ package {
 			return arr;
 		}
 		
-		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fill:Boolean = false):void {
+		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fillVisible:Boolean = false):void {
 			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
 			var oldStartX:int; var oldEndX:int; var oldStartY:int; var oldEndY:int;
 
@@ -808,7 +814,7 @@ package {
 			if (worldX == newWorldX && worldY == newWorldY) {
 				// Redundant call. No change needed.
 				return;
-			} else if (fill) {
+			} else if (fillVisible) {
 				// Fill entire grid -- useful for moving to character and at the start
 				// First clear the old spot
 				for (x = oldStartX - 2; x < oldEndX + 2; x++) {
