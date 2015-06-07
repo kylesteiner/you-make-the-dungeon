@@ -118,6 +118,10 @@ package {
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
 
+		// The most recent position of the mouse
+		private var lastMouseX:int;
+		private var lastMouseY:int;
+
 		// for action 21, logging hover info help
 		private var helping:Boolean;
 		private var timeHovered:Number;
@@ -250,6 +254,7 @@ package {
 			addEventListener(GameEvent.UNLOCK_TILE, onEntityUnlock);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
+			addEventListener(GameEvent.KEYBOARD_TOGGLE_TILE, onKeyboardToggleTile);
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
@@ -832,7 +837,7 @@ package {
 			}
 
 			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
-			if(pressedKeys[Keyboard.DOWN] || pressedKeys[Util.DOWN_KEY]) {
+			if (pressedKeys[Util.DOWN_KEY]) {
 				world.y -= worldShift;
 				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
 					world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1);
@@ -840,7 +845,7 @@ package {
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
-			if(pressedKeys[Keyboard.UP] || pressedKeys[Util.UP_KEY]) {
+			if (pressedKeys[Util.UP_KEY]) {
 				world.y += worldShift;
 				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
 					world.y = Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT;
@@ -848,7 +853,7 @@ package {
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
-			if(pressedKeys[Keyboard.RIGHT] || pressedKeys[Util.RIGHT_KEY]) {
+			if (pressedKeys[Util.RIGHT_KEY]) {
 				world.x -= worldShift;
 				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
 					world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1);
@@ -856,7 +861,7 @@ package {
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
-			if(pressedKeys[Keyboard.LEFT] || pressedKeys[Util.LEFT_KEY]) {
+			if (pressedKeys[Util.LEFT_KEY]) {
 				world.x += worldShift;
 				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
 					world.x = Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH;
@@ -864,7 +869,7 @@ package {
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
-			if(phaseBanner) {
+			if (phaseBanner) {
 				phaseBannerTimer += event.passedTime;
 				addChild(phaseBanner);
 				if(phaseBannerTimer > PHASE_BANNER_DURATION) {
@@ -874,11 +879,11 @@ package {
 			}
 
 			removeChild(buildHud.currentImage);
-			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
+			if (gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
 				addChild(buildHud.currentImage);
 			}
 
-			if(gameState == STATE_RUN && runHud && currentFloor) {
+			if (gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
 			}
@@ -889,6 +894,9 @@ package {
 			if(!touch) {
 				return;
 			}
+
+			lastMouseX = touch.globalX;
+			lastMouseY = touch.globalY;
 
 			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
@@ -1106,8 +1114,8 @@ package {
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				//combatSkip = !combatSkip;
 				toggleCombatSpeed();
-				if(currentCombat && gameState == STATE_COMBAT) {
-					if(currentCombat.skipping != combatSkip) {
+				if (currentCombat && gameState == STATE_COMBAT) {
+					if (currentCombat.skipping != combatSkip) {
 						currentCombat.toggleSkip();
 					}
 				}
@@ -1121,11 +1129,18 @@ package {
 		public function onKeyUp(event:KeyboardEvent):void {
 			pressedKeys[event.keyCode] = false;
 
-			if(!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
-			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY] &&
-			   !pressedKeys[Keyboard.UP] && !pressedKeys[Keyboard.DOWN] &&
-			   !pressedKeys[Keyboard.LEFT] && !pressedKeys[Keyboard.RIGHT]) {
+			if (!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
+				!pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY]) {
 				cameraAccel = DEFAULT_CAMERA_ACCEL;
+			}
+		}
+
+		public function onKeyboardToggleTile(event:GameEvent):void {
+			if (gameState == STATE_BUILD) {
+				// Move buildHud image to cursor
+				buildHud.currentImage.x = lastMouseX - buildHud.currentImage.width / 2;
+				buildHud.currentImage.y = lastMouseY - buildHud.currentImage.height / 2;
+				currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.hudState);
 			}
 		}
 
