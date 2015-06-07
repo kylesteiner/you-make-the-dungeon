@@ -549,6 +549,7 @@ package {
 			removeChild(endButton);
 			addChild(currentCombat);
 			popupActive = true;
+			currentFloor.char.moveLock = true;
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
@@ -561,6 +562,7 @@ package {
 			goldHud.update(gold);
 
 			popupActive = false;
+			currentFloor.char.moveLock = false;
 			if (endRunDeferred) {
 				endRunDeferred = false;
 				endRun();
@@ -571,6 +573,7 @@ package {
 			removeChild(currentCombat);
 
 			popupActive = false;
+			currentFloor.char.moveLock = false;
 
 			Util.logger.logAction(4, {
 				"characterAttack":event.character.attack,
@@ -1386,12 +1389,14 @@ package {
 
 				addChild(unlock);
 				popupActive = true;
+				currentFloor.char.moveLock = true;
 			}
 		}
 
 		public function closeEntityUnlock():void {
 			removeChild(unlock);
 			popupActive = false;
+			currentFloor.char.moveLock = false;
 			if (endRunDeferred) {
 				endRunDeferred = false;
 				endRun();
@@ -1428,6 +1433,7 @@ package {
 
 			addChild(nC);
 			popupActive = true;
+			currentFloor.char.moveLock = true;
 		}
 
 		private function onGetTrapReward(e:GameEvent):void {
