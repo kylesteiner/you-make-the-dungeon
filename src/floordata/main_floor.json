@@ -524,15 +524,6 @@
 	"entities": [
 		{
 			"type": "enemy",
-			"x": 4,
-			"y": 23,
-			"texture": "enemy_fighter",
-			"hp": 5,
-			"attack": 1,
-			"reward": 5
-		},
-		{
-			"type": "enemy",
 			"x": 8,
 			"y": 21,
 			"texture": "enemy_fighter",

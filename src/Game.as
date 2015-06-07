@@ -269,8 +269,10 @@ package {
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
 
 			addEventListener(TutorialEvent.CLOSE_TUTORIAL, onCloseTutorial);
+			addEventListener(TutorialEvent.END_RUN, onTutorialEndRun);
 			addEventListener(TutorialEvent.REVEAL_ENEMY, onTutorialRevealEnemy);
 			addEventListener(TutorialEvent.REVEAL_TRAP, onTutorialRevealTrap);
+			addEventListener(GameEvent.SURFACE_ELEMENT, sendToTop);
 		}
 
 		private function initializeWorld(fromSave:Boolean):void {
@@ -615,6 +617,8 @@ package {
 			phaseBanner.y = (Util.STAGE_HEIGHT - phaseBanner.height) / 2;
 			phaseBannerTimer = 0;
 			addChild(phaseBanner);
+
+			tutorialManager.canSkip(false);
 		}
 
 		public function runFloor():void {
@@ -815,19 +819,19 @@ package {
 				// First build phase
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_BUILD]);
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
-				addChild(tutorialManager);
+				//addChild(tutorialManager);
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
-				addChild(tutorialManager);
+				//addChild(tutorialManager);
 			} else if (buildCount == 3) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
-				addChild(tutorialManager);
+				//addChild(tutorialManager);
 			}
 
 			if (unlockTutorialState == UNLOCK_TUTORIAL_STATE_FIRST) {
 				unlockTutorialState = UNLOCK_TUTORIAL_STATE_SHOWN;
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_UNLOCK]);
-				addChild(tutorialManager);
+				//addChild(tutorialManager);
 			}
 
 			// If this is the second build, show the advanced build tutorial.
@@ -910,6 +914,7 @@ package {
 				if(phaseBannerTimer > PHASE_BANNER_DURATION) {
 					removeChild(phaseBanner);
 					phaseBanner = null;
+					tutorialManager.canSkip(true);
 				}
 			}
 
@@ -935,10 +940,6 @@ package {
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
 			cursorHighlight.y = Util.grid_to_real(Util.real_to_grid(touch.globalY - world.y - yOffset));
 
-			if (tutorialManager.isActive()) {
-				return;
-			}
-
 			// Manage build hud display and current image
 			showBuildHudImage = touch.isTouching(currentFloor);
 			if (gameState == STATE_BUILD) {
@@ -958,6 +959,10 @@ package {
 				} else {
 					currentFloor.clearHighlightedLocations();
 				}
+			}
+
+			if (tutorialManager.isActive()) {
+				return;
 			}
 
 			// If we are in the build hud tutorial, check to see if the player has
@@ -1015,6 +1020,7 @@ package {
 			if(phaseBanner && touch.phase == TouchPhase.BEGAN && phaseBannerTimer > PHASE_BANNER_THRESHOLD) {
 				removeChild(phaseBanner);
 				phaseBanner = null;
+				tutorialManager.canSkip(true);
 			}
 		}
 
@@ -1111,7 +1117,9 @@ package {
 
 		private function onKeyDown(event:KeyboardEvent):void {
 			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC ||
-				popupManager.summary || currentFloor.char.inCombat || tutorialManager.isActive()) {
+				popupManager.summary || currentFloor.char.inCombat ||
+				tutorialManager.isActive() || phaseBanner != null) {
+				pressedKeys = new Dictionary(); // Clear all currently pressed keys in loss of control
 				return;
 			}
 
@@ -1537,14 +1545,9 @@ package {
 				moveToStart["destX"] = world.x;
 				moveToStart["destY"] = world.y;
 
-				var waitAtStart:Dictionary = new Dictionary();
-				waitAtStart["command"] = Cinematic.COMMAND_WAIT;
-				waitAtStart["timeToWait"] = 0.5;
-
 				commands.push(moveToExit);
 				commands.push(waitAtExit);
 				commands.push(moveToStart);
-				commands.push(waitAtStart);
 
 				removeChild(endButton);
 				removeChild(goldHud);
@@ -1565,9 +1568,13 @@ package {
 			addChild(runHud);
 
 			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_MOVE]);
-			addChild(tutorialManager); // Make sure it's on top of other UI elements.
+			//addChild(tutorialManager); // Make sure it's on top of other UI elements.
 
 			gameState = STATE_RUN;
+		}
+
+		private function onTutorialEndRun(event:TutorialEvent):void {
+			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_END_RUN]);
 		}
 
 		private function onTutorialRevealEnemy(event:TutorialEvent):void {
@@ -1576,6 +1583,14 @@ package {
 
 		private function onTutorialRevealTrap(event:TutorialEvent):void {
 			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_TRAP]);
+		}
+
+		private function sendToTop(event:GameEvent):void {
+			if (event.gameData == null || event.gameData["visual"] == null) {
+				return;
+			}
+
+			addChild(event.gameData["visual"]);
 		}
 	}
 }
