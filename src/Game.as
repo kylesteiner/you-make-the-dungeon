@@ -59,7 +59,6 @@ package {
 		public static const STATE_BUILD:String = "game_build";
 		public static const STATE_RUN:String = "game_run";
 		public static const STATE_COMBAT:String = "game_combat";
-		public static const STATE_POPUP:String = "game_popup";
 		public static const STATE_TUTORIAL:String = "game_tutorial";
 		public static const STATE_SUMMARY:String = "game_summary";
 		public static const STATE_CINEMATIC:String = "game_cinematic";
@@ -103,6 +102,9 @@ package {
 		private var unlock:Unlock;
 
 		private var gameState:String;
+		private var popupActive:Boolean;
+		// True if endRun() needs to be called after the current popup is dismissed.
+		private var endRunDeferred:Boolean;
 
 		private var gold:int;
 
@@ -170,6 +172,9 @@ package {
 			gold = fromSave ? saveGame.data["gold"] : Util.STARTING_GOLD;
 			Util.speed = Util.SPEED_SLOW;
 			combatSkip = false;
+
+			popupActive = false;
+			endRunDeferred = false;
 
 			// setting up scores and stats
 			bestRunGoldEarned = fromSave ? saveGame.data["bestRunGoldEarned"] : 0;
@@ -242,7 +247,7 @@ package {
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.SHOP_SPEND, onShopSpend);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
-			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.UNLOCK_TILE, onEntityUnlock);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
 
@@ -538,6 +543,7 @@ package {
 										  combatSkip);
 			removeChild(endButton);
 			addChild(currentCombat);
+			popupActive = true;
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
@@ -548,10 +554,18 @@ package {
 			gold += event.enemy.reward;
 			runSummary.goldCollected += event.enemy.reward;
 			goldHud.update(gold);
+
+			popupActive = false;
+			if (endRunDeferred) {
+				endRunDeferred = false;
+				endRun();
+			}
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
 			removeChild(currentCombat);
+
+			popupActive = false;
 
 			Util.logger.logAction(4, {
 				"characterAttack":event.character.attack,
@@ -655,7 +669,9 @@ package {
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
-			if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
+			if (popupActive) {
+				endRunDeferred = true;
+			} else {
 				endRun();
 			}
 		}
@@ -725,7 +741,7 @@ package {
 		}
 
 		public function endRunButton():void {
-			if(currentFloor && gameState == STATE_RUN) {
+			if(currentFloor && gameState == STATE_RUN && !popupActive) {
 				endRun();
 			}
 		}
@@ -1042,7 +1058,9 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC || currentFloor.char.inCombat) {
+			if (gameState == STATE_TUTORIAL
+				|| gameState == STATE_CINEMATIC
+				|| currentFloor.char.inCombat) {
 				return;
 			}
 
@@ -1275,7 +1293,7 @@ package {
 			world.y += event.y;
 		}
 
-		public function onTileUnlock(event:GameEvent):void {
+		public function onEntityUnlock(event:GameEvent):void {
 			unlockedFirstEntity = true;
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
@@ -1304,7 +1322,7 @@ package {
 									buildHud.entityFactory.entityText[event.gameData["type"]][0],
 									newEntity.generateDescription(),
 									buildHud.entityFactory.entityText[event.gameData["type"]][1],
-									closeTileUnlock);
+									closeEntityUnlock);
 
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
@@ -1338,11 +1356,17 @@ package {
 				}
 
 				addChild(unlock);
+				popupActive = true;
 			}
 		}
 
-		public function closeTileUnlock():void {
+		public function closeEntityUnlock():void {
 			removeChild(unlock);
+			popupActive = false;
+			if (endRunDeferred) {
+				endRunDeferred = false;
+				endRun();
+			}
 		}
 
 		private function onLosChange(event:GameEvent):void {
@@ -1374,6 +1398,7 @@ package {
 			var nC:Clickable = new Clickable(0, 0, returnToMenu, winBox);
 
 			addChild(nC);
+			popupActive = true;
 		}
 
 		private function onGetTrapReward(e:GameEvent):void {
