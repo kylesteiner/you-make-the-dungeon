@@ -378,11 +378,11 @@ package {
 				removedEntities.push(tempEnemy);
 				entityGrid[tempEnemy.grid_x][tempEnemy.grid_y] = null;
 			}
-
 			while (removedEntities.length > 0) {
 				var entity:Entity = removedEntities.pop();
 				entity.reset();
 				entityGrid[entity.grid_x][entity.grid_y] = entity;
+				addChild(entity);
 
 				if (entity is Enemy) {
 					var enemyEntity:Enemy = entity as Enemy;
