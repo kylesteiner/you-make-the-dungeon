@@ -1070,7 +1070,7 @@ package {
 				sfxMuteButton.onClick();
 			}
 
-			if (event.keyCode == Util.CHANGE_PHASE_KEY) {
+			if (event.keyCode == Util.CHANGE_PHASE_KEY && phaseBanner == null) {
 				if (gameState == STATE_BUILD) {
 					runFloor();
 				} else if (gameState == STATE_RUN) {
