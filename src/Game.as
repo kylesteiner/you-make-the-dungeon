@@ -90,7 +90,6 @@ package {
 		private var entitiesPlaced:int;
 		private var goldSpent:int;
 
-		private var popupManager:PopupManager;
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
 		private var runPhaseSpeed:Boolean;
@@ -99,7 +98,9 @@ package {
 		private var shopHud:ShopHUD;
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
+
 		private var runSummary:Summary;
+		private var unlock:Unlock;
 
 		private var gameState:String;
 
@@ -162,7 +163,6 @@ package {
 			numberOfTilesPlaced = 0;
 			timeHovered = 0;
 
-			popupManager = new PopupManager();
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
@@ -191,7 +191,6 @@ package {
 			addChild(world);
 			addChild(sfxMuteButton);
 			addChild(bgmMuteButton);
-			addChild(popupManager);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
 			addChild(runButton);
@@ -538,11 +537,11 @@ package {
 										  currentFloor.entityGrid[e.x][e.y],
 										  combatSkip);
 			removeChild(endButton);
-			popupManager.addPopup(currentCombat);
+			addChild(currentCombat);
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
-			popupManager.removePopup();
+			removeChild(currentCombat);
 			addChild(endButton);
 
 			currentFloor.onCombatSuccess(event.enemy);
@@ -552,7 +551,7 @@ package {
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
-			popupManager.removePopup();
+			removeChild(currentCombat);
 
 			Util.logger.logAction(4, {
 				"characterAttack":event.character.attack,
@@ -721,7 +720,7 @@ package {
 			} else {
 				runSummary.reason = "Ran out of Health";
 			}
-			popupManager.addSummary(runSummary);
+			addChild(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
@@ -732,7 +731,7 @@ package {
 		}
 
 		public function returnToBuild():void {
-			popupManager.removeSummary();
+			removeChild(runSummary);
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -919,12 +918,6 @@ package {
 				}
 			}
 
-			if (touch.phase == TouchPhase.BEGAN && popupManager.popup is Clickable) {
-				Clickable(popupManager.popup).onClick();
-			} else if (touch.phase == TouchPhase.BEGAN && popupManager.summary && !touch.isTouching(endButton) && gameState == STATE_SUMMARY) {
-				Clickable(popupManager.summary).onClick();
-			}
-
 			var isTouchHelpButton:Boolean;
 			var touchX:int = touch.globalX;
 			var touchY:int = touch.globalY;
@@ -1049,13 +1042,8 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC ||
-				popupManager.summary || currentFloor.char.inCombat) {
+			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC || currentFloor.char.inCombat) {
 				return;
-			}
-
-			if (popupManager.popup) {
-				popupManager.removePopup();
 			}
 
 			// to ensure that they can't move the world around until
@@ -1311,12 +1299,12 @@ package {
 				var newEntity:Entity = unlockedTile["constructor"]();
 
 
-				var unlock:Unlock = new Unlock(newEntity.img,
-											   newEntity.generateOverlay(),
-											   buildHud.entityFactory.entityText[event.gameData["type"]][0],
-											   newEntity.generateDescription(),
-											   buildHud.entityFactory.entityText[event.gameData["type"]][1],
-											   closeTileUnlock);
+				unlock = new Unlock(newEntity.img,
+									newEntity.generateOverlay(),
+									buildHud.entityFactory.entityText[event.gameData["type"]][0],
+									newEntity.generateDescription(),
+									buildHud.entityFactory.entityText[event.gameData["type"]][1],
+									closeTileUnlock);
 
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
@@ -1349,12 +1337,12 @@ package {
 					});
 				}
 
-				popupManager.addPopup(unlock);
+				addChild(unlock);
 			}
 		}
 
 		public function closeTileUnlock():void {
-			popupManager.removePopup();
+			removeChild(unlock);
 		}
 
 		private function onLosChange(event:GameEvent):void {
@@ -1385,7 +1373,7 @@ package {
 
 			var nC:Clickable = new Clickable(0, 0, returnToMenu, winBox);
 
-			popupManager.addPopup(nC);
+			addChild(nC);
 		}
 
 		private function onGetTrapReward(e:GameEvent):void {
