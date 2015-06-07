@@ -1,5 +1,6 @@
 package {
 	import flash.net.SharedObject;
+	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -116,6 +117,10 @@ package {
 		private var cameraAccel:Number;
 		// Key -> Boolean representing which keys are being held down
 		private var pressedKeys:Dictionary;
+
+		// The most recent position of the mouse
+		private var lastMouseX:int;
+		private var lastMouseY:int;
 
 		// for action 21, logging hover info help
 		private var helping:Boolean;
@@ -249,6 +254,7 @@ package {
 			addEventListener(GameEvent.UNLOCK_TILE, onEntityUnlock);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
+			addEventListener(GameEvent.KEYBOARD_TOGGLE_TILE, onKeyboardToggleTile);
 
 			// Tutorial-specific game events.
 			addEventListener(GameEvent.MOVE_CAMERA, onMoveCamera);
@@ -887,6 +893,9 @@ package {
 				return;
 			}
 
+			lastMouseX = touch.globalX;
+			lastMouseY = touch.globalY;
+
 			var xOffset:int = touch.globalX < world.x ? Util.PIXELS_PER_TILE : 0;
 			var yOffset:int = touch.globalY < world.y ? Util.PIXELS_PER_TILE : 0;
 			cursorHighlight.x = Util.grid_to_real(Util.real_to_grid(touch.globalX - world.x - xOffset));
@@ -1119,6 +1128,15 @@ package {
 			if (!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
 				!pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY]) {
 				cameraAccel = DEFAULT_CAMERA_ACCEL;
+			}
+		}
+
+		public function onKeyboardToggleTile(event:GameEvent):void {
+			if (gameState == STATE_BUILD) {
+				// Move buildHud image to cursor
+				buildHud.currentImage.x = lastMouseX - buildHud.currentImage.width / 2;
+				buildHud.currentImage.y = lastMouseY - buildHud.currentImage.height / 2;
+				currentFloor.highlightAllowedLocations(buildHud.directions, buildHud.hudState);
 			}
 		}
 
