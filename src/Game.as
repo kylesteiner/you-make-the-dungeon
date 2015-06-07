@@ -669,7 +669,7 @@ package {
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
-			if (popupActive) {
+			if (popupActive || gameState != STATE_RUN) {
 				endRunDeferred = true;
 			} else {
 				endRun();
