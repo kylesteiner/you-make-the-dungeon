@@ -1012,9 +1012,15 @@ package {
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Could place but do not have gold required
 					goldHud.setFlash();
+					Util.logger.logAction(28, {
+						"type":"tile"
+					});
 				} else {
 					// Invalid placement
 					Assets.mixer.play(Util.TILE_FAILURE);
+					Util.logger.logAction(27, {
+						"type":"tile"
+					});
 				}
 			} else if (buildHud.hudState == BuildHUD.STATE_ENTITY) {
 				cost = buildHud.getCost();
@@ -1031,6 +1037,8 @@ package {
 						type = "enemy";
 					} else if (newEntity is Trap) {
 						type = "trap";
+					} else if (newEntity is StaminaHeal) {
+						type = "stamina";
 					}
 					Assets.mixer.play(Util.TILE_MOVE);
 					Util.logger.logAction(18, {
@@ -1042,9 +1050,15 @@ package {
 				} else if (currentFloor.isEmptyTile(currentTile)) {
 					// Could place but do not have gold required
 					goldHud.setFlash();
+					Util.logger.logAction(28, {
+						"type":"entity"
+					});
 				} else {
 					// Invalid placement
 					Assets.mixer.play(Util.TILE_FAILURE);
+					Util.logger.logAction(27, {
+						"type":"entity"
+					});
 				}
 			}
 		}
