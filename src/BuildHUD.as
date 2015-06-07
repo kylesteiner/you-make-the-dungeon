@@ -1,4 +1,6 @@
 package {
+	import flash.ui.Keyboard;
+
 	import starling.display.*;
 	import flash.utils.Dictionary;
 	import starling.textures.*;
@@ -125,6 +127,8 @@ package {
 			hudState = STATE_NONE;
 
 			createUI();
+
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		public function updateHUD():void {
@@ -699,6 +703,18 @@ package {
 				newCost.y = entityGoldCosts[i].y;
 				entityGoldCosts[i] = newCost;
 				hud.addChild(entityGoldCosts[i]);
+			}
+		}
+
+		private function onKeyDown(event:KeyboardEvent):void {
+			if (event.keyCode == Keyboard.UP) {
+				toggleNorth();
+			} else if (event.keyCode == Keyboard.DOWN) {
+				toggleSouth();
+			} else if (event.keyCode == Keyboard.LEFT) {
+				toggleWest();
+			} else if (event.keyCode == Keyboard.RIGHT) {
+				toggleEast();
 			}
 		}
 	}

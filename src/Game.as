@@ -1,6 +1,5 @@
 package {
 	import flash.net.SharedObject;
-	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -830,7 +829,7 @@ package {
 			}
 
 			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
-			if(pressedKeys[Keyboard.DOWN] || pressedKeys[Util.DOWN_KEY]) {
+			if (pressedKeys[Util.DOWN_KEY]) {
 				world.y -= worldShift;
 
 				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
@@ -838,7 +837,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Keyboard.UP] || pressedKeys[Util.UP_KEY]) {
+			if (pressedKeys[Util.UP_KEY]) {
 				world.y += worldShift;
 
 				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
@@ -846,7 +845,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Keyboard.RIGHT] || pressedKeys[Util.RIGHT_KEY]) {
+			if (pressedKeys[Util.RIGHT_KEY]) {
 				world.x -= worldShift;
 
 				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
@@ -854,7 +853,7 @@ package {
 				}
 			}
 
-			if(pressedKeys[Keyboard.LEFT] || pressedKeys[Util.LEFT_KEY]) {
+			if (pressedKeys[Util.LEFT_KEY]) {
 				world.x += worldShift;
 
 				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
@@ -862,7 +861,7 @@ package {
 				}
 			}
 
-			if(phaseBanner) {
+			if (phaseBanner) {
 				phaseBannerTimer += event.passedTime;
 				addChild(phaseBanner);
 				if(phaseBannerTimer > PHASE_BANNER_DURATION) {
@@ -872,11 +871,11 @@ package {
 			}
 
 			removeChild(buildHud.currentImage);
-			if(gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
+			if (gameState == STATE_BUILD && buildHud && buildHud.hasSelected() && showBuildHudImage) {
 				addChild(buildHud.currentImage);
 			}
 
-			if(gameState == STATE_RUN && runHud && currentFloor) {
+			if (gameState == STATE_RUN && runHud && currentFloor) {
 				runHud.update(currentFloor.char);
 				centerWorldOnCharacter();
 			}
@@ -1102,8 +1101,8 @@ package {
 			if (event.keyCode == Util.COMBAT_SKIP_KEY) {
 				//combatSkip = !combatSkip;
 				toggleCombatSpeed();
-				if(currentCombat && gameState == STATE_COMBAT) {
-					if(currentCombat.skipping != combatSkip) {
+				if (currentCombat && gameState == STATE_COMBAT) {
+					if (currentCombat.skipping != combatSkip) {
 						currentCombat.toggleSkip();
 					}
 				}
@@ -1117,10 +1116,8 @@ package {
 		public function onKeyUp(event:KeyboardEvent):void {
 			pressedKeys[event.keyCode] = false;
 
-			if(!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
-			   !pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY] &&
-			   !pressedKeys[Keyboard.UP] && !pressedKeys[Keyboard.DOWN] &&
-			   !pressedKeys[Keyboard.LEFT] && !pressedKeys[Keyboard.RIGHT]) {
+			if (!pressedKeys[Util.UP_KEY] && !pressedKeys[Util.DOWN_KEY] &&
+				!pressedKeys[Util.LEFT_KEY] && !pressedKeys[Util.RIGHT_KEY]) {
 				cameraAccel = DEFAULT_CAMERA_ACCEL;
 			}
 		}
