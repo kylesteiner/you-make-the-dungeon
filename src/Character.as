@@ -191,10 +191,6 @@ package {
 					addChild(currentAnimation);
 
 					stamina -= 1;
-					if (stamina <= 0) {
-						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED, grid_x, grid_y));
-					}
-
 					dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_TILE,
 												grid_x,
 												grid_y));

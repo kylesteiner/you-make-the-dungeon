@@ -12,7 +12,6 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.utils.Color;
-	import starling.utils.HAlign;
 
 	import entities.*;
 	import menu.MenuEvent;
@@ -60,7 +59,6 @@ package {
 		public static const STATE_BUILD:String = "game_build";
 		public static const STATE_RUN:String = "game_run";
 		public static const STATE_COMBAT:String = "game_combat";
-		public static const STATE_POPUP:String = "game_popup";
 		public static const STATE_TUTORIAL:String = "game_tutorial";
 		public static const STATE_SUMMARY:String = "game_summary";
 		public static const STATE_CINEMATIC:String = "game_cinematic";
@@ -91,7 +89,6 @@ package {
 		private var entitiesPlaced:int;
 		private var goldSpent:int;
 
-		private var popupManager:PopupManager;
 		private var currentCombat:CombatHUD;
 		private var combatSkip:Boolean;
 		private var runPhaseSpeed:Boolean;
@@ -100,9 +97,14 @@ package {
 		private var shopHud:ShopHUD;
 		private var buildHud:BuildHUD;
 		private var showBuildHudImage:Boolean;
+
 		private var runSummary:Summary;
+		private var unlock:Unlock;
 
 		private var gameState:String;
+		private var popupActive:Boolean;
+		// True if endRun() needs to be called after the current popup is dismissed.
+		private var endRunDeferred:Boolean;
 
 		private var gold:int;
 
@@ -163,7 +165,6 @@ package {
 			numberOfTilesPlaced = 0;
 			timeHovered = 0;
 
-			popupManager = new PopupManager();
 			cameraAccel = DEFAULT_CAMERA_ACCEL;
 			pressedKeys = new Dictionary();
 
@@ -171,6 +172,9 @@ package {
 			gold = fromSave ? saveGame.data["gold"] : Util.STARTING_GOLD;
 			Util.speed = Util.SPEED_SLOW;
 			combatSkip = false;
+
+			popupActive = false;
+			endRunDeferred = false;
 
 			// setting up scores and stats
 			bestRunGoldEarned = fromSave ? saveGame.data["bestRunGoldEarned"] : 0;
@@ -192,7 +196,6 @@ package {
 			addChild(world);
 			addChild(sfxMuteButton);
 			addChild(bgmMuteButton);
-			addChild(popupManager);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
 			addChild(runButton);
@@ -244,7 +247,7 @@ package {
 			addEventListener(GameEvent.GAIN_GOLD, onGainGold);
 			addEventListener(GameEvent.SHOP_SPEND, onShopSpend);
 			addEventListener(GameEvent.STAMINA_EXPENDED, onStaminaExpended);
-			addEventListener(GameEvent.UNLOCK_TILE, onTileUnlock);
+			addEventListener(GameEvent.UNLOCK_TILE, onEntityUnlock);
 			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.GET_TRAP_REWARD, onGetTrapReward);
 
@@ -540,21 +543,30 @@ package {
 										  currentFloor.entityGrid[e.x][e.y],
 										  combatSkip);
 			removeChild(endButton);
-			popupManager.addPopup(currentCombat);
+			addChild(currentCombat);
+			popupActive = true;
 		}
 
 		private function onCombatSuccess(event:AnimationEvent):void {
-			popupManager.removePopup();
+			removeChild(currentCombat);
 			addChild(endButton);
 
 			currentFloor.onCombatSuccess(event.enemy);
 			gold += event.enemy.reward;
 			runSummary.goldCollected += event.enemy.reward;
 			goldHud.update(gold);
+
+			popupActive = false;
+			if (endRunDeferred) {
+				endRunDeferred = false;
+				endRun();
+			}
 		}
 
 		private function onCombatFailure(event:AnimationEvent):void {
-			popupManager.removePopup();
+			removeChild(currentCombat);
+
+			popupActive = false;
 
 			Util.logger.logAction(4, {
 				"characterAttack":event.character.attack,
@@ -657,8 +669,10 @@ package {
 			}
 		}
 
-		public function onStaminaExpended(event:GameEvent):void { 
-			if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
+		public function onStaminaExpended(event:GameEvent):void {
+			if (popupActive || gameState != STATE_RUN) {
+				endRunDeferred = true;
+			} else {
 				endRun();
 			}
 		}
@@ -723,18 +737,18 @@ package {
 			} else {
 				runSummary.reason = "Ran out of Health";
 			}
-			popupManager.addSummary(runSummary);
+			addChild(runSummary);
 			currentFloor.toggleRun(STATE_BUILD);
 		}
 
 		public function endRunButton():void {
-			if(currentFloor && gameState == STATE_RUN) {
+			if(currentFloor && gameState == STATE_RUN && !popupActive) {
 				endRun();
 			}
 		}
 
 		public function returnToBuild():void {
-			popupManager.removeSummary();
+			removeChild(runSummary);
 
 			saveGame.clear();
 			saveGame.data["gold"] = gold;
@@ -922,12 +936,6 @@ package {
 				}
 			}
 
-			if (touch.phase == TouchPhase.BEGAN && popupManager.popup is Clickable) {
-				Clickable(popupManager.popup).onClick();
-			} else if (touch.phase == TouchPhase.BEGAN && popupManager.summary && !touch.isTouching(endButton) && gameState == STATE_SUMMARY) {
-				Clickable(popupManager.summary).onClick();
-			}
-
 			var isTouchHelpButton:Boolean;
 			var touchX:int = touch.globalX;
 			var touchY:int = touch.globalY;
@@ -1015,9 +1023,15 @@ package {
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Could place but do not have gold required
 					goldHud.setFlash();
+					Util.logger.logAction(28, {
+						"type":"tile"
+					});
 				} else {
 					// Invalid placement
 					Assets.mixer.play(Util.TILE_FAILURE);
+					Util.logger.logAction(27, {
+						"type":"tile"
+					});
 				}
 			} else if (buildHud.hudState == BuildHUD.STATE_ENTITY) {
 				cost = buildHud.getCost();
@@ -1034,6 +1048,8 @@ package {
 						type = "enemy";
 					} else if (newEntity is Trap) {
 						type = "trap";
+					} else if (newEntity is StaminaHeal) {
+						type = "stamina";
 					}
 					Assets.mixer.play(Util.TILE_MOVE);
 					Util.logger.logAction(18, {
@@ -1045,22 +1061,25 @@ package {
 				} else if (currentFloor.isEmptyTile(currentTile)) {
 					// Could place but do not have gold required
 					goldHud.setFlash();
+					Util.logger.logAction(28, {
+						"type":"entity"
+					});
 				} else {
 					// Invalid placement
 					Assets.mixer.play(Util.TILE_FAILURE);
+					Util.logger.logAction(27, {
+						"type":"entity"
+					});
 				}
 			}
 			currentFloor.clearHighlightedLocations();
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC ||
-				popupManager.summary || currentFloor.char.inCombat) {
+			if (gameState == STATE_TUTORIAL
+				|| gameState == STATE_CINEMATIC
+				|| currentFloor.char.inCombat) {
 				return;
-			}
-
-			if (popupManager.popup) {
-				popupManager.removePopup();
 			}
 
 			// to ensure that they can't move the world around until
@@ -1293,15 +1312,14 @@ package {
 			currentFloor.changeVisibleChildren(world.x, world.y);
 		}
 
-		public function onTileUnlock(event:GameEvent):void {
+		public function onEntityUnlock(event:GameEvent):void {
 			unlockedFirstEntity = true;
-			removeChild(tileUnlockPopup);
 
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Assets.mixer.play(Util.LEVEL_UP);
-
 				tileUnlockTimer = 0;
 
+				// Remove the entity from the grid.
 				var reward:Reward = event.gameData["entity"];
 				if (reward.permanent) {
 					currentFloor.removedEntities.push(reward);
@@ -1309,72 +1327,21 @@ package {
 				currentFloor.removeChild(reward);
 				currentFloor.entityGrid[reward.grid_x][reward.grid_y] = null;
 
-				var tileUnlockSprite:Sprite = new Sprite();
-				var outerQuad:Quad = new Quad(Util.STAGE_WIDTH / 2,
-											  Util.STAGE_HEIGHT / 2, Color.BLACK);
-				var innerQuad:Quad = new Quad(outerQuad.width - 4, outerQuad.height - 4, Color.WHITE);
-				innerQuad.x = outerQuad.x + 2;
-				innerQuad.y = outerQuad.y + 2;
-
-				var titleText:TextField = Util.defaultTextField(innerQuad.width, Util.LARGE_FONT_SIZE, "Tile Unlocked!", Util.LARGE_FONT_SIZE);
-				titleText.x = innerQuad.x + (innerQuad.width - titleText.width) / 2;
-				titleText.y = innerQuad.y;
-
-				var closeText:TextField = Util.defaultTextField(innerQuad.width, Util.SMALL_FONT_SIZE, "Click to continue", Util.SMALL_FONT_SIZE);
-				closeText.x = innerQuad.x + innerQuad.width - closeText.width;
-				closeText.y = innerQuad.y + innerQuad.height - closeText.height;
-
+				// Unlock the tile in the build hud.
 				buildHud.entityFactory.unlockTile(event.gameData["type"]);
 				buildHud.updateHUD();
 
+
 				var unlockedTile:Dictionary = buildHud.entityFactory.masterSet[event.gameData["type"]];
 				var newEntity:Entity = unlockedTile["constructor"]();
-				var newEntitySprite:Sprite = new Sprite();
-				newEntitySprite.addChild(newEntity.img);
-				newEntitySprite.addChild(newEntity.generateOverlay());
-				newEntitySprite.scaleX = 2;
-				newEntitySprite.scaleY = 2;
-				newEntitySprite.x = innerQuad.x + Util.PIXELS_PER_TILE / 4;
-				newEntitySprite.y = innerQuad.y + (innerQuad.height / 4);
 
-				var newEntityTitle:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
-																	Util.MEDIUM_FONT_SIZE, buildHud.entityFactory.entityText[event.gameData["type"]][0]);
-				newEntityTitle.autoScale = true;
-				newEntityTitle.hAlign = HAlign.LEFT;
-				newEntityTitle.x = newEntitySprite.x + newEntitySprite.width;
-				//newEntityTitle.y = titleText.y + titleText.height + Util.PIXELS_PER_TILE / 4;
-				newEntityTitle.y = newEntitySprite.y;
 
-				//var openSpace:int = innerQuad.height - titleText.height - newEntityTitle.height - (2 * Util.PIXELS_PER_TILE) / 4 - closeText.height;
-				var openSpace:int = innerQuad.height - (newEntitySprite.y - innerQuad.y) - closeText.height - newEntityTitle.height;
-
-				var newEntityText:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
-																	(openSpace * 2 / 3), newEntity.generateDescription());
-				newEntityText.autoScale = true;
-				newEntityText.hAlign = HAlign.LEFT;
-				newEntityText.x = newEntitySprite.x + newEntitySprite.width;
-				newEntityText.y = newEntityTitle.y + newEntityTitle.height;
-
-				var newEntityFlavor:TextField = Util.defaultTextField(innerQuad.width - newEntitySprite.width - newEntitySprite.x + innerQuad.x,
-				 													  (openSpace / 3), buildHud.entityFactory.entityText[event.gameData["type"]][1]);
-				newEntityFlavor.autoScale = true;
-				newEntityFlavor.hAlign = HAlign.LEFT;
-				newEntityFlavor.x = newEntitySprite.x + newEntitySprite.width;
-				newEntityFlavor.y = newEntityText.y + newEntityText.height;
-
-				tileUnlockSprite.addChild(outerQuad);
-				tileUnlockSprite.addChild(innerQuad);
-				tileUnlockSprite.addChild(titleText);
-				tileUnlockSprite.addChild(newEntitySprite);
-				tileUnlockSprite.addChild(newEntityTitle);
-				tileUnlockSprite.addChild(newEntityText);
-				tileUnlockSprite.addChild(newEntityFlavor);
-				tileUnlockSprite.addChild(closeText);
-
-				var tileUnlockPopup:Clickable = new Clickable((Util.STAGE_WIDTH - tileUnlockSprite.width) / 2,
-															(Util.STAGE_HEIGHT - tileUnlockSprite.height) / 2,
-															closeTileUnlock,
-															tileUnlockSprite);
+				unlock = new Unlock(newEntity.img,
+									newEntity.generateOverlay(),
+									buildHud.entityFactory.entityText[event.gameData["type"]][0],
+									newEntity.generateDescription(),
+									buildHud.entityFactory.entityText[event.gameData["type"]][1],
+									closeEntityUnlock);
 
 				if (newEntity is Enemy) {
 					var temp:Enemy = newEntity as Enemy;
@@ -1407,12 +1374,18 @@ package {
 					});
 				}
 
-				popupManager.addPopup(tileUnlockPopup);
+				addChild(unlock);
+				popupActive = true;
 			}
 		}
 
-		public function closeTileUnlock():void {
-			popupManager.removePopup();
+		public function closeEntityUnlock():void {
+			removeChild(unlock);
+			popupActive = false;
+			if (endRunDeferred) {
+				endRunDeferred = false;
+				endRun();
+			}
 		}
 
 		private function onLosChange(event:GameEvent):void {
@@ -1443,7 +1416,8 @@ package {
 
 			var nC:Clickable = new Clickable(0, 0, returnToMenu, winBox);
 
-			popupManager.addPopup(nC);
+			addChild(nC);
+			popupActive = true;
 		}
 
 		private function onGetTrapReward(e:GameEvent):void {
