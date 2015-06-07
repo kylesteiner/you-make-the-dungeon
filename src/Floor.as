@@ -374,10 +374,16 @@ package {
 
 			char.reset();
 
-			for each (var enemy:Enemy in activeEnemies) {
+			/*for each (var enemy:Enemy in activeEnemies) {
 				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				enemy.reset();
 				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
+			}*/
+			var tempEnemy:Enemy;
+			while (activeEnemies.length > 0) {
+				tempEnemy = activeEnemies.pop();
+				removedEntities.push(tempEnemy);
+				entityGrid[tempEnemy.grid_x][tempEnemy.grid_y] = null;
 			}
 
 			while (removedEntities.length > 0) {
@@ -491,7 +497,7 @@ package {
 						var objective:Objective = entity as Objective;
 						saveEntity["type"] = "objective";
 						saveEntity["key"] = objective.key;
-						saveEntity["objective"] = objective.prereqs;
+						saveEntity["prereqs"] = objective.prereqs;
 						saveEntity["texture"] = objective.textureName;
 					} else if (entity is Reward) {
 						var reward:Reward = entity as Reward;
