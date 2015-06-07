@@ -90,7 +90,7 @@ package {
 
             var i:int;
             for (i = 0; i < goldChangeTexts.length; i++) {
-                goldChangeTexts[i].y += MOVE_SPEED;
+                goldChangeTexts[i].y += MOVE_SPEED / (Math.pow(2, i));
                 if (goldChangeTexts[i].y >= goldText.y + 2*goldText.height) {
                     cut.push(i);
                 }
