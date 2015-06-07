@@ -18,6 +18,7 @@ package {
 
 	import entities.*;
 	import tiles.*;
+	import tutorial.TutorialEvent;
 
 	public class Floor extends Sprite {
 		public static const FOG_OF_WAR_COLOR:uint = Color.BLACK;
@@ -77,6 +78,9 @@ package {
 
 		private var saveGame:SharedObject;
 		private var initialFloorData:Object;
+
+		private var firstEnemySeen:Boolean;
+		private var firstTrapSeen:Boolean;
 
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
@@ -595,6 +599,16 @@ package {
 								}
 								if(entityGrid[x][y]) {
 									addChild(entityGrid[x][y]);
+
+									if (!firstEnemySeen && entityGrid[x][y] is Enemy) {
+										firstEnemySeen = true;
+										dispatchEvent(new TutorialEvent(TutorialEvent.REVEAL_ENEMY));
+									}
+
+									if (!firstTrapSeen && entityGrid[x][y] is Trap) {
+										firstTrapSeen = true;
+										dispatchEvent(new TutorialEvent(TutorialEvent.REVEAL_TRAP));
+									}
 								}
 								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {

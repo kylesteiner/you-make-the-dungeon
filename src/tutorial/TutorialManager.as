@@ -2,6 +2,7 @@ package tutorial {
     import starling.display.*;
     import starling.events.*;
     import starling.utils.Color;
+    import starling.textures.Texture;
 
     public class TutorialManager extends Sprite {
 
@@ -11,17 +12,21 @@ package tutorial {
         public function TutorialManager() {
             tutorialQueue = new Array();
 
-            addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
-            addEventListener(TouchEvent.Touch, onMouseEvent);
+            addEventListener(TouchEvent.TOUCH, onMouseEvent);
             addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
         }
 
         public function isActive():Boolean {
             return currentTutorial != null;
         }
 
-        public function add(tutorial:DisplayObject):void {
-            tutorialQueue.push(tutorial);
+        public function addTutorial(tutorial:Texture):void {
+            var tutorialSprite:Sprite = new Sprite();
+            tutorialSprite.addChild(Util.getTransparentQuad());
+            tutorialSprite.addChild(new Image(tutorial));
+
+            tutorialQueue.push(tutorialSprite);
         }
 
         public function openTutorial():void {
@@ -30,14 +35,17 @@ package tutorial {
             }
 
             currentTutorial = tutorialQueue.shift();
+            addChild(currentTutorial);
         }
 
         public function closeTutorial():void {
             removeChild(currentTutorial);
             currentTutorial = null;
+
+            dispatchEvent(new TutorialEvent(TutorialEvent.CLOSE_TUTORIAL));
         }
 
-        public function onMouseEvent(event:TouchEvent) {
+        public function onMouseEvent(event:TouchEvent):void {
             var touch:Touch = event.getTouch(this);
             if (!isActive() || !touch) {
                 return;
@@ -48,7 +56,7 @@ package tutorial {
             }
         }
 
-        public function onKeyDown(event:KeyboardEvent) {
+        public function onKeyDown(event:KeyboardEvent):void {
             if (!isActive()) {
                 return;
             }
@@ -56,17 +64,10 @@ package tutorial {
             closeTutorial();
         }
 
-        public function onEnterFrame(event:EnterFrameEvent) {
-            if (!isActive()) {
+        public function onEnterFrame():void {
+            if (!isActive() && tutorialQueue.length > 0) {
                 openTutorial();
             }
-        }
-
-        public static function constructTutorial(tutorialTexture:texture):Sprite {
-            var tutorial:Sprite = new Sprite();
-            tutorial.addChild(Util.getTransparentQuad());
-            tutorial.addChild(new Image(tutorialTexture));
-            return tutorial;
         }
     }
 }

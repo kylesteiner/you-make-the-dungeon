@@ -112,6 +112,16 @@ package {
 
 		[Embed(source='assets/tutorials/tutorial_nea.png')] public static const tutorial_nea:Class;
 		[Embed(source='assets/tutorials/tutorial_exit.png')] public static const tutorial_exit:Class;
+		[Embed(source='assets/tutorials/tutorial_move.png')] public static const tutorial_move:Class;
+		[Embed(source='assets/tutorials/tutorial_pan.png')] public static const tutorial_pan:Class;
+		[Embed(source='assets/tutorials/tutorial_build.png')] public static const tutorial_build:Class;
+		[Embed(source='assets/tutorials/tutorial_secondary_build.png')] public static const tutorial_secondary_build:Class;
+		[Embed(source='assets/tutorials/tutorial_help.png')] public static const tutorial_help:Class;
+		[Embed(source='assets/tutorials/tutorial_enemy.png')] public static const tutorial_enemy:Class;
+		[Embed(source='assets/tutorials/tutorial_trap.png')] public static const tutorial_trap:Class;
+		[Embed(source='assets/tutorials/tutorial_unlock.png')] public static const tutorial_unlock:Class;
+		[Embed(source='assets/tutorials/tutorial_end_run.png')] public static const tutorial_end_run:Class;
+
 		[Embed(source='assets/tutorials/tutorial_gold.png')] public static const tutorial_gold:Class;
 		[Embed(source='assets/tutorials/tutorial_adventurers.png')] public static const tutorial_adventurers:Class;
 		[Embed(source='assets/tutorials/tutorial_spend.png')] public static const tutorial_spend:Class;
@@ -351,6 +361,16 @@ package {
 
 			Assets.textures[Util.TUTORIAL_NEA] = Texture.fromEmbeddedAsset(tutorial_nea);
 			Assets.textures[Util.TUTORIAL_EXIT] = Texture.fromEmbeddedAsset(tutorial_exit);
+			Assets.textures[Util.TUTORIAL_MOVE] = Texture.fromEmbeddedAsset(tutorial_move);
+			Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_pan);
+			Assets.textures[Util.TUTORIAL_BUILD] = Texture.fromEmbeddedAsset(tutorial_build);
+			Assets.textures[Util.TUTORIAL_SECONDARY_BUILD] = Texture.fromEmbeddedAsset(tutorial_secondary_build);
+			Assets.textures[Util.TUTORIAL_HELP] = Texture.fromEmbeddedAsset(tutorial_help);
+			Assets.textures[Util.TUTORIAL_ENEMY] = Texture.fromEmbeddedAsset(tutorial_enemy);
+			Assets.textures[Util.TUTORIAL_TRAP] = Texture.fromEmbeddedAsset(tutorial_trap);
+			Assets.textures[Util.TUTORIAL_UNLOCK] = Texture.fromEmbeddedAsset(tutorial_unlock);
+			Assets.textures[Util.TUTORIAL_END_RUN] = Texture.fromEmbeddedAsset(tutorial_end_run);
+
 			Assets.textures[Util.TUTORIAL_GOLD] = Texture.fromEmbeddedAsset(tutorial_gold);
 			Assets.textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);
 			Assets.textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
