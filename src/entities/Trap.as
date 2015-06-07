@@ -131,8 +131,9 @@ package entities {
 					if (Math.abs(px - grid_x) + Math.abs(py - grid_y) > radius) {
 						continue;
 					}
-
-					points.push(new Point(px, py));
+					if (px >= 0 && px < Floor(parent).gridWidth && py >= 0 && py < Floor(parent).gridHeight) {
+						points.push(new Point(px, py));
+					}
 				}
 			}
 
@@ -144,11 +145,15 @@ package entities {
 
 			var px:int; var py:int;
 			for (px = grid_x - radius; px <= grid_x + radius; px++) {
-				points.push(new Point(px, grid_y));
+				if (px >= 0 && px < Floor(parent).gridWidth && py >= 0 && py < Floor(parent).gridHeight) {
+					points.push(new Point(px, grid_y));
+				}
 			}
-
+			
 			for (py = grid_y - radius; py <= grid_y + radius; py++) {
-				points.push(new Point(grid_x, py));
+				if (px >= 0 && px < Floor(parent).gridWidth && py >= 0 && py < Floor(parent).gridHeight && py != grid_y) {
+					points.push(new Point(grid_x, py));
+				}
 			}
 
 			return points;
