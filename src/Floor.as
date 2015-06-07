@@ -816,8 +816,7 @@ package {
 			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
 			startY = Util.real_to_grid(newWorldY);
 			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
-
-			if (worldX == newWorldX && worldY == newWorldY) {
+			if (oldStartX == startX && oldStartY == startY) {
 				// Redundant call. No change needed.
 				return;
 			} else if (fillVisible) {

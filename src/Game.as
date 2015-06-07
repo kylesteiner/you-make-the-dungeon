@@ -991,7 +991,6 @@ package {
 					gold -= cost;
 					goldHud.update(gold);
 					// Player correctly placed the tile. Add it to the grid.
-					currentFloor.clearHighlightedLocations();
 					currentFloor.grid[newTile.grid_x][newTile.grid_y] = newTile;
 					currentFloor.addChild(newTile);
 					currentFloor.rooms.addTile(newTile);
@@ -1051,6 +1050,7 @@ package {
 					Assets.mixer.play(Util.TILE_FAILURE);
 				}
 			}
+			currentFloor.clearHighlightedLocations();
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
