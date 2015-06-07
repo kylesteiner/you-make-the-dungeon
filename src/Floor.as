@@ -1194,6 +1194,10 @@ package {
 			if (entity) {
 				entity.handleChar(char);
 			}
+
+			if (char.stamina <= 0) {
+				dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED, char.grid_x, char.grid_y));
+			}
 		}
 
 		// Called after the character defeats an enemy entity.
