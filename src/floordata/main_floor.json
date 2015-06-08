@@ -1,25 +1,25 @@
 {
 	"floor_name": "main_floor",
 	"floor_dimensions": {
-		"width": 26,
-		"height": 26
+		"width": 39,
+		"height": 38
 	},
 	"character_start": {
 		"x": 2,
-		"y": 23
+		"y": 36
 	},
 	"tiles": [
 		{
 			"type": "entry",
 			"x": 2,
-			"y": 23,
+			"y": 36,
 			"edges": ["n", "s", "e", "w"]
 		},
 		{
 			"type": "exit",
-			"x": 13,
+			"x": 2,
 			"y": 2,
-			"edges": ["w"]
+			"edges": ["s", "e"]
 		},
 		{
 			"type": "empty",
