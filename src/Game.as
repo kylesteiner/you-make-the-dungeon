@@ -481,6 +481,10 @@ package {
 				tutorialManager.closeTutorial();
 			}
 
+			if (runCount == 4) {
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SPEED]);
+			}
+
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
 			constructPhaseBanner();
@@ -625,10 +629,9 @@ package {
 				tutorialManager.state = TutorialManager.BUILD;
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
+			} else if (buildCount == 5) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
-			} else if (buildCount == 3) {
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SPEED]);
-			} else if (buildCount == 4) {
+			} else if (buildCount == 6) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
 			}
 
