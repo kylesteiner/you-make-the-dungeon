@@ -7,8 +7,12 @@ package {
     import starling.text.TextField;
 
     public class RunHUD extends Sprite {
-        public static const HEALTH_BAR_COLOR:uint = 0xff0000;
-        public static const STAMINA_BAR_COLOR:uint = 0x58F56D;
+        //public static const HEALTH_BAR_COLOR:uint = 0xff0000;
+        //public static const HEALTH_BAR_COLOR:uint = 0xC75951;
+        public static const HEALTH_BAR_COLOR:uint = 0xD6483D;
+        //public static const STAMINA_BAR_COLOR:uint = 0x58F56D;
+        public static const STAMINA_BAR_COLOR:uint = 0x4BAA58;
+        //public static const STAMINA_BAR_COLOR:uint = 0x5DB168;
         public static const HEALTH_BAR_WIDTH:int = 32;
         public static const STAMINA_BAR_WIDTH:int = 32;
 
