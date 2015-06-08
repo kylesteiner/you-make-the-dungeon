@@ -482,7 +482,9 @@ package {
 			}
 
 			if (runCount == 4) {
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SPEED]);
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_SPEED],
+						Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
 			}
 
 			runHud.startRun();
@@ -630,14 +632,18 @@ package {
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
 			} else if (buildCount == 5) {
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD],
+						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD_SHADOW]);
 			} else if (buildCount == 6) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
 			}
 
 			if (unlockTutorialState == UNLOCK_TUTORIAL_STATE_FIRST) {
 				unlockTutorialState = UNLOCK_TUTORIAL_STATE_SHOWN;
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_UNLOCK]);
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_UNLOCK],
+						Assets.textures[Util.TUTORIAL_ENTITY_SHADOW]);
 			}
 		}
 

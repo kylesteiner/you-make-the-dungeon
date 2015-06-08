@@ -168,11 +168,10 @@ package {
 		// Tutorial backgrounds that reveal certain UI features.
 		public static const TUTORIAL_BUILDHUD_SHADOW:String = "tutorial_buildhud_shadow";
 		public static const TUTORIAL_PLACE_SHADOW:String = "tutorial_place_shadow";
-		public static const TUTORIAL_SHOP_SHADOW:String = "tutorial_shop_shadow";
 		public static const TUTORIAL_HEALTH_STAMINA_SHADOW:String = "tutorial_health_stamina_shadow";
 		public static const TUTORIAL_ENTITY_SHADOW:String = "tutorial_entity_shadow";
-		public static const TUTORIAL_DELETE_SHADOW:String = "tutorial_delete_shadow";
 		public static const TUTORIAL_SPEED_SHADOW:String = "tutorial_speed_shadow";
+		public static const TUTORIAL_SECONDARY_BUILD_SHADOW:String = "tutorial_secondary_build_shadow";
 
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";

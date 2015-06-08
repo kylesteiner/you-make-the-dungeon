@@ -128,10 +128,9 @@ package {
 		[Embed(source='assets/tutorials/place_shadow.png')] public static const tutorial_place_shadow:Class;
 		[Embed(source='assets/tutorials/keys.png')] public static const tutorial_keys:Class;
 		[Embed(source='assets/tutorials/health_stamina_shadow.png')] public static const tutorial_health_stamina_shadow:Class;
-		[Embed(source='assets/tutorials/shop_shadow_new.png')] public static const tutorial_shop_shadow:Class;
 		[Embed(source='assets/tutorials/entity_shadow.png')] public static const tutorial_entity_shadow:Class;
-		[Embed(source='assets/tutorials/delete_shadow.png')] public static const tutorial_delete_shadow:Class;
 		[Embed(source='assets/tutorials/speed_shadow.png')] public static const tutorial_speed_shadow:Class;
+		[Embed(source='assets/tutorials/secondary_build_shadow.png')] public static const tutorial_secondary_build_shadow:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
 		[Embed(source='assets/animations/character/idle/character_1.png')] public static const characterIdleAnim1:Class;
@@ -373,10 +372,9 @@ package {
 			Assets.textures[Util.TUTORIAL_PLACE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_place_shadow);
 			Assets.textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
 			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW] = Texture.fromEmbeddedAsset(tutorial_health_stamina_shadow);
-			Assets.textures[Util.TUTORIAL_SHOP_SHADOW] = Texture.fromEmbeddedAsset(tutorial_shop_shadow);
 			Assets.textures[Util.TUTORIAL_ENTITY_SHADOW] = Texture.fromEmbeddedAsset(tutorial_entity_shadow);
-			Assets.textures[Util.TUTORIAL_DELETE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_delete_shadow);
 			Assets.textures[Util.TUTORIAL_SPEED_SHADOW] = Texture.fromEmbeddedAsset(tutorial_speed_shadow);
+			Assets.textures[Util.TUTORIAL_SECONDARY_BUILD_SHADOW] = Texture.fromEmbeddedAsset(tutorial_secondary_build_shadow);
 		}
 
 		public static function setupAnimations():void {
