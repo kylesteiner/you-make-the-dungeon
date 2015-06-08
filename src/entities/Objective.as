@@ -7,6 +7,7 @@ package entities {
 
 	public class Objective extends Entity {
 		public static const DEFAULT_COLOR:uint = Color.WHITE;
+		public static const DEFAULT_COLOR_STRING:String = "white";
 
 		// Unique identifier for this objective
 		public var key:String;
@@ -36,7 +37,7 @@ package entities {
 			addOverlay();
 		}
 
-		public function getColor(color:String):uint {
+		public function getColorDict():Dictionary {
 			var colorDict:Dictionary = new Dictionary();
 			colorDict["red"] = Color.RED;
 			colorDict["blue"] = Color.BLUE;
@@ -48,7 +49,24 @@ package entities {
 			colorDict["aqua"] = Color.AQUA;
 			colorDict["black"] = Color.BLACK;
 
+			return colorDict;
+		}
+
+		public function getColor(color:String):uint {
+			var colorDict:Dictionary = getColorDict();
+
 			return colorDict[color] != null ? colorDict[color] : DEFAULT_COLOR;
+		}
+
+		public function getColorString():String {
+			var colorDict:Dictionary = getColorDict();
+			for (var cKey:String in colorDict) {
+				if (colorDict[cKey] == this.objectiveColor) {
+					return cKey;
+				}
+			}
+
+			return "white";
 		}
 
 		override public function handleChar(c:Character):void {

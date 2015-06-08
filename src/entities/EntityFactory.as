@@ -30,6 +30,8 @@ package entities {
             this.masterSet = constructEntitySet();
             this.entitySet = new Dictionary();
             this.entityText = EntityDescriptions.setupDescriptions();
+            unlockTile("entity_light_healing");
+            unlockTile("entity_light_stamina_heal");
         }
 
         public function unlockTile(type:String):void {

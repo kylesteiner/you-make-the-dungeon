@@ -502,7 +502,7 @@ package {
 						saveEntity["key"] = objective.key;
 						saveEntity["prereqs"] = objective.prereqs;
 						saveEntity["texture"] = objective.textureName;
-						saveEntity["color"] = objective.objectiveColor;
+						saveEntity["color"] = objective.getColorString();
 					} else if (entity is Reward) {
 						var reward:Reward = entity as Reward;
 						saveEntity["type"] = "reward";
