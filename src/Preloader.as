@@ -1,7 +1,6 @@
 package {
 	import flash.display.Loader;
 	import flash.display.MovieClip;
-	import flash.system.fscommand;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.utils.getDefinitionByName;
@@ -37,7 +36,10 @@ package {
 				}
 			}
 			if (!isAllowed && sitelock) {
-				fscommand("quit");
+				var t:TextField = new TextField();
+				t.text = loaderInfo.url;
+				addChild(t);
+				return;
 			}
 
 			loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
