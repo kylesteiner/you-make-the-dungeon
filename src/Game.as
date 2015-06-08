@@ -850,6 +850,8 @@ package {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
 				//addChild(tutorialManager);
 			} else if (buildCount == 3) {
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SPEED]);
+			} else if (buildCount == 4) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
 				//addChild(tutorialManager);
 			}
