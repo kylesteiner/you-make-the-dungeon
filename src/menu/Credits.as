@@ -22,13 +22,7 @@ package menu {
 			leftCredits += "Produced by \nBabak Dabagh\tEric Zeng\nKing Xia\tKyle Steiner\n\n";
 
 			var rightCredits:String = "";
-			rightCredits += "Major thanks to Louisa Fan for sprite designs + iconography.\n";
-			rightCredits += "\tCharacter design\n";
-			rightCredits += "\tEnemy design\n";
-			rightCredits += "\tTrap design\n";
-			rightCredits += "\tIcon design\n";
-			rightCredits += "\tKey + Cake design\n";
-			rightCredits += "\tCursor design\n";
+			rightCredits += "Major thanks to Louisa Fan for sprite designs/animations, game iconography, and various UI elements.\n";
 
 			var creditsLineLeft:TextField = new TextField(Util.STAGE_WIDTH, (Util.STAGE_HEIGHT - backButton.height) / 2, leftCredits, Util.SECONDARY_FONT, Util.LARGE_FONT_SIZE*3);
 			creditsLineLeft.x = 0;
@@ -38,7 +32,7 @@ package menu {
 			creditsLineLeft.vAlign = VAlign.TOP;
 			addChild(creditsLineLeft);
 
-			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH, (Util.STAGE_HEIGHT - backButton.height) / 2, rightCredits, Util.SECONDARY_FONT, Util.LARGE_FONT_SIZE);
+			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH, (Util.STAGE_HEIGHT - backButton.height) / 2, rightCredits, Util.SECONDARY_FONT, Util.MEDIUM_FONT_SIZE);
 			creditsLineRight.x = 0;
 			creditsLineRight.y = creditsLineLeft.y + creditsLineLeft.height;
 			creditsLineRight.autoScale = true;
