@@ -237,6 +237,7 @@ package {
 		[Embed(source='assets/sfx/shock_trap.mp3')] public static const sfxShockTrap:Class;
 		[Embed(source='assets/sfx/stamina_heal.mp3')] public static const sfxStaminaHeal:Class;
 		[Embed(source='assets/sfx/health_heal.mp3')] public static const sfxHeal:Class;
+		[Embed(source='assets/sfx/key_get.mp3')] public static const sfxKey:Class;
 
 		[Embed(source='assets/bgm/diving-turtle.mp3')] public static const bgmDivingTurtle:Class;
 		[Embed(source='assets/bgm/gentle-thoughts-2.mp3')] public static const bgmGentleThoughts:Class;
@@ -587,6 +588,7 @@ package {
 			tSfx[Util.SFX_SHOCK_TRAP] = new sfxShockTrap();
 			tSfx[Util.SFX_STAMINA_HEAL] = new sfxStaminaHeal();
 			tSfx[Util.SFX_HEAL] = new sfxHeal();
+			tSfx[Util.SFX_KEY] = new sfxKey();
 
 			return tSfx;
 		}

@@ -44,6 +44,7 @@ package entities {
 			colorDict["green"] = Color.GREEN;
 			colorDict["purple"] = Color.PURPLE;
 			colorDict["maroon"] = Color.MAROON;
+			colorDict["orange"] = 0xce8717;
 			colorDict["aqua"] = Color.AQUA;
 			colorDict["black"] = Color.BLACK;
 

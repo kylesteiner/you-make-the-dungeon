@@ -1267,6 +1267,8 @@ package {
 			if (obj.key.indexOf(Util.DOOR) >= 0) {
 				Assets.mixer.play(Util.DOOR_OPEN);
 				Util.logger.logAction(28, { } );
+			} else if(obj.key.indexOf(Util.KEY_STRING) >= 0) {
+				Assets.mixer.play(Util.SFX_KEY);
 			}
 			Util.logger.logAction(20, { } );
 			objectiveState[obj.key] = true;

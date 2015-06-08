@@ -44,6 +44,7 @@ package {
 
 		// Keys to the dictionary of textures.
 		public static const DOOR:String = "door";
+		public static const KEY_STRING:String = "key";
 
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
@@ -236,6 +237,7 @@ package {
 		public static const SFX_SHOCK_TRAP:String = "sfx_shock_trap";
 		public static const SFX_STAMINA_HEAL:String = "sfx_stamina_heal";
 		public static const SFX_HEAL:String = "sfx_heal";
+		public static const SFX_KEY:String = "sfx_key";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
