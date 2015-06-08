@@ -33,7 +33,7 @@ package {
 		private var bestGoldField:TextField;
 		private var bestDistanceField:TextField;
 		private var bestEnemiesField:TextField;
-		private var reasonField:TextField;
+		private var reasonTextField:TextField;
 
 		private var healImage:Image;
 		private var damageImage:Image;
@@ -55,94 +55,96 @@ package {
 			goldCollected = 0;
 
 			complete = new TextField(560, 64, "Run Completed", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
-			complete.x = -135;
+			complete.x = -125;
+			complete.y = 24;
 			addChild(complete);
 			
 			best = new TextField(560, 64, "Best So Far", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
 			best.x = 135;
+			best.y = 24;
 			addChild(best);
 
 			goldImage = new Image(Assets.textures[Util.ICON_GOLD]);
 			goldImage.x = 30;
-			goldImage.y = 64;
+			goldImage.y = 80;
 			addChild(goldImage);
 
 			goldField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			goldField.x = 62;
-			goldField.y = 64;
+			goldField.y = 80;
 			goldField.hAlign = HAlign.LEFT;
 			addChild(goldField);
 			
 			bestGoldField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			bestGoldField.x = Util.STAGE_WIDTH - 240;
-			bestGoldField.y = 64;
+			bestGoldField.y = 80;
 			bestGoldField.hAlign = HAlign.LEFT;
 			addChild(bestGoldField);
 
 			enemiesImage = new Image(Assets.textures[Util.ICON_ATK]);
 			enemiesImage.x = 30;
-			enemiesImage.y = 112;
+			enemiesImage.y = 120;
 			addChild(enemiesImage);
 
 			enemiesField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			enemiesField.x = 62;
-			enemiesField.y = 112;
+			enemiesField.y = 128;
 			enemiesField.hAlign = HAlign.LEFT;
 			addChild(enemiesField);
 			
 			bestEnemiesField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			bestEnemiesField.x = Util.STAGE_WIDTH - 240;
-			bestEnemiesField.y = 112;
+			bestEnemiesField.y = 128;
 			bestEnemiesField.hAlign = HAlign.LEFT;
 			addChild(bestEnemiesField);
 
 			distanceImage = new Image(Assets.textures[Util.ICON_STAMINA]);
 			distanceImage.x = 30;
-			distanceImage.y = 160;
+			distanceImage.y = 176;
 			addChild(distanceImage);
 
 			distanceField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			distanceField.x = 62;
-			distanceField.y = 160;
+			distanceField.y = 176;
 			distanceField.hAlign = HAlign.LEFT;
 			addChild(distanceField);
 			
 			bestDistanceField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			bestDistanceField.x = Util.STAGE_WIDTH - 240;
-			bestDistanceField.y = 160;
+			bestDistanceField.y = 176;
 			bestDistanceField.hAlign = HAlign.LEFT;
 			addChild(bestDistanceField);
 
 			damageImage = new Image(Assets.textures[Util.ICON_ATK]);
 			damageImage.x = 30;
-			damageImage.y = 208;
+			damageImage.y = 224;
 			addChild(damageImage);
 
 			damageField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			damageField.x = 62;
-			damageField.y = 208;
+			damageField.y = 224;
 			damageField.hAlign = HAlign.LEFT;
 			addChild(damageField);
 
 			healImage = new Image(Assets.textures[Util.ICON_HEALTH]);
 			healImage.x = 30
-			healImage.y = 256;
+			healImage.y = 272;
 			addChild(healImage);
 
 			healedField = new TextField(250, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
 			healedField.x = 62;
-			healedField.y = 256;
+			healedField.y = 272;
 			healedField.hAlign = HAlign.LEFT;
 			addChild(healedField);
 			
-			reasonField = new TextField(500, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
-			reasonField.x = 62;
-			reasonField.y = 304;
-			reasonField.hAlign = HAlign.LEFT;
-			addChild(reasonField)
+			reasonTextField = new TextField(500, 48, "", Util.DEFAULT_FONT, Util.MEDIUM_FONT_SIZE);
+			reasonTextField.x = Util.STAGE_WIDTH - 330;
+			reasonTextField.y = 248;
+			reasonTextField.hAlign = HAlign.LEFT;
+			addChild(reasonTextField);
 
 			clickContinue = new TextField(560, 64, "Click to Continue", Util.DEFAULT_FONT, Util.LARGE_FONT_SIZE);
-			clickContinue.y = 344;
+			clickContinue.y = 314;
 			addChild(clickContinue);
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -157,7 +159,7 @@ package {
 			bestGoldField.text = "" + Math.max(bestGold, goldCollected);
 			bestDistanceField.text = "" + Math.max(distanceTraveled, bestDistance);
 			bestEnemiesField.text = "" + Math.max(enemiesDefeated, bestEnemies);
-			reasonField.text = "End Run Reason: " + reason;
+			reasonTextField.text = reason;
 		}
 
 		public function reset():void {

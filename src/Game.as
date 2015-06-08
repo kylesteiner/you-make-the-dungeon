@@ -778,7 +778,7 @@ package {
 			runSummary.bestDistance = bestRunDistance;
 			runSummary.bestEnemies = bestRunEnemiesDefeated;
 			if (reason == "endRunButton") {
-				runSummary.reason = "clicked End Run Button";
+				runSummary.reason = "";
 			} else if (reason == "staminaExpended") {
 				runSummary.reason = "Ran out of Stamina";
 			} else {
