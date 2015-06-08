@@ -23,7 +23,7 @@ package tutorial {
             state = "";
 
             addEventListener(TouchEvent.TOUCH, onMouseEvent);
-            addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            // addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
             addEventListener(EnterFrameEvent.ENTER_FRAME, onEnterFrame);
         }
 
@@ -85,13 +85,13 @@ package tutorial {
             }
         }
 
-        public function onKeyDown(event:KeyboardEvent):void {
+        /*public function onKeyDown(event:KeyboardEvent):void {
             if (!isActive() || !skip || isInteractive()) {
                 return;
             }
 
             closeTutorial();
-        }
+        }*/
 
         public function onEnterFrame():void {
             if (!isActive() && tutorialQueue.length > 0) {
