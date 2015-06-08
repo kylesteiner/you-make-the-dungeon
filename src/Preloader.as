@@ -1,6 +1,7 @@
 package {
-	//import starling.core.Starling;
+	import flash.display.Loader;
 	import flash.display.MovieClip;
+	import flash.system.fscommand;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.utils.getDefinitionByName;
@@ -19,8 +20,26 @@ package {
 		private var loadTexts:Array;
 		private var lastChange:Number;
 
+		private static const sitelock:Boolean = false;
+		private static const allowedUrls:Array = new Array(
+			"courses.cs.washington.edu",
+			"www.newgrounds.com/portal/view/658573",
+			"www.xiakaicheng.com",
+			"www.kongregate.com");
+
 		public function Preloader() {
 			stop();
+			var isAllowed:Boolean = false;
+			for each (var url:String in allowedUrls) {
+				if (loaderInfo.url.indexOf(url) != -1) {
+					isAllowed = true;
+					break;
+				}
+			}
+			if (!isAllowed && sitelock) {
+				fscommand("quit");
+			}
+
 			loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
 			loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
 			loadTexts = new Array();
