@@ -48,7 +48,7 @@ package {
 		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const STATIC_BACKGROUND:String = "static_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
-		public static const TUTORIAL_PAN:String = "tutorial_pan";
+		//public static const TUTORIAL_PAN:String = "tutorial_pan";
 		public static const TUTORIAL_TILE:String = "tutorial_tile_hud";
 		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
 		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
@@ -145,7 +145,17 @@ package {
 		public static const ROOMCB_NONE:String = "roomcb_none";
 
 		public static const TUTORIAL_NEA:String = "tutorial_nea";
-		public static const TUTORIAL_EXIT:String = "tutorial_exit"
+		public static const TUTORIAL_EXIT:String = "tutorial_exit";
+		public static const TUTORIAL_MOVE:String = "tutorial_move";
+		public static const TUTORIAL_PAN:String = "tutorial_pan";
+		public static const TUTORIAL_BUILD:String = "tutorial_build";
+		public static const TUTORIAL_SECONDARY_BUILD:String = "tutorial_secondary_build";
+		public static const TUTORIAL_HELP:String = "tutorial_help";
+		public static const TUTORIAL_ENEMY:String = "tutorial_enemy";
+		public static const TUTORIAL_TRAP:String = "tutorial_trap";
+		public static const TUTORIAL_UNLOCK:String = "tutorial_unlock";
+		public static const TUTORIAL_END_RUN:String = "tutorial_end_run";
+
 		public static const TUTORIAL_GOLD:String = "tutorial_gold"
 		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"

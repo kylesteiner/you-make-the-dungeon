@@ -71,12 +71,6 @@
 		},
 		{
 			"type": "empty",
-			"x": 5,
-			"y": 26,
-			"edges": ["n", "s", "e", "w"]
-		},
-		{
-			"type": "empty",
 			"x": 11,
 			"y": 20,
 			"edges": ["s"]
@@ -522,15 +516,6 @@
 		{"type": "none", "x": 6, "y": 25, "edges": []}
 	],
 	"entities": [
-		{
-			"type": "enemy",
-			"x": 4,
-			"y": 23,
-			"texture": "enemy_fighter",
-			"hp": 5,
-			"attack": 1,
-			"reward": 5
-		},
 		{
 			"type": "enemy",
 			"x": 8,

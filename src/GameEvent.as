@@ -24,6 +24,7 @@ package {
 		public static const UNLOCK_TILE:String = "unlock_tile";
 		public static const CHARACTER_LOS_CHANGE:String = "character_los_change";
 		public static const KEYBOARD_TOGGLE_TILE:String = "keyboard_toggle_tile";
+		public static const SURFACE_ELEMENT:String = "surface_element";
 
 		public var x:int;
 		public var y:int;
