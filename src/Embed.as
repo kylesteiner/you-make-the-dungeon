@@ -118,6 +118,7 @@ package {
 		[Embed(source='assets/tutorials/tutorial_unlock.png')] public static const tutorial_unlock:Class;
 		[Embed(source='assets/tutorials/tutorial_end_run.png')] public static const tutorial_end_run:Class;
 		[Embed(source='assets/tutorials/tutorial_speed.png')] public static const tutorial_speed:Class;
+		[Embed(source='assets/tutorials/tutorial_health_stamina_1.png')] public static const tutorial_health_stamina:Class;
 
 		[Embed(source='assets/tutorials/tutorial_gold.png')] public static const tutorial_gold:Class;
 		[Embed(source='assets/tutorials/tutorial_adventurers.png')] public static const tutorial_adventurers:Class;
@@ -363,6 +364,7 @@ package {
 			Assets.textures[Util.TUTORIAL_UNLOCK] = Texture.fromEmbeddedAsset(tutorial_unlock);
 			Assets.textures[Util.TUTORIAL_END_RUN] = Texture.fromEmbeddedAsset(tutorial_end_run);
 			Assets.textures[Util.TUTORIAL_SPEED] = Texture.fromEmbeddedAsset(tutorial_speed);
+			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA] = Texture.fromEmbeddedAsset(tutorial_health_stamina);
 
 			Assets.textures[Util.TUTORIAL_GOLD] = Texture.fromEmbeddedAsset(tutorial_gold);
 			Assets.textures[Util.TUTORIAL_ADVENTURERS] = Texture.fromEmbeddedAsset(tutorial_adventurers);

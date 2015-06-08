@@ -159,6 +159,7 @@ package {
 		public static const TUTORIAL_UNLOCK:String = "tutorial_unlock";
 		public static const TUTORIAL_END_RUN:String = "tutorial_end_run";
 		public static const TUTORIAL_SPEED:String = "tutorial_speed";
+		public static const TUTORIAL_HEALTH_STAMINA:String = "tutorial_health_stamina";
 
 		public static const TUTORIAL_GOLD:String = "tutorial_gold"
 		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"

@@ -481,6 +481,11 @@ package {
 				tutorialManager.closeTutorial();
 			}
 
+			if (runCount == 2) {
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA],
+						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
+			}
 			if (runCount == 4) {
 				tutorialManager.addTutorialWithBackground(
 						Assets.textures[Util.TUTORIAL_SPEED],
@@ -1259,7 +1264,7 @@ package {
 		}
 
 		private function onTutorialEndRun(event:TutorialEvent):void {
-			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_END_RUN]);
+			// tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_END_RUN]);
 		}
 
 		private function onTutorialRevealEnemy(event:TutorialEvent):void {
