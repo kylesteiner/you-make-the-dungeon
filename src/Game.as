@@ -221,8 +221,8 @@ package {
 			addChild(endButton);
 			addChild(tutorialManager);
 			runHud.startRun();
-			currentFloor.toggleRun(gameState);
 			gameState = STATE_RUN;
+			currentFloor.toggleRun(gameState);
 			//tutorialState = "";
 			//if (gameState == STATE_TUTORIAL) {
 			//	addChild(introTutorial);
