@@ -1229,7 +1229,7 @@ package {
 				removeChild(goldHud);
 				removeChild(runHud);
 
-				gameState == STATE_CINEMATIC;
+				gameState = STATE_CINEMATIC;
 				playCinematic(commands, exitCinematicCallback);
 			}
 		}
