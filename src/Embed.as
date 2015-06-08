@@ -6,8 +6,6 @@ package {
 	public class Embed {
 		[Embed(source='assets/backgrounds/background.png')] public static var grid_background:Class;
 		[Embed(source='assets/backgrounds/new_static_bg.png')] public static var static_background:Class;
-		//[Embed(source='assets/backgrounds/tutorial_shifted.png')] public static const tutorial_hud:Class;
-		//[Embed(source='assets/backgrounds/tile_hud_tutorial.png')] public static const tutorial_tile_hud:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
 		[Embed(source='assets/backgrounds/summary_bg.png')] public static const summary_background:Class;
@@ -20,9 +18,6 @@ package {
 		[Embed(source='assets/backgrounds/build_help.png')] public static const build_help:Class;
 
 		[Embed(source='assets/highlights/hl_blue.png')] public static var hl_blue:Class;
-		//[Embed(source='assets/effects/large/hl_green.png')] public static var hl_green:Class;
-		//[Embed(source='assets/effects/large/hl_red.png')] public static var hl_red:Class;
-		//[Embed(source='assets/effects/large/hl_yellow.png')] public static var hl_yellow:Class;
 		[Embed(source='assets/highlights/hl_tile.png')] public static var hl_tile:Class;
 		[Embed(source='assets/highlights/hl_delete.png')] public static var hl_delete:Class;
 		[Embed(source='assets/highlights/hl_entity.png')] public static var hl_entity:Class;
@@ -31,7 +26,6 @@ package {
 		[Embed(source='assets/entities/new_healing.png')] public static var entity_healing:Class;
 		[Embed(source='assets/entities/chest.png')] public static var entity_reward:Class;
 		[Embed(source='assets/entities/stamina_heal.png')] public static var entity_stamina_heal:Class;
-		//[Embed(source='assets/entities/hero.png')] public static var entity_hero:Class;
 		[Embed(source='assets/entities/new_key.png')] public static var entity_key:Class;
 		[Embed(source='assets/entities/enemy_fighter.png')] public static var entity_fighter:Class;
 		[Embed(source='assets/entities/enemy_mage.png')] public static var entity_mage:Class;
@@ -130,20 +124,13 @@ package {
 		[Embed(source='assets/tutorials/tutorial_spend.png')] public static const tutorial_spend:Class;
 		// [Embed(source='assets/tutorials/tutorial_keys.png')] public static const tutorial_keys:Class;
 
-		[Embed(source='assets/tutorials/build_hud_arrow.png')] public static const tutorial_buildhud_arrow:Class;
 		[Embed(source='assets/tutorials/build_hud_shadow.png')] public static const tutorial_buildhud_shadow:Class;
 		[Embed(source='assets/tutorials/place_shadow.png')] public static const tutorial_place_shadow:Class;
-		[Embed(source='assets/tutorials/run.png')] public static const tutorial_run:Class;
 		[Embed(source='assets/tutorials/keys.png')] public static const tutorial_keys:Class;
-		[Embed(source='assets/tutorials/health_stamina_arrows.png')] public static const tutorial_health_stamina_arrows:Class;
 		[Embed(source='assets/tutorials/health_stamina_shadow.png')] public static const tutorial_health_stamina_shadow:Class;
-		[Embed(source='assets/tutorials/shop_arrow_new.png')] public static const tutorial_shop_arrow:Class;
 		[Embed(source='assets/tutorials/shop_shadow_new.png')] public static const tutorial_shop_shadow:Class;
-		[Embed(source='assets/tutorials/entity_arrows.png')] public static const tutorial_entity_arrows:Class;
 		[Embed(source='assets/tutorials/entity_shadow.png')] public static const tutorial_entity_shadow:Class;
-		[Embed(source='assets/tutorials/delete_arrow.png')] public static const tutorial_delete_arrow:Class;
 		[Embed(source='assets/tutorials/delete_shadow.png')] public static const tutorial_delete_shadow:Class;
-		[Embed(source='assets/tutorials/speed_arrows.png')] public static const tutorial_speed_arrows:Class;
 		[Embed(source='assets/tutorials/speed_shadow.png')] public static const tutorial_speed_shadow:Class;
 
 		[Embed(source='assets/animations/character/idle/character_0.png')] public static const characterIdleAnim0:Class;
@@ -383,19 +370,12 @@ package {
 			Assets.textures[Util.TUTORIAL_SPEND] = Texture.fromEmbeddedAsset(tutorial_spend);
 
 			Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW] = Texture.fromEmbeddedAsset(tutorial_buildhud_shadow);
-			Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW] = Texture.fromEmbeddedAsset(tutorial_buildhud_arrow);
 			Assets.textures[Util.TUTORIAL_PLACE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_place_shadow);
-			Assets.textures[Util.TUTORIAL_RUN] = Texture.fromEmbeddedAsset(tutorial_run);
 			Assets.textures[Util.TUTORIAL_KEYS] = Texture.fromEmbeddedAsset(tutorial_keys);
-			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_ARROWS] = Texture.fromEmbeddedAsset(tutorial_health_stamina_arrows);
 			Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW] = Texture.fromEmbeddedAsset(tutorial_health_stamina_shadow);
-			Assets.textures[Util.TUTORIAL_SHOP_ARROW] = Texture.fromEmbeddedAsset(tutorial_shop_arrow);
 			Assets.textures[Util.TUTORIAL_SHOP_SHADOW] = Texture.fromEmbeddedAsset(tutorial_shop_shadow);
-			Assets.textures[Util.TUTORIAL_ENTITY_ARROWS] = Texture.fromEmbeddedAsset(tutorial_entity_arrows);
 			Assets.textures[Util.TUTORIAL_ENTITY_SHADOW] = Texture.fromEmbeddedAsset(tutorial_entity_shadow);
-			Assets.textures[Util.TUTORIAL_DELETE_ARROW] = Texture.fromEmbeddedAsset(tutorial_delete_arrow);
 			Assets.textures[Util.TUTORIAL_DELETE_SHADOW] = Texture.fromEmbeddedAsset(tutorial_delete_shadow);
-			Assets.textures[Util.TUTORIAL_SPEED_ARROWS] = Texture.fromEmbeddedAsset(tutorial_speed_arrows);
 			Assets.textures[Util.TUTORIAL_SPEED_SHADOW] = Texture.fromEmbeddedAsset(tutorial_speed_shadow);
 		}
 

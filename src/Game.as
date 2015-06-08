@@ -149,21 +149,9 @@ package {
 		private var overallTilesPlaced:int;
 		private var overallGoldSpent:int;
 
-		// Tutorial sequences and state
-		private var tutorialState:String;
-		private var unlockedFirstEntity:Boolean;
-		private var entityTutorialDisplayed:Boolean;
-		private var secondBuild:Boolean;
-		private var secondRun:Boolean;
-		private var cinematic:Cinematic;
-		private var introTutorial:TutorialSequence;
-		private var buildTutorial:TutorialSequence;
-		private var runTutorial:TutorialSequence;
-		private var secondBuildTutorial:TutorialSequence;
-		private var entityTutorial:TutorialSequence;
-		private var secondRunTutorial:TutorialSequence;
-
+		// Tutorial state
 		private var tutorialManager:TutorialManager;
+		private var cinematic:Cinematic;
 		private var buildCount:int;
 		private var runCount:int;
 		private var tutorialCount:int;
@@ -214,21 +202,14 @@ package {
 			addChild(bgmMuteButton);
 			addChild(combatSpeedButton);
 			addChild(runSpeedButton);
-			//addChild(runButton);
 			addChild(goldHud);
-			//addChild(shopHud);
 			addChild(helpButton);
-			//addChild(buildHud);
 			addChild(runHud);
 			addChild(endButton);
 			addChild(tutorialManager);
 			runHud.startRun();
 			gameState = STATE_RUN;
 			currentFloor.toggleRun(gameState);
-			//tutorialState = "";
-			//if (gameState == STATE_TUTORIAL) {
-			//	addChild(introTutorial);
-			//}
 
 			// Update build hud with unlocks if loading from save.
 			if (fromSave) {
@@ -370,210 +351,6 @@ package {
 			tutorialCount = 0;
 		}
 
-		/*private function initializeTutorial():void {
-			secondBuild = false;
-			secondRun = false;
-			unlockedFirstEntity = false;
-			entityTutorialDisplayed = false;
-
-			//--------- INTRO TUTORIAL ---------//
-			var introOverlays:Array = new Array();
-			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_NEA]),
-										  		   Util.getTransparentQuad()));
-			introOverlays.push(new TutorialOverlay(new Image(Assets.textures[Util.TUTORIAL_EXIT]),
-												   Util.getTransparentQuad()));
-			introTutorial = new TutorialSequence(onIntroTutorialComplete, introOverlays);
-
-			//--------- BUILD TUTORIAL ---------//
-			// Build hud instructions
-			var buildTutorialOverlays:Array = new Array();
-
-			var buildhudShadow:Image = new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW]);
-			buildhudShadow.alpha = 0.7;
-			var buildhudText:TextField = new TextField(Util.STAGE_WIDTH, 100,
-													   BUILD_TUTORIAL_TEXT,
-													   Util.DEFAULT_FONT,
-													   Util.MEDIUM_FONT_SIZE);
-			buildhudText.y = 220;
-			var buildhudOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_BUILDHUD_ARROW]),
-					buildhudShadow,
-					false);
-			buildhudOverlay.addChild(buildhudText);
-
-			// Tile place instructions
-			var placeShadow:Image = new Image(Assets.textures[Util.TUTORIAL_PLACE_SHADOW]);
-			placeShadow.alpha = 0.7;
-			var placeText:TextField = new TextField(Util.STAGE_WIDTH, 100,
-													PLACE_TUTORIAL_TEXT,
-													Util.DEFAULT_FONT,
-													Util.MEDIUM_FONT_SIZE);
-			placeText.y = 320;
-			var placeOverlay:TutorialOverlay = new TutorialOverlay(
-				placeText,
-				placeShadow,
-				false);
-
-			// Run button instructions
-			var runText:TextField = new TextField(180, 100,
-												  RUN_TUTORIAL_TEXT,
-												  Util.DEFAULT_FONT,
-												  Util.SMALL_FONT_SIZE);
-			runText.x = 440;
-			runText.y = 148;
-			var runOverlay:TutorialOverlay = new TutorialOverlay(
-					runText,
-					new Image(Assets.textures[Util.TUTORIAL_RUN]),
-					false);
-
-			buildTutorialOverlays.push(buildhudOverlay);
-			buildTutorialOverlays.push(placeOverlay);
-			buildTutorialOverlays.push(runOverlay);
-
-			buildTutorial = new TutorialSequence(onBuildTutorialComplete,
-												 buildTutorialOverlays);
-
-			//--------- RUN TUTORIAL ---------//
-			var runTutorialOverlays:Array = new Array();
-			var controlsText:TextField = new TextField(Util.STAGE_WIDTH, 64,
-													   MOVE_TUTORIAL_TEXT,
-													   Util.DEFAULT_FONT,
-													   Util.MEDIUM_FONT_SIZE);
-			controlsText.y = 260;
-			var controlsOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_KEYS]),
-					Util.getTransparentQuad());
-			controlsOverlay.addChild(controlsText);
-
-			var healthText:TextField = new TextField(300, 96,
-													 HEALTH_TUTORIAL_TEXT,
-													 Util.DEFAULT_FONT,
-													 Util.SMALL_FONT_SIZE);
-			healthText.x = 185;
-			var staminaText:TextField = new TextField(300, 96,
-													  STAMINA_TUTORIAL_TEXT,
-													  Util.DEFAULT_FONT,
-													  Util.SMALL_FONT_SIZE);
-			staminaText.x = 205;
-			staminaText.y = 125;
-			var healthStaminaShadow:Image = new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
-			healthStaminaShadow.alpha = 0.7;
-			var healthStaminaOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_ARROWS]),
-					healthStaminaShadow);
-			healthStaminaOverlay.addChild(healthText);
-			healthStaminaOverlay.addChild(staminaText);
-
-			runTutorialOverlays.push(controlsOverlay);
-			runTutorialOverlays.push(healthStaminaOverlay);
-			runTutorial = new TutorialSequence(onRunTutorialComplete,
-											   runTutorialOverlays);
-
-			//--------- SECOND BUILD PHASE TUTORIAL ---------//
-			var secondBuildTutorialOverlays:Array = new Array();
-
-			var deleteText:TextField = new TextField(320, 150,
-													 DELETE_TUTORIAL_TEXT,
-													 Util.DEFAULT_FONT,
-													 Util.MEDIUM_FONT_SIZE);
-			deleteText.x = 130;
-			deleteText.y = 170;
-			var deleteShadow:Image = new Image(Assets.textures[Util.TUTORIAL_DELETE_SHADOW]);
-			deleteShadow.alpha = 0.7;
-			var deleteOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_DELETE_ARROW]),
-					deleteShadow);
-			deleteOverlay.addChild(deleteText);
-
-			var shopText:TextField = new TextField(180, 100,
-												   SHOP_TUTORIAL_TEXT,
-												   Util.DEFAULT_FONT,
-												   Util.MEDIUM_FONT_SIZE);
-			shopText.x = 290;
-			shopText.y = 190;
-			shopText.autoScale = true;
-			var shopShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SHOP_SHADOW]);
-			shopShadow.alpha = 0.7;
-			var shopOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_SHOP_ARROW]),
-					shopShadow,
-					true);
-			shopOverlay.addChild(shopText);
-
-			var panText:TextField = new TextField(Util.STAGE_WIDTH, 64,
-												  PAN_TUTORIAL_TEXT,
-												  Util.DEFAULT_FONT,
-												  Util.MEDIUM_FONT_SIZE);
-			panText.y = 260;
-			var panOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_KEYS]),
-					Util.getTransparentQuad());
-			panOverlay.addChild(panText);
-
-			secondBuildTutorialOverlays.push(deleteOverlay);
-			secondBuildTutorialOverlays.push(shopOverlay);
-			secondBuildTutorialOverlays.push(panOverlay);
-
-			secondBuildTutorial = new TutorialSequence(onSecondBuildTutorialComplete,
-													   secondBuildTutorialOverlays);
-
-			//--------- ENTITY TUTORIAL ---------//
-			var entityTutorialOverlays:Array = new Array();
-			var entityShadow:Image = new Image(Assets.textures[Util.TUTORIAL_ENTITY_SHADOW]);
-			entityShadow.alpha = 0.7;
-			var entitySelectText:TextField = new TextField(300, 100,
-														   ENTITY_TUTORIAL_TEXT,
-														   Util.DEFAULT_FONT,
-														   Util.SMALL_FONT_SIZE);
-			entitySelectText.x = 325;
-			entitySelectText.y = 2;
-
-			var entityMoreText:TextField = new TextField(230, 95,
-														 ENTITY_DROPDOWN_TUTORIAL_TEXT,
-														 Util.DEFAULT_FONT,
-														 Util.SMALL_FONT_SIZE);
-			entityMoreText.x = 60;
-			entityMoreText.y = 165;
-
-			var entityOverlay:TutorialOverlay = new TutorialOverlay(
-				new Image(Assets.textures[Util.TUTORIAL_ENTITY_ARROWS]),
-				entityShadow);
-			entityOverlay.addChild(entitySelectText);
-			entityOverlay.addChild(entityMoreText);
-			entityTutorialOverlays.push(entityOverlay);
-
-			entityTutorial = new TutorialSequence(onEntityTutorialComplete,
-			 									  entityTutorialOverlays);
-
-			//--------- SECOND RUN PHASE TUTORIAL ---------//
-			var secondRunTutorialOverlays:Array = new Array();
-			var speedShadow:Image = new Image(Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
-			speedShadow.alpha = 0.7;
-			var speedCombat:TextField = new TextField(210, 85,
-													  SPEED_COMBAT_TUTORIAL_TEXT,
-													  Util.DEFAULT_FONT,
-													  Util.SMALL_FONT_SIZE);
-			speedCombat.x = 430;
-			speedCombat.y = 245;
-			var speedMove:TextField = new TextField(220, 80,
-													SPEED_MOVE_TUTORIAL_TEXT,
-													Util.DEFAULT_FONT,
-													Util.SMALL_FONT_SIZE);
-			speedMove.x = 135;
-			speedMove.y = 400;
-			var speedOverlay:TutorialOverlay = new TutorialOverlay(
-					new Image(Assets.textures[Util.TUTORIAL_SPEED_ARROWS]),
-					speedShadow,
-					false);
-			speedOverlay.addChild(speedCombat);
-			speedOverlay.addChild(speedMove);
-
-			secondRunTutorialOverlays.push(speedOverlay);
-
-			secondRunTutorial = new TutorialSequence(onSecondRunTutorialComplete,
-													 secondRunTutorialOverlays);
-		}*/
-
 		private function returnToMenu():void {
 			dispatchEvent(new MenuEvent(MenuEvent.EXIT));
 		}
@@ -707,20 +484,12 @@ package {
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
 			constructPhaseBanner();
-
-			/*if (secondRun) {
-				// For the second run, it also needs to start a tutorial.
-				addChild(secondRunTutorial);
-				currentFloor.char.moveLock = true;
-				tutorialState = TUTORIAL_WAITING_FOR_SPEED;
-			}*/
 		}
 
 		public function onStaminaExpended(event:GameEvent):void {
 			if (popupActive || gameState != STATE_RUN) {
 				endRunDeferred = true;
 			} else {
-			//if (!(currentFloor.entityGrid[currentFloor.char.grid_x][currentFloor.char.grid_y] is StaminaHeal)) {
 				endRun();
 			}
 		}
@@ -852,35 +621,21 @@ package {
 						Assets.textures[Util.TUTORIAL_PLACE_SHADOW]);
 				tutorialManager.addTutorialNoBackground(
 						Assets.textures[Util.TUTORIAL_START_RUN]);
-
 				tutorialManager.setInteractive(true);
 				tutorialManager.state = TutorialManager.BUILD;
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
-				//addChild(tutorialManager);
 			} else if (buildCount == 3) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SPEED]);
 			} else if (buildCount == 4) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
-				//addChild(tutorialManager);
 			}
 
 			if (unlockTutorialState == UNLOCK_TUTORIAL_STATE_FIRST) {
 				unlockTutorialState = UNLOCK_TUTORIAL_STATE_SHOWN;
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_UNLOCK]);
-				//addChild(tutorialManager);
 			}
-
-			// If this is the second build, show the advanced build tutorial.
-			/*if (secondBuild) {
-				addChild(secondBuildTutorial);
-			// If this is not the second build, but the first entity was just
-			// unlocked, show the entity tutorial.
-			} else if (unlockedFirstEntity && !entityTutorialDisplayed) {
-				entityTutorialDisplayed = true;
-				addChild(entityTutorial);
-			}*/
 		}
 
 		private function centerWorldOnCharacter(exact:Boolean = false):void {
@@ -1293,10 +1048,6 @@ package {
 
 			Util.speed = runPhaseSpeed ? Util.SPEED_FAST : Util.SPEED_SLOW;
 			currentFloor.updateRunSpeed();
-
-			/*if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
-				onSecondRunTutorialComplete();
-			}*/
 		}
 
 		public function toggleCombatSpeed():void {
@@ -1308,99 +1059,7 @@ package {
 
 			var chosen:String = combatSkip ? Util.ICON_FAST_COMBAT : Util.ICON_SLOW_COMBAT;
 			combatSpeedButton.updateImage(null, Assets.textures[chosen]);
-
-			/*if (tutorialState == TUTORIAL_WAITING_FOR_SPEED) {
-				onSecondRunTutorialComplete();
-			}*/
 		}
-
-		/*public function onIntroTutorialComplete():void {
-			removeChild(introTutorial);
-
-			// Set up cinematic to show exit
-			var commands:Array = new Array();
-
-			var moveToExit:Dictionary = new Dictionary();
-			moveToExit["command"] = Cinematic.COMMAND_MOVE;
-			moveToExit["destX"] = world.x + Util.grid_to_real(-8);
-			moveToExit["destY"] = world.y + Util.grid_to_real(19);
-
-			var waitAtExit:Dictionary = new Dictionary();
-			waitAtExit["command"] = Cinematic.COMMAND_WAIT;
-			waitAtExit["timeToWait"] = 1.5;
-
-			var moveToStart:Dictionary = new Dictionary();
-			moveToStart["command"] = Cinematic.COMMAND_MOVE;
-			moveToStart["destX"] = world.x;
-			moveToStart["destY"] = world.y;
-
-			var waitAtStart:Dictionary = new Dictionary();
-			waitAtStart["command"] = Cinematic.COMMAND_WAIT;
-			waitAtStart["timeToWait"] = 0.5;
-
-			commands.push(moveToExit);
-			commands.push(waitAtExit);
-			commands.push(moveToStart);
-			commands.push(waitAtStart);
-
-			removeChild(buildHud);
-			removeChild(runButton);
-			removeChild(goldHud);
-			removeChild(shopHud);
-
-			playCinematic(commands, onIntroCinematicComplete);
-		}*/
-
-		/*public function onIntroCinematicComplete():void {
-			gameState = STATE_BUILD;
-			tutorialState = TUTORIAL_WAITING_FOR_EDGES;
-
-			removeChild(cinematic);
-			centerWorldOnCharacter();
-
-			addChild(buildHud);
-			addChild(goldHud);
-			addChild(runButton);
-			addChild(shopHud);
-
-			addChild(buildTutorial);
-			Assets.mixer.play(Util.LEVEL_UP);
-		}*/
-
-		/*public function onBuildTutorialComplete():void {
-			removeChild(buildTutorial);
-			addChild(runTutorial);
-			currentFloor.char.moveLock = true;
-			tutorialState = null;
-		}
-
-		public function onRunTutorialComplete():void {
-			removeChild(runTutorial);
-			currentFloor.char.moveLock = false;
-		}
-
-		public function onSecondBuildTutorialComplete():void {
-			removeChild(secondBuildTutorial);
-			secondBuild = false;
-			secondRun = true;
-
-			if (unlockedFirstEntity && !entityTutorialDisplayed) {
-				addChild(entityTutorial);
-			}
-
-			return;
-		}
-
-		public function onEntityTutorialComplete():void {
-			removeChild(entityTutorial);
-			entityTutorialDisplayed = true;
-		}
-
-		public function onSecondRunTutorialComplete():void {
-			removeChild(secondRunTutorial);
-			currentFloor.char.moveLock = false;
-			secondRun = false;
-		}*/
 
 		public function playCinematic(commands:Array, onComplete:Function):void {
 			cinematic = new Cinematic(world.x,
@@ -1418,8 +1077,6 @@ package {
 		}
 
 		public function onEntityUnlock(event:GameEvent):void {
-			unlockedFirstEntity = true;
-
 			if(event.gameData["type"] && event.gameData["entity"]) {
 				Assets.mixer.play(Util.LEVEL_UP);
 				tileUnlockTimer = 0;
