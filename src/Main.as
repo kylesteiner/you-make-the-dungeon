@@ -28,6 +28,10 @@ package {
         private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
 
+        // Backgrounds
+        private var menuBackgroundImage:Image;
+		private var gameBackgroundImage:Image;
+
         // Sound
         private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
@@ -76,8 +80,12 @@ package {
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
+            menuBackgroundImage = new Image(Assets.textures[Util.MENU_BACKGROUND]);
+			gameBackgroundImage = new Image(Assets.textures[Util.GAME_BACKGROUND]);
+
             // Display the main menu.
 			mainMenu = new Menu(versionID, cid, bgmMuteButton, sfxMuteButton);
+			addChild(menuBackgroundImage);
             addChild(mainMenu);
 
             addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -93,8 +101,10 @@ package {
 
         // Switches from the menu to the game.
         public function startGame(fromSave:Boolean):void {
-            removeChild(mainMenu);
             game = new Game(fromSave, sfxMuteButton, bgmMuteButton);
+			removeChild(mainMenu);
+			removeChild(menuBackgroundImage);
+			addChild(gameBackgroundImage);
             addChild(game);
         }
 
@@ -105,6 +115,8 @@ package {
             removeChild(credits);
 			removeChild(scores);
             removeChild(game, true);  // Dispose of all sprites in Game.
+			removeChild(gameBackgroundImage);
+			addChild(menuBackgroundImage);
             addChild(mainMenu);
         }
 
