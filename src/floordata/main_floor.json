@@ -684,7 +684,8 @@
 			"y": 21,
 			"texture": "key",
 			"key": "key_1",
-			"prereqs": []
+			"prereqs": [],
+			"color": "red"
 		},
 		{
 			"type": "objective",
@@ -692,7 +693,8 @@
 			"y": 21,
 			"texture": "door",
 			"key": "door_1",
-			"prereqs": ["key_1"]
+			"prereqs": ["key_1"],
+			"color": "red"
 		},
 		{
 			"type": "objective",
@@ -700,7 +702,8 @@
 			"y": 18,
 			"texture": "key",
 			"key": "key_2",
-			"prereqs": []
+			"prereqs": [],
+			"color": "blue"
 		},
 		{
 			"type": "objective",
@@ -708,7 +711,8 @@
 			"y": 19,
 			"texture": "door",
 			"key": "door_2",
-			"prereqs": ["key_2"]
+			"prereqs": ["key_2"],
+			"color": "blue"
 		},
 		{
 			"type": "objective",
@@ -716,7 +720,8 @@
 			"y": 11,
 			"texture": "key",
 			"key": "key_3",
-			"prereqs": []
+			"prereqs": [],
+			"color": "green"
 		},
 		{
 			"type": "objective",
@@ -724,7 +729,8 @@
 			"y": 12,
 			"texture": "door",
 			"key": "door_3",
-			"prereqs": ["key_3"]
+			"prereqs": ["key_3"],
+			"color": "green"
 		},
 		{
 			"type": "objective",
@@ -732,7 +738,8 @@
 			"y": 20,
 			"texture": "key",
 			"key": "key_4",
-			"prereqs": []
+			"prereqs": [],
+			"color": "orange"
 		},
 		{
 			"type": "objective",
@@ -740,7 +747,8 @@
 			"y": 17,
 			"texture": "door",
 			"key": "door_4",
-			"prereqs": ["key_4"]
+			"prereqs": ["key_4"],
+			"color": "orange"
 		},
 		{
 			"type": "objective",
@@ -748,7 +756,8 @@
 			"y": 13,
 			"texture": "key",
 			"key": "key_5",
-			"prereqs": []
+			"prereqs": [],
+			"color": "purple"
 		},
 		{
 			"type": "objective",
@@ -756,7 +765,8 @@
 			"y": 8,
 			"texture": "door",
 			"key": "door_5",
-			"prereqs": ["key_5"]
+			"prereqs": ["key_5"],
+			"color": "purple"
 		},
 		{
 			"type": "objective",
@@ -764,7 +774,8 @@
 			"y": 6,
 			"texture": "key",
 			"key": "key_6",
-			"prereqs": []
+			"prereqs": [],
+			"color": "maroon"
 		},
 		{
 			"type": "objective",
@@ -772,7 +783,8 @@
 			"y": 9,
 			"texture": "door",
 			"key": "door_6",
-			"prereqs": ["key_6"]
+			"prereqs": ["key_6"],
+			"color": "maroon"
 		},
 		{"type": "reward", "x": 9, "y": 5, "texture": "reward", "function": "tile", "parameter": "entity_moderate_stamina_heal", "permanent": false},
 		{"type": "reward", "x": 21, "y": 4, "texture": "reward", "function": "tile", "parameter": "shock_trap", "permanent": false},
