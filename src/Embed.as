@@ -4,8 +4,9 @@ package {
 	import starling.textures.Texture;
 
 	public class Embed {
+		[Embed(source='assets/backgrounds/menu_bg.png')] public static var menu_background:Class;
 		[Embed(source='assets/backgrounds/background.png')] public static var grid_background:Class;
-		[Embed(source='assets/backgrounds/new_static_bg.png')] public static var static_background:Class;
+		[Embed(source='assets/backgrounds/game_bg.png')] public static var game_background:Class;
 		[Embed(source='assets/backgrounds/panning_tutorial.png')] public static const tutorial_panning:Class;
 		[Embed(source='assets/backgrounds/popup.png')] public static const popup_background:Class;
 		[Embed(source='assets/backgrounds/summary_bg.png')] public static const summary_background:Class;
@@ -241,8 +242,9 @@ package {
 		public static function setupTextures():void {
 			Assets.textures = new Dictionary();
 			var scale:int = Util.REAL_TILE_SIZE / Util.PIXELS_PER_TILE;
+			Assets.textures[Util.MENU_BACKGROUND] = Texture.fromEmbeddedAsset(menu_background);
 			Assets.textures[Util.GRID_BACKGROUND] = Texture.fromEmbeddedAsset(grid_background);
-			Assets.textures[Util.STATIC_BACKGROUND] = Texture.fromEmbeddedAsset(static_background);
+			Assets.textures[Util.GAME_BACKGROUND] = Texture.fromEmbeddedAsset(game_background);
 			//Assets.textures[Util.TUTORIAL_BACKGROUND] = Texture.fromEmbeddedAsset(tutorial_hud);
 			//Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_panning);
 			//Assets.textures[Util.TUTORIAL_TILE] = Texture.fromEmbeddedAsset(tutorial_tile_hud);

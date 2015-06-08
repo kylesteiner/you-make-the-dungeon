@@ -28,6 +28,7 @@ package {
 
 		public function Preloader() {
 			stop();
+
 			var isAllowed:Boolean = false;
 			for each (var url:String in allowedUrls) {
 				if (loaderInfo.url.indexOf(url) != -1) {

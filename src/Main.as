@@ -28,9 +28,6 @@ package {
         private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
 
-        // Background
-        private var staticBackgroundImage:Image;
-
         // Sound
         private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
@@ -78,9 +75,6 @@ package {
 			bgmMuteButton = new Clickable(0, 0, toggleBgmMute, null, Assets.textures[Util.ICON_BGM_PLAY]);
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
-
-            staticBackgroundImage = new Image(Assets.textures[Util.STATIC_BACKGROUND]);
-			addChild(staticBackgroundImage);
 
             // Display the main menu.
 			mainMenu = new Menu(versionID, cid, bgmMuteButton, sfxMuteButton);

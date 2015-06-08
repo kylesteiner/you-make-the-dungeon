@@ -162,6 +162,9 @@ package {
 							 bgmMuteButton:Clickable) {
 			super();
 			saveGame = SharedObject.getLocal("saveGame");
+
+			addChild(new Image(Assets.textures[Util.GAME_BACKGROUND]));
+
 			this.sfxMuteButton = sfxMuteButton;
 			this.bgmMuteButton = bgmMuteButton;
 

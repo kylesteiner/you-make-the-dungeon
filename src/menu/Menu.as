@@ -2,6 +2,7 @@ package menu {
 	import flash.net.SharedObject;
 
 	import starling.display.Sprite;
+	import starling.display.Image;
 	import starling.text.TextField;
 	import starling.utils.VAlign;
 
@@ -14,6 +15,8 @@ package menu {
 							 sfxMute:Clickable) {
 			super();
 			saveGame = SharedObject.getLocal("saveGame");
+
+			addChild(new Image(Assets.textures[Util.MENU_BACKGROUND]));
 
 			var titleField:TextField = new TextField(Util.STAGE_WIDTH, 120, "You Make The Dungeon", Util.SECONDARY_FONT, Util.LARGE_FONT_SIZE);
 			titleField.x = (Util.STAGE_WIDTH / 2) - (titleField.width / 2);
