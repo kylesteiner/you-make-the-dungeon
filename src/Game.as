@@ -422,7 +422,8 @@ package {
 		}
 
 		public function runFloor():void {
-			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+			if ((tutorialManager.state != "" && tutorialManager.state != TutorialManager.RUN)
+			 	|| gameState == STATE_CINEMATIC) {
 				return;
 			}
 
@@ -940,8 +941,7 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if (gameState == STATE_TUTORIAL ||
-			    gameState == STATE_CINEMATIC ||
+			if (gameState == STATE_CINEMATIC ||
 				currentFloor.char.inCombat ||
 				tutorialManager.isActive() ||
 				phaseBanner != null) {
