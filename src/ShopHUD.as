@@ -151,7 +151,7 @@ package {
 			if (char) {
 				upgrades = char.maxHp - Util.STARTING_HEALTH;
 			}
-			return Util.BASE_HP_UPGRADE_COST + upgrades;
+			return Util.BASE_HP_UPGRADE_COST * (1 + int(upgrades / 5));
 		}
 
 		private function getStaminaCost():int {
@@ -159,7 +159,7 @@ package {
 			if (char) {
 				upgrades = char.maxStamina - Util.STARTING_STAMINA;
 			}
-			return Util.BASE_STAMINA_UPGRADE_COST + upgrades;
+			return Util.BASE_STAMINA_UPGRADE_COST * (1 + int(upgrades / 5));
 		}
 
 		private function getAttackCost():int {
