@@ -320,15 +320,6 @@ package {
 			char.toggleRunUI();
 			pressedKeys = new Array();
 
-			// Ensure that the character and all enemies are higher in the
-			// display order than the tiles.
-			removeChild(char);
-			addChild(char);
-			for each (var enemy:Enemy in activeEnemies) {
-				removeChild(enemy);
-				addChild(enemy);
-			}
-
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -650,7 +641,8 @@ package {
 					} else if(hudState == BuildHUD.STATE_ENTITY) {
 						addBool = isEmptyTile(grid[x][y]) && !entityGrid[x][y] && !fogGrid[x][y];
 					} else if(hudState == BuildHUD.STATE_DELETE) {
-						addBool = isEmptyTile(grid[x][y]) && grid[x][y].deletable;
+						addBool = (isEmptyTile(grid[x][y]) && grid[x][y].deletable) ||
+								  (entityGrid[x][y] && entityGrid[x][y].deletable);
 					}
 
 					addRemoveHighlight(x, y, hudState, addBool);
@@ -843,6 +835,7 @@ package {
 			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
 			startY = Util.real_to_grid(newWorldY);
 			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
+
 			if (oldStartX == startX && oldStartY == startY) {
 				// Redundant call. No change needed.
 				return;
@@ -924,15 +917,6 @@ package {
 				}
 			}
 
-			// Ensure that the character and all enemies are higher in the
-			// display order than the tiles.
-			removeChild(char);
-			addChild(char);
-			for each (var enemy:Enemy in activeEnemies) {
-				removeChild(enemy);
-				addChild(enemy);
-			}
-
 			worldX = newWorldX;
 			worldY = newWorldY;
 		}
@@ -967,7 +951,8 @@ package {
 				if (highlightedLocations[x][y]) {
 					addChild(highlightedLocations[x][y]);
 				}
-				setChildIndex(char, numChildren-1);
+				removeChild(char);
+				addChild(char);
 			}
 		}
 
