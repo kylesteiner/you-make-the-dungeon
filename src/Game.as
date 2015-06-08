@@ -696,12 +696,13 @@ package {
 			runCount += 1;
 			gameState = STATE_RUN;
 
-			/*if (tutorialState == TUTORIAL_WAITING_FOR_RUN) {
-				// This means the run button was hit, so the build tutorial needs
-				// to complete and start the first run tutorial.
-				secondBuild = true;
-				buildTutorial.next();
-			}*/
+			if (tutorialManager.state == TutorialManager.RUN) {
+				// This means the run button was hit, so clean up the build hud
+				// tutorial and remove all of the interactivity.
+				tutorialManager.setInteractive(false);
+				tutorialManager.state = "";
+				tutorialManager.closeTutorial();
+			}
 
 			runHud.startRun();
 			currentFloor.toggleRun(gameState);
@@ -843,10 +844,19 @@ package {
 
 			if (buildCount == 1) {
 				// First build phase
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_BUILD]);
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
-				//addChild(tutorialManager);
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_BUILD_HUD],
+						Assets.textures[Util.TUTORIAL_BUILDHUD_SHADOW]);
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_PLACE],
+						Assets.textures[Util.TUTORIAL_PLACE_SHADOW]);
+				tutorialManager.addTutorialNoBackground(
+						Assets.textures[Util.TUTORIAL_START_RUN]);
+
+				tutorialManager.setInteractive(true);
+				tutorialManager.state = TutorialManager.BUILD;
 			} else if (buildCount == 2) {
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
 				//addChild(tutorialManager);
 			} else if (buildCount == 3) {
@@ -994,15 +1004,10 @@ package {
 				}
 			}
 
-			if (tutorialManager.isActive()) {
-				return;
-			}
-
-			// If we are in the build hud tutorial, check to see if the player has
-			// successfully selected a tile, then advance.
-			/*if (tutorialState == TUTORIAL_WAITING_FOR_EDGES
-				&& buildHud.hudState == BuildHUD.STATE_TILE) {
-
+			// If we are in the build hud tutorial, check to see if the player
+			// has successfully selected a tile before advancing..
+			if (tutorialManager.state == TutorialManager.BUILD) {
+				trace("checking the build hud directions");
 				// We want the player to click at least two arrows before
 				// letting them place. It's less sudden and gives them a
 				// usable tile.
@@ -1013,10 +1018,15 @@ package {
 					}
 				}
 				if (ctr > 1) {
-					tutorialState = TUTORIAL_WAITING_FOR_PLACE;
-					buildTutorial.next();
+					trace("more than 1 direction selected, moving to next state");
+					tutorialManager.state = TutorialManager.PLACE;
+					tutorialManager.closeTutorial();
 				}
-			}*/
+			}
+
+			if (tutorialManager.isActive()) {
+				return;
+			}
 
 			var isTouchHelpButton:Boolean;
 			var touchX:int = touch.globalX;
@@ -1098,11 +1108,13 @@ package {
 					goldSpent += cost;
 					Assets.mixer.play(Util.TILE_MOVE);
 
-					// If we are in the build tutorial, advance to the next part.
-					/*if (tutorialState == TUTORIAL_WAITING_FOR_PLACE) {
-						tutorialState = TUTORIAL_WAITING_FOR_RUN;
-						buildTutorial.next();
-					}*/
+					// If we are in the build hud tutorial, and waiting for the
+					// player to place a tile, then advance to the next part.
+					if (tutorialManager.state == TutorialManager.PLACE) {
+						tutorialManager.state = TutorialManager.RUN;
+						tutorialManager.closeTutorial();
+					}
+
 				} else if (currentFloor.highlightedLocations[newTile.grid_x][newTile.grid_y]) {
 					// Could place but do not have gold required
 					goldHud.setFlash();

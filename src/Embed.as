@@ -114,7 +114,9 @@ package {
 		[Embed(source='assets/tutorials/tutorial_exit.png')] public static const tutorial_exit:Class;
 		[Embed(source='assets/tutorials/tutorial_move.png')] public static const tutorial_move:Class;
 		[Embed(source='assets/tutorials/tutorial_pan.png')] public static const tutorial_pan:Class;
-		[Embed(source='assets/tutorials/tutorial_build.png')] public static const tutorial_build:Class;
+		[Embed(source='assets/tutorials/tutorial_build_hud.png')] public static const tutorial_build_hud:Class;
+		[Embed(source='assets/tutorials/tutorial_place.png')] public static const tutorial_place:Class;
+		[Embed(source='assets/tutorials/tutorial_start_run.png')] public static const tutorial_start_run:Class;
 		[Embed(source='assets/tutorials/tutorial_secondary_build.png')] public static const tutorial_secondary_build:Class;
 		[Embed(source='assets/tutorials/tutorial_help.png')] public static const tutorial_help:Class;
 		[Embed(source='assets/tutorials/tutorial_enemy.png')] public static const tutorial_enemy:Class;
@@ -365,7 +367,9 @@ package {
 			Assets.textures[Util.TUTORIAL_EXIT] = Texture.fromEmbeddedAsset(tutorial_exit);
 			Assets.textures[Util.TUTORIAL_MOVE] = Texture.fromEmbeddedAsset(tutorial_move);
 			Assets.textures[Util.TUTORIAL_PAN] = Texture.fromEmbeddedAsset(tutorial_pan);
-			Assets.textures[Util.TUTORIAL_BUILD] = Texture.fromEmbeddedAsset(tutorial_build);
+			Assets.textures[Util.TUTORIAL_BUILD_HUD] = Texture.fromEmbeddedAsset(tutorial_build_hud);
+			Assets.textures[Util.TUTORIAL_PLACE] = Texture.fromEmbeddedAsset(tutorial_place);
+			Assets.textures[Util.TUTORIAL_START_RUN] = Texture.fromEmbeddedAsset(tutorial_start_run);
 			Assets.textures[Util.TUTORIAL_SECONDARY_BUILD] = Texture.fromEmbeddedAsset(tutorial_secondary_build);
 			Assets.textures[Util.TUTORIAL_HELP] = Texture.fromEmbeddedAsset(tutorial_help);
 			Assets.textures[Util.TUTORIAL_ENEMY] = Texture.fromEmbeddedAsset(tutorial_enemy);

@@ -149,7 +149,9 @@ package {
 		public static const TUTORIAL_EXIT:String = "tutorial_exit";
 		public static const TUTORIAL_MOVE:String = "tutorial_move";
 		public static const TUTORIAL_PAN:String = "tutorial_pan";
-		public static const TUTORIAL_BUILD:String = "tutorial_build";
+		public static const TUTORIAL_BUILD_HUD:String = "tutorial_build_hud";
+		public static const TUTORIAL_PLACE:String = "tutorial_place";
+		public static const TUTORIAL_START_RUN:String = "tutorial_start_run";
 		public static const TUTORIAL_SECONDARY_BUILD:String = "tutorial_secondary_build";
 		public static const TUTORIAL_HELP:String = "tutorial_help";
 		public static const TUTORIAL_ENEMY:String = "tutorial_enemy";
