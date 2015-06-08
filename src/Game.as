@@ -422,7 +422,8 @@ package {
 		}
 
 		public function runFloor():void {
-			if (gameState == STATE_TUTORIAL || gameState == STATE_CINEMATIC) {
+			if ((tutorialManager.state != "" && tutorialManager.state != TutorialManager.RUN)
+			 	|| gameState == STATE_CINEMATIC) {
 				return;
 			}
 
@@ -479,6 +480,17 @@ package {
 				tutorialManager.setInteractive(false);
 				tutorialManager.state = "";
 				tutorialManager.closeTutorial();
+			}
+
+			if (runCount == 2) {
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA],
+						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
+			}
+			if (runCount == 4) {
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_SPEED],
+						Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
 			}
 
 			runHud.startRun();
@@ -625,16 +637,19 @@ package {
 				tutorialManager.state = TutorialManager.BUILD;
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SECONDARY_BUILD]);
-			} else if (buildCount == 3) {
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_SPEED]);
-			} else if (buildCount == 4) {
+			} else if (buildCount == 5) {
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD],
+						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD_SHADOW]);
+			} else if (buildCount == 6) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_HELP]);
 			}
 
 			if (unlockTutorialState == UNLOCK_TUTORIAL_STATE_FIRST) {
 				unlockTutorialState = UNLOCK_TUTORIAL_STATE_SHOWN;
-				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_UNLOCK]);
+				tutorialManager.addTutorialWithBackground(
+						Assets.textures[Util.TUTORIAL_UNLOCK],
+						Assets.textures[Util.TUTORIAL_ENTITY_SHADOW]);
 			}
 		}
 
@@ -926,8 +941,7 @@ package {
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
-			if (gameState == STATE_TUTORIAL ||
-			    gameState == STATE_CINEMATIC ||
+			if (gameState == STATE_CINEMATIC ||
 				currentFloor.char.inCombat ||
 				tutorialManager.isActive() ||
 				phaseBanner != null) {
@@ -1250,7 +1264,7 @@ package {
 		}
 
 		private function onTutorialEndRun(event:TutorialEvent):void {
-			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_END_RUN]);
+			// tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_END_RUN]);
 		}
 
 		private function onTutorialRevealEnemy(event:TutorialEvent):void {
