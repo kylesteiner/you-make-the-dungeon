@@ -24,7 +24,9 @@ package {
 		public static const FOG_OF_WAR_COLOR:uint = Color.BLACK;
 		public static const FOG_OF_WAR_OPACITY_RANGE:int = 3;
 		public static const FOG_OF_WAR_MAX_OPACITY:Number = 0.95;
+		//public static const FOG_OF_WAR_MAX_OPACITY:Number = 0.85;
 		public static const FOG_OF_WAR_MIN_OPACITY:Number = 0.85;
+		//public static const FOG_OF_WAR_MIN_OPACITY:Number = 0.60;
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.

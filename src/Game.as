@@ -53,6 +53,8 @@ package {
 		public static const PHASE_BANNER_THRESHOLD:Number = 0.05;
 		public static const PHASE_CHANGE_THRESHOLD:Number = 0.40;
 
+		public static const MIN_TILES_ON_SCREEN:int = 5;
+
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
 		public static const MAX_CAMERA_ACCEL:int = 3;
 
@@ -903,32 +905,33 @@ package {
 			var worldShift:int = Util.CAMERA_SHIFT * cameraAccel;
 			if (pressedKeys[Util.DOWN_KEY]) {
 				world.y -= worldShift;
-				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
-					world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1);
+				//if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - 1)) {
+				if (world.y < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - MIN_TILES_ON_SCREEN)) {
+					world.y = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridHeight - MIN_TILES_ON_SCREEN);
 				}
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if (pressedKeys[Util.UP_KEY]) {
 				world.y += worldShift;
-				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT) {
-					world.y = Util.PIXELS_PER_TILE * -1 + Util.STAGE_HEIGHT;
+				if (world.y > Util.PIXELS_PER_TILE * -1 + Util.grid_to_real(4)) {//Util.STAGE_HEIGHT) {
+					world.y = Util.PIXELS_PER_TILE * -1 + Util.grid_to_real(4);//Util.STAGE_HEIGHT;
 				}
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if (pressedKeys[Util.RIGHT_KEY]) {
 				world.x -= worldShift;
-				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1)) {
-					world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - 1);
+				if (world.x < -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - MIN_TILES_ON_SCREEN - 2)) {
+					world.x = -1 * Util.PIXELS_PER_TILE * (currentFloor.gridWidth - MIN_TILES_ON_SCREEN - 2);
 				}
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
 
 			if (pressedKeys[Util.LEFT_KEY]) {
 				world.x += worldShift;
-				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH) {
-					world.x = Util.PIXELS_PER_TILE * -1 + Util.STAGE_WIDTH;
+				if (world.x > Util.PIXELS_PER_TILE * -1 + Util.grid_to_real(4)) {//Util.STAGE_WIDTH) {
+					world.x = Util.PIXELS_PER_TILE * -1 + Util.grid_to_real(4);//Util.STAGE_WIDTH;
 				}
 				currentFloor.changeVisibleChildren(world.x, world.y);
 			}
