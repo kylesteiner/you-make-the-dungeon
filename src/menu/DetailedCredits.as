@@ -24,7 +24,7 @@ package menu {
             rightCredits += "BGM: Diving Turtle - PacDV.com\nGentle Thoughts 2 - PacDV.com\n";
             rightCredits += "Glow in the Dark - PacDV.com\nOriental Drift - PacDV.com\nPearl Cavern - Essa (soundcloud)\n";
             rightCredits += "Seven Nation - Scribe / Daniel Stephens (opengameart)\nSnowfall - Kistol/Joseph Gilbert (opengameart)\nWarm Interlude - PacDV.com\n";
-            rightCredits += "\nSFX: Floor begin: snottyboy (soundbible)\nFloor complete: Mike Koenig (soundbible)\nTile place: Mark DiAngelo (soundbible)\nTile error: Joe Antares (flashkit)\n";
+            rightCredits += "\nSFX: Floor begin: Dianakc (soundbible)\nFloor complete: Mike Koenig (soundbible)\nTile place: Mark DiAngelo (soundbible)\nTile error: Joe Antares (flashkit)\n";
             rightCredits += "Button press: Deepfrozenapps (soundbible)\nTile remove: Mike Koenig (soundbible)\nCombat success: unknown :(\nCombat failure: Mike Simmons (flashkit)\n";
             rightCredits += "Attack: Vladimir (soundbible)\nCoin collect: Bard Wesson (freesound)\nGold spend: jalastram (opengameart)\nNo gold: artisticdude (opengameart)\n";
             rightCredits += "Chest open: Vitor da Silva Goncalves (opengameart)\nDoor open: artisticdude (opengameart)\n";
