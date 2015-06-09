@@ -147,12 +147,20 @@ package {
 			gridHeight = floorData["floor_dimensions"]["height"];
 
 			// Set up the background.
-			var mapBoundsBackground:Image = new Image(Assets.textures[Util.GRID_BACKGROUND]);
-			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
-			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
-			addChild(mapBoundsBackground);
+			var gridBackground:Sprite = new Sprite();
+			gridBackground.x = - Util.PIXELS_PER_TILE * 0.1;
+			gridBackground.y = - Util.PIXELS_PER_TILE * 0.1;
+			var gridBackgroundOuter:Quad = new Quad(Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2,
+													Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2,
+													0x000000);
+			var gridBackgroundInner:Quad = new Quad(Util.PIXELS_PER_TILE * gridWidth,
+													Util.PIXELS_PER_TILE * gridHeight,
+													0xffffff);
+			gridBackgroundInner.x = Util.PIXELS_PER_TILE * 0.1;
+			gridBackgroundInner.y = Util.PIXELS_PER_TILE * 0.1;
+			gridBackground.addChild(gridBackgroundOuter);
+			gridBackground.addChild(gridBackgroundInner);
+			addChild(gridBackground);
 
 			// Initialize all grids.
 			grid = initializeGrid(gridWidth, gridHeight);

@@ -47,7 +47,6 @@ package {
 		public static const KEY_STRING:String = "key";
 
 		public static const MENU_BACKGROUND:String = "menu_background";
-		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const GAME_BACKGROUND:String = "game_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
 		//public static const TUTORIAL_PAN:String = "tutorial_pan";
