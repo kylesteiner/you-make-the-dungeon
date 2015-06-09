@@ -320,6 +320,14 @@ package {
 			char.toggleRunUI();
 			pressedKeys = new Array();
 
+			removeChild(char);
+			addChild(char);
+
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
+
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -919,6 +927,14 @@ package {
 
 			worldX = newWorldX;
 			worldY = newWorldY;
+
+			removeChild(char);
+			addChild(char);
+
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
 		}
 
 		private function clearLocation(x:int, y:int):void {

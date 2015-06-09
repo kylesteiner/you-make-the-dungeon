@@ -784,15 +784,15 @@
 		{"type": "objective", "x": 9, "y": 2, "texture": "door", "key": "door_21", "prereqs": ["key_21"], "color": "gray"},
 		{"type": "reward", "x": 25, "y": 13, "texture": "reward", "function": "tile", "parameter": "entity_moderate_stamina_heal", "permanent": false},
 		{"type": "reward", "x": 6, "y": 23, "texture": "reward", "function": "tile", "parameter": "shock_trap", "permanent": false},
-		{"type": "reward", "x": 38, "y": 24, "texture": "reward", "function": "tile", "parameter": "enemy_archer", "permanent": false},
+		{"type": "reward", "x": 38, "y": 24, "texture": "reward", "function": "tile", "parameter": "entity_archer", "permanent": false},
 		{"type": "reward", "x": 35, "y": 10, "texture": "reward", "function": "tile", "parameter": "entity_ninja", "permanent": false},
 		{"type": "reward", "x": 15, "y": 33, "texture": "reward", "function": "tile", "parameter": "basic_trap", "permanent": false},
 		{"type": "reward", "x": 31, "y": 31, "texture": "reward", "function": "tile", "parameter": "flame_trap", "permanent": false},
 		{"type": "reward", "x": 21, "y": 9, "texture": "reward", "function": "tile", "parameter": "flame_trap_blue", "permanent": false},
 		{"type": "reward", "x": 12, "y": 12, "texture": "reward", "function": "tile", "parameter": "entity_moderate_healing", "permanent": false},
-		{"type": "reward", "x": 13, "y": 36, "texture": "reward", "function": "tile", "parameter": "enemy_fighter", "permanent": false},
+		{"type": "reward", "x": 13, "y": 36, "texture": "reward", "function": "tile", "parameter": "entity_fighter", "permanent": false},
 		{"type": "reward", "x": 20, "y": 35, "texture": "reward", "function": "tile", "parameter": "entity_light_healing", "permanent": false},
-		{"type": "reward", "x": 17, "y": 22, "texture": "reward", "function": "tile", "parameter": "enemy_mage", "permanent": false},
+		{"type": "reward", "x": 17, "y": 22, "texture": "reward", "function": "tile", "parameter": "entity_mage", "permanent": false},
 		{"type": "reward", "x": 1, "y": 35, "texture": "reward", "function": "tile", "parameter": "entity_light_stamina_heal", "permanent": false}
 	],
 	"temporary_entities": [
