@@ -694,42 +694,42 @@
 			"x": 20,
 			"y": 30,
 			"texture": "health",
-			"health": 5
+			"health": 4
 		},
 		{
 			"type": "healing",
 			"x": 26,
 			"y": 24,
 			"texture": "health",
-			"health": 5
+			"health": 4
 		},
 		{
 			"type": "healing",
 			"x": 23,
 			"y": 23,
 			"texture": "health",
-			"health": 5
+			"health": 4
 		},
 		{
 			"type": "healing",
 			"x": 1,
 			"y": 11,
 			"texture": "health",
-			"health": 5
+			"health": 4
 		},
 		{
 			"type": "healing",
 			"x": 6,
 			"y": 15,
 			"texture": "health",
-			"health": 5
+			"health": 4
 		},
 		{
 			"type": "stamina_heal",
 			"x": 20,
 			"y": 32,
 			"texture": "stamina_heal",
-			"stamina": 3
+			"stamina": 4
 		},
 		{
 			"type": "trap",
