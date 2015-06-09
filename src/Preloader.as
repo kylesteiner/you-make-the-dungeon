@@ -30,7 +30,7 @@ package {
 		private var preloaderBackground:Bitmap;
 
 		private static const sitelock:Boolean = true;
-		private static const allowedUrls:Array = new Array("www.kongregate.com");
+		private static const allowedUrls:Array = new Array("game241225.konggames.com");
 
 		public function Preloader() {
 			stop();
@@ -51,7 +51,7 @@ package {
 				t.width = stage.stageWidth;
 				t.height = stage.stageHeight;
 				t.x = 0;
-				t.y = stage.stageHeight / 2;
+				t.y = 0;
 				t.text = "You Make The Dungeon is not supported\non this site! Click anywhere to\nplay this game on Kongregate!";
 				addChild(t);
 
