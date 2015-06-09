@@ -56,7 +56,7 @@ package {
 		public static const MIN_TILES_ON_SCREEN:int = 5;
 
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
-		public static const MAX_CAMERA_ACCEL:int = 3;
+		public static const MAX_CAMERA_ACCEL:int = 4;
 
 		public static const STATE_BUILD:String = "game_build";
 		public static const STATE_RUN:String = "game_run";
