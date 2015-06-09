@@ -1,4 +1,5 @@
 package {
+	import flash.display.LoaderInfo;
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Bitmap;
@@ -9,6 +10,8 @@ package {
 	import flash.utils.getQualifiedClassName;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.net.URLRequest;
+	import flash.system.Security;
 
 	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
@@ -51,6 +54,8 @@ package {
 				addChild(t);
 				return;
 			}
+
+			loadKongregate();
 
 			loaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderInfo_progressHandler);
 			loaderInfo.addEventListener(Event.COMPLETE, loaderInfo_completeHandler);
@@ -98,10 +103,44 @@ package {
 			addChild(progressBar)
 		}
 
+		private function loadKongregate():void {
+			// Pull the API path from the FlashVars
+			var paramObj:Object = LoaderInfo(root.loaderInfo).parameters;
+
+			// The API path. The "shadow" API will load if testing locally.
+			var apiPath:String = paramObj.kongregate_api_path ||
+			  "http://www.kongregate.com/flash/API_AS3_Local.swf";
+
+			// Allow the API access to this SWF
+			Security.allowDomain(apiPath);
+
+			// Load the API
+			var request:URLRequest = new URLRequest(apiPath);
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete);
+			loader.load(request);
+			this.addChild(loader);
+		}
+
+		// This function is called when loading is complete
+		private function loadComplete(event:Event):void {
+			// Save Kongregate API reference
+			Main.kongregate = event.target.content;
+
+			// Connect to the back-end
+			Main.kongregate.services.connect();
+
+			// You can now access the API via:
+			// kongregate.services
+			// kongregate.user
+			// kongregate.scores
+			// kongregate.stats
+			// etc...
+		}
+
 		private function randInt(min:int, max:int):int {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
-
 
 		private function loaderInfo_progressHandler(event:ProgressEvent):void {
 			progressBar.graphics.clear();

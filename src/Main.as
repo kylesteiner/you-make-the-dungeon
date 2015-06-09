@@ -36,6 +36,9 @@ package {
         private var bgmMuteButton:Clickable;
 		private var sfxMuteButton:Clickable;
 
+		// Kongregate API reference
+		public static var kongregate:*;
+
         public function Main() {
             addEventListener(Event.ADDED_TO_STAGE, initialize);
         }
