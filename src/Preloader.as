@@ -4,11 +4,15 @@ package {
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.navigateToURL;
 
 	[SWF(width="640", height="480", backgroundColor="#FFFFFF")]
 
@@ -26,11 +30,7 @@ package {
 		private var preloaderBackground:Bitmap;
 
 		private static const sitelock:Boolean = true;
-		private static const allowedUrls:Array = new Array(
-			"www.courses.cs.washington.edu",
-			"www.newgrounds.com/portal/view/658573",
-			"xiakaicheng.com",
-			"www.kongregate.com");
+		private static const allowedUrls:Array = new Array("www.kongregate.com");
 
 		public function Preloader() {
 			stop();
@@ -47,8 +47,15 @@ package {
 			}
 			if (!isAllowed && sitelock) {
 				var t:TextField = new TextField();
-				t.text = loaderInfo.url;
+				t.defaultTextFormat = new TextFormat("Arial", 30);
+				t.width = stage.stageWidth;
+				t.height = stage.stageHeight;
+				t.x = 0;
+				t.y = stage.stageHeight / 2;
+				t.text = "You Make The Dungeon is not supported\non this site! Click anywhere to\nplay this game on Kongregate!";
 				addChild(t);
+
+				addEventListener(MouseEvent.CLICK, navToKongregate);
 				return;
 			}
 
@@ -78,14 +85,14 @@ package {
 			percentLoaded = new TextField();
 			percentLoaded.width = stage.stageWidth;
 			percentLoaded.height = 35;
-			percentLoaded.defaultTextFormat = new TextFormat(Util.DEFAULT_FONT, 24);
+			percentLoaded.defaultTextFormat = new TextFormat("Arial", 24);
 			percentLoaded.x = (stage.stageWidth - percentLoaded.width) / 2;
 			percentLoaded.y = stage.stageHeight - percentLoaded.height - PROGRESS_BAR_HEIGHT;
 
 			loadText = new TextField();
 			loadText.width = stage.stageWidth;
 			loadText.height = 40;
-			loadText.defaultTextFormat = new TextFormat(Util.DEFAULT_FONT, 30);
+			loadText.defaultTextFormat = new TextFormat("Arial", 30);
 			loadText.appendText(loadTexts[randInt(0, loadTexts.length - 1)]);
 			loadText.x = (stage.stageWidth - loadText.width) / 2;
 			loadText.y = percentLoaded.y - loadText.height;
@@ -95,7 +102,7 @@ package {
 
 			addChild(loadText);
 			addChild(percentLoaded);
-			addChild(progressBar)
+			addChild(progressBar);
 		}
 
 		private function randInt(min:int, max:int):int {
@@ -134,6 +141,13 @@ package {
 			var StarlingType:Class = getDefinitionByName("starling.core.Starling") as Class;
 			_starling = new StarlingType(RootType, stage);
 			_starling.start();
+		}
+
+		private function navToKongregate(event:MouseEvent):void {
+			var request:URLRequest = new URLRequest("http://www.kongregate.com/kingxia/you-make-the-dungeon");
+			request.method = URLRequestMethod.GET;
+			var target:String = "_blank";
+			navigateToURL(request, target);
 		}
 	}
 }
