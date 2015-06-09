@@ -48,6 +48,20 @@ package entities {
 			colorDict["orange"] = 0xce8717;
 			colorDict["aqua"] = Color.AQUA;
 			colorDict["black"] = Color.BLACK;
+			colorDict["gray"] = Color.GRAY;
+			colorDict["fuchsia"] = Color.FUCHSIA;
+			colorDict["aqua"] = Color.AQUA;
+			colorDict["lime"] = Color.LIME;
+			colorDict["lavender"] = 0xdd7ce8;
+			colorDict["brown"] = 0x7a420f;
+			colorDict["teal"] = Color.TEAL;
+			colorDict["olive"] = Color.NAVY;
+			colorDict["navy"] = Color.OLIVE;
+			colorDict["pink"] = 0xf253bc;
+			colorDict["light_green"] = 0x051e26c;
+			colorDict["light_blue"] = 0x65b2ee;
+			colorDict["peach"] = 0xe2a351;
+			colorDict["mahogany"] = 0x4b2e0c;
 
 			return colorDict;
 		}
