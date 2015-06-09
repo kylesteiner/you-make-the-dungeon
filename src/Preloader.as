@@ -144,7 +144,7 @@ package {
 		}
 
 		private function navToKongregate(event:MouseEvent):void {
-			var request:URLRequest = new URLRequest("http://www.kongregate.com/kingxia/you-make-the-dungeon");
+			var request:URLRequest = new URLRequest("http://www.kongregate.com/games/kingxia/you-make-the-dungeon");
 			request.method = URLRequestMethod.GET;
 			var target:String = "_blank";
 			navigateToURL(request, target);
