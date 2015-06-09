@@ -488,7 +488,7 @@ package {
 						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA],
 						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
 			}
-			if (runCount == 4) {
+			if (runCount == 5) {
 				tutorialManager.addTutorialWithBackground(
 						Assets.textures[Util.TUTORIAL_SPEED],
 						Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
@@ -638,7 +638,7 @@ package {
 				tutorialManager.state = TutorialManager.BUILD;
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
-			} else if (buildCount == 5) {
+			} else if (buildCount == 4) {
 				tutorialManager.addTutorialWithBackground(
 						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD],
 						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD_SHADOW]);

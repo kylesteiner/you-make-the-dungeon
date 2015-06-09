@@ -32,20 +32,12 @@ package {
 		public function ShopHUD() {
 			super();
 
-			//var bg:Image = new Image(Assets.textures[Util.SHOP_BACKGROUND]);
-			//addChild(bg);
-
 			charStats = new Dictionary();
 			shopItems = new Dictionary();
 			shopPrices = new Dictionary();
 			goldCosts = new Dictionary();
 
 			displayShop();
-
-			//displayStat(0, HP, Assets.textures[Util.ICON_HEALTH], getHpCost());
-			//displayStat(1, ATTACK, Assets.textures[Util.ICON_ATK], getAttackCost());
-			//displayStat(2, STAMINA, Assets.textures[Util.ICON_STAMINA], getStaminaCost());
-			//displayStat(3, LOS, Assets.textures[Util.ICON_LOS], getLOSCost());
 
 			x = Util.STAGE_WIDTH - width - 4;
 			y = (Util.STAGE_HEIGHT - height) / 2;
@@ -149,17 +141,17 @@ package {
 		private function getHpCost():int {
 			var upgrades:int = 0;
 			if (char) {
-				upgrades = char.maxHp - Util.STARTING_HEALTH;
+				upgrades = (char.maxHp - Util.STARTING_HEALTH) / 3;
 			}
-			return Util.BASE_HP_UPGRADE_COST + upgrades;
+			return Util.BASE_HP_UPGRADE_COST * (1 + upgrades);
 		}
 
 		private function getStaminaCost():int {
 			var upgrades:int = 0;
 			if (char) {
-				upgrades = char.maxStamina - Util.STARTING_STAMINA;
+				upgrades = (char.maxStamina - Util.STARTING_STAMINA) / 5;
 			}
-			return Util.BASE_STAMINA_UPGRADE_COST + upgrades;
+			return Util.BASE_STAMINA_UPGRADE_COST * (1 + upgrades);
 		}
 
 		private function getAttackCost():int {
@@ -221,11 +213,11 @@ package {
 		public function incStat(type:String, cost:int):void {
 			switch(type) {
 				case HP:
-					setHP(char.maxHp + 1);
+					setHP(char.maxHp + 3);
 					Util.logger.logAction(10, {
 						"itemBought":"hpIncrease",
 						"newCharacterHP":char.maxHp,
-						"upgradeAmount":1,
+						"upgradeAmount":3,
 						"goldSpent":cost
 					});
 					break;
@@ -239,11 +231,11 @@ package {
 					});
 					break;
 				case STAMINA:
-					setStamina(char.maxStamina + 1);
+					setStamina(char.maxStamina + 5);
 					Util.logger.logAction(10, {
 						"itemBought":"staminaIncrease",
 						"newCharacterStamina":char.maxStamina,
-						"upgradeAmount":1,
+						"upgradeAmount":5,
 						"goldSpent":cost
 					});
 					break;
