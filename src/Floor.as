@@ -98,6 +98,8 @@ package {
 							  initialStamina:int,
 							  initialAttack:int,
 							  initialLineOfSight:int,
+							  healthUpgrades:int,
+							  staminaUpgrades:int,
 							  runSummary:Summary,
 							  showPrompt:int = 0) {
 			super();
@@ -117,7 +119,7 @@ package {
 			} else {
 				totalRuns = 0;
 			}
-			
+
 			firstEnemySeen = saveGame.size != 0 ? saveGame.data["firstEnemySeen"] : false;
 
 			firstTrapSeen = saveGame.size != 0 ? saveGame.data["firstTrapSeen"] : false;
@@ -178,6 +180,8 @@ package {
 								 initialStamina,
 								 initialAttack,
 								 initialLoS,
+								 healthUpgrades,
+								 staminaUpgrades,
 								 Assets.animations[Util.CHARACTER],
 								 Assets.textures[Util.ICON_ATK]);
 
@@ -430,6 +434,8 @@ package {
 			saveGame.data["stamina"] = char.maxStamina;
 			saveGame.data["los"] = char.los;
 			saveGame.data["attack"] = char.attack;
+			saveGame.data["health_upgrades"] = char.numHealthUpgrades;
+			saveGame.data["stamina_upgrades"] = char.numStaminaUpgrades;
 
 			// Save tile state
 			saveGame.data["tiles"] = new Array();
@@ -538,10 +544,10 @@ package {
 			saveGame.data["temporary_entities"] = initialFloorData["temporary_entities"];
 			saveGame.data["rooms"] = initialFloorData["rooms"];
 			saveGame.data["objectiveState"] = objectiveState;
-			
+
 			saveGame.data["firstEnemySeen"] = firstEnemySeen;
 			saveGame.data["firstTrapSeen"] = firstTrapSeen;
-			
+
 			saveGame.flush();
 
 		}

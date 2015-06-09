@@ -269,6 +269,9 @@ package {
 		public static const BASE_ATTACK_UPGRADE_COST:int = 15;
 		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
+		public static const BASE_STAMINA_ADDED_AMOUNT:int = 5;
+		public static const BASE_HEALTH_ADDED_AMOUNT:int = 3;
+
 		public static var logger:Logger;
 		public static var speed:int;
 

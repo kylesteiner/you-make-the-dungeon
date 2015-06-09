@@ -25,6 +25,10 @@ package {
 		public var stamina:int;
 		public var attack:int;
 
+		// Counts the number of stamina/health upgrades applied.
+		public var numStaminaUpgrades:int;
+		public var numHealthUpgrades:int;
+
 		// Character movement state (for rendering).
 		public var moveLock:Boolean; // Used by tutorial, popups to hold char in place.
 		public var inCombat:Boolean;
@@ -49,6 +53,8 @@ package {
 								  stamina:int,
 								  attack:int,
 								  lineOfSight:int,
+								  numHealthUpgrades:int,
+								  numStaminaUpgrades:int,
 								  animationDict:Dictionary,
 								  attackTexture:Texture) {
 			super();
@@ -64,6 +70,9 @@ package {
 			this.maxStamina = stamina;
 			this.stamina = stamina;
 			this.attack = attack;
+
+			this.numHealthUpgrades = numHealthUpgrades;
+			this.numStaminaUpgrades = numStaminaUpgrades;
 
 			animations = animationDict;
 			currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);

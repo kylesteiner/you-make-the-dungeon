@@ -279,12 +279,16 @@ package {
 			var stamina:int = fromSave ? saveGame.data["stamina"] : Util.STARTING_STAMINA;
 			var attack:int = fromSave ? saveGame.data["attack"] : Util.STARTING_ATTACK;
 			var los:int = fromSave ? saveGame.data["los"] : Util.STARTING_LOS;
+			var healthUpgrades:int = fromSave ? saveGame.data["health_upgrades"] : 0;
+			var staminaUpgrades:int = fromSave ? saveGame.data["stamina_upgrades"] : 0;
 
 			currentFloor = new Floor(Assets.floors[Util.MAIN_FLOOR],
 									 health,
 									 stamina,
 									 attack,
 									 los,
+									 healthUpgrades,
+									 staminaUpgrades,
 									 runSummary);
 			currentFloor.changeVisibleChildren(world.x, world.y, true);
 
