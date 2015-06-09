@@ -274,6 +274,9 @@ package {
 		public static var logger:Logger;
 		public static var speed:int;
 
+		public static var gridWidth:int;
+		public static var gridHeight:int;
+
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
 		}

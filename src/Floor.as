@@ -145,6 +145,8 @@ package {
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
+			Util.gridWidth = gridWidth;
+			Util.gridHeight = gridHeight;
 
 			// Set up the background.
 			var gridBackground:Sprite = new Sprite();
@@ -1413,7 +1415,6 @@ package {
 			eventData["reward"] = reward;
 			eventData["damage"] = trap.damage;
 			dispatchEvent(new GameEvent(GameEvent.GET_TRAP_REWARD, e.x, e.y, eventData));
-			removedEntities.push(trap);
 			removeChild(trap);
 		}
 	}
