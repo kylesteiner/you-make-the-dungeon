@@ -32,9 +32,9 @@ package menu {
 			creditsLineLeft.vAlign = VAlign.TOP;
 			addChild(creditsLineLeft);
 
-			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH, (Util.STAGE_HEIGHT - backButton.height) / 2, rightCredits, Util.SECONDARY_FONT, Util.MEDIUM_FONT_SIZE);
-			creditsLineRight.x = 0;
-			creditsLineRight.y = creditsLineLeft.y + creditsLineLeft.height;
+			var creditsLineRight:TextField = new TextField(Util.STAGE_WIDTH - 16, (Util.STAGE_HEIGHT - backButton.height) / 3, rightCredits, Util.SECONDARY_FONT, Util.MEDIUM_FONT_SIZE);
+			creditsLineRight.x = 16;
+			creditsLineRight.y = Util.STAGE_HEIGHT - creditsLineRight.height - 8;
 			creditsLineRight.autoScale = true;
 			creditsLineRight.hAlign = HAlign.LEFT;
 			creditsLineRight.vAlign = VAlign.TOP;
