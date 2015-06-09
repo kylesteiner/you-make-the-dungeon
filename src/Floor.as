@@ -98,6 +98,8 @@ package {
 							  initialStamina:int,
 							  initialAttack:int,
 							  initialLineOfSight:int,
+							  healthUpgrades:int,
+							  staminaUpgrades:int,
 							  runSummary:Summary,
 							  showPrompt:int = 0) {
 			super();
@@ -117,7 +119,7 @@ package {
 			} else {
 				totalRuns = 0;
 			}
-			
+
 			firstEnemySeen = saveGame.size != 0 ? saveGame.data["firstEnemySeen"] : false;
 
 			firstTrapSeen = saveGame.size != 0 ? saveGame.data["firstTrapSeen"] : false;
@@ -143,14 +145,24 @@ package {
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
+			Util.gridWidth = gridWidth;
+			Util.gridHeight = gridHeight;
 
 			// Set up the background.
-			var mapBoundsBackground:Image = new Image(Assets.textures[Util.GRID_BACKGROUND]);
-			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
-			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
-			addChild(mapBoundsBackground);
+			var gridBackground:Sprite = new Sprite();
+			gridBackground.x = - Util.PIXELS_PER_TILE * 0.1;
+			gridBackground.y = - Util.PIXELS_PER_TILE * 0.1;
+			var gridBackgroundOuter:Quad = new Quad(Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2,
+													Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2,
+													0x000000);
+			var gridBackgroundInner:Quad = new Quad(Util.PIXELS_PER_TILE * gridWidth,
+													Util.PIXELS_PER_TILE * gridHeight,
+													0xffffff);
+			gridBackgroundInner.x = Util.PIXELS_PER_TILE * 0.1;
+			gridBackgroundInner.y = Util.PIXELS_PER_TILE * 0.1;
+			gridBackground.addChild(gridBackgroundOuter);
+			gridBackground.addChild(gridBackgroundInner);
+			addChild(gridBackground);
 
 			// Initialize all grids.
 			grid = initializeGrid(gridWidth, gridHeight);
@@ -178,6 +190,8 @@ package {
 								 initialStamina,
 								 initialAttack,
 								 initialLoS,
+								 healthUpgrades,
+								 staminaUpgrades,
 								 Assets.animations[Util.CHARACTER],
 								 Assets.textures[Util.ICON_ATK]);
 
@@ -430,6 +444,8 @@ package {
 			saveGame.data["stamina"] = char.maxStamina;
 			saveGame.data["los"] = char.los;
 			saveGame.data["attack"] = char.attack;
+			saveGame.data["health_upgrades"] = char.numHealthUpgrades;
+			saveGame.data["stamina_upgrades"] = char.numStaminaUpgrades;
 
 			// Save tile state
 			saveGame.data["tiles"] = new Array();
@@ -538,10 +554,10 @@ package {
 			saveGame.data["temporary_entities"] = initialFloorData["temporary_entities"];
 			saveGame.data["rooms"] = initialFloorData["rooms"];
 			saveGame.data["objectiveState"] = objectiveState;
-			
+
 			saveGame.data["firstEnemySeen"] = firstEnemySeen;
 			saveGame.data["firstTrapSeen"] = firstTrapSeen;
-			
+
 			saveGame.flush();
 
 		}
@@ -1399,7 +1415,6 @@ package {
 			eventData["reward"] = reward;
 			eventData["damage"] = trap.damage;
 			dispatchEvent(new GameEvent(GameEvent.GET_TRAP_REWARD, e.x, e.y, eventData));
-			removedEntities.push(trap);
 			removeChild(trap);
 		}
 	}

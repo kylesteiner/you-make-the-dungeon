@@ -56,7 +56,7 @@ package {
 		public static const MIN_TILES_ON_SCREEN:int = 5;
 
 		public static const DEFAULT_CAMERA_ACCEL:int = 1;
-		public static const MAX_CAMERA_ACCEL:int = 3;
+		public static const MAX_CAMERA_ACCEL:int = 4;
 
 		public static const STATE_BUILD:String = "game_build";
 		public static const STATE_RUN:String = "game_run";
@@ -279,12 +279,16 @@ package {
 			var stamina:int = fromSave ? saveGame.data["stamina"] : Util.STARTING_STAMINA;
 			var attack:int = fromSave ? saveGame.data["attack"] : Util.STARTING_ATTACK;
 			var los:int = fromSave ? saveGame.data["los"] : Util.STARTING_LOS;
+			var healthUpgrades:int = fromSave ? saveGame.data["health_upgrades"] : 0;
+			var staminaUpgrades:int = fromSave ? saveGame.data["stamina_upgrades"] : 0;
 
 			currentFloor = new Floor(Assets.floors[Util.MAIN_FLOOR],
 									 health,
 									 stamina,
 									 attack,
 									 los,
+									 healthUpgrades,
+									 staminaUpgrades,
 									 runSummary);
 			currentFloor.changeVisibleChildren(world.x, world.y, true);
 
@@ -465,7 +469,7 @@ package {
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			overallGoldSpent += goldSpent;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
-			
+
 			saveGame.data["buildCount"] = buildCount;
 			saveGame.data["runCount"] = runCount;
 			saveGame.data["tutorialCount"] = tutorialCount;
@@ -622,7 +626,7 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
-			
+
 			saveGame.data["buildCount"] = buildCount;
 			saveGame.data["runCount"] = runCount;
 			saveGame.data["tutorialCount"] = tutorialCount;
@@ -1098,7 +1102,7 @@ package {
 		public function playCinematic(commands:Array, onComplete:Function):void {
 			cinematic = new Cinematic(world.x,
 									  world.y,
-									  Util.CAMERA_SHIFT * 3,
+									  Util.CAMERA_SHIFT * 6,
 									  commands,
 									  onComplete);
 			addChild(cinematic);

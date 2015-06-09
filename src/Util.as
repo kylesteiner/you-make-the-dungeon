@@ -47,7 +47,6 @@ package {
 		public static const KEY_STRING:String = "key";
 
 		public static const MENU_BACKGROUND:String = "menu_background";
-		public static const GRID_BACKGROUND:String = "grid_background";
 		public static const GAME_BACKGROUND:String = "game_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
 		//public static const TUTORIAL_PAN:String = "tutorial_pan";
@@ -243,7 +242,7 @@ package {
 
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_HEALTH:int = 5;
-		public static const STARTING_STAMINA:int = 50;
+		public static const STARTING_STAMINA:int = 5;
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
@@ -269,8 +268,14 @@ package {
 		public static const BASE_ATTACK_UPGRADE_COST:int = 15;
 		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
+		public static const BASE_STAMINA_ADDED_AMOUNT:int = 5;
+		public static const BASE_HEALTH_ADDED_AMOUNT:int = 3;
+
 		public static var logger:Logger;
 		public static var speed:int;
+
+		public static var gridWidth:int;
+		public static var gridHeight:int;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
