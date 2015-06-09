@@ -465,7 +465,7 @@ package {
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			overallGoldSpent += goldSpent;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
-			
+
 			saveGame.data["buildCount"] = buildCount;
 			saveGame.data["runCount"] = runCount;
 			saveGame.data["tutorialCount"] = tutorialCount;
@@ -622,7 +622,7 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
-			
+
 			saveGame.data["buildCount"] = buildCount;
 			saveGame.data["runCount"] = runCount;
 			saveGame.data["tutorialCount"] = tutorialCount;
@@ -1098,7 +1098,7 @@ package {
 		public function playCinematic(commands:Array, onComplete:Function):void {
 			cinematic = new Cinematic(world.x,
 									  world.y,
-									  Util.CAMERA_SHIFT * 3,
+									  Util.CAMERA_SHIFT * 6,
 									  commands,
 									  onComplete);
 			addChild(cinematic);

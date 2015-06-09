@@ -548,7 +548,7 @@ package {
 			tBgm.push(new bgmWarmInterlude());
 			tBgm.push(new bgmSnowfall());
 			tBgm.push(new bgmSevenNation());
-			tBgm.push(new bgmPearlCavern());
+			//tBgm.push(new bgmPearlCavern());
 
 			return tBgm;
 		}
