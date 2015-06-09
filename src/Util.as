@@ -264,8 +264,8 @@ package {
 		public static const SHOCK_TRAP_COST:int = 15;
 
 		// Upgrade costs
-		public static const BASE_HP_UPGRADE_COST:int = 5;
-		public static const BASE_STAMINA_UPGRADE_COST:int = 5;
+		public static const BASE_HP_UPGRADE_COST:int = 10;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 10;
 		public static const BASE_ATTACK_UPGRADE_COST:int = 15;
 		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
