@@ -320,14 +320,6 @@ package {
 			char.toggleRunUI();
 			pressedKeys = new Array();
 
-			removeChild(char);
-			addChild(char);
-
-			for each (var enemy:Enemy in activeEnemies) {
-				removeChild(enemy);
-				addChild(enemy);
-			}
-
 			if(gameState == Game.STATE_RUN) {
 				totalRuns += 1;
 			}
@@ -844,6 +836,10 @@ package {
 			startY = Util.real_to_grid(newWorldY);
 			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
 
+			for each(var enemy:Enemy in activeEnemies) {
+				addChild(enemy);
+			}
+			
 			if (oldStartX == startX && oldStartY == startY) {
 				// Redundant call. No change needed.
 				return;
@@ -925,16 +921,9 @@ package {
 				}
 			}
 
+			addChild(char);
 			worldX = newWorldX;
 			worldY = newWorldY;
-
-			removeChild(char);
-			addChild(char);
-
-			for each (var enemy:Enemy in activeEnemies) {
-				removeChild(enemy);
-				addChild(enemy);
-			}
 		}
 
 		private function clearLocation(x:int, y:int):void {
@@ -942,7 +931,9 @@ package {
 				return;
 			}
 			removeChild(grid[x][y]);
-			removeChild(entityGrid[x][y]);
+			if (activeEnemies.indexOf(entityGrid[x][y] == -1)) {
+				removeChild(entityGrid[x][y]);
+			}
 			removeChild(fogGrid[x][y]);
 			removeChild(goldGrid[x][y]);
 			removeChild(highlightedLocations[x][y]);
@@ -967,8 +958,6 @@ package {
 				if (highlightedLocations[x][y]) {
 					addChild(highlightedLocations[x][y]);
 				}
-				removeChild(char);
-				addChild(char);
 			}
 		}
 
