@@ -145,7 +145,7 @@
 		{"type": "empty","x": 2, "y": 28, "edges": ["n", "s", "e", "w"]},
 		{"type": "empty","x": 14, "y": 24, "edges": ["n", "s", "e", "w"]},
 		{"type": "empty","x": 17, "y": 22, "edges": ["n", "s", "w"]},
-		{"type": "empty","x": 6, "y": 23, "edges": ["n", "s", "w"]},
+		{"type": "empty","x": 6, "y": 23, "edges": ["n", "s", "e"]},
 		{"type": "empty","x": 7, "y": 21, "edges": ["n", "s"]},
 		{"type": "empty","x": 7, "y": 25, "edges": ["n", "s"]},
 		{"type": "empty","x": 9, "y": 23, "edges": ["e", "w"]},
