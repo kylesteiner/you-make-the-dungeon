@@ -115,6 +115,15 @@ package {
 			} else {
 				totalRuns = 0;
 			}
+			
+			firstEnemySeen = saveGame.size != 0 ? saveGame.data["firstEnemySeen"] : false;
+			if (firstEnemySeen == null) {
+				firstEnemySeen = false;
+			}
+			firstTrapSeen = saveGame.size != 0 ? saveGame.data["firstTrapSeen"] : false;
+			if (firstTrapSeen == null) {
+				firstTrapSeen = false;
+			}
 
 			this.floorFiles = floorFiles;
 			altCallback = null;
@@ -524,6 +533,10 @@ package {
 			saveGame.data["temporary_entities"] = initialFloorData["temporary_entities"];
 			saveGame.data["rooms"] = initialFloorData["rooms"];
 			saveGame.data["objectiveState"] = objectiveState;
+			
+			saveGame.data["firstEnemySeen"] = firstEnemySeen;
+			saveGame.data["firstTrapSeen"] = firstTrapSeen;
+			
 			saveGame.flush();
 
 		}
