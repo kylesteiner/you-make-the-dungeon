@@ -141,7 +141,7 @@ package {
 		private function getHpCost():int {
 			var upgrades:int = 0;
 			if (char) {
-				upgrades = (char.maxHp - Util.STARTING_HEALTH) / 3;
+				upgrades = char.numHealthUpgrades;
 			}
 			return Util.BASE_HP_UPGRADE_COST * (1 + upgrades);
 		}
@@ -149,7 +149,7 @@ package {
 		private function getStaminaCost():int {
 			var upgrades:int = 0;
 			if (char) {
-				upgrades = (char.maxStamina - Util.STARTING_STAMINA) / 5;
+				upgrades = char.numStaminaUpgrades;
 			}
 			return Util.BASE_STAMINA_UPGRADE_COST * (1 + upgrades);
 		}
@@ -213,7 +213,8 @@ package {
 		public function incStat(type:String, cost:int):void {
 			switch(type) {
 				case HP:
-					setHP(char.maxHp + 3);
+					char.numHealthUpgrades++;
+					setHP(char.maxHp + healthFormula(char.numHealthUpgrades));
 					Util.logger.logAction(10, {
 						"itemBought":"hpIncrease",
 						"newCharacterHP":char.maxHp,
@@ -231,7 +232,8 @@ package {
 					});
 					break;
 				case STAMINA:
-					setStamina(char.maxStamina + 5);
+					char.numStaminaUpgrades++;
+					setStamina(char.maxStamina + staminaFormula(char.numStaminaUpgrades));
 					Util.logger.logAction(10, {
 						"itemBought":"staminaIncrease",
 						"newCharacterStamina":char.maxStamina,
@@ -249,6 +251,22 @@ package {
 					});
 					break
 			}
+		}
+
+		public function staminaFormula(upgradeNum:int):int {
+			var staminaAdded:int = Util.BASE_STAMINA_ADDED_AMOUNT;
+			for (var i:int = 0; i < upgradeNum; i++) {
+				staminaAdded = staminaAdded + int(upgradeNum / 4);
+			}
+			return staminaAdded;
+		}
+
+		public function healthFormula(upgradeNum:int):int {
+			var healthAdded:int = Util.BASE_HEALTH_ADDED_AMOUNT;
+			for (var i:int = 0; i < upgradeNum; i++) {
+				healthAdded = healthAdded + int(upgradeNum / 4);
+			}
+			return healthAdded;
 		}
 
 		public function setHP(val:int):void {
