@@ -89,6 +89,8 @@ package {
 		private var firstEnemySeen:Boolean;
 		private var firstTrapSeen:Boolean;
 
+		private var isBuildHudDelete:Boolean;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorDataString:String,
@@ -635,7 +637,9 @@ package {
 			if (isHighlighted) {
 				return;
 			}
+
 			isHighlighted = true;
+			isBuildHudDelete = hudState == BuildHUD.STATE_DELETE;
 
 			var x:int; var y:int; var addBool:Boolean;
 			var allowed:Array = hudState == BuildHUD.STATE_TILE ? getAllowedLocations(directions) : new Array();
@@ -934,6 +938,18 @@ package {
 			for each (var enemy:Enemy in activeEnemies) {
 				removeChild(enemy);
 				addChild(enemy);
+			}
+
+			if (isBuildHudDelete) {
+				for (x = 0; x < gridWidth; x++) {
+					for (y = 0; y < gridHeight; y++) {
+						if (highlightedLocations[x][y] == null) {
+							continue;
+						}
+
+						addChild(highlightedLocations[x][y]);
+					}
+				}
 			}
 		}
 
