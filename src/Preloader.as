@@ -25,12 +25,12 @@ package {
 		[Embed(source='assets/backgrounds/menu_bg.png')] private var menu_background:Class;
 		private var preloaderBackground:Bitmap;
 
-		private static const sitelock:Boolean = false;
+		private static const sitelock:Boolean = true;
 		private static const allowedUrls:Array = new Array(
-			"courses.cs.washington.edu",
-			"newgrounds.com/portal/view/658573",
+			"www.courses.cs.washington.edu",
+			"www.newgrounds.com/portal/view/658573",
 			"xiakaicheng.com",
-			"kongregate.com");
+			"www.kongregate.com");
 
 		public function Preloader() {
 			stop();

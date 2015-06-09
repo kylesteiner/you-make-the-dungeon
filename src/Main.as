@@ -62,8 +62,8 @@ package {
 			var skey:String = "9a01148aa509b6eb4a3945f4d845cadb";
             // This is the current version. We'll treat 0 as the debugging
 			// version, and release versions will be assigned unique cids.
-			versionID = 0;
-			cid = 0;
+			versionID = 1;
+			cid = 23;
 			Util.logger = Logger.initialize(gid, gname, skey, cid, null, false);
 
             // Initialize sound assets and mixer.
