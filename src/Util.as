@@ -243,7 +243,7 @@ package {
 
 		public static const STARTING_ATTACK:int = 1;
 		public static const STARTING_HEALTH:int = 5;
-		public static const STARTING_STAMINA:int = 5;
+		public static const STARTING_STAMINA:int = 50;
 		public static const STARTING_GOLD:int = 20;
 		public static const STARTING_LOS:int = 2;
 
@@ -254,19 +254,19 @@ package {
 		public static const ENEMY_MAGE_COST:int = 30;
 		public static const ENEMY_ARCHER_COST:int = 40;
 		public static const ENEMY_NINJA_COST:int = 50;
-		public static const LIGHT_HEALING_COST:int = 8;
-		public static const MODERATE_HEALING_COST:int = 35;
-		public static const LIGHT_STAMINA_HEAL_COST:int = 8;
-		public static const MODERATE_STAMINA_HEAL_COST:int = 20;
-		public static const BASIC_TRAP_COST:int = 15;
-		public static const FLAME_TRAP_COST:int = 55;
-		public static const BLUE_FLAME_TRAP_COST:int = 60;
-		public static const SHOCK_TRAP_COST:int = 40;
+		public static const LIGHT_HEALING_COST:int = 25;
+		public static const MODERATE_HEALING_COST:int = 50;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 25;
+		public static const MODERATE_STAMINA_HEAL_COST:int = 50;
+		public static const BASIC_TRAP_COST:int = 10;
+		public static const FLAME_TRAP_COST:int = 20;
+		public static const BLUE_FLAME_TRAP_COST:int = 25;
+		public static const SHOCK_TRAP_COST:int = 15;
 
 		// Upgrade costs
-		public static const BASE_HP_UPGRADE_COST:int = 6;
-		public static const BASE_STAMINA_UPGRADE_COST:int = 6;
-		public static const BASE_ATTACK_UPGRADE_COST:int = 10;
+		public static const BASE_HP_UPGRADE_COST:int = 10;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 10;
+		public static const BASE_ATTACK_UPGRADE_COST:int = 15;
 		public static const BASE_LOS_UPGRADE_COST:int = 10;
 
 		public static var logger:Logger;

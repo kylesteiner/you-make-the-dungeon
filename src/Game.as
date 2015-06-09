@@ -196,7 +196,7 @@ package {
 
 			initializeWorld(fromSave);
 			initializeUI();
-			initializeTutorial();
+			initializeTutorial(fromSave, saveGame);
 
 			addChild(world);
 			addChild(sfxMuteButton);
@@ -342,14 +342,25 @@ package {
 			buildHud = new BuildHUD();
 		}
 
-		private function initializeTutorial():void {
+		private function initializeTutorial(fromSave:Boolean, saveGame:SharedObject):void {
 			tutorialManager = new TutorialManager();
-			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_NEA]);
-			tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_EXIT]);
+			if (!fromSave) {
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_NEA]);
+				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_EXIT]);
+			}
 
-			buildCount = 0;
-			runCount = 0;
-			tutorialCount = 0;
+			buildCount = fromSave ? saveGame.data["buildCount"] : 0;
+			if (saveGame.data["buildCount"] == null) {
+				buildCount = 0;
+			}
+			runCount = fromSave ? saveGame.data["runCount"] : 0;
+			if (saveGame.data["runCount"] == null) {
+				runCount = 0;
+			}
+			tutorialCount = fromSave ? saveGame.data["tutorialCount"] : 0;
+			if (saveGame.data["tutorialCount"] == null) {
+				tutorialCount = 0;
+			}
 		}
 
 		private function returnToMenu():void {
@@ -454,6 +465,10 @@ package {
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			overallGoldSpent += goldSpent;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
+			
+			saveGame.data["buildCount"] = buildCount;
+			saveGame.data["runCount"] = runCount;
+			saveGame.data["tutorialCount"] = tutorialCount;
 
 			saveGame.flush();
 
@@ -488,7 +503,7 @@ package {
 						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA],
 						Assets.textures[Util.TUTORIAL_HEALTH_STAMINA_SHADOW]);
 			}
-			if (runCount == 4) {
+			if (runCount == 5) {
 				tutorialManager.addTutorialWithBackground(
 						Assets.textures[Util.TUTORIAL_SPEED],
 						Assets.textures[Util.TUTORIAL_SPEED_SHADOW]);
@@ -607,6 +622,10 @@ package {
 			saveGame.data["overallEnemiesDefeated"] = overallEnemiesDefeated;
 			saveGame.data["overallTilesPlaced"] = overallTilesPlaced;
 			saveGame.data["overallGoldSpent"] = overallGoldSpent;
+			
+			saveGame.data["buildCount"] = buildCount;
+			saveGame.data["runCount"] = runCount;
+			saveGame.data["tutorialCount"] = tutorialCount;
 
 			saveGame.flush();
 
@@ -638,7 +657,7 @@ package {
 				tutorialManager.state = TutorialManager.BUILD;
 			} else if (buildCount == 2) {
 				tutorialManager.addTutorial(Assets.textures[Util.TUTORIAL_PAN]);
-			} else if (buildCount == 5) {
+			} else if (buildCount == 4) {
 				tutorialManager.addTutorialWithBackground(
 						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD],
 						Assets.textures[Util.TUTORIAL_SECONDARY_BUILD_SHADOW]);
@@ -1224,8 +1243,8 @@ package {
 
 				var moveToExit:Dictionary = new Dictionary();
 				moveToExit["command"] = Cinematic.COMMAND_MOVE;
-				moveToExit["destX"] = world.x + Util.grid_to_real(-8);
-				moveToExit["destY"] = world.y + Util.grid_to_real(19);
+				moveToExit["destX"] = world.x + Util.grid_to_real(0);
+				moveToExit["destY"] = world.y + Util.grid_to_real(34);
 
 				var waitAtExit:Dictionary = new Dictionary();
 				waitAtExit["command"] = Cinematic.COMMAND_WAIT;
