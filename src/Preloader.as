@@ -28,9 +28,9 @@ package {
 		private static const sitelock:Boolean = false;
 		private static const allowedUrls:Array = new Array(
 			"courses.cs.washington.edu",
-			"www.newgrounds.com/portal/view/658573",
-			"www.xiakaicheng.com",
-			"www.kongregate.com");
+			"newgrounds.com/portal/view/658573",
+			"xiakaicheng.com",
+			"kongregate.com");
 
 		public function Preloader() {
 			stop();
