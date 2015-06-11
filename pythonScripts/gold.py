@@ -15,26 +15,27 @@ for player in players:
 		actions = level['actions']
 		for action in actions:
 			if action['aid'] == 1:
-				info = action['a_detail'] 
-				typeIndex = int(info.index("goldSpent"))
-				typeIndex += 10
-				c = int(info[typeIndex + 1])
+				info = json.loads(action['a_detail'])
+				c = info["goldSpent"]
 				goldSpent += c
 			elif action['aid'] == 18:
-				info = action['a_detail'] 
-				typeIndex = int(info.index("cost"))
-				typeIndex += 5
-				c = int(info[typeIndex + 1])
+				info = json.loads(action['a_detail'])
+				c = info["cost"]
 				goldSpent += c
 			elif action['aid'] == 12:
-				info = action['a_detail'] 
-				typeIndex = int(info.find("costOfTile"))
-				if typeIndex > 0:
+				info = json.loads(action['a_detail'])
+				infob = action['a_detail']
+				if "costOfTile" in infob:
 					#i'm in idiot, don't name them differently god damn it
-					typeIndex += 11
+					c = info["costOfTile"]
 				else:
-					typeIndex = int(info.index("costOfDeleted"))
-					typeIndex += 14
-				c = int(info[typeIndex + 1])
+					c = info["costOfDeleted"]
 				goldSpent -= (c / 2)
+			elif action['aid'] == 10:
+				info = json.loads(action['a_detail'])
+				try:
+					c = info["goldSpent"]
+				except KeyError:
+					continue
+				goldSpent += c
 print goldSpent

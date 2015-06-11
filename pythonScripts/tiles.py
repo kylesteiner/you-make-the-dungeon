@@ -1,6 +1,7 @@
 import json, sys
 from datetime import datetime
 
+
 if len(sys.argv) < 2:
     print "enter json file"
     sys.exit(0)
@@ -26,11 +27,11 @@ for player in players:
 				typeIndex += 10
 				c = int(info[typeIndex + 1])
 				cost += c
-				if c == 2:
+				if c == 1:
 					one += 1
-				elif c == 4:
+				elif c == 2:
 					two += 1
-				elif c == 6:
+				elif c == 3:
 					three += 1
 				else:
 					four += 1
