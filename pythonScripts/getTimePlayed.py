@@ -44,7 +44,7 @@ if len(sys.argv) < 2:
 f = open(sys.argv[1]);
 players = json.loads(f.read())
 
-print "Number of players: %d" % len(players) 
+print "Number of players including 0: %d" % len(players) 
 
 times= []
 totalTime = 0
@@ -53,7 +53,7 @@ for player in players:
     levels = player['levels']
     activeTime = activeTimePlayed(levels)
    # print "Total Levels played: %d" % len(levels)
-    print "Time elapsed: %d" % activeTime
+    #print "Time elapsed: %d" % activeTime
     totalTime += activeTime
     if activeTime != 0:
       times.append(activeTime)
@@ -63,9 +63,9 @@ times.sort()
 maxTime = times[-1]
 maxTime = maxTime / 60.0
 num = maxTime * 2
-print maxTime
-print ceil(num)
-print int(ceil(num))
+#print maxTime
+#print ceil(num)
+#print int(ceil(num))
 
 percList = [0] * (1 + int(ceil(num)))
 
@@ -73,8 +73,8 @@ for x in range(0, len(percList)):
     for time in times:
         if time >= x * 30:
             percList[x] += 1
-
+print "Number of players > 0: %d" % len(percList)
 for perc in percList:
     print perc
 
-print totalTime
+#print totalTime
