@@ -52,7 +52,7 @@ s2 = 0
 p = 0
 tS = 0
 timeTakenBuild1 = 0
-timeTakenbuild2 = 0
+timeTakenBuild2 = 0
 timeTakenRun1 = 0
 timeTakenRun2 = 0
 ttb = 0
@@ -105,10 +105,10 @@ for player in players:
 				build = True
 				if timeRun == 1:
 					timeTakenRun1 += ttr
-					tB += 1
+					timeBuild += 1
 				elif timeRun == 2:
 					timeTakenRun2 += ttr
-					tB += 1
+					timeBuild += 1
 				ttr = 0
 	if time is not 0:
 		numPlay += 1
