@@ -1,4 +1,6 @@
 package {
+	import flash.ui.Keyboard;
+
 	import starling.display.*;
 	import flash.utils.Dictionary;
 	import starling.textures.*;
@@ -85,7 +87,10 @@ package {
 		private var entityGoldCosts:Array;
 
 		private var deleteQuad:Quad;
+		private var interiorDeleteQuad:Quad;
 		private var deleteButton:Clickable;
+
+		private var lastPopupValue:int;
 
 		public var entityFactory:EntityFactory;
 
@@ -117,14 +122,18 @@ package {
 
 			currentEntity = null;
 			currentEntityIndex = -1;
+			lastPopupValue = -1;
 
 			hudState = STATE_NONE;
 
 			createUI();
+
+			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 
 		public function updateHUD():void {
 			removeChild(hud);
+			removeChild(currentImage);
 
 			tileBlock = new Sprite();
 			entityBlock = new Sprite();
@@ -300,10 +309,10 @@ package {
 			deleteQuad = new Quad(DELETE_BUTTON_SIZE, DELETE_BUTTON_SIZE, 0x000000);
 			deleteQuad.x = entityQuad.x + entityQuad.width + HUD_MARGIN;
 			deleteQuad.y = TOP;
-			var interiorDQ:Quad = new Quad(deleteQuad.width - 2*QUAD_BORDER_PIXELS,
-										   deleteQuad.height - 2*QUAD_BORDER_PIXELS);
-			interiorDQ.x = deleteQuad.x + QUAD_BORDER_PIXELS;
-			interiorDQ.y = deleteQuad.y + QUAD_BORDER_PIXELS;
+			interiorDeleteQuad = new Quad(deleteQuad.width - 2*QUAD_BORDER_PIXELS,
+										  deleteQuad.height - 2*QUAD_BORDER_PIXELS);
+			interiorDeleteQuad.x = deleteQuad.x + QUAD_BORDER_PIXELS;
+			interiorDeleteQuad.y = deleteQuad.y + QUAD_BORDER_PIXELS;
 			deleteButton = new Clickable(deleteQuad.x + QUAD_BORDER_PIXELS,
 										 deleteQuad.y + QUAD_BORDER_PIXELS,
 										 deleteClickable, null, Assets.textures[Util.ICON_DELETE]);
@@ -344,7 +353,7 @@ package {
 			}
 
 			hud.addChild(deleteQuad);
-			hud.addChild(interiorDQ);
+			hud.addChild(interiorDeleteQuad);
 			hud.addChild(deleteButton);
 
 			addChild(hud);
@@ -352,7 +361,7 @@ package {
 
 		public function updateUI():void {
 			for(var i:int = 0; i < entityClickables.length; i++) {
-				if (!entityClickables[i] || !entityList[i] || !entityDisplayList[i]) {
+				if (entityClickables[i] == null || entityList[i] == null || entityDisplayList[i] == null) {
 					continue;
 				}
 
@@ -363,7 +372,12 @@ package {
 		}
 
 		public function createPopupClickable(values:Dictionary):void {
-			createPopup(values["index"]);
+			if (lastPopupValue == values["index"]) {
+				closePopup();
+			} else {
+				lastPopupValue = values["index"];
+				createPopup(values["index"]);
+			}
 		}
 
 		public function createPopup(index:int):void {
@@ -431,6 +445,7 @@ package {
 		public function closePopup():void {
 			hud.removeChild(popup);
 			popup = null;
+			lastPopupValue = -1;
 		}
 
 		public function updateSelectButtons():void {
@@ -447,6 +462,8 @@ package {
 			if(hudState == STATE_ENTITY) {
 				entityColoredRegions[currentEntityIndex].color = COLOR_SELECTED;
 			}
+
+			interiorDeleteQuad.color = COLOR_DESELECTED_ENTITY;
 		}
 
 		/**********************************************************************************
@@ -472,11 +489,11 @@ package {
 		}
 
 		public function deselect():void {
+			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
             currentImage = null;
             currentEntityIndex = -1;
 			hudState = STATE_NONE;
             updateSelectButtons();
-			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
         }
 
 		public function buildTileFromImage(worldX:int, worldY:int):Tile {
@@ -503,12 +520,19 @@ package {
 		}
 
 		public function deleteClickable():void {
-			deselect();
-			hudState = STATE_DELETE;
-			currentImage = new Image(Assets.textures[Util.ICON_DELETE]);
-			currentImage.touchable = false;
-			closePopup();
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
+			var priorState:String = hudState;
+			deselect();
+
+			if (priorState != STATE_DELETE) {
+				hudState = STATE_DELETE;
+				currentImage = new Image(Assets.textures[Util.ICON_DELETE]);
+				currentImage.touchable = false;
+				interiorDeleteQuad.color = COLOR_SELECTED;
+			}
+
+			closePopup();
+
 		}
 
 		public function getRefundForDelete(tile:Tile, entity:Entity):int {
@@ -598,7 +622,7 @@ package {
 		public function selectEntityClickable(values:Dictionary):void {
 			dispatchEvent(new GameEvent(GameEvent.BUILD_HUD_IMAGE_CHANGE, 0, 0));
 
-			if(currentEntityIndex == values["index"]) {
+			if (currentEntityIndex == values["index"]) {
 				// Toggle off
 				currentEntity = null
 				currentImage = null;
@@ -631,11 +655,14 @@ package {
 			pageEntity(values["index"], values["change"]);
 			closePopup();
 			updateUI();
+
 			currentEntityIndex = values["index"];
 			currentEntity = new Image(entityClickables[currentEntityIndex].textureImage.texture);
 			currentImage = new Image(currentEntity.texture);
 			currentImage.touchable = false;
 			hudState = STATE_ENTITY;
+
+
 			updateSelectButtons();
 			updateEntityGoldCosts();
 		}
@@ -677,6 +704,21 @@ package {
 				entityGoldCosts[i] = newCost;
 				hud.addChild(entityGoldCosts[i]);
 			}
+		}
+
+		private function onKeyDown(event:KeyboardEvent):void {
+			if (event.keyCode == Keyboard.UP) {
+				toggleNorth();
+			} else if (event.keyCode == Keyboard.DOWN) {
+				toggleSouth();
+			} else if (event.keyCode == Keyboard.LEFT) {
+				toggleWest();
+			} else if (event.keyCode == Keyboard.RIGHT) {
+				toggleEast();
+			} else {
+				return;
+			}
+			dispatchEvent(new GameEvent(GameEvent.KEYBOARD_TOGGLE_TILE, 0, 0));
 		}
 	}
 }

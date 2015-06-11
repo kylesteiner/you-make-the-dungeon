@@ -12,12 +12,21 @@ package {
 	import starling.events.*;
 	import starling.text.TextField;
 	import starling.textures.Texture;
+	import starling.utils.Color;
+	import starling.display.Quad;
+	import starling.display.MovieClip;
 
 	import entities.*;
 	import tiles.*;
+	import tutorial.TutorialEvent;
 
 	public class Floor extends Sprite {
-		public static const NEXT_LEVEL_MESSAGE:String = "You did it!\nThanks for playing!\nClick here to return the the main menu."
+		public static const FOG_OF_WAR_COLOR:uint = Color.BLACK;
+		public static const FOG_OF_WAR_OPACITY_RANGE:int = 3;
+		public static const FOG_OF_WAR_MAX_OPACITY:Number = 0.95;
+		//public static const FOG_OF_WAR_MAX_OPACITY:Number = 0.85;
+		public static const FOG_OF_WAR_MIN_OPACITY:Number = 0.85;
+		//public static const FOG_OF_WAR_MIN_OPACITY:Number = 0.60;
 
 		public var grid:Array;			// 2D Array of Tiles.
 		public var entityGrid:Array;	// 2D Array of Entities.
@@ -26,10 +35,15 @@ package {
 		public var char:Character;
 		public var floorName:String;
 		public var highlightedLocations:Array;
+		public var isHighlighted:Boolean;
 		// Stores the state of objective tiles. If the tile has been visited, the value is
 		// true, otherwise it is false.
 		// Map string (objective key) -> boolean (state)
-		public var objectiveState:Dictionary;
+		public var objectiveState:Object;
+
+		// Current world position
+		public var worldX:int;
+		public var worldY:int;
 
 		// Grid metadata.
 		public var gridHeight:int;
@@ -49,19 +63,15 @@ package {
 		// Revealed enemies that randomly walk about the floor.
 		public var activeEnemies:Array;
 
+		public var trapAnimations:Array;
+
 		// Floor metadata and control flow.
 		private var floorFiles:Dictionary;
-		private var onCompleteCallback:Function;
 		public var altCallback:Function;
 
 		// Room metadata and control flow
 		public var rooms:RoomSet;
 		public var roomFunctions:Dictionary;
-
-		// Tutorial UI elements.
-		public var tutorialImage:Image;
-		private var tutorialDisplaying:Boolean;
-		private var originalTutorialDisplaying:Boolean;
 
 		// Array for storing user key presses.
 		public var pressedKeys:Array;
@@ -76,6 +86,11 @@ package {
 		private var saveGame:SharedObject;
 		private var initialFloorData:Object;
 
+		private var firstEnemySeen:Boolean;
+		private var firstTrapSeen:Boolean;
+
+		private var isBuildHudDelete:Boolean;
+
 		// grid: The initial layout of the floor.
 		// xp: The initial XP of the character.
 		public function Floor(floorDataString:String,
@@ -83,7 +98,8 @@ package {
 							  initialStamina:int,
 							  initialAttack:int,
 							  initialLineOfSight:int,
-							  nextFloorCallback:Function,
+							  healthUpgrades:int,
+							  staminaUpgrades:int,
 							  runSummary:Summary,
 							  showPrompt:int = 0) {
 			super();
@@ -104,16 +120,19 @@ package {
 				totalRuns = 0;
 			}
 
+			firstEnemySeen = saveGame.size != 0 ? saveGame.data["firstEnemySeen"] : false;
+
+			firstTrapSeen = saveGame.size != 0 ? saveGame.data["firstTrapSeen"] : false;
+
 			this.floorFiles = floorFiles;
-			onCompleteCallback = nextFloorCallback;
 			altCallback = null;
 
 			preplacedTiles = 0;
 
 			pressedKeys = new Array();
-			objectiveState = new Dictionary();
 			removedEntities = new Array();
 			activeEnemies = new Array();
+			trapAnimations = new Array();
 
 			var floorData:Object;
 			if (saveGame.size == 0) {
@@ -126,14 +145,24 @@ package {
 
 			gridWidth = floorData["floor_dimensions"]["width"];
 			gridHeight = floorData["floor_dimensions"]["height"];
+			Util.gridWidth = gridWidth;
+			Util.gridHeight = gridHeight;
 
 			// Set up the background.
-			var mapBoundsBackground:Image = new Image(Assets.textures[Util.GRID_BACKGROUND]);
-			mapBoundsBackground.width = Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.height = Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2;
-			mapBoundsBackground.x = - Util.PIXELS_PER_TILE * 0.1;
-			mapBoundsBackground.y = - Util.PIXELS_PER_TILE * 0.1
-			addChild(mapBoundsBackground);
+			var gridBackground:Sprite = new Sprite();
+			gridBackground.x = - Util.PIXELS_PER_TILE * 0.1;
+			gridBackground.y = - Util.PIXELS_PER_TILE * 0.1;
+			var gridBackgroundOuter:Quad = new Quad(Util.PIXELS_PER_TILE * gridWidth + Util.PIXELS_PER_TILE * 0.2,
+													Util.PIXELS_PER_TILE * gridHeight + Util.PIXELS_PER_TILE * 0.2,
+													0x000000);
+			var gridBackgroundInner:Quad = new Quad(Util.PIXELS_PER_TILE * gridWidth,
+													Util.PIXELS_PER_TILE * gridHeight,
+													0xffffff);
+			gridBackgroundInner.x = Util.PIXELS_PER_TILE * 0.1;
+			gridBackgroundInner.y = Util.PIXELS_PER_TILE * 0.1;
+			gridBackground.addChild(gridBackgroundOuter);
+			gridBackground.addChild(gridBackgroundInner);
+			addChild(gridBackground);
 
 			// Initialize all grids.
 			grid = initializeGrid(gridWidth, gridHeight);
@@ -146,11 +175,12 @@ package {
 			// Add a fog image at every grid tile.
 			for (i = 0; i < gridWidth; i++) {
 				for (j = 0; j < gridHeight; j++) {
-					var fog:Image = new Image(Assets.textures[Util.TILE_FOG]);
+					//var fog:Image = new Image(Assets.textures[Util.TILE_FOG]);
+					var fog:Quad = new Quad(Util.PIXELS_PER_TILE, Util.PIXELS_PER_TILE, FOG_OF_WAR_COLOR);
+					fog.alpha = FOG_OF_WAR_MAX_OPACITY;
 					fog.x = i * Util.PIXELS_PER_TILE;
 					fog.y = j * Util.PIXELS_PER_TILE;
 					fogGrid[i][j] = fog;
-					addChild(fog);
 				}
 			}
 
@@ -160,6 +190,8 @@ package {
 								 initialStamina,
 								 initialAttack,
 								 initialLoS,
+								 healthUpgrades,
+								 staminaUpgrades,
 								 Assets.animations[Util.CHARACTER],
 								 Assets.textures[Util.ICON_ATK]);
 
@@ -202,7 +234,6 @@ package {
 					grid[tX][tY] = ex;
 					ex.deletable = tDeletable;
 					// Special case: remove fog manually from exit tile
-					addChild(ex);
 					removeChild(fogGrid[tX][tY]);
 					fogGrid[tX][tY] = null;
 				} else if (tile["type"] == "none") {
@@ -225,10 +256,7 @@ package {
 					var hp:int = entity["hp"];
 					var attack:int = entity["attack"];
 					var reward:int = entity["reward"];
-					var stationary:Boolean;
-					if (entity["stationary"]) {
-						stationary = entity["stationary"];
-					}
+					var stationary:Boolean  = entity["stationary"];
 					var enemy:Enemy = new Enemy(tX, tY, textureName, Assets.textures[textureName], hp, attack, reward, stationary);
 					entityGrid[tX][tY] = enemy;
 					enemy.deletable = tDeletable;
@@ -240,9 +268,13 @@ package {
 				} else if (entity["type"] == "objective") {
 					var key:String = entity["key"];
 					var prereqs:Array = entity["prereqs"];
-					var obj:Objective = new Objective(tX, tY, Assets.textures[textureName], key, prereqs);
+					var color:String = entity["color"];
+					var obj:Objective = new Objective(tX, tY, Assets.textures[textureName], key, prereqs, textureName, color);
+					if (key.indexOf(Util.DOOR) >= 0) {
+						removeChild(fogGrid[tX][tY]);
+						fogGrid[tX][tY] = null;
+					}
 					entityGrid[tX][tY] = obj;
-					objectiveState[key] = false;
 				} else if (entity["type"] == "reward") {
 					var callback:String = entity["function"];
 					var param:String = entity["parameter"];
@@ -254,7 +286,20 @@ package {
 					var staminaHeal:StaminaHeal = new StaminaHeal(tX, tY, Assets.textures[textureName], stamina);
 					entityGrid[tX][tY] = staminaHeal;
 					staminaHeal.deletable = tDeletable;
+				} else if (entity["type"] == "trap") {
+					var trapType:String = entity["texture"];
+					var damage:int = entity["damage"];
+					var radius:int = entity["radius"];
+					var trap:Trap = new Trap(tX, tY, Assets.textures[textureName], trapType, damage, radius);
+					entityGrid[tX][tY] = trap;
+					trap.deletable = tDeletable;
 				}
+			}
+
+			if (floorData["objectiveState"]) {
+				objectiveState = floorData["objectiveState"];
+			} else {
+				objectiveState = new Object();
 			}
 
 			removeFoggedLocationsInPath();
@@ -274,8 +319,8 @@ package {
 			// Tile events bubble up from Tile and Character, so we
 			// don't have to register an event listener on every child class.
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			addEventListener(GameEvent.ACTIVATE_TRAP, onActivateTrap);
 			addEventListener(GameEvent.ARRIVED_AT_TILE, onCharArrived);
-			addEventListener(GameEvent.ARRIVED_AT_EXIT, onCharExited);
 			addEventListener(GameEvent.REVEAL_ROOM, onRoomReveal);
 			addEventListener(GameEvent.OBJ_COMPLETED, onObjCompleted);
 			addEventListener(GameEvent.HEALED, onHeal);
@@ -283,25 +328,6 @@ package {
 			addEventListener(GameEvent.MOVING, onCharMoving);
 			addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-		}
-
-		public function removeTutorial():void {
-			if(tutorialImage) {
-				removeChild(tutorialImage);
-				tutorialDisplaying = false;
-			}
-		}
-
-		public function shiftTutorialX(value:int):void {
-			if (tutorialImage) {
-				tutorialImage.x += value;
-			}
-		}
-
-		public function shiftTutorialY(value:int):void {
-			if (tutorialImage) {
-				tutorialImage.y += value;
-			}
 		}
 
 		public function toggleRun(gameState:String):void {
@@ -314,10 +340,9 @@ package {
 			char.toggleRunUI();
 			pressedKeys = new Array();
 
-			// Ensure that the character and all enemies are higher in the
-			// display order than the tiles.
 			removeChild(char);
 			addChild(char);
+
 			for each (var enemy:Enemy in activeEnemies) {
 				removeChild(enemy);
 				addChild(enemy);
@@ -332,6 +357,7 @@ package {
 			for(x = 0; x < gridWidth; x++) {
 				for(y = 0; y < gridHeight; y++) {
 					removeChild(goldGrid[x][y]);
+					goldGrid[x][y] = null;
 
 					if (grid[x][y]
 						&& !(grid[x][y] is ImpassableTile)
@@ -376,20 +402,22 @@ package {
 
 			char.reset();
 
-			for each (var enemy:Enemy in activeEnemies) {
+			/*for each (var enemy:Enemy in activeEnemies) {
 				entityGrid[enemy.grid_x][enemy.grid_y] = null;
 				enemy.reset();
 				entityGrid[enemy.grid_x][enemy.grid_y] = enemy;
+			}*/
+			var tempEnemy:Enemy;
+			while (activeEnemies.length > 0) {
+				tempEnemy = activeEnemies.pop();
+				removedEntities.push(tempEnemy);
+				entityGrid[tempEnemy.grid_x][tempEnemy.grid_y] = null;
 			}
-
 			while (removedEntities.length > 0) {
 				var entity:Entity = removedEntities.pop();
 				entity.reset();
 				entityGrid[entity.grid_x][entity.grid_y] = entity;
-
-				if(!fogGrid[entity.grid_x][entity.grid_y]) {
-					addChild(entity);
-				}
+				addChild(entity);
 
 				if (entity is Enemy) {
 					var enemyEntity:Enemy = entity as Enemy;
@@ -397,16 +425,11 @@ package {
 				}
 			}
 
-			for (var k:Object in objectiveState) {
-				var key:String = String(k);
-				objectiveState[key] = false;
-			}
-
 			save();
 		}
 
 		// Saves the game state in the saveGame.data shared object.
-		private function save():void {
+		public function save():void {
 			saveGame.data["floor_name"] = floorName;
 			saveGame.data["floor_dimensions"] = new Object();
 			saveGame.data["floor_dimensions"]["width"] = gridWidth;
@@ -421,6 +444,8 @@ package {
 			saveGame.data["stamina"] = char.maxStamina;
 			saveGame.data["los"] = char.los;
 			saveGame.data["attack"] = char.attack;
+			saveGame.data["health_upgrades"] = char.numHealthUpgrades;
+			saveGame.data["stamina_upgrades"] = char.numStaminaUpgrades;
 
 			// Save tile state
 			saveGame.data["tiles"] = new Array();
@@ -497,7 +522,10 @@ package {
 					} else if (entity is Objective) {
 						var objective:Objective = entity as Objective;
 						saveEntity["type"] = "objective";
-						// TODO: implement objective saving if we use them.
+						saveEntity["key"] = objective.key;
+						saveEntity["prereqs"] = objective.prereqs;
+						saveEntity["texture"] = objective.textureName;
+						saveEntity["color"] = objective.getColorString();
 					} else if (entity is Reward) {
 						var reward:Reward = entity as Reward;
 						saveEntity["type"] = "reward";
@@ -510,6 +538,12 @@ package {
 						saveEntity["type"] = "stamina_heal";
 						saveEntity["texture"] = "stamina_heal";
 						saveEntity["stamina"] = stamina.stamina;
+					} else if (entity is Trap) {
+						var trap:Trap = entity as Trap;
+						saveEntity["type"] = "trap";
+						saveEntity["texture"] = trap.type;
+						saveEntity["damage"] = trap.damage;
+						saveEntity["radius"] = trap.radius;
 					}
 					saveGame.data["entities"].push(saveEntity);
 				}
@@ -519,6 +553,11 @@ package {
 			// because they shouldn't be changed by the player.
 			saveGame.data["temporary_entities"] = initialFloorData["temporary_entities"];
 			saveGame.data["rooms"] = initialFloorData["rooms"];
+			saveGame.data["objectiveState"] = objectiveState;
+
+			saveGame.data["firstEnemySeen"] = firstEnemySeen;
+			saveGame.data["firstTrapSeen"] = firstTrapSeen;
+
 			saveGame.flush();
 
 		}
@@ -567,23 +606,45 @@ package {
 		public function removeFoggedLocations(i:int, j:int):void {
 			var x:int; var y:int;
 			var radius:int = char.los;
+			var shade:int = FOG_OF_WAR_OPACITY_RANGE;
+			var increment:Number = (FOG_OF_WAR_MAX_OPACITY - FOG_OF_WAR_MIN_OPACITY) / shade;
+			var xDist:int;
+			var yDist:int;
+			var distanceFromFog:int;
+			var proposedAlpha:Number;
 
-			for (x = i - radius; x <= i + radius; x++) {
+			for (x = i - radius - shade; x <= i + radius + shade; x++) {
 				if (x >= 0 && x < gridWidth) {
-					for (y = j - radius; y <= j + radius; y++) {
+					for (y = j - radius - shade; y <= j + radius + shade; y++) {
 						if (y >= 0 && y < gridHeight) {
-							if (Math.abs(x-i) + Math.abs(y-j) <= radius && fogGrid[x][y]) {
+							xDist = Math.abs(x-i);
+							yDist = Math.abs(y-j);
+							if (xDist + yDist <= radius && fogGrid[x][y]) {
 								removeChild(fogGrid[x][y]);
-								if(grid[x][y]) {
+								if (grid[x][y]) {
 									addChild(grid[x][y]);
 								}
-								if(entityGrid[x][y]) {
+								if (entityGrid[x][y]) {
 									addChild(entityGrid[x][y]);
+
+									if (!firstEnemySeen && entityGrid[x][y] is Enemy) {
+										firstEnemySeen = true;
+										dispatchEvent(new TutorialEvent(TutorialEvent.REVEAL_ENEMY));
+									}
+
+									if (!firstTrapSeen && entityGrid[x][y] is Trap) {
+										firstTrapSeen = true;
+										dispatchEvent(new TutorialEvent(TutorialEvent.REVEAL_TRAP));
+									}
 								}
-								fogGrid[x][y] = false;
+								fogGrid[x][y] = null;
 								if (entityGrid[x][y] is Enemy) {
 									activeEnemies.push(entityGrid[x][y]);
 								}
+							} else if(xDist + yDist <= radius + shade && fogGrid[x][y]) {
+								distanceFromFog = shade + radius - xDist - yDist + 1;
+							 	proposedAlpha = FOG_OF_WAR_MAX_OPACITY - (distanceFromFog * increment);
+								fogGrid[x][y].alpha = Math.min(fogGrid[x][y].alpha, proposedAlpha);
 							}
 						}
 					}
@@ -597,6 +658,13 @@ package {
 
 		// Highlights tiles on the grid that the player can move the selected tile to.
 		public function highlightAllowedLocations(directions:Array, hudState:String):void {
+			if (isHighlighted) {
+				return;
+			}
+
+			isHighlighted = true;
+			isBuildHudDelete = hudState == BuildHUD.STATE_DELETE;
+
 			var x:int; var y:int; var addBool:Boolean;
 			var allowed:Array = hudState == BuildHUD.STATE_TILE ? getAllowedLocations(directions) : new Array();
 
@@ -609,7 +677,8 @@ package {
 					} else if(hudState == BuildHUD.STATE_ENTITY) {
 						addBool = isEmptyTile(grid[x][y]) && !entityGrid[x][y] && !fogGrid[x][y];
 					} else if(hudState == BuildHUD.STATE_DELETE) {
-						addBool = isEmptyTile(grid[x][y]) && grid[x][y].deletable;
+						addBool = (isEmptyTile(grid[x][y]) && grid[x][y].deletable) ||
+								  (entityGrid[x][y] && entityGrid[x][y].deletable);
 					}
 
 					addRemoveHighlight(x, y, hudState, addBool);
@@ -647,16 +716,21 @@ package {
 				highlight.x = x * Util.PIXELS_PER_TILE;
 				highlight.y = y * Util.PIXELS_PER_TILE;
 				highlightedLocations[x][y] = highlight;
-
-				addChild(highlightedLocations[x][y]);
+				addChild(highlight);
 			}
 		}
 
 		// Removes all highlighted tiles on the grid.
 		public function clearHighlightedLocations():void {
+			if (!isHighlighted) {
+				return;
+			}
+			isHighlighted = false;
+
 			for (var x:int = 0; x < gridWidth; x++) {
 				for (var y:int = 0; y < gridHeight; y++) {
 					removeChild(highlightedLocations[x][y]);
+					highlightedLocations[x][y] = null;
 				}
 			}
 		}
@@ -782,28 +856,191 @@ package {
 			return arr;
 		}
 
-		private function onEnterFrame(e:Event):void {
-			if(tutorialImage && tutorialDisplaying) {
-				addChild(tutorialImage);
+		public function changeVisibleChildren(newWorldX:int, newWorldY:int, fillVisible:Boolean = false):void {
+			var x:int; var y:int; var startX:int; var endX:int; var startY:int; var endY:int;
+			var oldStartX:int; var oldEndX:int; var oldStartY:int; var oldEndY:int;
+
+			// Figure out the boundaries of the visible grid
+			newWorldX *= -1;
+			newWorldY *= -1;
+			oldStartX = Util.real_to_grid(worldX);
+			oldEndX = oldStartX + Util.real_to_grid(Util.STAGE_WIDTH);
+			oldStartY = Util.real_to_grid(worldY);
+			oldEndY = oldStartY + Util.real_to_grid(Util.STAGE_HEIGHT);
+			startX = Util.real_to_grid(newWorldX);
+			endX = startX + Util.real_to_grid(Util.STAGE_WIDTH);
+			startY = Util.real_to_grid(newWorldY);
+			endY = startY + Util.real_to_grid(Util.STAGE_HEIGHT);
+
+			if (oldStartX == startX && oldStartY == startY) {
+				// Redundant call. No change needed.
+				return;
+			} else if (fillVisible) {
+				// Fill entire grid -- useful for moving to character and at the start
+				// First clear the old spot
+				for (x = oldStartX - 2; x < oldEndX + 2; x++) {
+					for (y = oldStartY - 2; y < oldEndY + 2; y++) {
+						clearLocation(x, y);
+					}
+				}
+				for (x = startX - 2; x < endX + 2; x++) {
+					for (y = startY - 2; y < endY + 2; y++) {
+						addLocation(x, y);
+					}
+				}
+			} else {
+				// Otherwise clear & add edges around visible grid
+				// Right shift
+				if (newWorldX > worldX) {
+					// Left side
+					for (x = startX - 2; x < startX; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							clearLocation(x, y);
+						}
+					}
+					// Right side
+					for (x = endX - 2; x < endX + 1; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+				}
+
+				// Left shift
+				if (newWorldX < worldX) {
+					// Left side
+					for (x = startX - 2; x < startX + 2; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+					// Right side
+					for (x = endX + 1; x < endX + 3; x++) {
+						for (y = startY - 2; y < endY + 2; y++) {
+							clearLocation(x, y);
+						}
+					}
+				}
+
+				// Up shift
+				if (newWorldY < worldY) {
+					// Top side
+					for (x = startX - 2; x < endX + 2; x++) {
+						// Top side
+						for (y = startY - 2; y < startY + 2; y++) {
+							addLocation(x, y);
+						}
+						// Bottom side
+						for (y = endY + 2; y < endY + 4; y++) {
+							clearLocation(x, y);
+						}
+					}
+				}
+
+				// Down shift
+				if (newWorldY > worldY) {
+					// Top side
+					for (x = startX - 2; x < endX + 2; x++) {
+						// Top side
+						for (y = startY - 2; y < startY; y++) {
+							clearLocation(x, y);
+						}
+						// Bottom side
+						for (y = endY - 2; y < endY + 2; y++) {
+							addLocation(x, y);
+						}
+					}
+				}
 			}
 
-			var keyCode:uint;
-			var cgx:int; var cgy:int;
-			var charTile:Tile; var nextTile:Tile;
+			worldX = newWorldX;
+			worldY = newWorldY;
+
+			removeChild(char);
+			addChild(char);
+
+			for each (var enemy:Enemy in activeEnemies) {
+				removeChild(enemy);
+				addChild(enemy);
+			}
+
+			if (isBuildHudDelete) {
+				for (x = 0; x < gridWidth; x++) {
+					for (y = 0; y < gridHeight; y++) {
+						if (highlightedLocations[x][y] == null) {
+							continue;
+						}
+
+						addChild(highlightedLocations[x][y]);
+					}
+				}
+			}
+		}
+
+		private function clearLocation(x:int, y:int):void {
+			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
+				return;
+			}
+			removeChild(grid[x][y]);
+			removeChild(entityGrid[x][y]);
+			removeChild(fogGrid[x][y]);
+			removeChild(goldGrid[x][y]);
+			removeChild(highlightedLocations[x][y]);
+		}
+
+		private function addLocation(x:int, y:int):void {
+			if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
+				return;
+			}
+			if (fogGrid[x][y]) {
+				addChild(fogGrid[x][y]);
+			} else {
+				if (grid[x][y]) {
+					addChild(grid[x][y]);
+				}
+				if (entityGrid[x][y]) {
+					addChild(entityGrid[x][y]);
+				}
+				if (goldGrid[x][y]) {
+					addChild(goldGrid[x][y]);
+				}
+				if (highlightedLocations[x][y]) {
+					addChild(highlightedLocations[x][y]);
+				}
+				removeChild(char);
+				addChild(char);
+			}
+		}
+
+		private function onEnterFrame(event:EnterFrameEvent):void {
+			var trapAnimation:MovieClip;
+			var i:int;
+			for (i = 0; i < trapAnimations.length; i++) {
+				trapAnimation = trapAnimations[i];
+				trapAnimation.advanceTime(event.passedTime);
+				if (trapAnimation.isComplete) {
+					removeChild(trapAnimation);
+					trapAnimations.splice(i, 1);
+					i--;
+				}
+			}
 
 			if (char.moving) {
 				return;
 			}
 
-			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed) {
+			if (grid[char.grid_x][char.grid_y] is ExitTile && !completed && char.hp > 0) {
 				dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_EXIT, char.grid_x, char.grid_y));
 			}
 
+			var keyCode:uint;
+			var cgx:int; var cgy:int;
+			var charTile:Tile; var nextTile:Tile;
 			for each (keyCode in pressedKeys) {
 				cgx = Util.real_to_grid(char.x);
 				cgy = Util.real_to_grid(char.y);
 
-				if(!grid[cgx][cgy]) {
+				if (!grid[cgx][cgy]) {
 					continue; // empty tile, invalid state
 				}
 
@@ -814,7 +1051,9 @@ package {
 					}
 
 					nextTile = grid[cgx][cgy-1];
-					if (charTile.north && nextTile.south) {
+					if (charTile.north
+						&& nextTile.south
+						&& objectiveSatisfied(cgx, cgy-1)) {
 						char.move(Util.NORTH);
 					}
 				} else if ((keyCode == Keyboard.DOWN || keyCode == Util.DOWN_KEY) && cgy < gridHeight - 1) {
@@ -823,7 +1062,9 @@ package {
 					}
 
 					nextTile = grid[cgx][cgy+1];
-					if (charTile.south && nextTile.north) {
+					if (charTile.south
+						&& nextTile.north
+						&& objectiveSatisfied(cgx, cgy+1)) {
 						char.move(Util.SOUTH);
 
 					}
@@ -833,7 +1074,9 @@ package {
 					}
 
 					nextTile = grid[cgx-1][cgy];
-					if (charTile.west && nextTile.east) {
+					if (charTile.west
+						&& nextTile.east
+						&& objectiveSatisfied(cgx-1, cgy)) {
 						char.move(Util.WEST);
 					}
 				} else if ((keyCode == Keyboard.RIGHT || keyCode == Util.RIGHT_KEY) && cgx < gridWidth - 1) {
@@ -842,11 +1085,36 @@ package {
 					}
 
 					nextTile = grid[cgx+1][cgy];
-					if (charTile.east && nextTile.west) {
+					if (charTile.east
+						&& nextTile.west
+						&& objectiveSatisfied(cgx+1, cgy)) {
 						char.move(Util.EAST);
 					}
 				}
 			}
+		}
+
+		// Returns true if the objective at (x,y) is satisfied, or if there
+		// is no objective at the tile. Returns false if the objective at (x,y)
+		// has not been satisfied.
+		private function objectiveSatisfied(x:int, y:int):Boolean {
+			if (!entityGrid[x][y]) {
+				return true;
+			}
+			var entity:Entity = entityGrid[x][y]
+			if (!(entity is Objective)) {
+				return true;
+			}
+			var obj:Objective = (entity as Objective);
+			if (obj.prereqs == null) {
+				return true;
+			}
+			for (var i:int = 0; i < obj.prereqs.length; i++) {
+				if (!objectiveState[obj.prereqs[i]]) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		private function moveAllEnemies():void {
@@ -862,30 +1130,38 @@ package {
 				var possibleDirections:Array = new Array();
 				// North
 				if (enemy.grid_y > 0
+					&& grid[enemy.grid_x][enemy.grid_y].north
 					&& grid[enemy.grid_x][enemy.grid_y-1]
 					&& grid[enemy.grid_x][enemy.grid_y-1].south
-					&& entityGrid[enemy.grid_x][enemy.grid_y-1] == null) {
+					&& (entityGrid[enemy.grid_x][enemy.grid_y-1] == null
+						|| entityGrid[enemy.grid_x][enemy.grid_y-1] is Trap)) {
 					possibleDirections.push(Util.NORTH);
 				}
 				// South
 				if (enemy.grid_y < gridHeight - 1
+					&& grid[enemy.grid_x][enemy.grid_y].south
 					&& grid[enemy.grid_x][enemy.grid_y+1]
 					&& grid[enemy.grid_x][enemy.grid_y+1].north
-					&& entityGrid[enemy.grid_x][enemy.grid_y+1] == null) {
+					&& (entityGrid[enemy.grid_x][enemy.grid_y+1] == null
+						|| entityGrid[enemy.grid_x][enemy.grid_y+1] is Trap)) {
 					possibleDirections.push(Util.SOUTH);
 				}
 				// East
 				if (enemy.grid_x < gridWidth - 1
+					&& grid[enemy.grid_x][enemy.grid_y].east
 					&& grid[enemy.grid_x+1][enemy.grid_y]
 					&& grid[enemy.grid_x+1][enemy.grid_y].west
-					&& entityGrid[enemy.grid_x+1][enemy.grid_y] == null) {
+					&& (entityGrid[enemy.grid_x+1][enemy.grid_y] == null
+						|| entityGrid[enemy.grid_x+1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.EAST);
 				}
 				// West
 				if (enemy.grid_x > 0
+					&& grid[enemy.grid_x][enemy.grid_y].west
 					&& grid[enemy.grid_x-1][enemy.grid_y]
 					&& grid[enemy.grid_x-1][enemy.grid_y].east
-					&& entityGrid[enemy.grid_x-1][enemy.grid_y] == null) {
+					&& (entityGrid[enemy.grid_x-1][enemy.grid_y] == null
+						|| entityGrid[enemy.grid_x-1][enemy.grid_y] is Trap)) {
 					possibleDirections.push(Util.WEST);
 				}
 
@@ -920,25 +1196,42 @@ package {
 					continue;
 				}
 
-				// Move the entity's position in the entityGrid.
+				// Command the enemy to move.
 				entityGrid[enemy.grid_x][enemy.grid_y] = null;
+				var new_x:int; var new_y:int;
 				switch (direction) {
 					case Util.NORTH:
-						entityGrid[enemy.grid_x][enemy.grid_y - 1] = enemy;
+						new_x = enemy.grid_x;
+						new_y = enemy.grid_y - 1;
 						break;
 					case Util.SOUTH:
-						entityGrid[enemy.grid_x][enemy.grid_y + 1] = enemy;
+						new_x = enemy.grid_x;
+						new_y = enemy.grid_y + 1;
 						break;
 					case Util.EAST:
-						entityGrid[enemy.grid_x + 1][enemy.grid_y] = enemy;
+						new_x = enemy.grid_x + 1;
+						new_y = enemy.grid_y;
 						break;
 					case Util.WEST:
-						entityGrid[enemy.grid_x - 1][enemy.grid_y] = enemy;
+						new_x = enemy.grid_x - 1;
+						new_y = enemy.grid_y;
 						break;
 				}
-				// Command the enemy to move.
+				if (entityGrid[new_x][new_y] is Trap) {
+					removedEntities.push(entityGrid[new_x][new_y]);
+					enemy.trap = entityGrid[new_x][new_y];
+				}
+				entityGrid[new_x][new_y] = enemy;
 				enemy.move(direction);
 			}
+		}
+
+		private function killEnemy(enemy:Enemy):void {
+			removeEnemyFromActive(enemy);
+			removedEntities.push(enemy);
+			entityGrid[enemy.grid_x][enemy.grid_y] = null;
+			removeChild(enemy);
+			runSummary.enemiesDefeated++;
 		}
 
 		private function onKeyDown(event:KeyboardEvent):void {
@@ -984,68 +1277,44 @@ package {
 			}
 
 			var entity:Entity = entityGrid[e.x][e.y];
-			if (!entity) {
-				return;
+			if (entity) {
+				entity.handleChar(char);
 			}
 
-			entity.handleChar(char);
-		}
-
-		// Event handler for when a character arrives at an exit tile.
-		private function onCharExited(e:GameEvent):void {
-			if (Util.logger) {
-				Util.logger.logLevelEnd({
-					"characterHpRemaining":char.hp,
-					"characterMaxHP":char.maxHp
-				});
+			if (char.stamina <= 0) {
+				dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED, char.grid_x, char.grid_y));
 			}
-			completed = true;
-
-			Assets.mixer.play(Util.FLOOR_COMPLETE);
-
-			var winBox:Sprite = new Sprite();
-			var popup:Image = new Image(Assets.textures[Util.POPUP_BACKGROUND])
-			winBox.addChild(popup);
-			winBox.addChild(new TextField(popup.width,
-										  popup.height,
-										  NEXT_LEVEL_MESSAGE,
-										  Util.DEFAULT_FONT,
-										  Util.MEDIUM_FONT_SIZE));
-			winBox.x = (Util.STAGE_WIDTH - winBox.width) / 2 - this.parent.x;
-			winBox.y = (Util.STAGE_HEIGHT - winBox.height) / 2 - this.parent.y;
-
-			var nC:Clickable = new Clickable(0, 0, onCompleteCallback, winBox);
-			addChild(nC);
 		}
 
 		// Called after the character defeats an enemy entity.
 		public function onCombatSuccess(enemy:Enemy):void {
-			removeEnemyFromActive(enemy);
-			removedEntities.push(enemy);
-			entityGrid[enemy.grid_x][enemy.grid_y] = null;
-			removeChild(enemy);
+			killEnemy(enemy);
 			char.inCombat = false;
+			runSummary.damageTaken += preHealth - char.hp;
 			Util.logger.logAction(17, {
 				"characterHealthLeft":char.hp,
 				"characterHealthMax":char.maxHp,
 				"characterStaminaLeft":char.stamina,
 				"characterStaminaMax":char.maxStamina,
 				"characterAttack":char.attack,
-				"enemyHealth":enemy.hp,
+				"enemyHealth":enemy.maxHp,
 				"enemyAttack":enemy.attack,
 				"reward":enemy.reward
 			});
-
-			runSummary.enemiesDefeated++;
-			runSummary.damageTaken += preHealth - char.hp;
 		}
 
 		// Called when the character moves into an objective tile. Updates
 		// objectiveState to mark the tile as visited.
 		private function onObjCompleted(e:GameEvent):void {
 			var obj:Objective = entityGrid[e.x][e.y];
+			if (obj.key.indexOf(Util.DOOR) >= 0) {
+				Assets.mixer.play(Util.DOOR_OPEN);
+				Util.logger.logAction(28, { } );
+			} else if(obj.key.indexOf(Util.KEY_STRING) >= 0) {
+				Assets.mixer.play(Util.SFX_KEY);
+			}
+			Util.logger.logAction(20, { } );
 			objectiveState[obj.key] = true;
-			removedEntities.push(obj);
 			entityGrid[e.x][e.y] = null;
 			removeChild(obj);
 		}
@@ -1081,10 +1350,72 @@ package {
 			for each(point in coords) {
 				if(fogGrid[point.x][point.y]) {
 					removeChild(fogGrid[point.x][point.y]);
-					fogGrid[point.x][point.y] = false;
+					fogGrid[point.x][point.y] = null;
 				}
 			}
 			Util.logger.logAction(7, { } );
+		}
+
+		private function onActivateTrap(e:GameEvent):void {
+			var i:int; var j:int; var entity:Entity;
+
+			var trap:Trap = e.gameData["trap"];
+			var enemies:Array = new Array();
+			var affectedTiles:Array = trap.generateDamageRadius();
+			Assets.mixer.play(trap.triggerSound);
+
+			Util.logger.logAction(23, {
+				"type":trap.type,
+				"radius":trap.radius,
+				"damage":trap.damage
+			});
+
+			var trapAnim:MovieClip;
+			for each(trapAnim in trap.generateDamageAnimations()) {
+				trapAnimations.push(trapAnim);
+				addChild(trapAnim);
+			}
+
+			var damagePoint:Point;
+			for each(damagePoint in affectedTiles) {
+				if (damagePoint.x < 0 || damagePoint.x >= gridWidth ||
+				    damagePoint.y < 0 || damagePoint.y >= gridHeight) {
+					continue;
+				}
+
+				entity = entityGrid[damagePoint.x][damagePoint.y];
+				if (entity is Enemy) {
+					enemies.push(entity);
+				}
+
+				if (char.grid_x == damagePoint.x && char.grid_y == damagePoint.y) {
+					char.hp -= trap.damage;
+					// Probably want to play some sfx here
+					Util.logger.logAction(25, { } );
+				}
+			}
+
+			var reward:int = 0;
+			for each (var enemy:Enemy in enemies) {
+				enemy.hp -= trap.damage;
+				Util.logger.logAction(26, { } );
+				enemy.addOverlay();
+				if (enemy.hp <= 0) {
+					reward += enemy.reward;
+					killEnemy(enemy);
+					Util.logger.logAction(24, {
+						"name":enemy.enemyName,
+						"attack":enemy.attack,
+						"hp":enemy.maxHp,
+						"reward":enemy.reward
+					});
+				}
+			}
+			var eventData:Dictionary = new Dictionary();
+			eventData["reward"] = reward;
+			eventData["damage"] = trap.damage;
+			dispatchEvent(new GameEvent(GameEvent.GET_TRAP_REWARD, e.x, e.y, eventData));
+			removeChild(trap);
 		}
 	}
 }

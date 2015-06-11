@@ -1,4 +1,5 @@
 package entities {
+	import flash.utils.Dictionary;
 	import starling.textures.Texture;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -15,6 +16,7 @@ package entities {
 
 		public var stationary:Boolean;
 		public var moving:Boolean;
+		public var trap:Trap;
 		public var inCombat:Boolean;
 		private var destX:int;
 		private var destY:int;
@@ -137,6 +139,8 @@ package entities {
 			x = initialX;
 			y = initialY;
 			hp = maxHp;
+			trap = null;
+			addOverlay();
 		}
 
 		// Animate movement between tiles.
@@ -157,6 +161,12 @@ package entities {
 
 				if (x == destX && y == destY) {
 					moving = false;
+					if (trap) {
+						var eventData:Dictionary = new Dictionary();
+						eventData["trap"] = trap;
+						dispatchEvent(new GameEvent(GameEvent.ACTIVATE_TRAP, grid_x, grid_y, eventData));
+						trap = null;
+					}
 				}
 			}
 		}

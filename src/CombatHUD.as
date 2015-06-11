@@ -309,7 +309,6 @@ package {
 
                 if(char.hp <= 0) {
                     setCharFaint();
-
                     Assets.mixer.play(Util.COMBAT_FAILURE);
                     // Do something to fire floor-failure event
                 } else {

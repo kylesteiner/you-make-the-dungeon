@@ -2,9 +2,9 @@
 //Provides a set of utility functions for use throughout the code.
 
 package {
-	import Logger;
-	import starling.text.TextField;
 	import flash.ui.Keyboard;
+	import starling.display.Quad;
+	import starling.text.TextField;
 
 	public class Util {
 		public static const STAGE_WIDTH:int = 640;
@@ -17,7 +17,7 @@ package {
 		public static const UI_PADDING:int = 8;
 		public static const BORDER_PIXELS:Number = (1.0 / 16.0);
 		public static const BUTTON_SPACING:int = (1.0 / 8.0);
-		public static const CAMERA_SHIFT:int = 4; // in pixels
+		public static const CAMERA_SHIFT:int = 8; // in pixels
 		// can update to pixels once tile movement is tied down
 		public static const ANIM_FPS:int = 2;
 		public static const VISITED_ALPHA:Number = 0.4;
@@ -27,6 +27,7 @@ package {
 		public static const CURSOR_OFFSET_Y:int = -14;
 
 		public static const DEFAULT_FONT:String = "Bebas";
+		public static const SECONDARY_FONT:String = "Fertigo";
 		public static const LARGE_FONT_SIZE:int = 48;
 		public static const MEDIUM_FONT_SIZE:int = 32;
 		public static const SMALL_FONT_SIZE:int = 24;
@@ -43,15 +44,17 @@ package {
 
 		// Keys to the dictionary of textures.
 		public static const DOOR:String = "door";
+		public static const KEY_STRING:String = "key";
 
-		public static const GRID_BACKGROUND:String = "grid_background";
-		public static const STATIC_BACKGROUND:String = "static_background";
+		public static const MENU_BACKGROUND:String = "menu_background";
+		public static const GAME_BACKGROUND:String = "game_background";
 		public static const TUTORIAL_BACKGROUND:String = "tutorial_background";
-		public static const TUTORIAL_PAN:String = "tutorial_pan";
+		//public static const TUTORIAL_PAN:String = "tutorial_pan";
 		public static const TUTORIAL_TILE:String = "tutorial_tile_hud";
 		public static const TUTORIAL_PAN_FLOOR:String = "floor8";
 		public static const TUTORIAL_TILE_FLOOR:String = "floor2";
 		public static const POPUP_BACKGROUND:String = "popup_background";
+		public static const SUMMARY_BACKGROUND:String = "summary_background";
 		public static const SHOP_BACKGROUND:String = "shop_background";
 		public static const SHOP_ITEM:String = "shop_item";
 		public static const RUN_BANNER:String = "run_banner";
@@ -76,7 +79,7 @@ package {
 		public static const TILE_SW:String = "tile_sw";
 		public static const TILE_W:String = "tile_w";
 
-		public static const TILE_FOG:String = "fog";
+		//public static const TILE_FOG:String = "fog";
 		public static const TILE_HL_Y:String = "hl_y";
 		public static const TILE_HL_B:String = "hl_b";
 		public static const TILE_HL_G:String = "hl_g";
@@ -102,7 +105,6 @@ package {
 		public static const ICON_LOS_MED:String = "icon_los_med";
 		public static const ICON_GOLD:String = "icon_gold";
 		public static const ICON_DELETE:String = "icon_delete";
-		public static const ICON_SHOP:String = "icon_shop";
 		public static const CURSOR_RETICLE:String = "cursor_reticle";
 		public static const ICON_SFX_PLAY:String = "sfx_play";
 		public static const ICON_SFX_MUTE:String = "sfx_mute";
@@ -114,12 +116,14 @@ package {
 		public static const ICON_SLOW_RUN:String = "icon_slow_run";
 		public static const ICON_HELP:String = "icon_help";
 
+		public static const HEALTH_PURCHASE:String = "health_purchase";
+		public static const ATTACK_PURCHASE:String = "attack_purchase";
+		public static const STAMINA_PURCHASE:String = "stamina_purchase";
+		public static const LOS_PURCHASE:String = "los_purchase";
+
 		public static const ENEMY_MENU:String = "enemy_menu";
 		public static const HEALING_MENU:String = "healing_menu";
 		public static const TRAP_MENU:String = "trap_menu";
-
-		public static const TILE_HUD:String = "tile_hud";
-		public static const CHAR_HUD:String = "char_hud";
 
 		public static const BGM_MUTE_KEY:int = Keyboard.M;
 		public static const SFX_MUTE_KEY:int = Keyboard.COMMA;
@@ -136,29 +140,39 @@ package {
 		// up: 38		left: 37
 		// down: 40		right: 39
 
-		public static const FLOOR_0:String = "floor0";
-		public static const FLOOR_1:String = "floor1";
-		public static const FLOOR_2:String = "floor2";
-		public static const FLOOR_3:String = "floor3";
-		public static const FLOOR_4:String = "floor4";
-		public static const FLOOR_5:String = "floor5";
-		public static const FLOOR_6:String = "floor6";
-		public static const FLOOR_7:String = "floor7";
-		public static const FLOOR_8:String = "floor8";
-		public static const FLOOR_9:String = "floor9";
-		public static const FLOOR_10:String = "floor10";
-		public static const FLOOR_11:String = "floor11";
 		public static const MAIN_FLOOR:String = "main_floor";
 
 		// Room callbacks
 		public static const ROOMCB_NONE:String = "roomcb_none";
 
 		public static const TUTORIAL_NEA:String = "tutorial_nea";
-		public static const TUTORIAL_EXIT:String = "tutorial_exit"
+		public static const TUTORIAL_EXIT:String = "tutorial_exit";
+		public static const TUTORIAL_MOVE:String = "tutorial_move";
+		public static const TUTORIAL_PAN:String = "tutorial_pan";
+		public static const TUTORIAL_BUILD_HUD:String = "tutorial_build_hud";
+		public static const TUTORIAL_PLACE:String = "tutorial_place";
+		public static const TUTORIAL_START_RUN:String = "tutorial_start_run";
+		public static const TUTORIAL_SECONDARY_BUILD:String = "tutorial_secondary_build";
+		public static const TUTORIAL_HELP:String = "tutorial_help";
+		public static const TUTORIAL_ENEMY:String = "tutorial_enemy";
+		public static const TUTORIAL_TRAP:String = "tutorial_trap";
+		public static const TUTORIAL_UNLOCK:String = "tutorial_unlock";
+		public static const TUTORIAL_END_RUN:String = "tutorial_end_run";
+		public static const TUTORIAL_SPEED:String = "tutorial_speed";
+		public static const TUTORIAL_HEALTH_STAMINA:String = "tutorial_health_stamina";
+
 		public static const TUTORIAL_GOLD:String = "tutorial_gold"
 		public static const TUTORIAL_ADVENTURERS:String = "tutorial_adventurers"
 		public static const TUTORIAL_SPEND:String = "tutorial_spend"
 		public static const TUTORIAL_KEYS:String = "tutorial_keys"
+
+		// Tutorial backgrounds that reveal certain UI features.
+		public static const TUTORIAL_BUILDHUD_SHADOW:String = "tutorial_buildhud_shadow";
+		public static const TUTORIAL_PLACE_SHADOW:String = "tutorial_place_shadow";
+		public static const TUTORIAL_HEALTH_STAMINA_SHADOW:String = "tutorial_health_stamina_shadow";
+		public static const TUTORIAL_ENTITY_SHADOW:String = "tutorial_entity_shadow";
+		public static const TUTORIAL_SPEED_SHADOW:String = "tutorial_speed_shadow";
+		public static const TUTORIAL_SECONDARY_BUILD_SHADOW:String = "tutorial_secondary_build_shadow";
 
 		public static const TILE_UP_ACTIVE:String = "tile_up_active";
 		public static const TILE_UP_INACTIVE:String = "tile_up_inactive";
@@ -188,6 +202,14 @@ package {
 		public static const ENEMY_COMBAT_FAINT:String = "enemy_combat_faint";
 		public static const ENEMY_FIGHTER:String = "enemy_fighter";
 		public static const ENEMY_MAGE:String = "enemy_mage";
+		public static const ENEMY_ARCHER:String = "enemy_archer";
+		public static const ENEMY_NINJA:String = "enemy_ninja";
+		public static const ENEMY_KNIGHT:String = "enemy_knight";
+		public static const TRAPS:String = "traps"
+		public static const BASIC_TRAP:String = "basic_trap";
+		public static const FLAME_TRAP:String = "flame_trap";
+		public static const FLAME_TRAP_BLUE:String = "flame_trap_blue";
+		public static const SHOCK_TRAP:String = "shock_trap";
 
 		public static const GENERIC_ATTACK:String = "generic_attack";
 
@@ -204,7 +226,15 @@ package {
 		public static const TILE_REMOVE:String = "tile_remove";
 		public static const COIN_COLLECT:String = "coin_collect";
 		public static const GOLD_SPEND:String = "gold_spend";
+		public static const GOLD_DEFICIT:String = "gold_deficit";
 		public static const REWARD_COLLECT:String = "reward_collect";
+		public static const DOOR_OPEN:String = "door_open";
+		public static const SFX_BASIC_TRAP:String = "sfx_basic_trap";
+		public static const SFX_FLAME_TRAP:String = "sfx_flame_trap";
+		public static const SFX_SHOCK_TRAP:String = "sfx_shock_trap";
+		public static const SFX_STAMINA_HEAL:String = "sfx_stamina_heal";
+		public static const SFX_HEAL:String = "sfx_heal";
+		public static const SFX_KEY:String = "sfx_key";
 
 		public static const DICT_FLOOR_INDEX:int = 0;
 		public static const DICT_TILES_INDEX:int = 1;
@@ -217,22 +247,35 @@ package {
 		public static const STARTING_LOS:int = 2;
 
 		// Build costs
-		public static const BASE_TILE_COST:int = 2;
+		public static const BASE_TILE_COST:int = 1;
 		public static const REFUND_PERCENT:int = 50;
 		public static const ENEMY_FIGHTER_COST:int = 20;
-		public static const ENEMY_MAGE_COST:int = 40;
-		public static const LIGHT_HEALING_COST:int = 20;
-		public static const MODERATE_HEALING_COST:int = 40;
-		public static const LIGHT_STAMINA_HEAL_COST:int = 20;
+		public static const ENEMY_MAGE_COST:int = 30;
+		public static const ENEMY_ARCHER_COST:int = 40;
+		public static const ENEMY_NINJA_COST:int = 50;
+		public static const LIGHT_HEALING_COST:int = 25;
+		public static const MODERATE_HEALING_COST:int = 50;
+		public static const LIGHT_STAMINA_HEAL_COST:int = 25;
+		public static const MODERATE_STAMINA_HEAL_COST:int = 50;
+		public static const BASIC_TRAP_COST:int = 10;
+		public static const FLAME_TRAP_COST:int = 20;
+		public static const BLUE_FLAME_TRAP_COST:int = 25;
+		public static const SHOCK_TRAP_COST:int = 15;
 
 		// Upgrade costs
-		public static const BASE_HP_UPGRADE_COST:int = 6;
-		public static const BASE_STAMINA_UPGRADE_COST:int = 6;
-		public static const BASE_ATTACK_UPGRADE_COST:int = 10;
+		public static const BASE_HP_UPGRADE_COST:int = 10;
+		public static const BASE_STAMINA_UPGRADE_COST:int = 10;
+		public static const BASE_ATTACK_UPGRADE_COST:int = 15;
 		public static const BASE_LOS_UPGRADE_COST:int = 10;
+
+		public static const BASE_STAMINA_ADDED_AMOUNT:int = 5;
+		public static const BASE_HEALTH_ADDED_AMOUNT:int = 3;
 
 		public static var logger:Logger;
 		public static var speed:int;
+
+		public static var gridWidth:int;
+		public static var gridHeight:int;
 
 		public static function grid_to_real(coordinate:int):int {
 			return coordinate * PIXELS_PER_TILE;
@@ -300,6 +343,12 @@ package {
 
 		public static function defaultTextField(width:int, height:int, initialText:String, size:int = Util.MEDIUM_FONT_SIZE):TextField {
 			return new TextField(width, height, initialText, Util.DEFAULT_FONT, size);
+		}
+
+		public static function getTransparentQuad():Quad {
+			var q:Quad = new Quad(Util.STAGE_WIDTH, Util.STAGE_HEIGHT, 0xffffff);
+			q.alpha = 0.7;
+			return q;
 		}
 	}
 }

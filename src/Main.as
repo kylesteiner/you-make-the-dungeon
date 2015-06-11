@@ -1,4 +1,5 @@
 package {
+	import cgs.fractionVisualization.fractionAnimators.strip.StripCompareSizeAnimator;
     import flash.ui.Mouse;
     import flash.utils.Dictionary;
 
@@ -10,10 +11,14 @@ package {
     import starling.display.MovieClip;
     import starling.display.Sprite;
 
+	import menu.*;
+
     public class Main extends Sprite {
-        private var menu:Menu;
+        private var mainMenu:Menu;
         private var game:Game;
         private var credits:Credits;
+		private var detailedCredits:DetailedCredits;
+		private var scores:Scores;
 
         // Logger
         private var cid:int;
@@ -23,8 +28,9 @@ package {
         private var cursorAnim:MovieClip;
 		private var cursorReticle:Image;
 
-        // Background
-        private var staticBackgroundImage:Image;
+        // Backgrounds
+        private var menuBackgroundImage:Image;
+		private var gameBackgroundImage:Image;
 
         // Sound
         private var bgmMuteButton:Clickable;
@@ -74,12 +80,13 @@ package {
 			bgmMuteButton.x = sfxMuteButton.x - bgmMuteButton.width - Util.UI_PADDING;
 			bgmMuteButton.y = sfxMuteButton.y;
 
-            staticBackgroundImage = new Image(Assets.textures[Util.STATIC_BACKGROUND]);
-			addChild(staticBackgroundImage);
+            menuBackgroundImage = new Image(Assets.textures[Util.MENU_BACKGROUND]);
+			gameBackgroundImage = new Image(Assets.textures[Util.GAME_BACKGROUND]);
 
             // Display the main menu.
-            menu = new Menu(versionID, cid, bgmMuteButton, sfxMuteButton);
-            addChild(menu);
+			mainMenu = new Menu(versionID, cid, bgmMuteButton, sfxMuteButton);
+			addChild(menuBackgroundImage);
+            addChild(mainMenu);
 
             addEventListener(Event.ENTER_FRAME, onEnterFrame);
             addEventListener(TouchEvent.TOUCH, onTouchEvent);
@@ -88,30 +95,50 @@ package {
             addEventListener(MenuEvent.CONTINUE_GAME, function():void { startGame(true); });
             addEventListener(MenuEvent.EXIT, returnToMenu);
             addEventListener(MenuEvent.CREDITS, displayCredits);
+			addEventListener(MenuEvent.DETAILED_CREDITS, displayDetailedCredits);
+			addEventListener(MenuEvent.SCORES, displayScores);
         }
 
         // Switches from the menu to the game.
         public function startGame(fromSave:Boolean):void {
-            removeChild(menu);
             game = new Game(fromSave, sfxMuteButton, bgmMuteButton);
+			removeChild(mainMenu);
+			removeChild(menuBackgroundImage);
+			addChild(gameBackgroundImage);
             addChild(game);
         }
 
         // Switches from the game/credits to the menu.
         public function returnToMenu():void {
-            // Ok to remove both credits and game - if either doesn't exist
+            // Ok to remove both credits and game and scores - if either doesn't exist
             // nothing happens.
             removeChild(credits);
+			removeChild(scores);
             removeChild(game, true);  // Dispose of all sprites in Game.
-            addChild(menu);
+			removeChild(gameBackgroundImage);
+			addChild(menuBackgroundImage);
+            addChild(mainMenu);
         }
 
         // Switches from the credits to the menu.
         public function displayCredits():void {
-            removeChild(menu);
+            removeChild(mainMenu);
+			removeChild(detailedCredits);
             credits = new Credits();
             addChild(credits);
         }
+
+		public function displayDetailedCredits():void {
+			removeChild(credits);
+			detailedCredits = new DetailedCredits();
+			addChild(detailedCredits);
+		}
+
+		public function displayScores():void {
+			removeChild(mainMenu);
+			scores = new Scores();
+			addChild(scores);
+		}
 
         // Sound controls.
         public function toggleBgmMute():void {

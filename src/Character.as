@@ -25,7 +25,12 @@ package {
 		public var stamina:int;
 		public var attack:int;
 
+		// Counts the number of stamina/health upgrades applied.
+		public var numStaminaUpgrades:int;
+		public var numHealthUpgrades:int;
+
 		// Character movement state (for rendering).
+		public var moveLock:Boolean; // Used by tutorial, popups to hold char in place.
 		public var inCombat:Boolean;
 		public var moving:Boolean;
 		private var destX:int;
@@ -48,6 +53,8 @@ package {
 								  stamina:int,
 								  attack:int,
 								  lineOfSight:int,
+								  numHealthUpgrades:int,
+								  numStaminaUpgrades:int,
 								  animationDict:Dictionary,
 								  attackTexture:Texture) {
 			super();
@@ -63,6 +70,9 @@ package {
 			this.maxStamina = stamina;
 			this.stamina = stamina;
 			this.attack = attack;
+
+			this.numHealthUpgrades = numHealthUpgrades;
+			this.numStaminaUpgrades = numStaminaUpgrades;
 
 			animations = animationDict;
 			currentAnimation = new MovieClip(animations[Util.CHAR_IDLE], Util.ANIM_FPS);
@@ -113,8 +123,7 @@ package {
 		// continuously over many frames. Once the character arrives at the tile
 		// an event is passed to floor.
 		public function move(direction:int):void {
-			trace("character.move(" + direction + ")");
-			if (moving || inCombat) {
+			if (moving || inCombat || moveLock) {
 				return;
 			}
 
@@ -159,15 +168,27 @@ package {
 			if (moving) {
 				if (x > destX) {
 					x -= speed;
+					if (x < destX) {
+						x = destX;
+					}
 				}
 				if (x < destX) {
 					x += speed;
+					if (x > destX) {
+						x = destX;
+					}
 				}
 				if (y > destY) {
 					y -= speed;
+					if (y < destY) {
+						y = destY;
+					}
 				}
 				if (y < destY) {
 					y += speed;
+					if (y > destY) {
+						y = destY;
+					}
 				}
 
 				if (x == destX && y == destY && moving) {
@@ -179,12 +200,6 @@ package {
 					addChild(currentAnimation);
 
 					stamina -= 1;
-					if (stamina <= 0) {
-						dispatchEvent(new GameEvent(GameEvent.STAMINA_EXPENDED,
-													grid_x,
-													grid_y));
-					}
-
 					dispatchEvent(new GameEvent(GameEvent.ARRIVED_AT_TILE,
 												grid_x,
 												grid_y));
